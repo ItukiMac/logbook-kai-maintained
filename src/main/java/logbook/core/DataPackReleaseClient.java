@@ -46,7 +46,16 @@ public final class DataPackReleaseClient {
         }
         Path root = Path.of(rootValue).toAbsolutePath().normalize();
         JsonNode index = JSON.readTree(readLimited(URI.create(INDEX_URL), 8L * 1024 * 1024));
-        Optional<DataRelease> selected = selectRelease(index);
+        return applyRelease(index, root, DataPackReleaseClient::downloadLimited);
+    }
+
+    /**
+     * Package-private seam for a loopback HTTP integration test. Production
+     * always invokes this with the real HTTP downloader and trusted fixed URL.
+     */
+    static boolean applyRelease(JsonNode releaseIndex, Path root, ReleaseDownloader downloader)
+            throws IOException {
+        Optional<DataRelease> selected = selectRelease(releaseIndex);
         if (selected.isEmpty()) return false;
 
         DataRelease release = selected.get();
@@ -63,7 +72,7 @@ public final class DataPackReleaseClient {
 
         Path downloaded = Files.createTempFile("logbook-data-download-", ".zip");
         try {
-            downloadLimited(release.download(), downloaded, release.sha256());
+            downloader.download(release.download(), downloaded, release.sha256());
             DefinitionPackInstaller.install(root, downloaded, release.sha256());
             return true;
         } finally {
@@ -145,7 +154,13 @@ public final class DataPackReleaseClient {
         }
     }
 
-    private static void downloadLimited(URI uri, Path out, String expectedDigest) throws IOException {
+    @FunctionalInterface
+    interface ReleaseDownloader {
+        void download(URI uri, Path destination, String sha256) throws IOException;
+    }
+
+    /** Package-private for offline loopback transport integration tests. */
+    static void downloadLimited(URI uri, Path out, String expectedDigest) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(30000);
