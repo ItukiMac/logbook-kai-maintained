@@ -1,6 +1,6 @@
 # U1: existing application updater — staged adoption
 
-**Scope of this PR:** switch the default update check / release download source to the maintained fork while retaining the upstream ZIP and staged-JAR protocol. Preserve an optional Java system property for testing or temporary rollback.
+**Scope of this PR:** change the default update source while retaining the upstream ZIP and staged-JAR protocol; validate Release SHA-256 digest, reject malformed update archives, and stage only an expected application JAR atomically. Preserve a system property for test/rollback.
 
 ## Verified implementation
 
@@ -19,12 +19,19 @@ Default: `ItukiMac/logbook-kai-maintained` for update metadata + downloads.
 Explicit override: `-Dlogbook.update.repository=owner/repo` in the JVM arguments.
 No automatic GitHub release exists yet for this fork. The application should not be switched into service until it has a verified release and a tested Linux restart path.
 
+## Implemented in this draft branch (still unmerged)
+
+- The expected release archive is taken from the maintained fork (system property override allowed).
+- The corresponding GitHub Release asset metadata must include a `sha256:` digest, and downloaded bytes must match it.
+- A bounded download and archive reader reject oversized ZIPs, unsafe paths, nested/unexpected JARs, or payloads that are not a logbook-kai application JAR.
+- Only a temporary file inside the `update/` directory is extracted, and the staged JAR is atomically replaced after validation. The **running** `logbook-kai.jar` is not touched.
+- Isolated tests cover a good archive, traversal, non-JAR payload, and missing JAR.
+
 ## Remaining work before production use (U1/U2)
 
-- Confirm Github Release assets follow the legacy filename and ZIP/JAR path contract.
-- Check downloaded archive integrity, contents, size limits and file destinations before staging. The existing extractor filters `*.jar` but does not validate each ZIP entry path; its lambda logs `IOException` and may still display success.
-- Fail an incomplete download / staging transaction atomically, preserving the existing active JAR. Do not claim an update succeeded if an entry failed.
-- Specify how release identity and integrity are authenticated, not just length/checksum downloaded from the same untrusted source.
+- Publish a maintained **test** Release and verify ZIP/JAR filename and SHA-256 metadata against real GitHub assets. (No Release has been published yet.)
+- Decide and implement stronger publisher identity/signature checks if needed; the GitHub digest retrieved over TLS is not an independently signed artifact.
+- Confirm fail-closed behavior with download interrupted mid-stream, incorrect Release digest, and rollback cases in integration tests.
 - Test staging in an isolated directory without credentials or the live game session.
 - For Linux, audit the *current* `auto.sh` (the production source of truth) before adding an update activation step. Keep the Chrome launch, :8891 KLB health wait, JavaFX compatibility arg, and all user configuration.
 - Test upgrade, bad zip, missing jar, rollback and restart with current KLB/KQS binaries.
