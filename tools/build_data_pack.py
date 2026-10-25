@@ -79,10 +79,10 @@ def build(source_root: Path, output: Path, source_sha: str) -> dict:
         folder = source_root / category
         if not folder.is_dir():
             raise FileNotFoundError(f"Missing data directory: {folder}")
-        for source_file in sorted(folder.glob("*.json")):
+        for source_file in sorted(folder.rglob("*.json")):
             raw = source_file.read_bytes()
             payload = normalized_json(raw, str(source_file))
-            relative = f"definitions/{category}/{source_file.name}"
+            relative = f"definitions/{category}/{source_file.relative_to(folder).as_posix()}"
             entries.append((relative, payload, raw))
 
     manifest = {
