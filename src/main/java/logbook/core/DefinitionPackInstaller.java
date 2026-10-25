@@ -117,6 +117,15 @@ final class DefinitionPackInstaller {
                             throw new IOException("Invalid definition file hash or size: " + name);
                         }
                     }
+                    // A correctly hashed file can still contain invalid JSON.
+                    // Reject the entire generation before active.json changes.
+                    try (InputStream jsonInput = Files.newInputStream(target)) {
+                        if (JSON.readTree(jsonInput) == null) {
+                            throw new IOException("Empty definition JSON: " + name);
+                        }
+                    } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                        throw new IOException("Malformed definition JSON: " + name, e);
+                    }
                 }
                 if (seen.size() != expected.size() + 1) {
                     throw new IOException("Definition ZIP contains missing entries");
