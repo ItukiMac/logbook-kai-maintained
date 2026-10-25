@@ -1,0 +1,45 @@
+name: Offline Linux staged update helper
+
+on:
+  pull_request:
+    paths:
+      - 'dist-includes/helpers/apply-staged-update.py'
+      - 'tools/tests/test_mint_staged_update.py'
+      - 'docs/MINT_UPDATER_INTEGRATION.md'
+      - '.github/workflows/mint-updater-integration.yml'
+      - 'assembly.xml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mint-helper-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test updater with synthetic JAR files only
+        run: python3 -m unittest discover -s tools/tests -p 'test_mint_staged_update.py' -v
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Verify helper is included in the distribution ZIP
+        run: |
+          mvn --batch-mode --no-transfer-progress -DskipTests package
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          archives = list(Path('target').glob('logbook-kai_*.zip'))
+          assert len(archives) == 1, archives
+          with ZipFile(archives[0]) as archive:
+              assert 'helpers/apply-staged-update.py' in archive.namelist()
+              assert 'logbook-kai.jar' in archive.namelist()
+          print('Linux updater helper included in application distribution')
+          PY
