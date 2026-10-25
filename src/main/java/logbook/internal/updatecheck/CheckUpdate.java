@@ -65,7 +65,8 @@ import logbook.internal.logger.LoggerHolder;
 public class CheckUpdate {
 
     /** GitHub リポジトリのパス */
-    public static final String REPOSITORY_PATH = "sakura0689/logbook-kai";
+    public static final String REPOSITORY_PATH = System.getProperty(
+            "logbook.update.repository", "ItukiMac/logbook-kai-maintained");
 
     /** 更新確認先 Github tags API */
     private static final String TAGS = "https://api.github.com/repos/" + REPOSITORY_PATH + "/tags";
