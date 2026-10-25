@@ -79,7 +79,7 @@ public class CheckUpdate {
 
     /** 検索するtagの名前 */
     /* 例えばv20.1.1 の 20.1.1にマッチ */
-    static final Pattern TAG_REGIX = Pattern.compile("\\d+\\.\\d+(?:\\.\\d+)?$");
+    static final Pattern TAG_REGIX = Pattern.compile("^v(\\d+\\.\\d+(?:\\.\\d+)?)$");
 
     /** Prerelease を使う System Property */
     private static final String USE_PRERELEASE = "logbook.use.prerelease";
@@ -120,8 +120,8 @@ public class CheckUpdate {
                     // tagの名前にバージョンを含む?実行中のバージョンより新しい?
                     .filter(tagname -> {
                         Matcher m = TAG_REGIX.matcher(tagname);
-                        if (m.find()) {
-                            Version remote = new Version(m.group());
+                        if (m.matches()) {
+                            Version remote = new Version(m.group(1));
                             return (!Version.UNKNOWN.equals(remote) && Version.getCurrent().compareTo(remote) < 0);
                         }
                         return false;
@@ -155,8 +155,8 @@ public class CheckUpdate {
                     .findFirst()
                     .map(tagname -> {
                         Matcher m = TAG_REGIX.matcher(tagname);
-                        m.find();
-                        return new Version(m.group());
+                        if (!m.matches()) return Version.UNKNOWN;
+                        return new Version(m.group(1));
                     })
                     .orElse(Version.UNKNOWN);
         } catch (Exception e) {
