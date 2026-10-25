@@ -18,6 +18,24 @@ final class ExternalQuestDefinitions {
     private ExternalQuestDefinitions() {
     }
 
+    /**
+     * An activated generation is authoritative for its managed quest categories.
+     * Returning null for an absent JSON must not resurrect obsolete bundled
+     * event quests or definitions from the application JAR.
+     */
+    static boolean hasActiveGeneration() {
+        String configuredRoot = System.getProperty(ROOT_PROPERTY);
+        if (configuredRoot == null || configuredRoot.isBlank()) {
+            return false;
+        }
+        try {
+            Path root = Path.of(configuredRoot).toAbsolutePath().normalize();
+            return Files.exists(root.resolve("active.json"), LinkOption.NOFOLLOW_LINKS);
+        } catch (java.nio.file.InvalidPathException e) {
+            return false;
+        }
+    }
+
     static URL resolve(int questNo, boolean regular) {
         String configuredRoot = System.getProperty(ROOT_PROPERTY);
         if (configuredRoot == null || configuredRoot.isBlank() || questNo <= 0) {
