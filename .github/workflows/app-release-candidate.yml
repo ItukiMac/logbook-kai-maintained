@@ -1,0 +1,82 @@
+name: Application release candidate (artifact only, no publish)
+
+on:
+  pull_request:
+    paths:
+      - 'pom.xml'
+      - 'src/**'
+      - 'assembly.xml'
+      - 'dist-includes/**'
+      - '.github/workflows/app-release-candidate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-candidate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build and test candidate without releasing or installing
+        run: mvn --batch-mode --no-transfer-progress verify
+      - name: Check application archive identity and content
+        run: |
+          python3 - <<'PY'
+          import hashlib, io, re, zipfile
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          root=ET.parse('pom.xml').getroot()
+          m={'m':'http://maven.apache.org/POM/4.0.0'}
+          version=root.findtext('m:version',namespaces=m)
+          assert version == '25.0.9', f'unexpected candidate version: {version}'
+          release=Path(f'target/logbook-kai_{version}.zip')
+          assert release.is_file(), f'missing {release}'
+          with zipfile.ZipFile(release) as distribution:
+              names=set(distribution.namelist())
+              assert 'logbook-kai.jar' in names, 'missing application JAR'
+              assert 'helpers/apply-staged-update.py' in names, 'missing updater helper'
+              assert distribution.testzip() is None, 'invalid distribution zip CRC'
+              assert not any(name.endswith(('.key','.env','.token')) for name in names)
+              jar_bytes=distribution.read('logbook-kai.jar')
+          with zipfile.ZipFile(io.BytesIO(jar_bytes)) as application:
+              manifest=application.read('META-INF/MANIFEST.MF').decode('utf-8')
+              assert 'Main-Class: logbook.internal.Launcher' in manifest
+              assert f'Implementation-Version: {version}' in manifest
+              assert 'logbook/internal/Launcher.class' in application.namelist()
+              assert application.testzip() is None
+          digest=hashlib.sha256(release.read_bytes()).hexdigest()
+          Path('target/SHA256SUMS-candidate.txt').write_text(
+              f'{digest}  {release.name}\n',encoding='ascii'
+          )
+          print(f'Candidate {release.name} checked; SHA256={digest}')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: logbook-kai-25.0.9-candidate-not-release
+          path: |
+            target/logbook-kai_25.0.9.zip
+            target/SHA256SUMS-candidate.txt
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-candidate-surefire
+          path: '**/target/surefire-reports/**'
+          if-no-files-found: ignore
+          retention-days: 14
