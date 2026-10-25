@@ -151,22 +151,76 @@ final class DefinitionPackInstaller {
                 Files.move(temporary, destination, StandardCopyOption.ATOMIC_MOVE);
             }
 
-            Path pointer = root.resolve("active.json");
-            if (Files.isSymbolicLink(pointer)) {
-                throw new IOException("Refusing symlinked active-generation pointer");
-            }
-            Path pointerTemp = Files.createTempFile(root, ".active-", ".tmp");
-            try {
-                Files.writeString(pointerTemp,
-                        "{\"schema\":\"" + POINTER_FORMAT + "\",\"generation\":\"" + generation + "\"}\n");
-                Files.move(pointerTemp, pointer, StandardCopyOption.ATOMIC_MOVE,
-                        StandardCopyOption.REPLACE_EXISTING);
-            } finally {
-                Files.deleteIfExists(pointerTemp);
-            }
+            activatePointer(root, generation);
             return generation;
         } finally {
             removeTemporaryTree(temporary);
+        }
+    }
+
+
+    /**
+     * Explicit data-only rollback, independent of the host application JAR.
+     * Requires a full checksum recheck of the retained generation and refuses
+     * any altered or symlinked file before changing the active pointer.
+     */
+    static String restoreGeneration(Path rootInput, String generation) throws IOException {
+        if (generation == null || !generation.matches("[0-9a-f]{64}")) {
+            throw new IOException("Invalid data generation ID");
+        }
+        Path root = rootInput.toAbsolutePath().normalize();
+        requireRealDirectory(root);
+        Path generations = root.resolve("generations");
+        Path selected = generations.resolve(generation);
+        requireRealDirectory(generations);
+        requireRealDirectory(selected);
+
+        Path manifest = selected.resolve("manifest.json");
+        if (!Files.isRegularFile(manifest, LinkOption.NOFOLLOW_LINKS)
+                || Files.size(manifest) > 2L * 1024 * 1024) {
+            throw new IOException("Invalid retained generation manifest");
+        }
+        byte[] rawManifest = readBounded(Files.newInputStream(manifest), 2 * 1024 * 1024);
+        Map<String, ExpectedFile> expected = parseManifest(rawManifest);
+        for (Map.Entry<String, ExpectedFile> item : expected.entrySet()) {
+            Path target = selected;
+            String[] parts = item.getKey().split("/");
+            for (int n = 0; n < parts.length - 1; n++) {
+                target = target.resolve(parts[n]);
+                requireRealDirectory(target);
+            }
+            target = target.resolve(parts[parts.length - 1]);
+            if (!Files.isRegularFile(target, LinkOption.NOFOLLOW_LINKS)
+                    || Files.size(target) != item.getValue().bytes
+                    || !sha256(target).equals(item.getValue().sha256)) {
+                throw new IOException("Retained generation is corrupted: " + item.getKey());
+            }
+            // A data file with an intact recorded hash can still be malformed.
+            try (InputStream input = Files.newInputStream(target)) {
+                if (JSON.readTree(input) == null) {
+                    throw new IOException("Empty retained JSON: " + item.getKey());
+                }
+            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                throw new IOException("Malformed retained JSON: " + item.getKey(), e);
+            }
+        }
+        activatePointer(root, generation);
+        return generation;
+    }
+
+    private static void activatePointer(Path root, String generation) throws IOException {
+        Path pointer = root.resolve("active.json");
+        if (Files.isSymbolicLink(pointer)) {
+            throw new IOException("Refusing symlinked active-generation pointer");
+        }
+        Path temporary = Files.createTempFile(root, ".active-", ".tmp");
+        try {
+            Files.writeString(temporary,
+                    "{\"schema\":\"" + POINTER_FORMAT + "\",\"generation\":\"" + generation + "\"}\n");
+            Files.move(temporary, pointer,
+                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            Files.deleteIfExists(temporary);
         }
     }
 
