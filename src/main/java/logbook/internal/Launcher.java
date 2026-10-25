@@ -10,6 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 import logbook.bean.AppConfig;
+import logbook.core.DataPackReleaseClient;
 import logbook.core.LogBookCoreServices;
 import logbook.internal.gui.Main;
 import logbook.internal.logger.LoggerHolder;
@@ -36,6 +37,16 @@ public final class Launcher {
         Launcher launcher = new Launcher();
         try {
             try {
+                // Opt-in game-definition refresh occurs before any plugins or
+                // quest state initialize, preventing mixed runtime generations.
+                try {
+                    if (DataPackReleaseClient.refreshConfiguredData()) {
+                        LoggerHolder.get().info("ゲーム定義データの新しい世代を適用しました");
+                    }
+                } catch (Exception e) {
+                    // Network outage or invalid Release must not stop the app.
+                    LoggerHolder.get().warn("ゲーム定義の更新に失敗。従来の定義で起動します", e);
+                }
                 launcher.initPlugin(args);
                 launcher.initLocal(args);
                 Runtime.getRuntime().addShutdownHook(new Thread(launcher::exitLocalProxy));
