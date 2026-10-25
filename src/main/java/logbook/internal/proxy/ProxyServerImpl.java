@@ -4,12 +4,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.BindException;
 
-import org.eclipse.jetty.proxy.ConnectHandler;
+import org.eclipse.jetty.server.handler.ConnectHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -46,11 +46,10 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             this.server.setConnectors(new Connector[] { connector });
 
             // httpsをプロキシできるようにConnectHandlerを設定
-            ConnectHandler proxy = new ConnectHandler();
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            ConnectHandler proxy = new ConnectHandler(context.get());
             this.server.setHandler(proxy);
-
-            // httpはこっちのハンドラでプロキシ
-            ServletContextHandler context = new ServletContextHandler(proxy, "/", ServletContextHandler.SESSIONS);
             ServletHolder holder = new ServletHolder(new ReverseProxyServlet());
             holder.setInitParameter("maxThreads", "256");
             holder.setInitParameter("timeout", "600000");
