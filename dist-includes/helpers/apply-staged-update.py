@@ -11,6 +11,7 @@ import argparse
 import datetime as dt
 import hashlib
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -137,13 +138,82 @@ def apply_staged(root: Path, *, dry_run: bool = False) -> str:
     return f"UPDATED old_sha256={existing_digest} new_sha256={candidate_digest} backup={backup}"
 
 
+
+def restore_backup(root: Path, backup_arg: Path, *, dry_run: bool = False) -> str:
+    """Explicit rollback to a verified earlier application JAR.
+
+    This never runs automatically. Caller must supply an exact backup file;
+    the tool never guesses which prior version was healthy.
+    """
+    root = Path(os.path.abspath(root))
+    if root.is_symlink() or not root.is_dir():
+        raise ValueError("Application root missing or symlinked")
+    active = root / JAR_NAME
+    backups = root / "launcher-backups"
+    folder = backups / "app-versions"
+    if backups.is_symlink() or folder.is_symlink() or not folder.is_dir():
+        raise ValueError("Untrusted or absent backup directory")
+
+    backup = Path(os.path.abspath(backup_arg))
+    if backup.parent != folder or not is_regular_no_link(backup):
+        raise ValueError("Backup must be an ordinary file directly in the backup directory")
+    matched = re.fullmatch(
+        r"logbook-kai-\d{8}T\d{6}Z-([0-9a-f]{12})-[^/]+\.jar",
+        backup.name,
+    )
+    if matched is None:
+        raise ValueError("Backup filename does not match the expected format")
+
+    validate_jar(backup)
+    backup_digest = sha256(backup)
+    if not backup_digest.startswith(matched.group(1)):
+        raise ValueError("Backup does not match the recorded original checksum")
+    if not is_regular_no_link(active):
+        raise ValueError("Active application JAR missing or symlinked")
+    active_digest = sha256(active)
+    if dry_run:
+        return f"RESTORE_VALIDATED backup_sha256={backup_digest}"
+    if active_digest == backup_digest:
+        return "ALREADY_RESTORED"
+
+    # Preserve the currently active JAR as an audit/forensic copy before
+    # replacement. Even a failed startup version must not be discarded.
+    timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    current_fd, current_path = tempfile.mkstemp(
+        prefix=f"rollback-source-{timestamp}-{active_digest[:12]}-",
+        suffix=".jar", dir=folder
+    )
+    os.close(current_fd)
+    current_snapshot = Path(current_path)
+    replacement = None
+    try:
+        shutil.copy2(active, current_snapshot)
+        if sha256(current_snapshot) != active_digest:
+            raise OSError("Snapshot of current JAR did not verify")
+        replacement = copied_temporary(backup, root, ".restore-logbook-kai-")
+        validate_jar(replacement)
+        os.replace(replacement, active)
+        replacement = None
+    finally:
+        if replacement is not None:
+            replacement.unlink(missing_ok=True)
+
+    return f"RESTORED sha256={backup_digest} previous_sha256={active_digest} original={current_snapshot}"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--restore-backup", type=Path,
+                        help="Explicitly restore the specified verified older application JAR")
     args = parser.parse_args()
     try:
-        print(apply_staged(args.root, dry_run=args.dry_run))
+        if args.restore_backup:
+            result = restore_backup(args.root, args.restore_backup, dry_run=args.dry_run)
+        else:
+            result = apply_staged(args.root, dry_run=args.dry_run)
+        print(result)
         return 0
     except (OSError, ValueError) as exc:
         print(f"STAGED_UPDATE_FAILED: {exc}", file=sys.stderr)
