@@ -1,0 +1,97 @@
+name: Validate and manually publish game-data pack
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/manual-data-release.yml'
+      - 'tools/build_data_pack.py'
+      - 'tools/tests/**'
+      - 'src/main/resources/logbook/**'
+  workflow_dispatch:
+    inputs:
+      data_tag:
+        description: 'data-vYYYY.MM.DD.N format (e.g. data-v2026.10.25.1)'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: data-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify packager tests
+        run: python3 -m unittest discover -s tools/tests -p 'test_*.py' -v
+      - name: Build validated JSON-only archive
+        run: python3 tools/build_data_pack.py --out target/logbook-data-pack.zip --source-sha "$GITHUB_SHA"
+      - name: Audit all definition entries
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from zipfile import ZipFile
+          src = Path("src/main/resources/logbook")
+          groups = ("quest","eventquest","mission","kousyou","map","supplemental")
+          expected = sum(len(list((src / g).rglob("*.json"))) for g in groups)
+          with ZipFile("target/logbook-data-pack.zip") as zipf:
+              manifest = json.loads(zipf.read("manifest.json"))
+              assert manifest["format"] == "logbook-data-pack-v1"
+              entries = manifest["files"]
+              assert len(entries) == expected and expected > 0
+              assert set(zipf.namelist()) == {"manifest.json"} | {x["path"] for x in entries}
+              for record in entries:
+                  data = zipf.read(record["path"])
+                  assert len(data) == record["bytes"]
+                  assert hashlib.sha256(data).hexdigest() == record["sha256"]
+                  json.loads(data)
+              print(f"All {expected} JSON definitions passed validation")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: validated-data-pack
+          path: target/logbook-data-pack.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DATA_TAG: ${{ inputs.data_tag }}
+    steps:
+      - name: Check explicit data tag and repository target
+        shell: bash
+        run: |
+          [[ "$DATA_TAG" =~ ^data-v[0-9]{4}[.][0-9]{2}[.][0-9]{2}[.][0-9]+$ ]] || {
+            echo "::error::Expected data-vYYYY.MM.DD.N, got $DATA_TAG"
+            exit 1
+          }
+          [[ "$GITHUB_REF" == "refs/heads/master" ]] || exit 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: validated-data-pack
+          path: dist
+      - name: Publish data-only GitHub Release (explicit dispatch only)
+        shell: bash
+        run: |
+          printf 'Verified JSON-only definition archive from commit %s. No application JAR is included.\n' "$GITHUB_SHA" > release-notes.txt
+          printf 'SHA-256: %s\n' "$(sha256sum dist/logbook-data-pack.zip | cut -d' ' -f1)" >> release-notes.txt
+          gh release create "$DATA_TAG" dist/logbook-data-pack.zip \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --latest=false \
+            --title "Game data $DATA_TAG" \
+            --notes-file release-notes.txt
+          gh release view "$DATA_TAG" --repo "$GITHUB_REPOSITORY" --json tagName,assets
