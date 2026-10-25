@@ -1,15 +1,11 @@
 package logbook.internal.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import logbook.internal.calc.ProbabilityCalculator;
 
 public class ProbCalcController extends WindowController {
 
@@ -41,65 +37,20 @@ public class ProbCalcController extends WindowController {
         if (this.limitInput == null || this.stepInput == null) return;
         String limitText = this.limitInput.getText();
         String stepText = this.stepInput.getText();
-        
-        if (text == null || text.isEmpty() || limitText == null || limitText.isEmpty() || stepText == null || stepText.isEmpty()) {
+        if (text == null || text.isEmpty() || limitText == null || limitText.isEmpty()
+                || stepText == null || stepText.isEmpty()) {
             return;
         }
-
         try {
-            double probPercent = Double.parseDouble(text);
-            if (probPercent <= 0 || probPercent >= 100) {
-                return;
-            }
-            int limit = Integer.parseInt(limitText);
-            int step = Integer.parseInt(stepText);
-
-            if (limit <= 0 || step <= 0) {
-                return;
-            }
-
-            double p = probPercent / 100.0;
-
-            List<ProbRow> newRows = new ArrayList<>();
-
-
-            // Always add upper limit
-            double probOfAtLeastOneLimit = 1.0 - Math.pow(1.0 - p, limit);
-            newRows.add(new ProbRow(limit, probOfAtLeastOneLimit));
-
-            // Calculate for increments if step <= limit
-            if (step <= limit) {
-                for (int count = step; count <= limit; count += step) {
-                    double probOfAtLeastOne = 1.0 - Math.pow(1.0 - p, count);
-                    newRows.add(new ProbRow(count, probOfAtLeastOne));
-                }
-            }
-
-            // Always add exceeding counts (50%, 75%, 90%, 95%)
-            double[] targets = { 0.5, 0.75, 0.9, 0.95 };
-            for (double target : targets) {
-                int exceed = (int) Math.ceil(Math.log(1.0 - target) / Math.log(1.0 - p));
-                double prob = 1.0 - Math.pow(1.0 - p, exceed);
-                newRows.add(new ProbRow(exceed, prob));
-            }
-
-            // Sort by count
-            Collections.sort(newRows, Comparator.comparingInt(ProbRow::getCount));
-
-            // Remove duplicates
-            int lastCount = -1;
-            for (ProbRow row : newRows) {
-                if (row.getCount() != lastCount) {
-                    this.rows.add(row);
-                    lastCount = row.getCount();
-                }
-            }
-
+            this.rows.setAll(ProbabilityCalculator.calculate(
+                    Double.parseDouble(text), Integer.parseInt(limitText), Integer.parseInt(stepText))
+                    .stream().map(point -> new ProbRow(point.count(), point.probability())).toList());
         } catch (NumberFormatException e) {
-            // Ignore invalid input
+            // Ignore invalid input, preserving the existing empty-table behavior.
         }
     }
 
+    // Preserve the public row type/getters used by the existing FXML and callers.
     public static class ProbRow {
         private final int count;
         private final double prob;
