@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       app_tag:
-        description: 'Application vMAJOR.MINOR.PATCH tag (first: v25.0.9)'
+        description: 'Application vMAJOR.MINOR.PATCH tag (first: v25.0.10)'
         type: string
         required: true
 
@@ -61,7 +61,7 @@ jobs:
           root = ET.parse("pom.xml").getroot()
           ns = {"m":"http://maven.apache.org/POM/4.0.0"}
           version = root.findtext("m:version", namespaces=ns)
-          assert version == "25.0.9", "Unexpected initial application version"
+          assert version == "25.0.10", "Unexpected unexpected application version"
           path = Path(f"target/logbook-kai_{version}.zip")
           assert path.is_file(), f"Missing release ZIP {path}"
           with zipfile.ZipFile(path) as archive:
@@ -90,7 +90,7 @@ jobs:
         with:
           name: verified-application-for-release
           path: |
-            target/logbook-kai_25.0.9.zip
+            target/logbook-kai_25.0.10.zip
             target/SHA256SUMS-application.txt
           if-no-files-found: error
           retention-days: 14
@@ -110,8 +110,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          [[ "$APP_TAG" == "v25.0.9" ]] || {
-            echo "::error::The initial application prerelease is v25.0.9 only."
+          [[ "$APP_TAG" == "v25.0.10" ]] || {
+            echo "::error::The next application prerelease is v25.0.10 only."
             exit 1
           }
           [[ "$GITHUB_REF" == "refs/heads/master" ]] || exit 1
@@ -142,5 +142,5 @@ jobs:
             echo
             cat SHA256SUMS-application.txt
           } > release-notes.txt
-          gh release create "$APP_TAG"             logbook-kai_25.0.9.zip SHA256SUMS-application.txt             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "航海日誌改 25.0.9 (maintained prerelease)"             --notes-file release-notes.txt             --prerelease             --latest=false
+          gh release create "$APP_TAG"             logbook-kai_25.0.10.zip SHA256SUMS-application.txt             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "公開日誌-改2 25.0.10 (prerelease)"             --notes-file release-notes.txt             --prerelease             --latest=false
           gh release view "$APP_TAG" --repo "$GITHUB_REPOSITORY"             --json tagName,isPrerelease,assets
