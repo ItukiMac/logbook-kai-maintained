@@ -1,0 +1,146 @@
+name: Validate and explicitly publish maintained application prerelease
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/manual-app-release.yml'
+  workflow_dispatch:
+    inputs:
+      app_tag:
+        description: 'Application vMAJOR.MINOR.PATCH tag (first: v25.0.9)'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: application-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify-java25:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: JDK 25 headless tests
+        run: mvn --batch-mode --no-transfer-progress verify
+
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build application and run all Java21 unit tests
+        run: mvn --batch-mode --no-transfer-progress verify
+      - name: Audit candidate ZIP, app identity and bundled launcher helper
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import io
+          import zipfile
+          import xml.etree.ElementTree as ET
+
+          root = ET.parse("pom.xml").getroot()
+          ns = {"m":"http://maven.apache.org/POM/4.0.0"}
+          version = root.findtext("m:version", namespaces=ns)
+          assert version == "25.0.9", "Unexpected initial application version"
+          path = Path(f"target/logbook-kai_{version}.zip")
+          assert path.is_file(), f"Missing release ZIP {path}"
+          with zipfile.ZipFile(path) as archive:
+              names = set(archive.namelist())
+              assert archive.testzip() is None, "Distribution CRC failure"
+              assert "logbook-kai.jar" in names
+              assert "helpers/apply-staged-update.py" in names
+              assert all(".." not in Path(x).parts and not x.startswith("/")
+                         for x in names), "Distribution has unsafe path"
+              assert not any(x.endswith((".env", ".token", ".key")) for x in names)
+              assert not any(x.startswith("plugins/") and x.endswith(".jar")
+                             for x in names), "Never bundle users' plugins"
+              application = archive.read("logbook-kai.jar")
+          with zipfile.ZipFile(io.BytesIO(application)) as jar:
+              manifest = jar.read("META-INF/MANIFEST.MF").decode("utf-8")
+              assert "Main-Class: logbook.internal.Launcher" in manifest
+              assert f"Implementation-Version: {version}" in manifest
+              assert "logbook/internal/Launcher.class" in jar.namelist()
+              assert jar.testzip() is None, "Embedded application JAR CRC failure"
+          checksum = hashlib.sha256(path.read_bytes()).hexdigest()
+          Path("target/SHA256SUMS-application.txt").write_text(
+              f"{checksum}  {path.name}\n", encoding="ascii")
+          print(f"Validated application release candidate {path.name} SHA256 {checksum}")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-application-for-release
+          path: |
+            target/logbook-kai_25.0.9.zip
+            target/SHA256SUMS-application.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: [package, verify-java25]
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      APP_TAG: ${{ inputs.app_tag }}
+    steps:
+      - name: Check tag and refuse existing Release
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$APP_TAG" == "v25.0.9" ]] || {
+            echo "::error::The initial application prerelease is v25.0.9 only."
+            exit 1
+          }
+          [[ "$GITHUB_REF" == "refs/heads/master" ]] || exit 1
+          if gh release view "$APP_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::Release $APP_TAG already exists, refusing to overwrite."
+            exit 1
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$APP_TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $APP_TAG already exists, refusing to move it."
+            exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-application-for-release
+          path: dist
+      - name: Recheck downloaded artifact and create prerelease
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum -c SHA256SUMS-application.txt
+          {
+            echo "Maintained logbook-kai application candidate at $GITHUB_SHA"
+            echo
+            echo "This is an explicitly published PRERELEASE. It is not automatically"
+            echo "installed on any user's machine. Linux Mint auto.sh should remain"
+            echo "in --dry-run mode until supervised migration and rollback validation."
+            echo
+            cat SHA256SUMS-application.txt
+          } > release-notes.txt
+          gh release create "$APP_TAG"             logbook-kai_25.0.9.zip SHA256SUMS-application.txt             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "航海日誌改 25.0.9 (maintained prerelease)"             --notes-file release-notes.txt             --prerelease             --latest=false
+          gh release view "$APP_TAG" --repo "$GITHUB_REPOSITORY"             --json tagName,isPrerelease,assets
