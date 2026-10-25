@@ -65,7 +65,8 @@ import logbook.internal.logger.LoggerHolder;
 public class CheckUpdate {
 
     /** GitHub リポジトリのパス */
-    public static final String REPOSITORY_PATH = "sakura0689/logbook-kai";
+    public static final String REPOSITORY_PATH = System.getProperty(
+            "logbook.update.repository", "ItukiMac/logbook-kai-maintained");
 
     /** 更新確認先 Github tags API */
     private static final String TAGS = "https://api.github.com/repos/" + REPOSITORY_PATH + "/tags";
@@ -432,6 +433,70 @@ public class CheckUpdate {
         return "";
     }
     
+    private static String findReleaseDigest(String version, String assetName) throws IOException {
+        byte[] response = readURI(URI.create(RELEASES + "v" + version));
+        try (JsonReader reader = Json.createReader(new ByteArrayInputStream(response))) {
+            JsonObject release = reader.readObject();
+            JsonArray assets = release.getJsonArray("assets");
+            if (assets == null) {
+                throw new IOException("Release asset list is missing");
+            }
+            for (var item : assets) {
+                JsonObject asset = item.asJsonObject();
+                if (assetName.equals(asset.getString("name", ""))) {
+                    String digest = asset.getString("digest", "");
+                    if (!digest.matches("sha256:[0-9a-fA-F]{64}")) {
+                        throw new IOException("Release SHA-256 digest is missing or invalid");
+                    }
+                    return digest.substring("sha256:".length()).toLowerCase(java.util.Locale.ROOT);
+                }
+            }
+            throw new IOException("Expected release archive not found: " + assetName);
+        } catch (jakarta.json.JsonException | IllegalStateException e) {
+            throw new IOException("Cannot parse Release metadata", e);
+        }
+    }
+
+    private static void downloadUpdate(String url, Path destination, String expectedDigest) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(20000);
+        try {
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new IOException("Release download HTTP " + connection.getResponseCode());
+            }
+            java.security.MessageDigest digest;
+            try {
+                digest = java.security.MessageDigest.getInstance("SHA-256");
+            } catch (java.security.NoSuchAlgorithmException e) {
+                throw new IOException("SHA-256 unavailable", e);
+            }
+            try (InputStream in = connection.getInputStream();
+                    var out = Files.newOutputStream(destination)) {
+                byte[] buffer = new byte[16384];
+                int size;
+                long total = 0;
+                while ((size = in.read(buffer)) != -1) {
+                    total += size;
+                    if (total > UpdateArchiveStage.MAX_BYTES) {
+                        throw new IOException("Update download exceeds size limit");
+                    }
+                    digest.update(buffer, 0, size);
+                    out.write(buffer, 0, size);
+                }
+                if (total == 0) {
+                    throw new IOException("Empty update download");
+                }
+            }
+            String actual = java.util.HexFormat.of().formatHex(digest.digest());
+            if (!actual.equalsIgnoreCase(expectedDigest)) {
+                throw new IOException("Release SHA-256 mismatch");
+            }
+        } finally {
+            connection.disconnect();
+        }
+    }
+
     private static void startUpdateProcess(String version, WebEngine webEngine) {
 
         Path targetDir;
@@ -450,49 +515,30 @@ public class CheckUpdate {
         Task<String> updateTask = new Task<String>() {
             @Override
             protected String call() throws Exception {
-                // ダウンロードおよび更新処理のロジック
                 Path tempDir = Files.createTempDirectory("logbook-kai");
-                Path tempZip = tempDir.resolve("update.zip");
+                try {
+                    Path tempZip = tempDir.resolve("update.zip");
+                    String assetName = "logbook-kai_" + version + ".zip";
+                    String downloadURL = OPEN_URL + "/download/v" + version + "/" + assetName;
 
-                String downloadURL = OPEN_URL + "/download/" + "v" + version + "/" + "logbook-kai_" + version + ".zip";
-                // ダウンロード
-                for (int i = 0; i < 3; i++) {
+                    updateMessage("リリース情報を検証しています...");
+                    String expectedDigest = findReleaseDigest(version, assetName);
                     updateMessage("ダウンロード中... " + downloadURL);
-                    try (InputStream is = new URL(downloadURL).openStream()) {
-                        Files.copy(is, tempZip, StandardCopyOption.REPLACE_EXISTING);
+                    downloadUpdate(downloadURL, tempZip, expectedDigest);
+                    updateMessage("ダウンロードとSHA-256検証が完了しました");
+
+                    Path staged = UpdateArchiveStage.stage(tempZip, targetDir);
+                    updateMessage("更新対象JARの検証と配置が完了: " + staged);
+                    updateMessage("航海日誌を終了し、対応ランチャーから再起動してください。");
+                    return "更新JARの検証と配置が完了しました。対応ランチャーで再起動してください。";
+                } finally {
+                    try (var files = Files.list(tempDir)) {
+                        for (Path file : files.toList()) {
+                            Files.deleteIfExists(file);
+                        }
                     }
-
-                    if (Files.size(tempZip) > 0) {
-                        break;
-                    } else {
-                        updateMessage("再ダウンロードしています...");
-                    }
+                    Files.deleteIfExists(tempDir);
                 }
-
-                updateMessage("ダウンロード完了");
-                updateMessage("更新開始");
-
-                try (ZipFile zipFile = new ZipFile(tempZip.toFile())) {
-                    zipFile.stream()
-                            .filter(e -> !e.isDirectory() && e.getName().endsWith(".jar"))
-                            .forEach(e -> {
-                                try {
-                                    Path target = Paths.get(targetDir.toString() + "/update" , e.getName());
-                                    Files.createDirectories(target.getParent());
-                                    Files.copy(zipFile.getInputStream(e), target, StandardCopyOption.REPLACE_EXISTING);
-                                    updateMessage("/updateフォルダに更新ファイル取得完了: " + target);
-                                } catch (IOException ex) {
-                                    LoggerHolder.get().error("ファイルの置き換え処理でエラー発生" , ex);
-                                }
-                            });
-                }
-
-                // 一時ファイルを削除
-                Files.deleteIfExists(tempZip);
-                Files.deleteIfExists(tempDir);
-
-                updateMessage("更新ファイルの取得が完了しました。航海日誌を再起動してください。");
-                return "更新ファイルの取得が完了しました。航海日誌を再起動してください。";
             }
         };
 
