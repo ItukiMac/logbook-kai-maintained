@@ -36,6 +36,47 @@ final class ExternalQuestDefinitions {
         }
     }
 
+    /**
+     * Managed external JSON files other than quest conditions. Asset/capture
+     * preferences and user-generated files are deliberately excluded.
+     */
+    static boolean isManagedGameDataResource(String name) {
+        if (name == null || !name.startsWith("logbook/") || !name.endsWith(".json")
+                || name.contains("..") || name.contains("\\") || name.contains("//")) {
+            return false;
+        }
+        return name.startsWith("logbook/mission/")
+                || name.startsWith("logbook/map/")
+                || name.startsWith("logbook/kousyou/")
+                || name.startsWith("logbook/supplemental/");
+    }
+
+    static URL resolveManagedResource(String name) {
+        if (!isManagedGameDataResource(name)) return null;
+        String rootValue = System.getProperty(ROOT_PROPERTY);
+        if (rootValue == null || rootValue.isBlank()) return null;
+        try {
+            Path root = Path.of(rootValue).toAbsolutePath().normalize();
+            Path active = DefinitionPackInstaller.activeDefinitionsRoot(root);
+            Path relative = Path.of(name.substring("logbook/".length()));
+            Path target = active.resolve(relative).normalize();
+            if (!target.startsWith(active) || !Files.isRegularFile(target, LinkOption.NOFOLLOW_LINKS)
+                    || !Files.isReadable(target)) {
+                return null;
+            }
+            // Reject symlinked nested folders before opening any data file.
+            Path parent = target.getParent();
+            while (parent != null && parent.startsWith(active)) {
+                if (Files.isSymbolicLink(parent)) return null;
+                if (parent.equals(active)) break;
+                parent = parent.getParent();
+            }
+            return target.toUri().toURL();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     static URL resolve(int questNo, boolean regular) {
         String configuredRoot = System.getProperty(ROOT_PROPERTY);
         if (configuredRoot == null || configuredRoot.isBlank() || questNo <= 0) {

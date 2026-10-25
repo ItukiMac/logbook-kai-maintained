@@ -92,6 +92,12 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResource(String)
      */
     public static URL getResource(String name) {
+        if (ExternalQuestDefinitions.isManagedGameDataResource(name)) {
+            URL external = ExternalQuestDefinitions.resolveManagedResource(name);
+            if (external != null || ExternalQuestDefinitions.hasActiveGeneration()) {
+                return external;
+            }
+        }
         LogBookCoreContainer container = LogBookCoreContainer.getInstance();
         ClassLoader classLoader = container.getClassLoader();
         return classLoader.getResource(name);
@@ -105,6 +111,20 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResourceAsStream(String)
      */
     public static InputStream getResourceAsStream(String name) {
+        if (ExternalQuestDefinitions.isManagedGameDataResource(name)) {
+            URL external = ExternalQuestDefinitions.resolveManagedResource(name);
+            if (external != null) {
+                try {
+                    return external.openStream();
+                } catch (java.io.IOException e) {
+                    LoggerHolder.get().warn("外部のゲーム定義を読み込めませんでした: " + external, e);
+                }
+            }
+            if (ExternalQuestDefinitions.hasActiveGeneration()) {
+                // The active generation deliberately omits this data resource.
+                return null;
+            }
+        }
         LogBookCoreContainer container = LogBookCoreContainer.getInstance();
         ClassLoader classLoader = container.getClassLoader();
         return classLoader.getResourceAsStream(name);
