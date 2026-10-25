@@ -1,0 +1,60 @@
+name: Read-only maintenance source inventory
+
+on:
+  pull_request:
+    paths:
+      - 'src/main/java/**'
+      - 'src/main/resources/**'
+      - 'pom.xml'
+      - 'scripts/maintenance_inventory.py'
+      - 'scripts/tests/test_maintenance_inventory.py'
+      - '.github/workflows/maintenance-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test read-only scanner and safety boundaries
+        run: python3 -m unittest discover -s scripts/tests -p test_maintenance_inventory.py -v
+      - name: Inventory tracked source without runtime data or network access
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/maintenance-inventory
+          python3 scripts/maintenance_inventory.py --root . > target/maintenance-inventory/inventory.json
+          git diff --exit-code -- src pom.xml
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          report = json.loads(Path('target/maintenance-inventory/inventory.json').read_text())
+          lines = ['# Read-only source inventory', '', f"Commit: {report['commit']}", '', report['scope'], '']
+          lines.extend(f"- {key}: {value}" for key, value in report['counts'].items())
+          lines.append('')
+          lines.extend(f"- JSON category {key}: {len(value)}" for key, value in sorted(report['json_categories'].items()))
+          for key in ('literal_json_references', 'lookup_candidates', 'static_cache_candidates', 'autocomplete_candidates', 'dependencies', 'build_plugins'):
+              lines.append(f"- {key}: {len(report[key])}")
+          lines += ['', '## Autocomplete review candidates']
+          lines.extend(f"- {site['path']}:{site['line']}" for site in report['autocomplete_candidates'])
+          lines += ['', 'Dynamic resource paths and cache consumers still require semantic review.', 'No Mint access, source edits, releases, PR creation, schedule or automatic deployment.']
+          summary = '\n'.join(lines) + '\n'
+          print(summary)
+          Path('target/maintenance-inventory/summary.md').write_text(summary, encoding='utf-8')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as stream:
+              stream.write(summary)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maintenance-source-inventory
+          path: target/maintenance-inventory/
+          if-no-files-found: warn
+          retention-days: 14
