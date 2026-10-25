@@ -48,7 +48,7 @@ public final class ProxyServerImpl implements ProxyServerSpi {
             // httpsをプロキシできるようにConnectHandlerを設定
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
-            ConnectHandler proxy = new ConnectHandler(context);
+            ConnectHandler proxy = new ConnectHandler(context.get());
             this.server.setHandler(proxy);
             ServletHolder holder = new ServletHolder(new ReverseProxyServlet());
             holder.setInitParameter("maxThreads", "256");
