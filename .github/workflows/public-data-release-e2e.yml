@@ -1,0 +1,51 @@
+name: Live public JSON Release isolated Java integration
+
+on:
+  pull_request:
+    paths:
+      - 'src/main/java/logbook/core/DataPackReleaseClient.java'
+      - 'src/main/java/logbook/core/DefinitionPackInstaller.java'
+      - 'src/main/java/logbook/core/ExternalQuestDefinitions.java'
+      - 'src/test/java/logbook/core/PublicDataReleaseIntegrationTest.java'
+      - '.github/workflows/public-data-release-e2e.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-data-release-e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  live-release:
+    name: Java ${{ matrix.java }} real published Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Verify public release via production Java downloader
+        run: |
+          mvn --batch-mode --no-transfer-progress \
+            -Dtest=PublicDataReleaseIntegrationTest \
+            -Dlogbook.test.publicRelease=true \
+            test
+      - name: Preserve diagnostics without game data or secrets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-data-e2e-java-${{ matrix.java }}
+          path: 'target/surefire-reports/*PublicDataReleaseIntegrationTest*'
+          if-no-files-found: ignore
+          retention-days: 7
