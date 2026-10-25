@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Request.ContentListener;
+import org.eclipse.jetty.client.Request;
+import org.eclipse.jetty.client.Request.ContentListener;
 
 /**
  * リクエストをキャプチャします
@@ -27,11 +27,12 @@ public final class RequestContentListener implements ContentListener {
      */
     @Override
     public void onContent(Request request, ByteBuffer buffer) {
-        int length = buffer.remaining();
+        ByteBuffer capture = buffer.asReadOnlyBuffer();
+        int length = capture.remaining();
 
         if (((length > 0) && (length <= CapturedHttpRequestResponseConst.MAX_POST_FIELD_SIZE))) {
             byte[] bytes = new byte[length];
-            buffer.get(bytes);
+            capture.get(bytes);
 
             CapturedHttpRequestResponse capturedHttpRequestResponse = (CapturedHttpRequestResponse) this.httpRequest.getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
             if (capturedHttpRequestResponse == null) {
