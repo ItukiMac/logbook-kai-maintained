@@ -47,3 +47,19 @@ This snippet is only a proposed patch. It must not be inserted twice.
   updater to authenticate origin. Do not bypass publisher validation.
 
 No GitHub Release or user environment is modified by this PR.
+
+## Explicit rollback helper (new isolated implementation)
+
+An operator or a future verified startup-health supervisor can choose a retained
+older JAR only by specifying its **exact filename**. The helper checks location,
+archive validity, and the original checksum embedded in its backup filename.
+It preserves a snapshot of the current JAR before atomically restoring.
+
+    python3 helpers/apply-staged-update.py --root /path/to/logbook-kai \
+        --restore-backup /path/to/logbook-kai/launcher-backups/app-versions/logbook-kai-<timestamp>-<digest>-<token>.jar \
+        --dry-run
+
+Remove --dry-run only after inspecting the chosen backup and stopping the app.
+The backup is retained after restoration and the replaced application JAR is
+preserved separately. This is **not automatic failure detection**, and no
+rollback is initiated without an explicit restore action.
