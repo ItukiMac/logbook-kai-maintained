@@ -38,8 +38,9 @@ class DataPackTest(unittest.TestCase):
             with ZipFile(output) as archive:
                 manifest = json.loads(archive.read("manifest.json"))
                 data = archive.read("definitions/quest/1045.json")
+                nested = archive.read("definitions/mission/nested/55.json")
             self.assertEqual(json.loads(data), {"type": "test"})
-                self.assertEqual(json.loads(archive.read("definitions/mission/nested/55.json")), {"mission": 55})
+            self.assertEqual(json.loads(nested), {"mission": 55})
             self.assertEqual(manifest["format"], "logbook-data-pack-v1")
             self.assertEqual(manifest["source_revision"], "0123456")
             self.assertEqual(manifest["files"][0]["sha256"], hashlib.sha256(data).hexdigest())
