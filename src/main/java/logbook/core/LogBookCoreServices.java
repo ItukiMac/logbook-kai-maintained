@@ -120,7 +120,7 @@ public final class LogBookCoreServices {
      */
     public static URL getQuestResource(int questNo, boolean isRegularQuest) {
         URL external = ExternalQuestDefinitions.resolve(questNo, isRegularQuest);
-        if (external != null) {
+        if (external != null || ExternalQuestDefinitions.hasActiveGeneration()) {
             return external;
         }
         return getResource("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
@@ -161,6 +161,11 @@ public final class LogBookCoreServices {
             } catch (java.io.IOException e) {
                 LoggerHolder.get().warn("外部任務設定ファイルを開けませんでした: " + external, e);
             }
+        }
+        if (ExternalQuestDefinitions.hasActiveGeneration()) {
+            // Missing JSON in the current generation means unavailable, not
+            // "fallback to an older embedded definition".
+            return null;
         }
         return getResourceAsStream("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
     }
