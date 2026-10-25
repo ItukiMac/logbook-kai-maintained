@@ -1,0 +1,43 @@
+name: Baseline Maven build (Java 21)
+
+on:
+  pull_request:
+    paths:
+      - 'pom.xml'
+      - 'src/**'
+      - '.github/workflows/baseline-java21.yml'
+      - 'assembly.xml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: baseline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Record environment
+        run: |
+          java -version
+          mvn -version
+      - name: Compile, run tests, and assemble
+        run: mvn --batch-mode --no-transfer-progress verify
+      - name: Upload surefire results (even on failure)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-surefire-results
+          path: '**/target/surefire-reports/**'
+          if-no-files-found: ignore
+          retention-days: 14
