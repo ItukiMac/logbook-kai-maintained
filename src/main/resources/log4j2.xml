@@ -31,7 +31,7 @@
         </Logger>
     
         <Root level="INFO">
-            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="Console" />
             <AppenderRef ref="ROLLING" />
         </Root>
     </Loggers>
