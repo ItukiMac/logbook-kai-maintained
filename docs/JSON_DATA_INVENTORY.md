@@ -1,6 +1,6 @@
 # D1: inventory and delivery contract for game definitions
 
-**Stage:** inventory/specification only. No runtime loader or distribution repository has been installed yet.
+**Stage:** inventory plus opt-in local quest JSON resolver and tests. Automatic downloads, activation manifest, and a separate data repository are NOT yet implemented.
 
 ## Legacy resources, Git baseline `2090aee9092c7b6a264a82b79a170312a74d5d0b`
 
@@ -54,9 +54,17 @@ The publisher creates a versioned release archive. The app obtains a verified re
 
 1. D1a: inventory file identities and current Java consumers; record data vs code update classification for each group.
 2. D1b: create the separate data repository when the repository-creation mechanism is available; copy unchanged files into a tracked baseline and compare file checksums.
-3. D2: test local generation loading without changing the bundled resource fallback; preserve `customquest` user overrides and event identity.
+3. D2 (first increment implemented): `-Dlogbook.data.root=/absolute/staged/definitions` enables read-only quest/eventquest JSON overrides in the existing resource accessors. Without this property, the packaged definitions remain unchanged. Tests confirm category separation and reject symlinked files. The existing regular-quest-first and `customquest` handling remain as before; broader generation policy needs further work.
 4. D3: download + verify + switch definitions **without changing `logbook-kai.jar`**. Treat interrupted downloads, partially missing definitions, invalid signatures/manifests, and unknown operators as failures.
 5. D4: update in-memory caches and observers at a safe boundary; confirm KQS reads the same active definition generation.
 6. D5: use one independently corroborated quest change to prove data-only publication and rollback.
 
 Never auto-fetch or auto-commit user account information. References for editorial verification: https://wikiwiki.jp/kancolle/ and https://zekamashi.net. 
+
+## Code added in this draft PR
+
+- `src/main/java/logbook/core/ExternalQuestDefinitions.java`: opt-in URL resolver, restricted to direct numeric file names under `quest/` and `eventquest/`.
+- `LogBookCoreServices.getQuestResource{,AsStream}`: external-first lookup under the explicit property, packaged-resource fallback otherwise.
+- `src/test/java/logbook/core/ExternalQuestDefinitionsTest.java`: disabled-by-default, category-specific lookup, missing ID, and symlink rejection.
+
+**Important:** This does not install or verify GitHub releases; the `logbook.data.root` property must not be pointed at an unverified download location. No modification to `auto.sh` or the live JAR is planned here.
