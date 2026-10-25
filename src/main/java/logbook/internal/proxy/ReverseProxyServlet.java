@@ -1,7 +1,6 @@
 package logbook.internal.proxy;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,12 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpProxy;
-import org.eclipse.jetty.client.HttpRequest;
-import org.eclipse.jetty.client.ProxyConfiguration;
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Response;
-import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.client.Request;
+import org.eclipse.jetty.client.Response;
+import org.eclipse.jetty.util.Callback;
 
 import logbook.bean.AppConfig;
 import logbook.core.LogBookCoreServices;
@@ -26,195 +22,120 @@ import logbook.internal.net.ResponseMetaDataWrapper;
 import logbook.listener.ContentListenerSpi;
 
 /**
- * リバースプロキシ
- *
+ * The maintained EE8 Jetty 12 proxy with logbook's request/response capture.
+ * In particular, keep the unchanged ContentListenerSpi API so existing KLB
+ * and KQS binaries continue to receive the same request/response metadata.
  */
 public final class ReverseProxyServlet extends ProxyServlet {
-
     private static final long serialVersionUID = 1L;
 
-    /** リスナー */
-    private transient List<ContentListenerSpi> listeners;
+    private transient volatile List<ContentListenerSpi> listeners;
 
-    /*
-     * Hop-by-Hop ヘッダーを除去します
-     */
     @Override
-    protected void customizeProxyRequest(Request proxyRequest, HttpServletRequest request) {
-        proxyRequest.onRequestContent(new RequestContentListener(request));
-
-        if (!AppConfig.get().isUseProxy()) { // アップストリームプロキシがある場合は除外
-
-            // HTTP/1.1 ならkeep-aliveを追加します
-            if (proxyRequest.getVersion() == HttpVersion.HTTP_1_1) {
-                proxyRequest.header(HttpHeader.CONNECTION, "keep-alive");
-            }
-
-            // Pragma: no-cache はプロキシ用なので Cache-Control: no-cache に変換します
-            String pragma = proxyRequest.getHeaders().get(HttpHeader.PRAGMA);
-            if ((pragma != null) && pragma.equals("no-cache")) {
-                proxyRequest.header(HttpHeader.PRAGMA, null);
-                if (!proxyRequest.getHeaders().containsKey(HttpHeader.CACHE_CONTROL.asString())) {
-                    proxyRequest.header(HttpHeader.CACHE_CONTROL, "no-cache");
-                }
-            }
-        }
-
-        String queryString = ((org.eclipse.jetty.server.Request) request).getQueryString();
-        fixQueryString(proxyRequest, queryString);
-
-        super.customizeProxyRequest(proxyRequest, request);
+    protected Request newProxyRequest(HttpServletRequest clientRequest, String rewrittenTarget) {
+        Request proxyRequest = super.newProxyRequest(clientRequest, rewrittenTarget);
+        proxyRequest.onRequestContent(new RequestContentListener(clientRequest));
+        return proxyRequest;
     }
 
-    /**
-     * レスポンスが帰ってきた
-     */
-    @Override
-    protected void onResponseContent(HttpServletRequest request, HttpServletResponse response,
-            Response proxyResponse,
-            byte[] buffer, int offset, int length) throws IOException {
-
-        CapturedHttpRequestResponse capturedHttpRequestResponse = (CapturedHttpRequestResponse) request.getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
-        if (capturedHttpRequestResponse == null) {
-            capturedHttpRequestResponse = new CapturedHttpRequestResponse();
-            request.setAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER, capturedHttpRequestResponse);
-        }
-        // reponse bufferをキャプチャする
-        capturedHttpRequestResponse.putOriginResponse(buffer);
-
-        super.onResponseContent(request, response, proxyResponse, buffer, offset, length);
-    }
-
-    /**
-     * レスポンスが完了した
-     */
-    @Override
-    protected void onResponseSuccess(HttpServletRequest request, HttpServletResponse response,
-            Response proxyResponse) {
-        try {
-            if(response.getStatus() == HttpServletResponse.SC_OK) {
-                CapturedHttpRequestResponse capturedHttpRequestResponse = (CapturedHttpRequestResponse) request.getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
-                if (capturedHttpRequestResponse != null) {
-                    RequestMetaDataWrapper req = new RequestMetaDataWrapper();
-                    req.set(request);
-
-                    ResponseMetaDataWrapper res = new ResponseMetaDataWrapper();
-                    res.set(response);
-
-                    Runnable task = () -> {
-                        this.invoke(req, res, capturedHttpRequestResponse);
-                    };
-                    ThreadManager.getExecutorService().submit(task);
-                }
-            }
-        } catch (Exception e) {
-            LoggerHolder.get().warn("リバースプロキシ サーブレットで例外が発生 req=" + request, e);
-        } finally {
-            // Help GC
-            request.removeAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
-        }
-        super.onResponseSuccess(request, response, proxyResponse);
-    }
-
-    /*
-     * HttpClientを作成する
-     */
     @Override
     protected HttpClient newHttpClient() {
-        HttpClient client = new HttpClient() {
-            @Override
-            protected String normalizeHost(String host) {
-                return host;
-            }
-        };
-        // プロキシを設定する
+        HttpClient client = super.newHttpClient();
         if (AppConfig.get().isUseProxy()) {
-            // ポート
-            int port = AppConfig.get().getProxyPort();
-            // ホスト
-            String host = AppConfig.get().getProxyHost();
-            // 設定する
-            ProxyConfiguration proxyConfig = client.getProxyConfiguration();
-            proxyConfig.getProxies().add(new HttpProxy(host, port));
+            client.getProxyConfiguration().addProxy(
+                    new HttpProxy(AppConfig.get().getProxyHost(), AppConfig.get().getProxyPort()));
         }
         return client;
     }
 
-    /**
-     * <p>
-     * ライブラリのバグを修正します<br>
-     * URLにマルチバイト文字が含まれている場合にURLが正しく組み立てられないバグを修正します
-     * </p>
-     */
-    private static void fixQueryString(Request proxyRequest, String queryString) {
-        if (queryString != null && !queryString.isEmpty()) {
-            if (proxyRequest instanceof HttpRequest) {
-                try {
-                    FieldHolder.QUERY_FIELD.set(proxyRequest, queryString);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+    private static CapturedHttpRequestResponse capture(HttpServletRequest request) {
+        CapturedHttpRequestResponse captured =
+                (CapturedHttpRequestResponse) request.getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
+        if (captured == null) {
+            captured = new CapturedHttpRequestResponse();
+            request.setAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER, captured);
         }
+        return captured;
     }
 
-    /**
-     * ContentListenerSpiインターフェースの実装クラスを実行します
-     * 
-     * @param baseReq WrapしたHttpRequest情報
-     * @param baseRes WrapしたHttpResponse情報
-     * @param capturedHttpRequestResponse キャプチャしたOriginのHttpRequest/HttpResponse情報
-     * 
-     * @see logbook.internal.listener.APIListener
-     * @see logbook.internal.listener.ImageListener
-     */
-    private void invoke(RequestMetaDataWrapper baseReq, ResponseMetaDataWrapper baseRes, CapturedHttpRequestResponse capturedHttpRequestResponse) {
+    @Override
+    protected void onResponseContent(HttpServletRequest clientRequest,
+                                     HttpServletResponse proxyResponse,
+                                     Response serverResponse, byte[] bytes,
+                                     int offset, int length, Callback callback) {
+        if (length > 0) {
+            capture(clientRequest).putOriginResponse(Arrays.copyOfRange(bytes, offset, offset + length));
+        }
+        super.onResponseContent(clientRequest, proxyResponse, serverResponse,
+                                bytes, offset, length, callback);
+    }
+
+    @Override
+    protected void onProxyResponseSuccess(HttpServletRequest clientRequest,
+                                          HttpServletResponse proxyResponse,
+                                          Response serverResponse) {
         try {
-            if (this.listeners == null) {
-                this.listeners = LogBookCoreServices.getServiceProviders(ContentListenerSpi.class).collect(Collectors.toList());
-            }
-            for (ContentListenerSpi listener : this.listeners) {
-                RequestMetaDataWrapper req = baseReq.clone();
-                req.set(capturedHttpRequestResponse.getOriginRequest());
-
-                if (listener.test(req)) {
-                    ResponseMetaDataWrapper res = baseRes.clone();
-                    res.set(capturedHttpRequestResponse.getOriginResponse());
-
-                    Runnable task = () -> {
-                        try {
-                            listener.accept(req, res);
-                        } catch (Exception e) {
-                            LoggerHolder.get().warn("リバースプロキシ サーブレットで例外が発生", e);
-                        }
-                    };
-                    ThreadManager.getExecutorService().submit(task);
+            if (proxyResponse.getStatus() == HttpServletResponse.SC_OK) {
+                CapturedHttpRequestResponse captured =
+                    (CapturedHttpRequestResponse) clientRequest.getAttribute(
+                        CapturedHttpRequestResponseConst.CONTENT_HOLDER);
+                if (captured != null) {
+                    RequestMetaDataWrapper req = new RequestMetaDataWrapper();
+                    req.set(clientRequest);
+                    ResponseMetaDataWrapper res = new ResponseMetaDataWrapper();
+                    res.set(proxyResponse);
+                    ThreadManager.getExecutorService().submit(() -> invoke(req, res, captured));
                 }
             }
-            capturedHttpRequestResponse.clear();
-        } catch (Exception e) {
-            LoggerHolder.get().warn("リバースプロキシ サーブレットで例外が発生 req=" + baseReq.getRequestURI(), e);
+        } catch (Exception ex) {
+            LoggerHolder.get().warn("リバースプロキシ サーブレットで例外が発生", ex);
+        } finally {
+            clientRequest.removeAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
         }
+        super.onProxyResponseSuccess(clientRequest, proxyResponse, serverResponse);
     }
 
-    private static class FieldHolder {
-        /** ライブラリバグ対応 (HttpRequest#queryを上書きする) */
-        static final Field QUERY_FIELD = getDeclaredField(HttpRequest.class, "query");
+    @Override
+    protected void onProxyResponseFailure(HttpServletRequest clientRequest,
+                                          HttpServletResponse proxyResponse,
+                                          Response serverResponse, Throwable failure) {
+        clientRequest.removeAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
+        super.onProxyResponseFailure(clientRequest, proxyResponse, serverResponse, failure);
+    }
 
-        /**
-         * private フィールドを取得する
-         * @param clazz クラス
-         * @param string フィールド名
-         * @return フィールドオブジェクト
-         */
-        private static <T> Field getDeclaredField(Class<T> clazz, String string) {
-            try {
-                Field field = clazz.getDeclaredField(string);
-                field.setAccessible(true);
-                return field;
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
+    private void invoke(RequestMetaDataWrapper req, ResponseMetaDataWrapper res,
+                        CapturedHttpRequestResponse captured) {
+        try {
+            List<ContentListenerSpi> current = listeners;
+            if (current == null) {
+                synchronized (this) {
+                    current = listeners;
+                    if (current == null) {
+                        current = LogBookCoreServices.getServiceProviders(ContentListenerSpi.class)
+                                  .collect(Collectors.toList());
+                        listeners = current;
+                    }
+                }
             }
+            for (ContentListenerSpi listener : current) {
+                RequestMetaDataWrapper eachReq = req.clone();
+                eachReq.set(captured.getOriginRequest());
+                if (listener.test(eachReq)) {
+                    ResponseMetaDataWrapper eachRes = res.clone();
+                    eachRes.set(captured.getOriginResponse());
+                    ThreadManager.getExecutorService().submit(() -> {
+                        try {
+                            listener.accept(eachReq, eachRes);
+                        } catch (Exception ex) {
+                            LoggerHolder.get().warn("リバースプロキシ listener で例外が発生", ex);
+                        }
+                    });
+                }
+            }
+        } catch (Exception ex) {
+            LoggerHolder.get().warn("リバースプロキシの通知処理で例外が発生", ex);
+        } finally {
+            captured.clear();
         }
     }
 }
