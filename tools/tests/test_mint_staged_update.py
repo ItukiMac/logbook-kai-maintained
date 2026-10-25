@@ -95,5 +95,56 @@ class StagedUpdateTest(unittest.TestCase):
         self.assertEqual(self.active.read_bytes(), b"PREVIOUS_LIVE_JAR")
 
 
+    def test_explicit_verified_restore_keeps_both_versions(self):
+        # Use an actual valid JAR as the baseline (other tests intentionally
+        # use a byte sentinel to prove the active JAR is not modified).
+        new_jar(self.active)
+        original = self.active.read_bytes()
+        new_jar(self.stage)
+        with zipfile.ZipFile(self.stage, "a") as jar:
+            jar.writestr("version-marker.txt", "UPDATED")
+        changed = self.stage.read_bytes()
+        self.assertNotEqual(original, changed)
+
+        self.assertTrue(updater.apply_staged(self.root).startswith("UPDATED "))
+        backups = list((self.root / "launcher-backups/app-versions").glob("logbook-kai-*.jar"))
+        self.assertEqual(len(backups), 1)
+        old = backups[0]
+        self.assertEqual(old.read_bytes(), original)
+
+        self.assertTrue(updater.restore_backup(self.root, old, dry_run=True).startswith("RESTORE_VALIDATED "))
+        self.assertEqual(self.active.read_bytes(), changed)
+        self.assertTrue(updater.restore_backup(self.root, old).startswith("RESTORED "))
+        self.assertEqual(self.active.read_bytes(), original)
+        self.assertEqual(old.read_bytes(), original, "Do not consume the backup")
+        self.assertEqual(len(list((self.root / "launcher-backups/app-versions").glob("rollback-source-*.jar"))), 1)
+        self.assertEqual(updater.restore_backup(self.root, old), "ALREADY_RESTORED")
+
+    def test_restore_refuses_outside_or_corrupted_backup(self):
+        new_jar(self.active)
+        old_active = self.active.read_bytes()
+        new_jar(self.stage)
+        with zipfile.ZipFile(self.stage, "a") as jar:
+            jar.writestr("version-marker.txt", "UPDATED")
+        updater.apply_staged(self.root)
+        current_active = self.active.read_bytes()
+        old = next((self.root / "launcher-backups/app-versions").glob("logbook-kai-*.jar"))
+
+        outside = pathlib.Path(self.holder.name) / "copy.jar"
+        outside.write_bytes(old.read_bytes())
+        with self.assertRaises(ValueError):
+            updater.restore_backup(self.root, outside)
+        self.assertEqual(self.active.read_bytes(), current_active)
+
+        # The filename embeds the expected checksum prefix; tampering makes
+        # restore fail closed even when bytes still look like a valid JAR.
+        with zipfile.ZipFile(old, "a") as jar:
+            jar.writestr("modified.txt", "changed")
+        with self.assertRaises(ValueError):
+            updater.restore_backup(self.root, old)
+        self.assertEqual(self.active.read_bytes(), current_active)
+        self.assertNotEqual(old_active, current_active)
+
+
 if __name__ == "__main__":
     unittest.main()
