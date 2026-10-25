@@ -42,7 +42,7 @@ jobs:
           root=ET.parse('pom.xml').getroot()
           m={'m':'http://maven.apache.org/POM/4.0.0'}
           version=root.findtext('m:version',namespaces=m)
-          assert version == '25.0.9', f'unexpected candidate version: {version}'
+          assert version == '25.0.10', f'unexpected candidate version: {version}'
           release=Path(f'target/logbook-kai_{version}.zip')
           assert release.is_file(), f'missing {release}'
           with zipfile.ZipFile(release) as distribution:
@@ -66,9 +66,9 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: logbook-kai-25.0.9-candidate-not-release
+          name: logbook-kai-25.0.10-candidate-not-release
           path: |
-            target/logbook-kai_25.0.9.zip
+            target/logbook-kai_25.0.10.zip
             target/SHA256SUMS-candidate.txt
           if-no-files-found: error
           retention-days: 14
