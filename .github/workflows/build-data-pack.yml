@@ -1,0 +1,51 @@
+name: Build game-data JSON pack (no release)
+
+on:
+  pull_request:
+    paths:
+      - 'src/main/resources/logbook/**'
+      - 'tools/build_data_pack.py'
+      - 'tools/tests/test_build_data_pack.py'
+      - '.github/workflows/build-data-pack.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: data-pack-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate packager independently
+        run: python3 -m unittest discover -s tools/tests -p 'test_*.py' -v
+      - name: Build versioned JSON-only archive
+        run: python3 tools/build_data_pack.py --source-sha "${{ github.sha }}"
+      - name: Inspect archive manifest against contained bytes
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from zipfile import ZipFile
+          with ZipFile('target/logbook-data-pack.zip') as f:
+              manifest = json.loads(f.read('manifest.json'))
+              assert manifest['format'] == 'logbook-data-pack-v1'
+              files = manifest['files']
+              assert len(files) > 0
+              for entry in files:
+                  body = f.read(entry['path'])
+                  assert hashlib.sha256(body).hexdigest() == entry['sha256']
+                  assert len(body) == entry['bytes']
+                  json.loads(body)
+              print('verified', len(files), 'strict JSON definitions')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: logbook-json-data-pack
+          path: target/logbook-data-pack.zip
+          if-no-files-found: error
+          retention-days: 14
