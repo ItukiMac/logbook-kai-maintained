@@ -35,3 +35,33 @@ Do not treat a successful Maven build as completed GUI/Mint migration.
 
 CI first: build the ZIP as an ephemeral artifact and collect SHA256 for review.
 No account cookies, local configurations, or game traffic are part of the artifact.
+
+## Controlled application publication and Mint migration
+
+After passing the isolated Mint 22.1 + Java 25 smoke test and existing
+KLB v1.0.0 / KQS v0.2.0-rc.3 live compatibility checks, use the new
+`manual-app-release.yml` workflow to build an independently verified
+**prerelease** from `master`:
+
+- Dispatch on `master` with `app_tag=v25.0.9` only.
+- The workflow reruns Java 21 and Java 25 Maven tests, audits the ZIP,
+  validates embedded launcher/Main-Class and bundled updater helper, and
+  generates a release-asset SHA256 checksum.
+- The resulting GitHub release is explicitly marked prerelease. It is a
+  **public download**, not an instruction to replace a running installation.
+- The prerelease tag is created only after all tests succeed. Publishing
+  refuses an existing tag or Release and cannot overwrite earlier bytes.
+- `data-v...` JSON-only release tags remain completely separate.
+
+**Not covered by publication**: Mint production settings/record persistence,
+startup-health rollback, live KLB/KQS lifecycle after swap, and activation of
+the existing `auto.sh` dry-run hook. Keep production JAR and `--dry-run`
+unchanged until separately verified with a backup and a deliberate cutover.
+
+The exact candidate ZIP used in the successful isolated Mint verification
+has SHA256
+`cb0ff7cbee9466ec8d56d7e8eacf1f8e491109461bbbe69562eef716c1eb764b`.
+An archive *rebuilt* by a later GitHub Actions workflow may differ byte-for-byte
+because the Maven ZIP build is not currently proven reproducible. Validate and
+record the checksum of the **actual prerelease asset**, not a stale candidate
+checksum. The initial publication remains an optional explicit human action.
