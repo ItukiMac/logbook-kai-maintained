@@ -2,23 +2,18 @@ package logbook.internal.proxy;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-/**
- * CaptureしたOriginのHttpRequest/HttpResponse情報を保持するクラスです
- */
+/** CaptureしたOriginのHttpRequest/HttpResponse情報を保持するクラスです。 */
 public class CapturedHttpRequestResponse {
 
     private List<byte[]> originReq = new ArrayList<>();
-    
     private List<byte[]> originRes = new ArrayList<>();
 
     public void putOriginRequest(byte[] data) {
-        if (this.originReq.size() > 0 && Arrays.equals(this.originReq.get(this.originReq.size()-1), data)) {
-            // if the data is the same as the last one in this.req array, no need to add this to req as it is duplicated
-            return;
-        }
+        // A content callback represents bytes actually sent, not a unique value.
+        // Equal adjacent chunks are legitimate (e.g. repeated binary blocks).
+        // Deduplicating by value silently truncates the captured request body.
         this.originReq.add(data);
     }
 
