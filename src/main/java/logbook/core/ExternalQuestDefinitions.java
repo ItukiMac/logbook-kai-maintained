@@ -8,9 +8,9 @@ import java.nio.file.Path;
 /**
  * Opt-in read-only resolver for staged quest definitions.
  *
- * This class does not download, activate or validate a remote release.
- * Only explicitly configured local directories are considered; production
- * auto-updates must first implement complete generation verification.
+ * Only explicitly configured local directories are considered. If an
+ * active.json pointer exists, only its verified, staged generation is read.
+ * Network retrieval and publisher authentication are separate operations.
  */
 final class ExternalQuestDefinitions {
     static final String ROOT_PROPERTY = "logbook.data.root";
@@ -31,7 +31,8 @@ final class ExternalQuestDefinitions {
             }
 
             String folder = regular ? "quest" : "eventquest";
-            Path directory = root.resolve(folder);
+            Path activeRoot = DefinitionPackInstaller.activeDefinitionsRoot(root);
+            Path directory = activeRoot.resolve(folder);
             if (!Files.isDirectory(directory, LinkOption.NOFOLLOW_LINKS)) {
                 return null;
             }
