@@ -1,0 +1,71 @@
+name: KLB and KQS plugin API compatibility (Java 21)
+
+on:
+  pull_request:
+    paths:
+      - 'src/main/**'
+      - 'pom.xml'
+      - 'assembly.xml'
+      - '.github/workflows/plugin-api-compatibility.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-api-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plugin-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout maintained host
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout pinned KQS source
+        uses: actions/checkout@v4
+        with:
+          repository: ItukiMac/kancolle-quest-share
+          ref: dca163a0db0e742b5b4705d8d36b8f7026faefa0
+          path: .external/kqs
+          persist-credentials: false
+      - name: Checkout pinned KLB source
+        uses: actions/checkout@v4
+        with:
+          repository: ItukiMac/kancolle-logbook-bridge
+          ref: ba217f50dbd7f8b3ee8289a9ad6cbb430ee58979
+          path: .external/klb
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build local host application without user settings
+        run: |
+          mvn --batch-mode --no-transfer-progress -DskipTests package
+          test -s target/logbook-kai.jar
+      - name: Compile and run KQS isolated plugin regression suite
+        env:
+          LOGBOOK_JAR: ${{ github.workspace }}/target/logbook-kai.jar
+        working-directory: .external/kqs
+        run: |
+          bash scripts/build.sh
+          bash scripts/test.sh
+      - name: Compile KLB bridge against maintained host API
+        shell: bash
+        run: |
+          mkdir -p target/klb-compat
+          javac --release 21 -proc:none -encoding UTF-8 \
+            -cp target/logbook-kai.jar \
+            -d target/klb-compat \
+            .external/klb/plugin/src/local/kancolle/bridge/KancolleBridgeStartUp.java
+          test -s target/klb-compat/local/kancolle/bridge/KancolleBridgeStartUp.class
+      - name: Report source pins and test limits
+        run: |
+          echo "KQS source: dca163a0db0e742b5b4705d8d36b8f7026faefa0"
+          echo "KLB source: ba217f50dbd7f8b3ee8289a9ad6cbb430ee58979"
+          echo "Compilation plus KQS tests only; deployed binary and GUI/runtime checks remain separate."
