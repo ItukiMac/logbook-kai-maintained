@@ -119,11 +119,11 @@ public final class LogBookCoreServices {
      * @return リソースを読み込むためのURL
      */
     public static URL getQuestResource(int questNo, boolean isRegularQuest) {
-        if (isRegularQuest) {
-            return getResource("logbook/quest/" + questNo + ".json");
-        } else {
-            return getResource("logbook/eventquest/" + questNo + ".json");
+        URL external = ExternalQuestDefinitions.resolve(questNo, isRegularQuest);
+        if (external != null) {
+            return external;
         }
+        return getResource("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
     }
 
     /**
@@ -154,11 +154,15 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResourceAsStream(String)
      */
     public static InputStream getQuestResourceAsStream(int questNo, boolean isRegularQuest) {
-        if (isRegularQuest) {
-            return getResourceAsStream("logbook/quest/" + questNo + ".json");
-        } else {
-            return getResourceAsStream("logbook/eventquest/" + questNo + ".json");
+        URL external = ExternalQuestDefinitions.resolve(questNo, isRegularQuest);
+        if (external != null) {
+            try {
+                return external.openStream();
+            } catch (java.io.IOException e) {
+                LoggerHolder.get().warn("外部任務設定ファイルを開けませんでした: " + external, e);
+            }
         }
+        return getResourceAsStream("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
     }
 
     /**
