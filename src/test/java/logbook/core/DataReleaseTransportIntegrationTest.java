@@ -113,6 +113,9 @@ class DataReleaseTransportIntegrationTest {
             assertEquals("{\"type\":\"遠征\"}",
                     Files.readString(secondGeneration.resolve("quest/1045.json")));
 
+            // Use a genuinely new checksum; otherwise the updater correctly
+            // skips the transport because the active generation already matches.
+            payload.set(packageQuest("{\"type\":\"after-outage\"}"));
             status.set(503);
             JsonNode downIndex = index("data-v2026.10.25.3", sha(payload.get()));
             assertThrows(IOException.class,
