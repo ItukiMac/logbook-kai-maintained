@@ -30,13 +30,16 @@ class DataPackTest(unittest.TestCase):
                 (source / group).mkdir(parents=True)
             sample = b'/* legacy header */\n{"type":"test"}\n'
             (source / "quest" / "1045.json").write_bytes(sample)
+            (source / "mission" / "nested").mkdir()
+            (source / "mission" / "nested" / "55.json").write_text('{"mission":55}', encoding="utf-8")
             output = base / "output.zip"
             result = build(source, output, "0123456")
-            self.assertEqual(result["files"], 1)
+            self.assertEqual(result["files"], 2)
             with ZipFile(output) as archive:
                 manifest = json.loads(archive.read("manifest.json"))
                 data = archive.read("definitions/quest/1045.json")
             self.assertEqual(json.loads(data), {"type": "test"})
+                self.assertEqual(json.loads(archive.read("definitions/mission/nested/55.json")), {"mission": 55})
             self.assertEqual(manifest["format"], "logbook-data-pack-v1")
             self.assertEqual(manifest["source_revision"], "0123456")
             self.assertEqual(manifest["files"][0]["sha256"], hashlib.sha256(data).hexdigest())
