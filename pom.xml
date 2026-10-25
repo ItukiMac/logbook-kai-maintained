@@ -22,6 +22,15 @@
                     <release>21</release>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <!-- JDK 23+ no longer auto-discovers annotation processors. -->
+                    <proc>full</proc>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.48</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -167,7 +176,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.36</version>
+            <version>1.18.48</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
