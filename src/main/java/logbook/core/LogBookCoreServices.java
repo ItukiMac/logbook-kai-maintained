@@ -25,6 +25,13 @@ public final class LogBookCoreServices {
 
     private static boolean isInitialized = false;
 
+    public static logbook.plugin.api.GameStateView gameStateView() { return GameStateService.shared(); }
+    public static <T> T readGameState(java.util.function.Supplier<T> query) { return GameStateService.shared().read(query); }
+    public static logbook.plugin.api.GameDataView gameDataView() { return GameDefinitionRuntime.view(); }
+    public static logbook.plugin.api.GameDefinitionScope pinDefinitions() { return GameDefinitionRuntime.pin(); }
+    public static logbook.plugin.api.GameDefinitionScope pinDefinitions(logbook.plugin.api.GameDefinitionSnapshot snapshot) { return GameDefinitionRuntime.pin(snapshot); }
+
+
     /**
      * LogBookCoreContainerの初期化処理を行います
      * 
@@ -92,6 +99,7 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResource(String)
      */
     public static URL getResource(String name) {
+        if (GameDefinitionRuntime.active() && GameDefinitionRuntime.managed(name)) return GameDefinitionRuntime.url(name);
         if (ExternalQuestDefinitions.isManagedGameDataResource(name)) {
             URL external = ExternalQuestDefinitions.resolveManagedResource(name);
             if (external != null || ExternalQuestDefinitions.hasActiveGeneration()) {
@@ -111,6 +119,7 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResourceAsStream(String)
      */
     public static InputStream getResourceAsStream(String name) {
+        if (GameDefinitionRuntime.active() && GameDefinitionRuntime.managed(name)) return GameDefinitionRuntime.open(name);
         if (ExternalQuestDefinitions.isManagedGameDataResource(name)) {
             URL external = ExternalQuestDefinitions.resolveManagedResource(name);
             if (external != null) {
@@ -139,6 +148,7 @@ public final class LogBookCoreServices {
      * @return リソースを読み込むためのURL
      */
     public static URL getQuestResource(int questNo, boolean isRegularQuest) {
+        if (GameDefinitionRuntime.active()) return GameDefinitionRuntime.url("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
         URL external = ExternalQuestDefinitions.resolve(questNo, isRegularQuest);
         if (external != null || ExternalQuestDefinitions.hasActiveGeneration()) {
             return external;
@@ -174,6 +184,7 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResourceAsStream(String)
      */
     public static InputStream getQuestResourceAsStream(int questNo, boolean isRegularQuest) {
+        if (GameDefinitionRuntime.active()) return GameDefinitionRuntime.open("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
         URL external = ExternalQuestDefinitions.resolve(questNo, isRegularQuest);
         if (external != null) {
             try {

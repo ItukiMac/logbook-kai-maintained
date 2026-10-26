@@ -38,6 +38,8 @@ public class MainMenuController extends WindowController {
 
     // メイン画面のコントローラ
     private MainController parentController;
+    private logbook.core.FeatureRegistry features;
+    private static final java.util.concurrent.atomic.AtomicBoolean RELOADING = new java.util.concurrent.atomic.AtomicBoolean();
 
     /** コマンドメニュー */
     @FXML
@@ -54,6 +56,14 @@ public class MainMenuController extends WindowController {
     @FXML
     void initialize() {
         try {
+            this.features = logbook.core.FeatureRegistry.discover();
+            addFeatures(logbook.plugin.api.FeatureModule.Group.COMMAND, this.command, false);
+            addFeatures(logbook.plugin.api.FeatureModule.Group.CALCULATOR, this.calc, false);
+            addFeatures(logbook.plugin.api.FeatureModule.Group.EXTRA, this.ext, true);
+            MenuItem reload = new MenuItem("ゲーム定義を再読み込み");
+            reload.setId("logbook.reload-definitions");
+            reload.setOnAction(this::reloadDefinitions);
+            this.ext.getItems().add(reload);
             // プラグインによるメニューの追加
             this.addMenuItem(MainCommandMenu.class, this.command.getItems());
             this.addMenuItem(MainCalcMenu.class, this.calc.getItems());
@@ -61,6 +71,41 @@ public class MainMenuController extends WindowController {
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
+    }
+
+    private void addFeatures(logbook.plugin.api.FeatureModule.Group group, Menu menu, boolean prepend) {
+        java.util.List<MenuItem> items = new java.util.ArrayList<>();
+        for (var feature : features.group(group)) {
+            MenuItem item = new MenuItem(feature.title());
+            item.setId("logbook.feature." + feature.id());
+            if (!feature.accelerator().isEmpty()) item.setAccelerator(javafx.scene.input.KeyCombination.keyCombination(feature.accelerator()));
+            item.setOnAction(event -> openFeature(feature.id()));
+            items.add(item);
+        }
+        if (prepend) menu.getItems().addAll(0, items); else menu.getItems().addAll(items);
+    }
+    private void openFeature(String id) {
+        try {
+            var feature = features.get(id);
+            InternalFXMLLoader.showWindow(feature.fxml(), this.parentController.getWindow(), feature.title());
+        } catch (Exception error) {LoggerHolder.get().error("機能の初期化に失敗しました: " + id, error);}
+    }
+    private void reloadDefinitions(ActionEvent event) {
+        if (!RELOADING.compareAndSet(false, true)) return;
+        Thread worker = new Thread(() -> {
+            String text;
+            try {
+                var snapshot = logbook.core.GameDefinitionRuntime.reloadConfigured();
+                text = "定義を再読み込みしました。\n世代: " + snapshot.generation() + "\nファイル数: " + snapshot.resourceNames().size();
+            } catch (Exception error) {text = "定義を変更しませんでした。\n" + error.getMessage();}
+            final String result = text;
+            javafx.application.Platform.runLater(() -> {
+                RELOADING.set(false);
+                var alert = new javafx.scene.control.Alert(AlertType.INFORMATION, result);
+                alert.setTitle("ゲーム定義");alert.setHeaderText(null);alert.show();
+            });
+        }, "logbook-explicit-definition-reload");
+        worker.setDaemon(true); worker.start();
     }
 
     public void setParentController(MainController parentController) {
@@ -239,11 +284,7 @@ public class MainMenuController extends WindowController {
      */
     @FXML
     void ndock(ActionEvent e) {
-        try {
-            InternalFXMLLoader.showWindow("logbook/gui/require_ndock.fxml", this.parentController.getWindow(), "お風呂に入りたい艦娘");
-        } catch (Exception ex) {
-            LoggerHolder.get().error("お風呂に入りたい艦娘の初期化に失敗しました", ex);
-        }
+        openFeature("repair-list");
     }
 
     /**
@@ -253,11 +294,7 @@ public class MainMenuController extends WindowController {
      */
     @FXML
     void calcExp(ActionEvent e) {
-        try {
-            InternalFXMLLoader.showWindow("logbook/gui/calc_exp.fxml", this.parentController.getWindow(), "経験値計算機");
-        } catch (Exception ex) {
-            LoggerHolder.get().error("経験値計算機の初期化に失敗しました", ex);
-        }
+        openFeature("experience");
     }
 
     /**
@@ -267,11 +304,7 @@ public class MainMenuController extends WindowController {
      */
     @FXML
     void missionCheck(ActionEvent e) {
-        try {
-            InternalFXMLLoader.showWindow("logbook/gui/missioncheck.fxml", this.parentController.getWindow(), "遠征条件確認");
-        } catch (Exception ex) {
-            LoggerHolder.get().error("遠征条件確認の初期化に失敗しました", ex);
-        }
+        openFeature("mission-check");
     }
 
     /**
@@ -281,11 +314,7 @@ public class MainMenuController extends WindowController {
      */
     @FXML
     void probCalc(ActionEvent e) {
-        try {
-            InternalFXMLLoader.showWindow("logbook/gui/prob_calc.fxml", this.parentController.getWindow(), "確率計算機");
-        } catch (Exception ex) {
-            LoggerHolder.get().error("確率計算機の初期化に失敗しました", ex);
-        }
+        openFeature("probability");
     }
 
     /**
@@ -295,11 +324,7 @@ public class MainMenuController extends WindowController {
      */
     @FXML
     void lastDanceCalc(ActionEvent e) {
-        try {
-            InternalFXMLLoader.showWindow("logbook/gui/last_dance_calc.fxml", this.parentController.getWindow(), "ラスダン計算機");
-        } catch (Exception ex) {
-            LoggerHolder.get().error("ラスダン計算機の初期化に失敗しました", ex);
-        }
+        openFeature("last-dance");
     }
 
     /**
@@ -309,11 +334,7 @@ public class MainMenuController extends WindowController {
      */
     @FXML
     void resourceChart(ActionEvent e) {
-        try {
-            InternalFXMLLoader.showWindow("logbook/gui/resource_chart.fxml", this.parentController.getWindow(), "資材チャート");
-        } catch (Exception ex) {
-            LoggerHolder.get().error("資材チャートの初期化に失敗しました", ex);
-        }
+        openFeature("resource-chart");
     }
 
     /**
@@ -323,11 +344,7 @@ public class MainMenuController extends WindowController {
      */
     @FXML
     void expChart(ActionEvent e) {
-        try {
-            InternalFXMLLoader.showWindow("logbook/gui/exp_chart.fxml", this.parentController.getWindow(), "経験値チャート");
-        } catch (Exception ex) {
-            LoggerHolder.get().error("経験値チャートの初期化に失敗しました", ex);
-        }
+        openFeature("experience-chart");
     }
 
     /**

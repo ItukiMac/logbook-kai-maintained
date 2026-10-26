@@ -283,7 +283,7 @@ public class Ships {
         SLOTITEM_TYPE_HEIINTPE5_MAP.put(SlotItemMst.戦闘糧食_特別なおにぎり.getItemid(), 0.8D);
 
         // 付加的な情報の読み込み
-        InputStream is = LogBookCoreServices.getResourceAsStream("logbook/supplemental/ships.json");
+        InputStream is = (logbook.core.GameDefinitionRuntime.active() ? LogBookCoreServices.getClassLoader().getResourceAsStream("logbook/supplemental/ships.json") : LogBookCoreServices.getResourceAsStream("logbook/supplemental/ships.json"));
         Optional<Map<Integer, ShipSupplementalInfo>> map = Optional.empty();
         if (is != null) {
             try {
@@ -602,7 +602,7 @@ public class Ships {
      * @return 装備IDのリスト。情報がない場合はOptional.empty()
      */
     public static Optional<List<Integer>> shipItems(int shipId) {
-        ShipSupplementalInfo supp = ships.get(shipId);
+        ShipSupplementalInfo supp = supplemental(shipId);
         if (supp != null) {
             return Optional.ofNullable(supp.getItem());
         }
@@ -1347,7 +1347,7 @@ public class Ships {
      * @return 対潜値（素）
      */
     public static int getTaisen(Ship ship) {
-        ShipSupplementalInfo supp = ships.get(ship.getShipId());
+        ShipSupplementalInfo supp = supplemental(ship.getShipId());
         if (supp != null) {
             // 付加情報あり、（Lv99の値 - Lv1の値)*Lv/99 + Lv1の値 + 近代化改修分
             return (ship.getTaisen().get(1) - supp.getMinTaisen()) * ship.getLv() / 99 + supp.getMinTaisen()
@@ -1364,7 +1364,7 @@ public class Ships {
      * @return 索敵値（素）
      */
     public static int getSakuteki(Ship ship) {
-        ShipSupplementalInfo supp = ships.get(ship.getShipId());
+        ShipSupplementalInfo supp = supplemental(ship.getShipId());
         if (supp != null) {
             // 付加情報あり、（Lv99の値 - Lv1の値)*Lv/99 + Lv1の値
             return (ship.getSakuteki().get(1) - supp.getMinSakuteki()) * ship.getLv() / 99 + supp.getMinSakuteki();
@@ -1380,13 +1380,25 @@ public class Ships {
      * @return 回避値（素）
      */
     public static int getKaihi(Ship ship) {
-        ShipSupplementalInfo supp = ships.get(ship.getShipId());
+        ShipSupplementalInfo supp = supplemental(ship.getShipId());
         if (supp != null) {
             // 付加情報あり、（Lv99の値 - Lv1の値)*Lv/99 + Lv1の値
             return (ship.getKaihi().get(1) - supp.getMinKaihi()) * ship.getLv() / 99 + supp.getMinKaihi();
         }
         // 付加情報なし、現在値 - 装備増分
         return ship.getKaihi().get(0) - Ships.sumItemParam(ship, SlotitemMst::getHouk);
+    }
+
+    private static ShipSupplementalInfo supplemental(int id) {
+        try (var lease = LogBookCoreServices.pinDefinitions()) {
+        if (!logbook.core.GameDefinitionRuntime.active()) return ships.get(id);
+        int[] values = logbook.core.GameDefinitionRuntime.shipMinimums(id);
+        if (values == null) return null;
+        ShipSupplementalInfo info = new ShipSupplementalInfo();
+        info.setId(id); info.setMinTaisen(values[0]); info.setMinSakuteki(values[1]); info.setMinKaihi(values[2]);
+        info.setItem(logbook.core.GameDefinitionRuntime.shipItems(id));
+        return info;
+        }
     }
 
     /**

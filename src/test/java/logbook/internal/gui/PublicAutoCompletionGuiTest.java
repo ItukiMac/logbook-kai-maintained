@@ -25,9 +25,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 @Timeout(20)
 class PublicAutoCompletionGuiTest {
     @BeforeAll static void startFx() throws Exception {
-        CountDownLatch started = new CountDownLatch(1);
-        Platform.startup(() -> { Platform.setImplicitExit(false); started.countDown(); });
-        assertTrue(started.await(10, TimeUnit.SECONDS));
+        FxTestSupport.start();
     }
     private static <T> T fx(Callable<T> action) throws Exception {
         FutureTask<T> task = new FutureTask<>(action);

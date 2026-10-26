@@ -31,6 +31,20 @@ import logbook.internal.logger.LoggerHolder;
 public class QuestPane extends HBox {
 
     private AppQuest quest;
+    private DefinitionUiBinding definitionBinding;
+    private final javafx.beans.value.ChangeListener<javafx.stage.Window> definitionWindowListener = (o,a,b) -> attachDefinitionWindow(b);
+    private void attachDefinitionWindow(javafx.stage.Window window) {
+        if (definitionBinding != null) definitionBinding.close();
+        definitionBinding = window == null ? null : new DefinitionUiBinding(window, this::refreshDefinitionAvailability);
+    }
+    private void refreshDefinitionAvailability() {
+        try (var scope = LogBookCoreServices.pinDefinitions()) {
+            int id = this.quest.getNo();
+            this.condition.setVisible(LogBookCoreServices.getQuestResource(id,true) != null
+                || LogBookCoreServices.getQuestResource(id,false) != null || LogBookCoreServices.getCustomQuestResource(id) != null);
+            getProperties().put("definitionGeneration", scope.snapshot().generation());
+        }
+    }
 
     @FXML
     private Arc progress;
@@ -137,12 +151,12 @@ public class QuestPane extends HBox {
             this.detail.setText(quest.getDetail().replaceAll("<br>", ""));
             this.setOnContextMenuRequested(this::showContextMenu);
 
-            if (LogBookCoreServices.getQuestResource(quest.getNo(), true) == null // 恒常
-                    && LogBookCoreServices.getQuestResource(quest.getNo(), false) == null // 期間限定
-                    && LogBookCoreServices.getCustomQuestResource(quest.getNo()) == null // カスタム設定
-            ) {
-                this.condition.setVisible(false);
-            }
+            refreshDefinitionAvailability();
+            this.sceneProperty().addListener((o,previous,current) -> {
+                if (previous != null) previous.windowProperty().removeListener(definitionWindowListener);
+                attachDefinitionWindow(current == null ? null : current.getWindow());
+                if (current != null) current.windowProperty().addListener(definitionWindowListener);
+            });
 
             // 工廠任務の備考を表示
             int category = quest.getCategory();

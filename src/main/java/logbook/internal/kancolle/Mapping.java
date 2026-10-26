@@ -27,7 +27,7 @@ public class Mapping {
     private Map<String, String> mapping;
 
     private Mapping() {
-        InputStream is = LogBookCoreServices.getResourceAsStream("logbook/map/mapping.json");
+        InputStream is = (logbook.core.GameDefinitionRuntime.active() ? LogBookCoreServices.getClassLoader().getResourceAsStream("logbook/map/mapping.json") : LogBookCoreServices.getResourceAsStream("logbook/map/mapping.json"));
         Map<String, String> mapping = Collections.emptyMap();
         if (is != null) {
             try {
@@ -47,7 +47,8 @@ public class Mapping {
     }
 
     public Map<String, String> getMapping() {
-        return this.mapping;
+        Map<String,String> current = logbook.core.GameDefinitionRuntime.mapping();
+        return current != null ? current : this.mapping;
     }
 
     /**

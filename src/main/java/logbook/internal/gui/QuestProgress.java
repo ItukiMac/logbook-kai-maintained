@@ -39,6 +39,14 @@ public class QuestProgress extends WindowController {
     private TreeView<String> condition;
 
     private AppQuest quest;
+    private Task<?> pending;
+    private long requestVersion;
+
+    @Override protected void onDefinitionsChanged() { if (quest != null) load(); }
+    @Override protected void onWindowHidden(WindowEvent event) {
+        requestVersion++;
+        if (pending != null) pending.cancel();
+    }
 
     void setQuest(AppQuest quest) {
         this.quest = quest;
@@ -49,10 +57,14 @@ public class QuestProgress extends WindowController {
     }
 
     private void load() {
+        if (pending != null) pending.cancel();
+        final long requested = ++requestVersion;
+        final var definition = logbook.core.GameDefinitionRuntime.active() ? logbook.core.GameDefinitionRuntime.snapshot() : null;
         try {
             Task<Optional<AppQuestCondition>> task = new Task<Optional<AppQuestCondition>>() {
                 @Override
                 protected Optional<AppQuestCondition> call() throws Exception {
+                    try (var scope = definition == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(definition)) {
                     AppQuest quest = QuestProgress.this.quest;
                     AppQuestCondition condition = AppQuestCondition.loadFromResource(quest.getNo());
                     if (condition != null) {
@@ -67,10 +79,13 @@ public class QuestProgress extends WindowController {
                         return Optional.of(condition);
                     }
                     return Optional.empty();
+                    }
                 }
 
                 @Override
                 protected void succeeded() {
+                    if (requested != requestVersion || isCancelled()) return;
+                    if (definition != null && definition != logbook.core.LogBookCoreServices.gameDataView().snapshot()) { load(); return; }
                     AppQuest quest = QuestProgress.this.quest;
                     Optional<AppQuestCondition> condition = this.getValue();
                     if (!condition.isPresent()) {
@@ -80,6 +95,7 @@ public class QuestProgress extends WindowController {
 
                     TreeItem<String> root = new TreeItem<>(quest.getQuest().getTitle());
                     root.setExpanded(true);
+                    if (definition != null) QuestProgress.this.info.setText(QuestProgress.this.quest.getQuest().getDetail().replaceAll("<br>", "") + " / 定義: " + definition.generation());
 
                     FilterCondition filterCondition = condition.get().getFilter();
                     if (filterCondition != null) {
@@ -114,15 +130,14 @@ public class QuestProgress extends WindowController {
 
                 @Override
                 protected void failed() {
+                    if (requested != requestVersion || isCancelled()) return;
                     Throwable t = this.getException();
                     TreeItem<String> root = new TreeItem<>("何らかの理由で集計出来ませんでした。" + (t != null ? String.valueOf(t) : ""));
                     setConditionIcon(root, false);
                     QuestProgress.this.condition.setRoot(root);
                 }
             };
-            this.getWindow().addEventHandler(WindowEvent.WINDOW_HIDDEN, ev -> {
-                task.cancel();
-            });
+            this.pending = task;
             ThreadManager.getExecutorService().execute(task);
 
         } catch (Exception e) {

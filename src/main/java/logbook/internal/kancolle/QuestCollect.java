@@ -81,6 +81,11 @@ public class QuestCollect {
     }
 
     public static QuestCollect collect(AppQuest quest, AppQuestCondition condition) {
+        try (var scope = condition.getDefinitionSnapshot() == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(condition.getDefinitionSnapshot())) {
+            return collectPinned(quest, condition);
+        }
+    }
+    private static QuestCollect collectPinned(AppQuest quest, AppQuestCondition condition) {
         if (condition.getType() == Type.遠征) {
             return missionCollect(quest, condition);
         } else {
