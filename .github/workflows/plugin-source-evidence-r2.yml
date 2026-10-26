@@ -1,0 +1,37 @@
+name: Pinned plugin sources (tooling only)
+on:
+  push:
+    branches: ['maintenance/source-evidence-20261026-r2']
+    paths: ['.github/workflows/plugin-source-evidence-r2.yml']
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: ItukiMac/kancolle-quest-share
+          ref: dca163a0db0e742b5b4705d8d36b8f7026faefa0
+          path: kqs
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: ItukiMac/kancolle-logbook-bridge
+          ref: ba217f50dbd7f8b3ee8289a9ad6cbb430ee58979
+          path: klb
+          persist-credentials: false
+      - run: |
+          mkdir evidence
+          git -C kqs archive --format=zip HEAD > evidence/kqs.zip
+          git -C klb archive --format=zip HEAD > evidence/klb.zip
+          git -C kqs ls-files -s > evidence/kqs-blobs.txt
+          git -C klb ls-files -s > evidence/klb-blobs.txt
+          (cd evidence && sha256sum *.zip > SHA256SUMS)
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pinned-plugin-sources-r2
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 7
