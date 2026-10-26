@@ -2,6 +2,7 @@
 """Read-only, budgeted JSON/JSONC syntax audit of tracked game definitions."""
 from __future__ import annotations
 import argparse
+from decimal import Decimal
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
@@ -9,7 +10,7 @@ import subprocess
 import sys
 from maintenance_inventory import GAME, RESOURCES, safe_path
 
-VALIDATOR = "game-jsonc-audit-v1"
+VALIDATOR = "game-jsonc-audit-v2"
 
 
 def strip_comments(text: str) -> str:
@@ -65,7 +66,7 @@ def parse_jsonc(text: str):
     def invalid_constant(value):
         raise ValueError("Non-finite JSON constant")
     return json.loads(strip_comments(text.lstrip("\ufeff")), object_pairs_hook=unique_object,
-                      parse_constant=invalid_constant)
+                      parse_float=Decimal, parse_constant=invalid_constant)
 
 
 def game_path(path: str) -> bool:
@@ -79,32 +80,47 @@ def audit(root: Path, paths: list[str], previous: dict | None = None,
           max_files: int | None = None) -> dict:
     if max_files is not None and (type(max_files) is not int or max_files < 0):
         raise ValueError("Nonnegative file budget required")
-    if previous is not None and previous.get("validator") != VALIDATOR:
+    if previous is not None and (not isinstance(previous, dict) or previous.get("validator") != VALIDATOR):
         raise ValueError("Previous validator version does not match")
-    cached = {e["path"]: e for e in (previous or {}).get("entries", [])
-              if e.get("status") in ("valid", "cached")}
+    previous_entries = (previous or {}).get("entries", [])
+    if not isinstance(previous_entries, list) or any(not isinstance(e, dict) for e in previous_entries):
+        raise ValueError("Invalid previous report entries")
+    cached = {e["path"]: e for e in previous_entries
+              if e.get("status") in ("valid", "cached", "error") and isinstance(e.get("path"), str)}
     root = root.resolve(strict=True)
     result = {"schema_version": 1, "validator": VALIDATOR,
               "scope": "tracked game JSON syntax only; not game-rule or runtime-consumer validation",
-              "entries": [], "counts": {"validated": 0, "reused": 0, "pending": 0, "errors": 0}}
-    for relative in sorted(set(p for p in paths if game_path(p))):
+              "entries": [], "counts": {"validated": 0, "reused": 0, "reused_errors": 0,
+                                         "attempted": 0, "pending": 0, "errors": 0}}
+    selected = sorted(set(p for p in paths if game_path(p)))
+    if not selected:
+        result["scope_error"] = "No tracked game definition files selected"
+        result["counts"]["errors"] = 1
+    for relative in selected:
         row = {"path": relative}
         try:
+            # Recheck current path safety and bytes even when reusing parse evidence.
             raw = safe_path(root, relative).read_bytes()
             row["sha256"] = hashlib.sha256(raw).hexdigest()
             old = cached.get(relative)
             if old and old.get("sha256") == row["sha256"]:
-                row.update(status="cached", root_type=old.get("root_type", "unknown"))
-                result["counts"]["reused"] += 1
-            elif max_files is not None and result["counts"]["validated"] + result["counts"]["errors"] >= max_files:
+                if old["status"] == "error":
+                    row.update(status="error", error=old.get("error", "PreviousParseError"), evidence="reused")
+                    result["counts"]["errors"] += 1
+                    result["counts"]["reused_errors"] += 1
+                else:
+                    row.update(status="cached", root_type=old.get("root_type", "unknown"))
+                    result["counts"]["reused"] += 1
+            elif max_files is not None and result["counts"]["attempted"] >= max_files:
                 row["status"] = "pending"
                 result["counts"]["pending"] += 1
             else:
+                result["counts"]["attempted"] += 1
                 parsed = parse_jsonc(raw.decode("utf-8"))
                 row.update(status="valid", root_type=type(parsed).__name__)
                 result["counts"]["validated"] += 1
         except (OSError, ValueError, UnicodeError, RecursionError) as error:
-            row.update(status="error", error=type(error).__name__)
+            row.update(status="error", error=type(error).__name__, evidence="fresh")
             result["counts"]["errors"] += 1
         result["entries"].append(row)
     result["complete"] = not (result["counts"]["pending"] or result["counts"]["errors"])
