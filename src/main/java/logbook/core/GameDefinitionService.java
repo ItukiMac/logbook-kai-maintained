@@ -2,6 +2,7 @@ package logbook.core;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,6 +17,8 @@ public final class GameDefinitionService implements GameDataView {
     private final AtomicReference<GameDefinitionSnapshot> current = new AtomicReference<>(
             new GameDefinitionSnapshot("bundled-unloaded", Map.of()));
     private final CopyOnWriteArrayList<Subscription> listeners = new CopyOnWriteArrayList<>();
+    /** Fingerprints, not old payloads, are retained for this service instance's lifetime. */
+    private final Map<String, String> publishedFingerprints = new HashMap<>();
     private final Consumer<RuntimeException> errors;
     private long sequence;
     private boolean notifying;
@@ -23,7 +26,10 @@ public final class GameDefinitionService implements GameDataView {
     public GameDefinitionService() {
         this(error -> LoggerHolder.get().warn("ゲーム定義の更新通知で例外が発生", error));
     }
-    public GameDefinitionService(Consumer<RuntimeException> errors) { this.errors = Objects.requireNonNull(errors); }
+    public GameDefinitionService(Consumer<RuntimeException> errors) {
+        this.errors = Objects.requireNonNull(errors);
+        publishedFingerprints.put(current.get().generation(), current.get().fingerprint());
+    }
     @Override public GameDefinitionSnapshot snapshot() { return current.get(); }
     @Override public AutoCloseable subscribe(Consumer<Change> listener) {
         Subscription subscription = new Subscription(Objects.requireNonNull(listener));
@@ -32,21 +38,20 @@ public final class GameDefinitionService implements GameDataView {
     }
     public synchronized GameDefinitionSnapshot reload(Path root) throws IOException {
         if (notifying) throw new IllegalStateException("Reload from a change callback is not supported");
-        // Any I/O, checksum or JSON failure occurs BEFORE publishing anything.
         return publish(GameDefinitionLoader.load(root));
     }
     synchronized GameDefinitionSnapshot publish(GameDefinitionSnapshot candidate) {
         Objects.requireNonNull(candidate);
         if (notifying) throw new IllegalStateException("Reentrant publication is not supported");
-        GameDefinitionSnapshot old = current.get();
-        if (old.generation().equals(candidate.generation())) {
-            if (!old.fingerprint().equals(candidate.fingerprint())) {
-                throw new IllegalArgumentException("An immutable generation changed contents");
-            }
-            return old;
+        String known = publishedFingerprints.get(candidate.generation());
+        if (known != null && !known.equals(candidate.fingerprint())) {
+            throw new IllegalArgumentException("An immutable generation changed contents");
         }
+        GameDefinitionSnapshot old = current.get();
+        if (old.generation().equals(candidate.generation())) return old;
         Change change = new Change(++sequence, old, candidate);
-        current.set(candidate); // Readers never see a partially constructed generation.
+        publishedFingerprints.put(candidate.generation(), candidate.fingerprint());
+        current.set(candidate);
         notifying = true;
         try {
             for (Subscription listener : listeners) {
