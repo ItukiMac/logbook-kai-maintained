@@ -5,6 +5,7 @@ on:
       - 'pom.xml'
       - 'src/**'
       - 'scripts/**'
+      - 'tools/**'
       - '.github/workflows/**'
       - 'docs/maintenance/**'
   workflow_dispatch:
@@ -28,13 +29,16 @@ jobs:
           java-version: '${{ matrix.java }}'
           cache: maven
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
-      - name: All Java tests including real GUI, without dynamic agent attachment
+      - name: Generate the complete real game data pack in the isolated runner
+        run: python3 tools/build_data_pack.py --source-sha "$GITHUB_SHA"
+      - name: All Java tests including real GUI and game pack, without dynamic agent attachment
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p target/verification
-          xvfb-run -a mvn --batch-mode --no-transfer-progress -DargLine=-XX:-EnableDynamicAgentLoading -Dlogbook.gui.tests=true verify > target/verification/maven.log 2>&1 || { tail -120 target/verification/maven.log; exit 1; }
+          xvfb-run -a mvn --batch-mode --no-transfer-progress -DargLine=-XX:-EnableDynamicAgentLoading -Dlogbook.gui.tests=true -Dlogbook.test.dataPackPath=target/logbook-data-pack.zip verify > target/verification/maven.log 2>&1 || { tail -120 target/verification/maven.log; exit 1; }
           grep 'Tests run:' target/verification/maven.log | tail -5
+          grep -E 'SNAPSHOT_REAL_|real quest conditions' target/verification/maven.log || true
           ! grep -E 'Mockito is currently self-attaching|A Java agent has been loaded dynamically|No SLF4J providers were found' target/verification/maven.log
       - name: Python safety tests and fresh full game-data audit
         shell: bash
@@ -59,13 +63,21 @@ jobs:
           assert suites
           totals = {k: sum(int(s.get(k, 0)) for s in suites) for k in ('tests','failures','errors','skipped')}
           assert totals['failures'] == totals['errors'] == 0
-          required = ['ProbabilityCalculatorBoundaryTest','ProxyFailureIsolationTest','PublicAutoCompletionGuiTest','RuntimeWiringTest']
+          required = ['ProbabilityCalculatorBoundaryTest','ProxyFailureIsolationTest','PublicAutoCompletionGuiTest','RuntimeWiringTest','QuestDataDecoderCompatibilityTest','RealDefinitionPackIntegrationTest']
+          # Follow-up snapshot integration tests become mandatory whenever present.
+          for path in Path('src/test/java/logbook/core').glob('GameDefinition*Test.java'):
+              required.append(path.stem)
           for name in required:
               matching = [s for s in suites if s.get('name','').endswith('.' + name)]
-              assert len(matching) == 1 and int(matching[0].get('skipped',0)) == 0, name
+              assert len(matching) == 1 and int(matching[0].get('tests',0)) > 0 and int(matching[0].get('skipped',0)) == 0, name
           report = {'commit': os.environ['GITHUB_SHA'], 'totals': totals,
-                    'executed_gui': True, 'dynamic_agent_loading': False,
-                    'production_deployment': False}
+                    'executed_gui': True, 'executed_real_game_pack': True,
+                    'dynamic_agent_loading': False, 'production_deployment': False}
+          audit = Path('target/verification/game-json-audit.json')
+          if audit.exists():
+              data = json.loads(audit.read_text())
+              assert data['complete'] and data['counts']['errors'] == 0
+              report['game_json_audit'] = data['counts']
           Path('target/verification/summary.json').write_text(json.dumps(report, indent=2))
           print('INTEGRATED_TEST_SUMMARY', json.dumps(report))
           PY
@@ -95,6 +107,7 @@ jobs:
       - name: Check downloaded ZIP hash and archive integrity (never publish)
         working-directory: verified
         run: |
+          set -euo pipefail
           sha256sum -c SHA256SUMS
           python3 - <<'PY'
           import io, zipfile
