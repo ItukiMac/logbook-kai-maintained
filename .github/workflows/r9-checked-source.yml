@@ -1,0 +1,121 @@
+name: R9 exact-source verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/r9-checked-worker-20261026']
+permissions:
+  contents: write
+concurrency:
+  group: r9-checked-worker-20261026
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE: 9dbe8e4871f885a99ba23bc24cfe8140afade93c
+      TARGET: maintenance/r9-observed-arrivals-editions-20261026
+      VERIFIED_TREE: c4e0d7e4884937781cbfd16f13f66c6507174d61
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: payload
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: candidate
+          ref: 9dbe8e4871f885a99ba23bc24cfe8140afade93c
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Verify and apply the exact reviewed patch only in a fresh pinned checkout
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import base64,hashlib,lzma
+          from pathlib import Path
+          encoded=''.join((Path('../payload/.maintenance-transfers/r9')/f'part-{i}.txt').read_text() for i in range(3))
+          assert len(encoded)==37176
+          assert hashlib.sha256(encoded.encode()).hexdigest()=='91f37852c53ff7d81276c7868b422cfe49e7c7bd0d7483971c77971714fe76d6'
+          dec=lzma.LZMADecompressor(memlimit=128*1024*1024)
+          patch=dec.decompress(base64.b64decode(encoded,validate=True),max_length=134730)
+          assert len(patch)==134729 and dec.eof and not dec.unused_data
+          assert hashlib.sha256(patch).hexdigest()=='a1379a49d04efb8d6cd63520352cdb44496c156a07300483e9f0829aaf222afa'
+          Path('../verified-r9.patch').write_bytes(patch)
+          PY
+          git apply --check --index ../verified-r9.patch
+          git apply --index ../verified-r9.patch
+          test "$(git write-tree)" = "$VERIFIED_TREE"
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path,PurePosixPath
+          rows=subprocess.check_output(['git','diff','--cached','--name-status'],text=True).splitlines()
+          paths=[]
+          for row in rows:
+              status,name=row.split('\t')
+              p=PurePosixPath(name)
+              assert status in ('A','M') and not p.is_absolute() and '..' not in p.parts
+              assert p.parts[0] in ('src','scripts','tools','docs') or name=='.github/workflows/generation-plugin-compatibility.yml'
+              paths.append(name)
+          assert len(paths)==35 and len(set(paths))==35
+          Path('../r9-verified-paths.json').write_text(json.dumps(paths))
+          print('EXACT_R9_TREE_VERIFIED',len(paths))
+          PY
+          git -c core.whitespace=cr-at-eol diff --cached --check
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Full actual GUI, arrival, pack, Python and split lifecycle tests before source push
+        working-directory: candidate
+        run: bash scripts/verify_r3.sh
+      - name: Commit only tested product source; do not include workflow or transfer tooling
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git diff --exit-code
+          test "$(git write-tree)" = "$VERIFIED_TREE"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          result=json.loads(Path('target/r3-verification/summary.json').read_text())
+          assert result['java_tests']=={'tests':469,'failures':0,'errors':0,'skipped':1},result['java_tests']
+          seasonal=json.loads(Path('target/r3-verification/seasonal-editions.json').read_text())
+          print('R9_FINAL_JAVA',result['java_tests'])
+          print('R9_SEASONAL_DIAGNOSTIC',json.dumps(seasonal,ensure_ascii=False))
+          PY
+          # Index-only exclusion: retain the tested workflow in the working copy and save it later via the authorized connector.
+          git restore --staged -- .github/workflows/generation-plugin-compatibility.yml
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          expected=set(json.loads(Path('../r9-verified-paths.json').read_text()))-{'.github/workflows/generation-plugin-compatibility.yml'}
+          actual=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+          assert len(actual)==34 and actual==expected
+          PY
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'R9: count observed 1-6 arrivals with retained evidence and diagnose seasonal editions without guessing active rules'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > target/r3-verification/source-commit.txt
+          git rev-parse HEAD^{tree} > target/r3-verification/source-tree.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: r9-checked-source-evidence
+          path: |
+            candidate/target/r3-verification/*.json
+            candidate/target/r3-verification/*.log
+            candidate/target/r3-verification/*.txt
+            candidate/target/surefire-reports/
+          retention-days: 14
+          if-no-files-found: error
