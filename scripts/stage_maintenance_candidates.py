@@ -31,6 +31,8 @@ def tracked(root):
 def stage(root: Path, output: Path, candidates, approvals, budget, *, now=None):
     root = root.absolute()
     output = output.absolute()
+    if '..' in root.parts or '..' in output.parts:
+        raise ValueError('Parent-traversal paths are not staging boundaries')
     if any(p.is_symlink() for p in (root, *root.parents)):
         raise ValueError('Symlinked source root')
     if output.is_relative_to(root) or root.is_relative_to(output):
