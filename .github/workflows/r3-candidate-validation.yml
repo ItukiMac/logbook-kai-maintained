@@ -1,0 +1,43 @@
+name: R3 split features, source review and isolated candidate validation
+on:
+  pull_request:
+    paths: ['src/**', 'scripts/**', 'tools/**', 'pom.xml', 'docs/maintenance/**', '.github/workflows/r3-candidate-validation.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+          cache: maven
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - run: bash scripts/verify_r3.sh
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: r3-evidence-java${{ matrix.java }}
+          path: |
+            target/r3-verification/*.json
+            target/r3-verification/*.log
+            target/r3-verification/checkout.txt
+            target/surefire-reports/
+          retention-days: 14
+      - uses: actions/upload-artifact@v7.0.2
+        if: success() && matrix.java == '21'
+        with:
+          name: r3-split-feature-validation-bundle-NOT-FOR-PRODUCTION
+          path: target/r3-verification/split/
+          retention-days: 14
+          if-no-files-found: error
