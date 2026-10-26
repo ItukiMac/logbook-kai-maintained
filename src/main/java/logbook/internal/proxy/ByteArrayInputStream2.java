@@ -1,103 +1,59 @@
 package logbook.internal.proxy;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * 複数のバイト配列を1つのInputStreamとして扱うByteArrayInputStream
- *
- */
+/** An independent, markable cursor over captured byte-array segments. */
 public class ByteArrayInputStream2 extends InputStream {
+    private final List<byte[]> chunks;
+    private int index;
+    private int offset;
+    private int markIndex;
+    private int markOffset;
 
-    private List<byte[]> l;
-    private Iterator<byte[]> e;
-    private ByteArrayInputStream in;
+    public ByteArrayInputStream2(byte[] bytes) { this(Collections.singletonList(bytes)); }
+    public ByteArrayInputStream2(byte[]... bytes) { this(Arrays.asList(bytes)); }
+    public ByteArrayInputStream2(List<byte[]> bytes) { this.chunks = List.copyOf(bytes); }
 
-    public ByteArrayInputStream2(byte[] b) {
-        this(Collections.singletonList(b));
-    }
-
-    public ByteArrayInputStream2(byte[]... b) {
-        this(Arrays.asList(b));
-    }
-
-    public ByteArrayInputStream2(List<byte[]> l) {
-        this.l = l;
-        this.e = l.iterator();
-        this.nextStream();
-    }
-
-    @Override
-    public int available() {
-        if (this.in == null) {
-            return 0; // no way to signal EOF from available()
+    private boolean advance() {
+        while (index < chunks.size() && offset == chunks.get(index).length) {
+            index++;
+            offset = 0;
         }
-        return this.in.available();
+        return index < chunks.size();
     }
-
-    @Override
-    public void mark(int readlimit) {
+    @Override public int read() {
+        if (!advance()) return -1;
+        return chunks.get(index)[offset++] & 0xff;
     }
-
-    @Override
-    public boolean markSupported() {
-        return true;
-    }
-
-    @Override
-    public void reset() {
-        this.e = this.l.iterator();
-        this.in = null;
-        this.nextStream();
-    }
-
-    @Override
-    public int read() {
-        while (this.in != null) {
-            int c = this.in.read();
-            if (c != -1) {
-                return c;
-            }
-            this.nextStream();
+    @Override public int read(byte[] bytes, int off, int len) {
+        Objects.requireNonNull(bytes);
+        Objects.checkFromIndexSize(off, len, bytes.length);
+        if (len == 0) return 0; // also required at EOF
+        if (!advance()) return -1;
+        int copied = 0;
+        while (copied < len && advance()) {
+            byte[] current = chunks.get(index);
+            int count = Math.min(len - copied, current.length - offset);
+            System.arraycopy(current, offset, bytes, off + copied, count);
+            offset += count;
+            copied += count;
         }
-        return -1;
+        return copied;
     }
-
-    @Override
-    public int read(byte b[], int off, int len) {
-        if (this.in == null) {
-            return -1;
-        } else if (b == null) {
-            throw new NullPointerException();
-        } else if (off < 0 || len < 0 || len > b.length - off) {
-            throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
-            return 0;
+    @Override public int available() {
+        long count = -offset;
+        for (int n = index; n < chunks.size(); n++) {
+            count += chunks.get(n).length;
+            if (count >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
         }
-        do {
-            int n = this.in.read(b, off, len);
-            if (n > 0) {
-                return n;
-            }
-            this.nextStream();
-        } while (this.in != null);
-        return -1;
+        return (int) Math.max(0, count);
     }
-
-    @Override
-    public void close() {
-        // NOP
-    }
-
-    private void nextStream() {
-        if (this.e.hasNext()) {
-            this.in = new ByteArrayInputStream(this.e.next());
-        } else {
-            this.in = null;
-        }
-    }
+    @Override public void mark(int readlimit) { markIndex = index; markOffset = offset; }
+    @Override public boolean markSupported() { return true; }
+    @Override public void reset() { index = markIndex; offset = markOffset; }
+    @Override public void close() { /* Like ByteArrayInputStream, no external resources. */ }
 }
