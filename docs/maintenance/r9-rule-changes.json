@@ -1,0 +1,58 @@
+{
+  "base_commit": "9dbe8e4871f885a99ba23bc24cfe8140afade93c",
+  "checked_on": "2026-10-26",
+  "changes": [
+    {
+      "path": "src/main/resources/logbook/quest/905.json",
+      "before_sha256": "78e9a8ee458f9f05ac6d16c1794dec7a91b31142bce8c89d7c97e6d7b6faec60",
+      "after_sha256": "f29f86f9cb78c64730ad3861cc971cce88b48b77eb0df4475fb720a1bbe07eb7",
+      "fields": [
+        "conditions[area=1-6]"
+      ],
+      "count": 1,
+      "whole_rule_verified": false
+    },
+    {
+      "path": "src/main/resources/logbook/quest/912.json",
+      "before_sha256": "72a4a841252832b09fa3021ea6e36f4e8194f106fee857f06da7ad449b77f84a",
+      "after_sha256": "6ae3a8bf81b58ac1bfcbd5d4c206430c83f7acde79bbe2abc68d2ae1c6722a8e",
+      "fields": [
+        "conditions[area=1-6]"
+      ],
+      "count": 1,
+      "whole_rule_verified": false
+    },
+    {
+      "path": "src/main/resources/logbook/quest/945.json",
+      "before_sha256": "a66bb51ad999530a124866cde759f32b26ba5794ced65a3b02ca5d9193da4ab9",
+      "after_sha256": "b0dbc31f9b9d769e8d64d8849cdfcf2ed90196382db9e72029464671125d08db",
+      "fields": [
+        "conditions[area=1-6]"
+      ],
+      "count": 2,
+      "whole_rule_verified": false
+    }
+  ],
+  "whole_rule_verified": 0,
+  "complete": false,
+  "production_applied": false,
+  "scope": "Replace only recurring 1-6 B/D battle proxy with observed departure+event9 arrival. No old-log inference or seasonal substitution.",
+  "sources": [
+    {
+      "url": "https://github.com/shichiria/kancolle-browser/blob/main/src-tauri/src/api/battle.rs",
+      "kind": "Public implementation: map1/6 event9 is a goal; not raw native capture or official API specification"
+    },
+    {
+      "url": "https://zekamashi.net/kancolle-kouryaku/1-6/",
+      "kind": "Recurring goal counts; article header 2025-01-23, table date distinct"
+    },
+    {
+      "url": "https://zekamashi.net/kancolle-kouryaku/kaiboukan-mamoru/",
+      "source_modified": "2026-01-24"
+    },
+    {
+      "url": "https://zekamashi.net/kancolle-kouryaku/nansei-heitankouro/",
+      "source_modified": "2025-10-26"
+    }
+  ]
+}

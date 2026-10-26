@@ -1,0 +1,212 @@
+{
+  "format": "logbook-seasonal-edition-observations-v1",
+  "checked_on": "2026-10-26",
+  "scope": "Explicit source edition labels from R7; not current ID/title/active-window authorization. No product rules are selected by this registry.",
+  "entries": [
+    {
+      "id": 987,
+      "path": "src/main/resources/logbook/quest/987.json",
+      "definition_sha256": "de420d2891ded04e64240522624d437a9f67c65b7a167d578bdcc6d985a1154d",
+      "source_edition": "2025 Halloween",
+      "edition_year": 2025,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2025pumpkin-w2/",
+      "source_read": "article body",
+      "source_modified": "2025-10-18",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "The compared 2025 edition must not be represented as the 2026 edition."
+      ]
+    },
+    {
+      "id": 1039,
+      "path": "src/main/resources/logbook/quest/1039.json",
+      "definition_sha256": "0a840a947508b5a7dd2d6139a5f3e3dffd90adba789f2a55d7ad61950a1f41ca",
+      "source_edition": "2025 Halloween",
+      "edition_year": 2025,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2025pumpkin-w3/",
+      "source_read": "article body",
+      "source_modified": "2025-10-18",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "2026 article uses a changed roster (e.g. 樫/対馬); the old definition is NOT certified for 2026."
+      ]
+    },
+    {
+      "id": 1040,
+      "path": "src/main/resources/logbook/quest/1040.json",
+      "definition_sha256": "9c8d81b1df24b15767fae9ee98b4ccc34957a064928211b7632edc4d60b47a5f",
+      "source_edition": "2025 Halloween",
+      "edition_year": 2025,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2025pumpkin-w4/",
+      "source_read": "article body",
+      "source_modified": "2025-10-20",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "2026 similarly named quest has different period/requirements; season selection must be established separately."
+      ]
+    },
+    {
+      "id": 441,
+      "path": "src/main/resources/logbook/eventquest/441.json",
+      "definition_sha256": "81e78d354dcf75dd35b255cda3191845e36c9afa1d64c5bac26b5295f9173c09",
+      "source_edition": "2026 Setsubun",
+      "edition_year": 2026,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2026setsubun-ensei/",
+      "source_read": "article body",
+      "source_modified": "2026-02-09",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Source is Reiwa 8 (2026) but the product comment says Reiwa 6.",
+        "The fixed startDate is not a record of user acceptance; the source explicitly requires acceptance."
+      ]
+    },
+    {
+      "id": 840,
+      "path": "src/main/resources/logbook/eventquest/840.json",
+      "definition_sha256": "4c01f50fc60e39488aebc9622e469b06af54b7b7d0a2737d855d3f4507cdbdeb",
+      "source_edition": "2025 Setsubun",
+      "edition_year": 2025,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2025setsubun-sakusen/",
+      "source_read": "article body",
+      "source_modified": "2025-02-01",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Source requires designated flagship AND second ship; the product only counts two anywhere.",
+        "2026 source has different roster/maps. Do not overwrite historical edition without lifecycle decision.",
+        "Product type is absent; legacy code falls back to sortie handling."
+      ]
+    },
+    {
+      "id": 841,
+      "path": "src/main/resources/logbook/eventquest/841.json",
+      "definition_sha256": "d474c563d088cc0a39831e9b959a32f302bf11e8e0dfa514e35f31630512bbd6",
+      "source_edition": "2025 Setsubun",
+      "edition_year": 2025,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2025setsubun-nansei/",
+      "source_read": "article body",
+      "source_modified": "2025-02-13",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Source requires designated first and second positions; count-only filter is incomplete.",
+        "2026 source has different roster/maps; not certified as current.",
+        "Product type is absent; legacy sortie fallback is not an explicit declaration."
+      ]
+    },
+    {
+      "id": 843,
+      "path": "src/main/resources/logbook/eventquest/843.json",
+      "definition_sha256": "e7eb0e6ea319c6dae74c5ab8f94bf5dee2752a51c51cb75784ec4a0ffd0f5f26",
+      "source_edition": "2025 Setsubun source; product mixes title/period",
+      "edition_year": 2025,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2025setsubun-kakutyou/",
+      "source_read": "article body",
+      "source_modified": "2025-02-16",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Source period is WEEKLY; product period is MONTHLY.",
+        "Source title 五穀豊穣 differs from product 精強即応.",
+        "Source accepts あきつ丸/山汐丸/熊野丸 in light-carrier-class slot; product only accepts 軽空母.",
+        "Source final 7-5-3 boss is not enforced; product type absent."
+      ]
+    },
+    {
+      "id": 906,
+      "path": "src/main/resources/logbook/eventquest/906.json",
+      "definition_sha256": "435d811a352693e00bf37e52fc466ea17148908c470a267cb0076bc910c9db65",
+      "source_edition": "2026 comparison of matching aggregate; old undated product title",
+      "edition_year": 2026,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2026momonosekku-2/",
+      "source_read": "indexed task excerpt and linked 2026 overview; full body fetch timed out",
+      "source_modified": null,
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Article open timed out; only indexed task excerpt plus linked 2026 overview were available for these aggregate facts.",
+        "Single period is encoded but not independently certified from the retrieved excerpt."
+      ]
+    },
+    {
+      "id": 907,
+      "path": "src/main/resources/logbook/eventquest/907.json",
+      "definition_sha256": "cd6696f080779a3c76e8106e99cc87e149f68a109953f778455f040ae7d0f866",
+      "source_edition": "2026 comparison; old undated product title",
+      "edition_year": 2026,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2026momonosekku-3/",
+      "source_read": "article body",
+      "source_modified": "2026-03-03",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "No recurring label is shown on the retrieved 2026 article; exact lifecycle/ID still needs confirmation."
+      ]
+    },
+    {
+      "id": 909,
+      "path": "src/main/resources/logbook/eventquest/909.json",
+      "definition_sha256": "32579088a08ab1cd6f3fcf2465dd4a69d041e18f2b37bdce96fad6503536bb17",
+      "source_edition": "2021 historical peach-festival edition",
+      "edition_year": 2021,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2021hisimoti-kakutyou/",
+      "source_read": "article body",
+      "source_modified": "2021-03-09",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Historical 2021 rule only; does not establish applicability in 2026."
+      ]
+    },
+    {
+      "id": 953,
+      "path": "src/main/resources/logbook/eventquest/953.json",
+      "definition_sha256": "c93813c90916af9d43b5081058b10c7e5fee7105c2fafd1f6ac93431f4420ac3",
+      "source_edition": "2026 rainy-season edition",
+      "edition_year": 2026,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2026tuyu-boueisen/",
+      "source_read": "article body",
+      "source_modified": "2026-05-30",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Older 2025 similarly named edition differs; code is compared only to the 2026 edition."
+      ]
+    },
+    {
+      "id": 954,
+      "path": "src/main/resources/logbook/eventquest/954.json",
+      "definition_sha256": "d2d422eb5b7d4cd0ab3adfa32859da1b1b28965b5116e01bbc54fc80a8e461ae",
+      "source_edition": "2026 rainy-season rules; product comment says 2025",
+      "edition_year": 2026,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2026tuyu-kaizyougoei/",
+      "source_read": "article body",
+      "source_modified": "2026-06-01",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Product comment year is stale; 2025 edition has different conditions."
+      ]
+    },
+    {
+      "id": 955,
+      "path": "src/main/resources/logbook/eventquest/955.json",
+      "definition_sha256": "07aa3b8206770d567eeb8a16de9794d8237c29c500a8ddce4e10ff81ac004645",
+      "source_edition": "2026 rainy-season edition",
+      "edition_year": 2026,
+      "source_url": "https://zekamashi.net/kancolle-kouryaku/2026tuyu-nanpouhankou/",
+      "source_read": "article body",
+      "source_modified": "2026-06-01",
+      "lifecycle_verified": false,
+      "unresolved": [
+        "Quest-ID/season activation and acceptance/prerequisite/live-game accounting are not certified by this comparison.",
+        "Source says battleship; exact aviation/coastal-defense substitutions require additional verification.",
+        "Product type absent; future class/remodel additions require review."
+      ]
+    }
+  ]
+}

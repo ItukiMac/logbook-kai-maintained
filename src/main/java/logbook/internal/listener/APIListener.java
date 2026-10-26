@@ -117,6 +117,7 @@ public final class APIListener implements ContentListenerSpi {
                 this.send(requestMetaData, responseMetaData, json);
             }
         } catch (Exception e) {
+            logbook.internal.kancolle.PortArrivalRuntime.invalidate();
             LoggerHolder.get().warn(Messages.getString("APIListener.2"), e); //$NON-NLS-1$
             LoggerHolder.get().warn("API response rejected; raw body omitted");
         }
@@ -133,6 +134,7 @@ public final class APIListener implements ContentListenerSpi {
             for (Pair<String, APIListenerSpi> pair : this.allEventExec) {
                 success &= this.createTask(pair, json, req, res);
             }
+            logbook.internal.kancolle.PortArrivalRuntime.observe(uri, json, req, success);
             return success;
         });
     }

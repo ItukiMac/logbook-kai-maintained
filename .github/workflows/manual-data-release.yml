@@ -51,6 +51,9 @@ jobs:
                       filter_node = rule.get('filter', {}) if isinstance(rule, dict) else {}
                       if isinstance(filter_node, dict):
                           required.update(value for key, value in CAPABILITIES.items() if key in filter_node)
+                      conditions = rule.get('conditions', []) if isinstance(rule, dict) else []
+                      if isinstance(conditions, list) and any(isinstance(c, dict) and 'arrival' in c for c in conditions):
+                          required.add('quest-port-arrival-v1')
               assert manifest['format'] == (CAPABILITY_FORMAT if required else FORMAT)
               assert manifest.get('required_capabilities', []) == sorted(required)
               entries = manifest["files"]
@@ -113,6 +116,9 @@ jobs:
                       filt = rule.get('filter', {}) if isinstance(rule, dict) else {}
                       if isinstance(filt, dict):
                           required.update(value for key, value in names.items() if key in filt)
+                      conditions = rule.get('conditions', []) if isinstance(rule, dict) else []
+                      if isinstance(conditions, list) and any(isinstance(c, dict) and 'arrival' in c for c in conditions):
+                          required.add('quest-port-arrival-v1')
           assert manifest['format'] == ('logbook-data-pack-v2' if required else 'logbook-data-pack-v1')
           assert manifest.get('required_capabilities', []) == sorted(required)
           if required:

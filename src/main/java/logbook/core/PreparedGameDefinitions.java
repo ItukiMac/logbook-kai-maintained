@@ -91,6 +91,16 @@ final class PreparedGameDefinitions {
         if(node.hasNonNull("startDate")) java.time.LocalDateTime.parse(node.get("startDate").asText(),java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss").withResolverStyle(java.time.format.ResolverStyle.STRICT));
         for(JsonNode condition:node.path("conditions")) {
             require(condition.isObject() && integer(condition,"count",false)>0,"positive quest target");
+            if (condition.has("arrival")) {
+                require(condition.get("arrival").isBoolean(), "boolean arrival");
+                if (condition.get("arrival").booleanValue()) {
+                    require(condition.path("area").isArray() && condition.path("area").size() == 1
+                            && "1-6".equals(condition.path("area").get(0).asText()), "arrival map 1-6 only");
+                    for (String incompatible : Set.of("rank", "cell", "cells", "stype", "missions"))
+                        require(!condition.has(incompatible), "arrival must not mix battle/mission operands");
+                    require(!condition.path("boss").asBoolean() && !condition.path("start").asBoolean(), "arrival is not battle/start");
+                }
+            }
             if(condition.hasNonNull("rank")) for(JsonNode rank:condition.path("rank")) require(Set.of("S","A","B","C","D","E").contains(rank.asText()),"quest rank");
         }
         JsonNode filter = node.path("filter");
