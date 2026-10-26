@@ -22,24 +22,24 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Checkout maintained host
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Checkout pinned KQS source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           repository: ItukiMac/kancolle-quest-share
           ref: dca163a0db0e742b5b4705d8d36b8f7026faefa0
           path: .external/kqs
           persist-credentials: false
       - name: Checkout pinned KLB source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           repository: ItukiMac/kancolle-logbook-bridge
           ref: ba217f50dbd7f8b3ee8289a9ad6cbb430ee58979
           path: .external/klb
           persist-credentials: false
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
           java-version: '21'

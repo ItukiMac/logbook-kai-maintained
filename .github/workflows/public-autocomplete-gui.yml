@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
@@ -34,7 +34,7 @@ jobs:
           ! grep -E 'com.sun.|impl.org.controlsfx' src/main/java/logbook/internal/gui/PublicAutoCompletion.java
       - name: Exercise real JavaFX popup and lifecycle in Xvfb
         run: xvfb-run -a mvn --batch-mode --no-transfer-progress -Dlogbook.gui.tests=true -Dtest=PublicAutoCompletionGuiTest,SuggestSupportTest test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
           name: autocomplete-gui-java${{ matrix.java }}

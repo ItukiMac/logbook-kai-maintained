@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
           java-version: '25'
@@ -34,7 +34,7 @@ jobs:
         run: mvn --batch-mode --no-transfer-progress verify
       - name: Preserve failure/success reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: java25-surefire-reports
           path: '**/target/surefire-reports/**'

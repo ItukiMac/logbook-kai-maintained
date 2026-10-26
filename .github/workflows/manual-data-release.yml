@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - name: Verify packager tests
         run: python3 -m unittest discover -s tools/tests -p 'test_*.py' -v
       - name: Build validated JSON-only archive
@@ -53,7 +53,7 @@ jobs:
                   json.loads(data)
               print(f"All {expected} JSON definitions passed validation")
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: validated-data-pack
           path: target/logbook-data-pack.zip
@@ -79,7 +79,7 @@ jobs:
             exit 1
           }
           [[ "$GITHUB_REF" == "refs/heads/master" ]] || exit 1
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8.0.2
         with:
           name: validated-data-pack
           path: dist
