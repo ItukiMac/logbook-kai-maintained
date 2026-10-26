@@ -93,6 +93,11 @@ public class CheckUpdate {
     }
 
     private static void run(boolean isStartUp, Stage stage) {
+        if (ManagedBundleMode.enabled()) {
+            if (!isStartUp) Tools.Controls.alert(AlertType.INFORMATION, "分割版の更新",
+                    "専用管理ツールで一式を更新してください。単体JAR更新は無効です。", stage);
+            return;
+        }
         Version remoteVersion = remoteVersion();
 
         if (!Version.UNKNOWN.equals(remoteVersion) && Version.getCurrent().compareTo(remoteVersion) < 0) {
@@ -237,6 +242,7 @@ public class CheckUpdate {
     }
 
     private static void launchUpdate(String version) {
+        ManagedBundleMode.requireLegacyUpdater();
 
         Stage mainStage = WindowHolder.getInstance().getMainWindow();
         if (mainStage == null) {
