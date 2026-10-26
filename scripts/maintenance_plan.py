@@ -110,8 +110,14 @@ def plan(root: Path, candidates: list, approvals: list, budget: dict, *, previou
             # Re-check current evidence age and safe source path on EVERY resumed invocation.
             evidence_ok = evidence_valid(evidence,now)
             row['evidence_valid'] = evidence_ok
+            # Estimates are checkpoint inputs too: repairs must invalidate stale errors,
+            # and increased declared costs must be checked against this run's budget.
+            estimate_digest = json_digest(candidate.get('upper_bound'))
+            row['estimate_digest'] = estimate_digest
             previous_row = cache.get(identity)
-            if previous_row and previous_row.get('approval_digest') == approval_digest and previous_row.get('evidence_valid') == evidence_ok:
+            if (previous_row and previous_row.get('approval_digest') == approval_digest
+                    and previous_row.get('evidence_valid') == evidence_ok
+                    and previous_row.get('estimate_digest') == estimate_digest):
                 row.update(previous_row, reused=True)
             elif old == new:
                 row.update(status='unchanged', evidence_valid=evidence_ok)

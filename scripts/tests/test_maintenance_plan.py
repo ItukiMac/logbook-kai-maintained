@@ -51,4 +51,22 @@ class MaintenancePlanTest(unittest.TestCase):
         self.assertTrue(source_allowed('https://x.com/KanColle_STAFF/status/123'))
     def test_empty_scope_is_not_complete(self):self.assertFalse(self.run_plan([])['ready_for_isolated_validation'])
 
+    def test_repaired_missing_estimates_invalidate_cached_error(self):
+        candidate=self.candidate();bounds=candidate.pop('upper_bound');first=self.run_plan([candidate])
+        self.assertEqual('error',first['entries'][0]['status']);candidate['upper_bound']=bounds
+        second=self.run_plan([candidate],previous=first)
+        self.assertEqual('requires_approval',second['entries'][0]['status'])
+        self.assertFalse(second['entries'][0].get('reused',False));self.assertEqual(5,second['used']['micro_usd'])
+    def test_repaired_invalid_estimates_invalidate_cached_error(self):
+        candidate=self.candidate();candidate['upper_bound']['input_tokens']=-1;first=self.run_plan([candidate])
+        self.assertEqual('error',first['entries'][0]['status']);candidate['upper_bound']['input_tokens']=2
+        self.assertEqual('requires_approval',self.run_plan([candidate],previous=first)['entries'][0]['status'])
+    def test_changed_estimates_recheck_budget_without_discarding_other_progress(self):
+        candidates=[self.candidate(),self.candidate('2.json')]
+        first=self.run_plan(candidates);candidates[0]['upper_bound']['micro_usd']=11
+        second=self.run_plan(candidates,previous=first)
+        self.assertEqual('pending_budget',second['entries'][0]['status'])
+        self.assertEqual('requires_approval',second['entries'][1]['status'])
+        self.assertEqual(5,second['used']['micro_usd'])
+
 if __name__=='__main__':unittest.main()

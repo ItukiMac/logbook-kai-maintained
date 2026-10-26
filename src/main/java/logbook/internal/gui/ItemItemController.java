@@ -453,7 +453,7 @@ public class ItemItemController extends WindowController {
                 typesPane.setPrefWidth(Integer.MAX_VALUE);
                 typesPane.getChildren().addAll(types);
                 this.typeFilterPane.add(typesPane, 1, row.getAndIncrement());
-                Tools.Controls.bindChildCheckBoxes(category, types);
+                RestoredCheckBoxGroup.bind(category, types);
                 category.disabledProperty().addListener((ob, o, n) -> types.forEach(c -> c.setDisable(n)));
             });
 
