@@ -419,6 +419,9 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
         /** 出撃 */
         private boolean start;
 
+        /** Observed goal event, not the preceding battle. Currently only map 1-6 is supported. */
+        private boolean arrival;
+
         /** ボス */
         private boolean boss;
 
@@ -440,6 +443,10 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
         @Override
         public boolean test(QuestCollect t) {
+            if (this.arrival && (t.isArrivalEvidenceUnavailable() || !validArrival())) {
+                this.current = "到達記録を確認できません";
+                return this.result = false;
+            }
             int count;
             if (this.missions != null) {
                 count = this.missionCount(t);
@@ -482,7 +489,9 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 if (this.cell != null || this.cells != null) {
                     sb.append("(セル").append(this.cell != null ? this.cell : this.cells.stream().collect(Collectors.joining("または"))).append(")");
                 }
-                if (this.start) {
+                if (this.arrival) {
+                    sb.append("の港へ").append(this.count).append("回到達（観測記録のみ）");
+                } else if (this.start) {
                     sb.append("に").append(this.count).append("回出撃");
                 } else {
                     sb.append("で");
@@ -517,6 +526,13 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 sb.append("(現在の値:" + this.current + ")");
             }
             return sb.toString();
+        }
+
+        /** Refuse mixed battle/arrival operands even for manually supplied custom definitions. */
+        private boolean validArrival() {
+            return this.area != null && this.area.equals(java.util.Set.of("1-6"))
+                    && !this.start && !this.boss && this.cell == null && this.cells == null
+                    && this.rank == null && this.stype == null && this.missions == null && this.count > 0;
         }
 
         /**
@@ -564,6 +580,9 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 }
             } else {
                 battleCount = t.getTotal();
+            }
+            if (this.arrival) {
+                return battleCount.getArrivals();
             }
             if (this.start) {
                 // 出撃回数

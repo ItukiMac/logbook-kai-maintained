@@ -34,6 +34,21 @@ final class QuestEditorDocument {
 
     static void validate(JsonNode document) throws IOException {
         if (document == null || !document.isObject()) throw new IOException("任務設定はJSONオブジェクトが必要です。");
+        for (JsonNode condition : document.path("conditions")) {
+            JsonNode arrival = condition.path("arrival");
+            if (arrival.isMissingNode()) continue;
+            if (!arrival.isBoolean()) throw new IOException("arrivalはtrueまたはfalseが必要です。");
+            if (!arrival.booleanValue()) continue;
+            JsonNode area = condition.path("area");
+            if (!area.isArray() || area.size() != 1 || !area.get(0).isTextual()
+                    || !"1-6".equals(area.get(0).textValue())
+                    || condition.path("boss").asBoolean() || condition.path("start").asBoolean()
+                    || !condition.path("count").isIntegralNumber() || !condition.path("count").canConvertToInt()
+                    || condition.path("count").intValue() <= 0)
+                throw new IOException("港到達条件は1-6と正の回数が必要です。戦闘条件とは併用できません。");
+            for (String key : new String[] {"rank", "cell", "cells", "stype", "missions"})
+                if (condition.hasNonNull(key)) throw new IOException("港到達条件へ戦闘条件を追加できません: " + key);
+        }
         JsonNode filter = document.path("filter");
         if (!filter.isMissingNode() && !filter.isNull() && !filter.isObject())
             throw new IOException("filterはオブジェクトが必要です。");

@@ -12,6 +12,7 @@ xvfb-run -a mvn --batch-mode --no-transfer-progress -DargLine=-XX:-EnableDynamic
 python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v > "$EVIDENCE/python-scripts.log" 2>&1
 python3 -m unittest discover -s tools/tests -p 'test_*.py' -v > "$EVIDENCE/python-tools.log" 2>&1
 python3 scripts/audit_game_json.py --root . > "$EVIDENCE/json-audit.json"
+python3 scripts/audit_seasonal_editions.py --root . > "$EVIDENCE/seasonal-editions.json"
 python3 scripts/definition_review_ledger.py --facts docs/maintenance/source-field-review-20261026.json > "$EVIDENCE/review-ledger.json"
 python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out "$EVIDENCE/split" --revision "$REVISION" > "$EVIDENCE/feature-manifest.json"
 python3 scripts/run_feature_distribution.py --root "$EVIDENCE/split"

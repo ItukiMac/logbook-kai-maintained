@@ -38,6 +38,9 @@ public class QuestCollect {
 
     private Count total = new Count();
 
+    /** A broken/missing-safety-boundary journal must not be presented as a successful count. */
+    private boolean arrivalEvidenceUnavailable;
+
     private Map<String, Count> area = new HashMap<>();
 
     private Map<String, Integer> stype = new HashMap<>();
@@ -47,12 +50,14 @@ public class QuestCollect {
     @Data
     public static class Count {
         private int start;
+        private int arrivals;
         private Rank all = new Rank();
         private Map<String, Rank> cell = new HashMap<>();
         private Rank boss = new Rank();
 
         public void add(Count count) {
             this.start += count.start;
+            this.arrivals += count.arrivals;
             this.all.add(count.all);
             for (Entry<String, Rank> entry : count.cell.entrySet()) {
                 this.cell.merge(entry.getKey(), entry.getValue(), Rank::add);
@@ -121,6 +126,9 @@ public class QuestCollect {
 
     private static QuestCollect battleCollect(AppQuest quest, AppQuestCondition condition) {
         QuestCollect collect = new QuestCollect();
+        if (condition.getConditions().stream().anyMatch(AppQuestCondition.Condition::isArrival)) {
+            collectArrivals(quest, condition, collect);
+        }
         List<SimpleBattleLog> logs = AppQuestDuration.get().getCondition(quest)
                 .orElse(Collections.emptyList());
         Collection<MapinfoMst> mapinfo = MapinfoMstCollection.get().getMapinfo().values();
@@ -199,6 +207,33 @@ public class QuestCollect {
             }
         }
         return collect;
+    }
+
+    private static void collectArrivals(AppQuest quest, AppQuestCondition condition, QuestCollect collect) {
+        try {
+            for (PortArrival arrival : AppQuestDuration.get().getArrivalCondition(quest)) {
+                if (Thread.currentThread().isInterrupted()) throw new java.io.IOException("Arrival query interrupted");
+                if (condition.getStartDate() != null && arrival.startDate().compareTo(condition.getStartDate()) < 0) continue;
+                FilterCondition filter = condition.getFilter();
+                if (filter != null) {
+                    if (filter.getArea() != null && !filter.getArea().contains(arrival.map())) continue;
+                    if (filter.getDeckIds() != null && !filter.getDeckIds().contains(arrival.deckId())) continue;
+                    if (Boolean.TRUE.equals(filter.getNoRetreat()) && !arrival.noRetreat()) continue;
+                    if (filter.getFleet() != null) {
+                        // This journal preserves departure slots, not reconstructed retreat survivors.
+                        if (!arrival.noRetreat()) continue;
+                        List<ShipMst> ships = arrival.shipMasterIds().stream()
+                                .map(id -> logbook.bean.ShipMstCollection.get().getShipMap().get(id)).toList();
+                        if (!filter.getFleet().test(ships)) continue;
+                    }
+                }
+                collect.getArea().computeIfAbsent(arrival.map(), key -> new Count()).arrivals++;
+                collect.getTotal().arrivals++;
+            }
+        } catch (Exception error) {
+            collect.arrivalEvidenceUnavailable = true;
+            LoggerHolder.get().warn("港到達記録を集計できません。戦闘回数で代用しません。", error);
+        }
     }
 
     /** Resolve the recorded positions without promoting an escort into a missing slot. */

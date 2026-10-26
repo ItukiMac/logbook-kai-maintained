@@ -11,7 +11,8 @@ final class DefinitionPackCompatibility {
     static final String CAPABILITY_FORMAT = "logbook-data-pack-v2";
     static final String DECK_IDS = "quest-filter-deck-ids-v1";
     static final String NO_RETREAT = "quest-filter-no-retreat-v1";
-    private static final Set<String> SUPPORTED = Set.of(DECK_IDS, NO_RETREAT);
+    static final String PORT_ARRIVAL = "quest-port-arrival-v1";
+    private static final Set<String> SUPPORTED = Set.of(DECK_IDS, NO_RETREAT, PORT_ARRIVAL);
     private DefinitionPackCompatibility() { }
 
     static Set<String> requireManifest(JsonNode manifest) throws IOException {
@@ -36,6 +37,10 @@ final class DefinitionPackCompatibility {
         if (definition == null) throw new IOException("Empty definition JSON: " + path);
         if (!(path.startsWith("definitions/quest/") || path.startsWith("definitions/eventquest/")
                 || path.startsWith("logbook/quest/") || path.startsWith("logbook/eventquest/"))) return;
+        for (JsonNode condition : definition.path("conditions")) {
+            if (condition.has("arrival") && !declared.contains(PORT_ARRIVAL))
+                throw new IOException("Missing port-arrival capability declaration: " + path);
+        }
         JsonNode filter = definition.path("filter");
         if (filter.has("deckIds") && !declared.contains(DECK_IDS))
             throw new IOException("Missing deck-ID capability declaration: " + path);

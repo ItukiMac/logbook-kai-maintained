@@ -105,6 +105,8 @@ def build(source_root: Path, output: Path, source_sha: str) -> dict:
         if name.startswith(("definitions/quest/", "definitions/eventquest/")):
             rule = json.loads(payload)
             filter_node = rule.get("filter") if isinstance(rule, dict) else None
+            if isinstance(rule, dict) and any(isinstance(c, dict) and "arrival" in c for c in rule.get("conditions", [])):
+                required.add("quest-port-arrival-v1")
             if isinstance(filter_node, dict):
                 required.update(capability for key, capability in CAPABILITIES.items() if key in filter_node)
     manifest = {

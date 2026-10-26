@@ -64,9 +64,15 @@ class YearlyQuestContractTest {
                     String cell = rule.path("cell").isTextual() ? rule.path("cell").asText() : null;
                     assertEquals(!goal, condition.isBoss());
                     if (goal) {
-                        // This verifies the EXISTING proxy encoding, not proof of port arrival.
-                        assertEquals(Set.of("B", "D"), condition.getCells()); assertNull(condition.getCell());
-                        assertTrue(rule.has("unresolved")); cell = "B";
+                        assertEquals("arrival-v1", rule.path("encoding").asText());
+                        assertTrue(condition.isArrival()); assertNull(condition.getCells()); assertNull(condition.getCell());
+                        assertNull(condition.getRank()); assertTrue(rule.has("unresolved"));
+                        for (char rank : "SABCDE".toCharArray())
+                            assertFalse(condition.test(battle(area, "B", rank, target, false)), "last battle is not a goal");
+                        var arrival = new QuestCollect(); var arrived = new QuestCollect.Count();
+                        arrival.getArea().put(area, arrived); arrived.setArrivals(target - 1); assertFalse(condition.test(arrival));
+                        arrived.setArrivals(target); assertTrue(condition.test(arrival)); complete.getArea().putAll(arrival.getArea());
+                        continue;
                     } else { assertEquals(cell, condition.getCell()); assertNull(condition.getCells()); }
                     String allowed = goal ? "SABCDE" : rule.path("ranks").asText();
                     for (char result : "SABCDE".toCharArray()) {
