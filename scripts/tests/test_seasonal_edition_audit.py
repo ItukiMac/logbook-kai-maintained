@@ -35,4 +35,27 @@ class SeasonalEditionAuditTest(unittest.TestCase):
         self.assertEqual(1,audit(ROOT,date(2026,10,26),bad)['counts']['error'])
         with self.assertRaises(ValueError):audit(ROOT,date(2026,10,26),{'format':registry['format'],'entries':[]})
 
+    def test_malformed_rows_do_not_abort_later_valid_records(self):
+        registry=json.loads((ROOT/REGISTRY).read_text())
+        valid=registry['entries'][0]
+        for bad in (None, 123, [], 'not an object'):
+            with self.subTest(bad=bad):
+                registry['entries']=[bad,valid]
+                result=audit(ROOT,date(2026,10,26),registry)
+                self.assertEqual(1,result['counts']['error'])
+                self.assertNotEqual('error',result['entries'][1]['status'])
+                self.assertFalse(result['complete'])
+                json.dumps(result)
+    def test_nonstring_path_remains_a_row_error(self):
+        registry=json.loads((ROOT/REGISTRY).read_text())
+        for value in (None, 123, [], {}):
+            with self.subTest(value=value):
+                bad=copy.deepcopy(registry['entries'][0]);bad['path']=value
+                result=audit(ROOT,date(2026,10,26),{'format':registry['format'],'entries':[bad,registry['entries'][1]]})
+                self.assertEqual(1,result['counts']['error'])
+                self.assertNotEqual('error',result['entries'][1]['status'])
+    def test_registry_type_is_checked_before_field_access(self):
+        for value in ([], 123, 'bad registry'):
+            with self.subTest(value=value),self.assertRaises(ValueError):audit(ROOT,date(2026,10,26),value)
+
 if __name__=='__main__':unittest.main()

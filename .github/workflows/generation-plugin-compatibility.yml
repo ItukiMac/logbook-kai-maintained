@@ -39,17 +39,26 @@ jobs:
           ref: 4f310942b231154d0d37d31d93a7a58f3793cf11
           path: .external/legacy-host
           persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: ItukiMac/logbook-kai-maintained
+          ref: 9dbe8e4871f885a99ba23bc24cfe8140afade93c
+          path: .external/pre-arrival-host
+          persist-credentials: false
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
           java-version: '${{ matrix.java }}'
           cache: maven
-      - name: Build both isolated host JARs
+      - name: Build current and two pinned isolated prior host JARs
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package
           mvn -f .external/legacy-host/pom.xml --batch-mode --no-transfer-progress -DskipTests package
+          mvn -f .external/pre-arrival-host/pom.xml --batch-mode --no-transfer-progress -DskipTests package
       - name: Reject capability packs in the actual legacy host without changing its active data
         run: java -cp target/logbook-kai.jar:target/test-classes logbook.core.LegacyDefinitionPackProbe .external/legacy-host/target/logbook-kai.jar target/legacy-data-pack-proof
+      - name: Prior V2-capable host rejects arrival semantics and retains active data
+        run: java -cp target/logbook-kai.jar:target/test-classes logbook.core.PreArrivalHostProbe .external/pre-arrival-host/target/logbook-kai.jar target/pre-arrival-host-proof
       - name: Whole-export generation and observed-state contract against the current host
         working-directory: .external/kqs-r2
         env:

@@ -13,7 +13,7 @@ def audit(root: Path, as_of: date, observations=None):
     root = root.resolve(strict=True)
     if observations is None:
         observations = json.loads(safe_path(root, REGISTRY).read_text(encoding='utf8'))
-    if observations.get('format') != 'logbook-seasonal-edition-observations-v1':
+    if not isinstance(observations, dict) or observations.get('format') != 'logbook-seasonal-edition-observations-v1':
         raise ValueError('Unsupported observation registry')
     rows = observations.get('entries')
     if not isinstance(rows, list) or not rows: raise ValueError('Empty edition observations')
@@ -21,9 +21,12 @@ def audit(root: Path, as_of: date, observations=None):
               'entries': [], 'certified_active_rules': 0}
     seen = set()
     for record in rows:
-        item = {'id': record.get('id'), 'path': record.get('path'), 'active': None}
+        item = {'id': None, 'path': None, 'active': None}
         try:
+            if not isinstance(record, dict): raise ValueError('Invalid observation record')
+            item.update(id=record.get('id'), path=record.get('path'))
             name = record['path']; year = record['edition_year']
+            if not isinstance(name, str): raise ValueError('Definition path must be text')
             if name in seen: raise ValueError('Duplicate definition observation')
             seen.add(name)
             if type(year) is not int or year < 2013 or year > 9999: raise ValueError('Invalid explicit edition year')
