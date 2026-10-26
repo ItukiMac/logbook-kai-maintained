@@ -1,0 +1,22 @@
+{
+  "base": "617547bfdaa33d20905179285accca0082d2edff",
+  "checked_on": "2026-10-26",
+  "changes": [
+    {
+      "path": "src/main/resources/logbook/quest/973.json",
+      "before_sha256": "3b666e62c5342ba061c26c68dd173438b2ab3d4c352fbe1d4445d6f13db68c52",
+      "after_sha256": "f48d55271350fccecb71f11942418d796940fe0788cde7bd01e6dfff9fa6afba"
+    },
+    {
+      "path": "src/main/resources/logbook/quest/1012.json",
+      "before_sha256": "eb9d805f86d8eb64fb601889c9f9f94624cde38cdba765deecdc7b2e7128c739",
+      "after_sha256": "5e874fd52a677b198b587638d24d3742c0eca44cbda25d6645f75e7400b5006d"
+    },
+    {
+      "path": "src/main/resources/logbook/quest/1019.json",
+      "before_sha256": "ebcadc1da4edb66097b57bc3a3aa318c67c9b298bce0fb5dc34df02d5afaca77",
+      "after_sha256": "e096241f9e5aef8d119e3d208882007bb50a23d47a005363469c3e5e7d51533d"
+    }
+  ],
+  "production_applied": false
+}
