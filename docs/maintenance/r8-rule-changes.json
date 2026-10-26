@@ -1,0 +1,36 @@
+{
+  "base": "79cadc0e478718ffcabb737b8c6e9b2efa91918e",
+  "checked_on": "2026-10-26",
+  "changes": [
+    {
+      "path": "src/main/resources/logbook/quest/904.json",
+      "before_sha256": "787abdf56762fc8c86dd455b6a1412a06e1316518789906d8e9d7e3e72395534",
+      "after_sha256": "738010685942260487b25c89bc61e22e3fcb86e6fb4e0d67dc2957944e621935",
+      "fields": [
+        "filter.fleet.conditions"
+      ],
+      "source_expectation": "綾波改二 and 敷波改二 each present; four free ships; exactly six total; no positional requirement.",
+      "sources": [
+        {
+          "url": "https://zekamashi.net/kancolle-kouryaku/kaiboukan-odorideru/",
+          "source_modified": "2026-07-25",
+          "original_published": "2020-02-08"
+        },
+        {
+          "url": "https://wikiwiki.jp/kancolle/任務/出撃定期",
+          "source_modified": "2026-07-04",
+          "original_published": null
+        }
+      ],
+      "whole_rule_verified": false,
+      "unresolved": [
+        "Acceptance/prerequisites/server reset/live collection",
+        "Future remodel variants and source changes"
+      ]
+    }
+  ],
+  "whole_rule_verified": 0,
+  "complete": false,
+  "production_applied": false,
+  "semantic_scope": "Manual fleet-rule comparison only; no new seasonal-year or port-arrival certification."
+}

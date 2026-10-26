@@ -205,6 +205,13 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
         @Override
         public boolean test(List<ShipMst> ships) {
+            // Unknown input entries are not evidence of a valid fleet. Keep them
+            // distinct from the null markers consumed internally by AND clauses.
+            if (ships == null || ships.stream().anyMatch(java.util.Objects::isNull)) return false;
+            return evaluate(new ArrayList<>(ships));
+        }
+
+        private boolean evaluate(List<ShipMst> ships) {
             if (this.count == null && this.operator != null) {
                 return this.testOperator(ships);
             } else {
@@ -232,7 +239,7 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 // 序列の指定無効
                 int c = 0;
                 for (int i = 0; i < ships.size(); i++) {
-                    if (this.difference ^ this.testShip0(ships.get(i))) {
+                    if (matchesAvailableShip(ships.get(i))) {
                         c++;
                     }
                 }
@@ -241,7 +248,7 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 if (this.order != null) {
                     // 序列の指定有り
                     if (ships.size() >= this.order) {
-                        if (this.difference ^ this.testShip0(ships.get(this.order - 1))) {
+                        if (matchesAvailableShip(ships.get(this.order - 1))) {
                             ships.set(this.order - 1, null);
                             return true;
                         }
@@ -249,7 +256,7 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 } else {
                     // 序列の指定無し
                     for (int i = 0; i < ships.size(); i++) {
-                        if (this.difference ^ this.testShip0(ships.get(i))) {
+                        if (matchesAvailableShip(ships.get(i))) {
                             ships.set(i, null);
                             return true;
                         }
@@ -257,6 +264,11 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 }
             }
             return false;
+        }
+
+        private boolean matchesAvailableShip(ShipMst ship) {
+            // A consumed slot is not an excluded ship, nor an available match.
+            return ship != null && (this.difference ^ this.testShip0(ship));
         }
 
         private boolean testShip0(ShipMst ship) {
@@ -289,11 +301,11 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             Predicate<List<ShipMst>> predicate = null;
             for (FleetCondition condition : this.conditions) {
                 if (predicate == null) {
-                    predicate = condition;
+                    predicate = condition::evaluate;
                 } else {
                     predicate = this.operator.endsWith("AND")
-                            ? predicate.and(condition)
-                            : predicate.or(condition);
+                            ? predicate.and(condition::evaluate)
+                            : predicate.or(condition::evaluate);
                 }
             }
             if ("NAND".equals(this.operator) || "NOR".equals(this.operator)) {
