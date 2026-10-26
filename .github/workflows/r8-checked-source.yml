@@ -1,0 +1,76 @@
+name: R8 exact-source verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/r8-checked-worker-20261026']
+permissions:
+  contents: write
+concurrency:
+  group: r8-checked-worker-20261026
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 79cadc0e478718ffcabb737b8c6e9b2efa91918e
+      TARGET: maintenance/r8-fleet-evidence-20261026
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: payload
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: candidate
+          ref: 79cadc0e478718ffcabb737b8c6e9b2efa91918e
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Apply only the pinned and hash-verified source changes
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 ../payload/.maintenance-work/r8-prepare.py
+          git -c core.whitespace=cr-at-eol diff --check
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Full Java, GUI, Python, split launch-update-rollback and real pack validation
+        working-directory: candidate
+        run: bash scripts/verify_r3.sh
+      - name: Commit tested paths and non-force push only the dedicated source branch
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import hashlib,json,subprocess
+          from pathlib import Path
+          paths=json.loads(Path('../r8-verified-paths.json').read_text());h=hashlib.sha256()
+          assert len(paths)==10 and all(p.startswith(('src/','scripts/tests/','docs/maintenance/')) for p in paths)
+          for p in paths:h.update(p.encode()+b'\0'+Path(p).read_bytes()+b'\0')
+          assert h.hexdigest()=='bdc2dddce0296366bf4756d0f7b9b637dd2ec0ebeecf753dfc188e17f75cd396'
+          subprocess.run(['git','add','--',*paths],check=True)
+          assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())==set(paths)
+          PY
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'R8: isolate fleet predicate consumption, preserve recorded positions and require both nineteenth-division ships'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > target/r3-verification/source-commit.txt
+          git rev-parse HEAD^{tree} > target/r3-verification/source-tree.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: r8-exact-source-evidence
+          path: |
+            candidate/target/r3-verification/*.json
+            candidate/target/r3-verification/*.log
+            candidate/target/r3-verification/*.txt
+            candidate/target/surefire-reports/
+          retention-days: 14
