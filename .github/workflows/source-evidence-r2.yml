@@ -1,0 +1,44 @@
+name: Pinned source and isolated build evidence (tooling only)
+on:
+  push:
+    branches: ['maintenance/source-evidence-20261026-r2']
+permissions:
+  contents: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 4f310942b231154d0d37d31d93a7a58f3793cf11
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Build the pinned tracked source with a fresh isolated Maven repository
+        run: |
+          set -eu
+          mvn --batch-mode --no-transfer-progress -Dmaven.repo.local="$RUNNER_TEMP/public-maven-repository" verify
+      - name: Export tracked source, public dependencies and Maven distribution only
+        run: |
+          set -eu
+          mkdir -p target/source-evidence
+          git archive --format=zip HEAD > target/source-evidence/source.zip
+          git ls-files -s > target/source-evidence/tracked-blobs.txt
+          printf '%s\n' "$(git rev-parse HEAD)" > target/source-evidence/commit.txt
+          cp target/logbook-kai.jar target/source-evidence/
+          cp -r target/surefire-reports target/source-evidence/
+          tar -C "$RUNNER_TEMP/public-maven-repository" -czf target/source-evidence/public-maven-repository.tar.gz .
+          MAVEN_ROOT="$(dirname "$(dirname "$(readlink -f "$(command -v mvn)")")")"
+          test -f "$MAVEN_ROOT/bin/mvn"
+          tar -C "$MAVEN_ROOT" -czf target/source-evidence/maven-distribution.tar.gz .
+          (cd target/source-evidence && sha256sum source.zip public-maven-repository.tar.gz maven-distribution.tar.gz logbook-kai.jar > SHA256SUMS)
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pinned-source-evidence-r2
+          path: target/source-evidence/
+          retention-days: 7
+          if-no-files-found: error
