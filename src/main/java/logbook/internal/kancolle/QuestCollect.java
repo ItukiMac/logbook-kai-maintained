@@ -20,6 +20,7 @@ import logbook.bean.BattleLog;
 import logbook.bean.Enemy;
 import logbook.bean.MapinfoMst;
 import logbook.bean.MapinfoMstCollection;
+import logbook.bean.Ship;
 import logbook.bean.ShipMst;
 import logbook.bean.Stype;
 import logbook.internal.kancolle.BattleLogs.SimpleBattleLog;
@@ -152,14 +153,8 @@ public class QuestCollect {
                 if (filter.getFleet() != null) {
                     p = new PhaseState(battleLog);
 
-                    List<ShipMst> ships = p.getAfterFriend().stream()
-                            .filter(Objects::nonNull)
-                            .map(Ships::shipMst)
-                            .map(s -> s.orElse(null))
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList());
-
-                    if (!filter.getFleet().test(ships)) {
+                    List<ShipMst> ships = recordedFleet(p.getAfterFriend());
+                    if (ships == null || !filter.getFleet().test(ships)) {
                         continue;
                     }
                 }
@@ -204,6 +199,24 @@ public class QuestCollect {
             }
         }
         return collect;
+    }
+
+    /** Resolve the recorded positions without promoting an escort into a missing slot. */
+    private static List<ShipMst> recordedFleet(List<Ship> recorded) {
+        if (recorded == null) return null;
+        int size = recorded.size();
+        // Saved fleets may contain trailing unused slots, but an interior gap is not padding.
+        while (size > 0 && recorded.get(size - 1) == null) size--;
+        if (size == 0) return null;
+        List<ShipMst> resolved = new ArrayList<>(size);
+        for (int slot = 0; slot < size; slot++) {
+            Ship member = recorded.get(slot);
+            if (member == null) return null;
+            ShipMst master = Ships.shipMst(member).orElse(null);
+            if (master == null) return null;
+            resolved.add(master);
+        }
+        return resolved;
     }
 
     private static void count(String map, SimpleBattleLog log, Count count) {

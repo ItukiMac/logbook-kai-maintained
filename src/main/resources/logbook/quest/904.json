@@ -7,8 +7,9 @@
         "fleet": {
             "operator": "AND",
             "conditions": [
-                {"name": ["綾波改二", "敷波改二"], "count": 2, "operator": "GE"},
-                {"stype": ["*"], "count": 6, "operator": "GE"}
+                {"name": ["綾波改二"], "count": 1, "operator": "GE"},
+                {"name": ["敷波改二"], "count": 1, "operator": "GE"},
+                {"stype": ["*"], "count": 6, "operator": "EQ"}
             ]
         }
     },
