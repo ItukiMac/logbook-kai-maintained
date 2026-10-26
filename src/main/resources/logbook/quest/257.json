@@ -2,6 +2,7 @@
 {
     "resetType" : "マンスリー",
     "filter" : {
+        "noRetreat": true,
         "area": ["1-4"],
         "fleet": {
             "description": "軽巡旗艦かつ軽巡３隻以下、他駆逐の艦隊",

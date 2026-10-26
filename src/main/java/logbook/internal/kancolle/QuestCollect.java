@@ -113,7 +113,7 @@ public class QuestCollect {
                         return false;
                     }
                 })
-                .filter(log -> !"失敗".equals(log.getResult()))
+                .filter(log -> "成功".equals(log.getResult()) || "大成功".equals(log.getResult()))
                 .collect(Collectors.groupingBy(SimpleMissionLog::getName, Collectors.counting())));
         return collect;
     }
@@ -140,11 +140,16 @@ public class QuestCollect {
             // フィルター条件
             FilterCondition filter = condition.getFilter();
             if (filter != null) {
-                if (!filter.getArea().contains(map)) {
+                if (filter.getArea() != null && !filter.getArea().contains(map)) {
                     continue;
                 }
-                if (filter.getFleet() != null) {
+                if (QuestBattleRequirements.needsLog(filter) || filter.getFleet() != null) {
                     battleLog = BattleLogs.read(log.getDateString());
+                    if (battleLog == null || !QuestBattleRequirements.matches(filter, battleLog)) {
+                        continue;
+                    }
+                }
+                if (filter.getFleet() != null) {
                     p = new PhaseState(battleLog);
 
                     List<ShipMst> ships = p.getAfterFriend().stream()

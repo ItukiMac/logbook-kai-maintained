@@ -164,6 +164,12 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
         /** 艦隊条件 */
         private FleetCondition fleet;
+
+        /** Allowed fleet numbers; null preserves the legacy unrestricted behaviour. */
+        private Set<Integer> deckIds;
+
+        /** Require a recorded empty retreat snapshot; unknown historical data is not proof. */
+        private Boolean noRetreat;
     }
 
     /**

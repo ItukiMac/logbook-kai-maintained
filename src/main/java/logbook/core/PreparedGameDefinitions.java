@@ -93,6 +93,15 @@ final class PreparedGameDefinitions {
             require(condition.isObject() && integer(condition,"count",false)>0,"positive quest target");
             if(condition.hasNonNull("rank")) for(JsonNode rank:condition.path("rank")) require(Set.of("S","A","B","C","D","E").contains(rank.asText()),"quest rank");
         }
+        JsonNode filter = node.path("filter");
+        if (filter.has("deckIds")) {
+            JsonNode ids = filter.get("deckIds");
+            require(ids.isArray() && !ids.isEmpty(), "nonempty allowed fleet numbers");
+            Set<Integer> seen = new HashSet<>();
+            for (JsonNode id : ids) require(id.isIntegralNumber() && id.canConvertToInt()
+                    && id.intValue() >= 1 && id.intValue() <= 4 && seen.add(id.intValue()), "unique fleet number 1..4");
+        }
+        if (filter.has("noRetreat")) require(filter.get("noRetreat").isBoolean(), "boolean noRetreat");
         JsonNode fleet=node.path("filter").path("fleet");
         if(!fleet.isMissingNode() && !fleet.isNull()) fleet(fleet);
     }
