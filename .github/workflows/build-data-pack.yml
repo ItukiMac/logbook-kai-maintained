@@ -43,6 +43,9 @@ jobs:
                       filter_node = rule.get('filter', {}) if isinstance(rule, dict) else {}
                       if isinstance(filter_node, dict):
                           required.update(value for key, value in CAPABILITIES.items() if key in filter_node)
+                      conditions = rule.get('conditions', []) if isinstance(rule, dict) else []
+                      if isinstance(conditions, list) and any(isinstance(c, dict) and 'arrival' in c for c in conditions):
+                          required.add('quest-port-arrival-v1')
               assert manifest['format'] == (CAPABILITY_FORMAT if required else FORMAT)
               assert manifest.get('required_capabilities', []) == sorted(required)
               files = manifest['files']

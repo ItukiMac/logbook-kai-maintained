@@ -34,8 +34,11 @@ public final class PortArrivalRuntime {
                 tracker.clear(); return;
             }
             var condition = AppCondition.get();
-            if (condition.isCombinedFlag() || !condition.isMapStart()) { tracker.clear(); return; }
             int deck = condition.getDeckId();
+            // The account can keep fleets 1/2 combined while fleet 3 or 4 sorties independently.
+            if (!condition.isMapStart() || (condition.isCombinedFlag() && (deck == 1 || deck == 2))) {
+                tracker.clear(); return;
+            }
             if (start && !Integer.toString(deck).equals(request.getParameter("api_deck_id"))) { tracker.clear(); return; }
             var fleet = DeckPortCollection.get().getDeckPortMap().get(deck);
             if (fleet == null || fleet.getShip() == null) { tracker.clear(); return; }
