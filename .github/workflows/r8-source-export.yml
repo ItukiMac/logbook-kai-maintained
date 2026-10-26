@@ -1,0 +1,29 @@
+name: R8 pinned source export (tooling only)
+on:
+  push:
+    branches: ['maintenance/r8-source-export-20261026']
+    paths: ['.github/workflows/r8-source-export.yml']
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 79cadc0e478718ffcabb737b8c6e9b2efa91918e
+          persist-credentials: false
+      - run: |
+          set -eu
+          mkdir evidence
+          git archive --format=zip HEAD > evidence/source.zip
+          git ls-files -s > evidence/tracked-blobs.txt
+          git rev-parse HEAD > evidence/commit.txt
+          (cd evidence && sha256sum source.zip > SHA256SUMS)
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: r8-pinned-source
+          path: evidence/
+          retention-days: 7
+          if-no-files-found: error
