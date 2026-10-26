@@ -26,6 +26,8 @@ def integer(value):
     return value
 
 def source_allowed(url: str) -> bool:
+    if not isinstance(url, str):
+        return False
     parsed = urlparse(url)
     if parsed.scheme != 'https' or parsed.username or parsed.password or parsed.port not in (None, 443):
         return False
