@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.controlsfx.control.ToggleSwitch;
-import org.controlsfx.control.textfield.TextFields;
+// Completion is implemented with public JavaFX APIs in this package.
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -747,7 +747,7 @@ public class ShipTablePane extends VBox {
         dialog.setTitle("艦娘にラベルを追加");
         dialog.setHeaderText(shipNames + "にラベルを追加します");
 
-        TextFields.bindAutoCompletion(dialog.getEditor(), new SuggestSupport(this.labelValue.getItems()));
+        PublicAutoCompletion.bindAutoCompletion(dialog.getEditor(), new SuggestSupport(this.labelValue.getItems()));
 
         val result = dialog.showAndWait();
         if (result.isPresent()) {

@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.controlsfx.control.ToggleSwitch;
-import org.controlsfx.control.textfield.TextFields;
+// Completion is implemented with public JavaFX APIs in this package.
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -394,7 +394,7 @@ public class ItemItemController extends WindowController {
                     .map(StringProperty::get)
                     .distinct()
                     .collect(Collectors.toCollection(FXCollections::observableArrayList)));
-            TextFields.bindAutoCompletion(this.textValue.getEditor(),
+            PublicAutoCompletion.bindAutoCompletion(this.textValue.getEditor(),
                     new SuggestSupport(String::contains, items.stream()
                             .flatMap(i -> Stream.of(i.typeProperty().get(), i.getName()))
                             .distinct()
