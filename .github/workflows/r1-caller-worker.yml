@@ -1,0 +1,71 @@
+name: One-shot R1 checked caller migration
+on:
+  push:
+    branches: ['maintenance/r1-caller-worker-20261026']
+permissions:
+  contents: write
+concurrency:
+  group: r1-checked-caller-migration-20261026
+  cancel-in-progress: false
+jobs:
+  migrate:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET: maintenance/r1-public-autocomplete-20261026
+      EXPECTED: 44920f1ca480c7d50f3fb000dba1a312f77bc10d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 44920f1ca480c7d50f3fb000dba1a312f77bc10d
+          persist-credentials: true
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Apply only the two hash-checked import and call substitutions
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$EXPECTED"
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          paths = {
+            'src/main/java/logbook/internal/gui/ItemItemController.java': '3b052ecb5d82933125955971975875ad1ee25fad',
+            'src/main/java/logbook/internal/gui/ShipTablePane.java': 'f76b6b0c65dd9139324064031b2e6028702c6992',
+          }
+          for name, expected in paths.items():
+              path = Path(name)
+              assert subprocess.check_output(['git','hash-object',name], text=True).strip() == expected
+              raw = path.read_bytes()
+              old_import = b'import org.controlsfx.control.textfield.TextFields;'
+              old_call = b'TextFields.bindAutoCompletion('
+              assert raw.count(old_import) == 1 and raw.count(old_call) == 1
+              # Same package: no replacement import needed. Preserve every other byte.
+              raw = raw.replace(old_import, b'// Completion is implemented with public JavaFX APIs in this package.')
+              raw = raw.replace(old_call, b'PublicAutoCompletion.bindAutoCompletion(')
+              path.write_bytes(raw)
+          changed = subprocess.check_output(['git','diff','--name-only'], text=True).splitlines()
+          assert set(changed) == set(paths), changed
+          PY
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Compile all production sources and test public popup before committing
+        run: xvfb-run -a mvn --batch-mode --no-transfer-progress -Dlogbook.gui.tests=true -Dtest=PublicAutoCompletionGuiTest,SuggestSupportTest test
+      - name: Non-force fast-forward only to the dedicated source branch
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$EXPECTED"
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- src/main/java/logbook/internal/gui/ItemItemController.java src/main/java/logbook/internal/gui/ShipTablePane.java
+          git commit -m 'R1: migrate two hash-checked application callers after Xvfb tests'
+          git push origin "HEAD:refs/heads/$TARGET"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r1-checked-caller-test-evidence
+          path: target/surefire-reports/
