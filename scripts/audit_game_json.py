@@ -2,7 +2,7 @@
 """Read-only, budgeted JSON/JSONC syntax audit of tracked game definitions."""
 from __future__ import annotations
 import argparse
-from decimal import Decimal
+from decimal import Decimal, DecimalException
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
@@ -62,11 +62,22 @@ def unique_object(pairs):
     return result
 
 
+def decimal_number(value: str) -> Decimal:
+    # Keep representation failures inside the ordinary per-record error boundary.
+    try:
+        number = Decimal(value)
+    except DecimalException as error:
+        raise ValueError("JSON number exceeds supported decimal range") from error
+    if not number.is_finite():
+        raise ValueError("Non-finite JSON number")
+    return number
+
+
 def parse_jsonc(text: str):
     def invalid_constant(value):
         raise ValueError("Non-finite JSON constant")
     return json.loads(strip_comments(text.lstrip("\ufeff")), object_pairs_hook=unique_object,
-                      parse_float=Decimal, parse_constant=invalid_constant)
+                      parse_float=decimal_number, parse_constant=invalid_constant)
 
 
 def game_path(path: str) -> bool:
