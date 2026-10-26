@@ -44,7 +44,6 @@ jobs:
               old_import = b'import org.controlsfx.control.textfield.TextFields;'
               old_call = b'TextFields.bindAutoCompletion('
               assert raw.count(old_import) == 1 and raw.count(old_call) == 1
-              # Same package: no replacement import needed. Preserve every other byte.
               raw = raw.replace(old_import, b'// Completion is implemented with public JavaFX APIs in this package.')
               raw = raw.replace(old_call, b'PublicAutoCompletion.bindAutoCompletion(')
               path.write_bytes(raw)
@@ -58,7 +57,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$EXPECTED"
-          git diff --check
+          git -c core.whitespace=cr-at-eol diff --check
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- src/main/java/logbook/internal/gui/ItemItemController.java src/main/java/logbook/internal/gui/ShipTablePane.java
