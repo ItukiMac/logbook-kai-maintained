@@ -28,6 +28,7 @@ public final class DataPackReleaseClient {
     private static final String OWNER_REPO = "ItukiMac/logbook-kai-maintained";
     private static final String INDEX_URL = "https://api.github.com/repos/" + OWNER_REPO + "/releases?per_page=100";
     private static final String ASSET_NAME = "logbook-data-pack.zip";
+    private static final String CAPABILITY_ASSET_NAME = "logbook-data-pack-v2.zip";
     private static final long MAX_DOWNLOAD_BYTES = 128L * 1024 * 1024;
 
     private DataPackReleaseClient() {
@@ -93,8 +94,9 @@ public final class DataPackReleaseClient {
             }
             JsonNode assets = release.path("assets");
             if (!assets.isArray()) continue;
-            for (JsonNode asset : assets) {
-                if (!ASSET_NAME.equals(asset.path("name").asText())) continue;
+            for (String assetName : new String[] {CAPABILITY_ASSET_NAME, ASSET_NAME}) {
+              for (JsonNode asset : assets) {
+                if (!assetName.equals(asset.path("name").asText())) continue;
                 String digest = asset.path("digest").asText("");
                 String url = asset.path("browser_download_url").asText("");
                 if (!digest.matches("sha256:[0-9a-fA-F]{64}")) {
@@ -106,24 +108,25 @@ public final class DataPackReleaseClient {
                 } catch (IllegalArgumentException e) {
                     throw new IOException("Malformed data Release URL", e);
                 }
-                if (!isTrustedAssetUri(uri, tag)) {
+                if (!isTrustedAssetUri(uri, tag, assetName)) {
                     throw new IOException("Data Release asset is outside maintained GitHub repository");
                 }
                 return Optional.of(new DataRelease(tag,
                         digest.substring(7).toLowerCase(Locale.ROOT), uri));
+              }
             }
         }
         return Optional.empty();
     }
 
-    private static boolean isTrustedAssetUri(URI uri, String tag) {
+    private static boolean isTrustedAssetUri(URI uri, String tag, String assetName) {
         return "https".equalsIgnoreCase(uri.getScheme())
                 && "github.com".equalsIgnoreCase(uri.getHost())
                 && uri.getPort() == -1
                 && uri.getRawUserInfo() == null
                 && uri.getRawQuery() == null
                 && uri.getRawFragment() == null
-                && ("/" + OWNER_REPO + "/releases/download/" + tag + "/" + ASSET_NAME)
+                && ("/" + OWNER_REPO + "/releases/download/" + tag + "/" + assetName)
                     .equals(uri.getRawPath());
     }
 

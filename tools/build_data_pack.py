@@ -15,6 +15,8 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 CATEGORIES = ("quest", "eventquest", "kousyou", "mission", "map", "supplemental")
 FORMAT = "logbook-data-pack-v1"
+CAPABILITY_FORMAT = "logbook-data-pack-v2"
+CAPABILITIES = {"deckIds": "quest-filter-deck-ids-v1", "noRetreat": "quest-filter-no-retreat-v1"}
 STAMP = (2020, 1, 1, 0, 0, 0)
 
 
@@ -57,13 +59,26 @@ def without_comments(source: str) -> str:
     return "".join(result)
 
 
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate JSON property: " + key)
+        result[key] = value
+    return result
+
+
+def invalid_constant(value):
+    raise ValueError("Non-finite JSON constant")
+
+
 def normalized_json(source: bytes, name: str) -> bytes:
     text = without_comments(source.decode("utf-8-sig"))
     try:
-        data = json.loads(text)
+        data = json.loads(text, object_pairs_hook=unique_object, parse_constant=invalid_constant)
     except json.JSONDecodeError as error:
         raise ValueError(f"{name}: {error}") from error
-    return (json.dumps(data, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    return (json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode("utf-8")
 
 
 def write_entry(archive: ZipFile, name: str, payload: bytes) -> None:
@@ -85,8 +100,15 @@ def build(source_root: Path, output: Path, source_sha: str) -> dict:
             relative = f"definitions/{category}/{source_file.relative_to(folder).as_posix()}"
             entries.append((relative, payload, raw))
 
+    required = set()
+    for name, payload, _raw in entries:
+        if name.startswith(("definitions/quest/", "definitions/eventquest/")):
+            rule = json.loads(payload)
+            filter_node = rule.get("filter") if isinstance(rule, dict) else None
+            if isinstance(filter_node, dict):
+                required.update(capability for key, capability in CAPABILITIES.items() if key in filter_node)
     manifest = {
-        "format": FORMAT,
+        "format": CAPABILITY_FORMAT if required else FORMAT,
         "source_revision": source_sha,
         "files": [
             {
@@ -98,6 +120,8 @@ def build(source_root: Path, output: Path, source_sha: str) -> dict:
             for path, payload, raw in entries
         ],
     }
+    if required:
+        manifest["required_capabilities"] = sorted(required)
     manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     output.parent.mkdir(parents=True, exist_ok=True)
     with ZipFile(output, "w") as archive:

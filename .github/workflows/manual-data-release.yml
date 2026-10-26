@@ -42,7 +42,17 @@ jobs:
           expected = sum(len(list((src / g).rglob("*.json"))) for g in groups)
           with ZipFile("target/logbook-data-pack.zip") as zipf:
               manifest = json.loads(zipf.read("manifest.json"))
-              assert manifest["format"] == "logbook-data-pack-v1"
+              from tools.build_data_pack import CAPABILITIES, CAPABILITY_FORMAT, FORMAT
+              required = set()
+              for entry in manifest['files']:
+                  if entry['path'].startswith(('definitions/quest/', 'definitions/eventquest/')):
+                      archive = zipf
+                      rule = json.loads(archive.read(entry['path']))
+                      filter_node = rule.get('filter', {}) if isinstance(rule, dict) else {}
+                      if isinstance(filter_node, dict):
+                          required.update(value for key, value in CAPABILITIES.items() if key in filter_node)
+              assert manifest['format'] == (CAPABILITY_FORMAT if required else FORMAT)
+              assert manifest.get('required_capabilities', []) == sorted(required)
               entries = manifest["files"]
               assert len(entries) == expected and expected > 0
               assert set(zipf.namelist()) == {"manifest.json"} | {x["path"] for x in entries}
@@ -86,9 +96,37 @@ jobs:
       - name: Publish data-only GitHub Release (explicit dispatch only)
         shell: bash
         run: |
+          set -euo pipefail
+          # Distinct V2 asset name keeps existing V1 clients on their last compatible release.
+          ASSET="$(python3 - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          from zipfile import ZipFile
+          source = Path('dist/logbook-data-pack.zip')
+          with ZipFile(source) as archive:
+              manifest = json.loads(archive.read('manifest.json'))
+              required = set()
+              names = {'deckIds': 'quest-filter-deck-ids-v1', 'noRetreat': 'quest-filter-no-retreat-v1'}
+              for item in manifest['files']:
+                  if item['path'].startswith(('definitions/quest/', 'definitions/eventquest/')):
+                      rule = json.loads(archive.read(item['path']))
+                      filt = rule.get('filter', {}) if isinstance(rule, dict) else {}
+                      if isinstance(filt, dict):
+                          required.update(value for key, value in names.items() if key in filt)
+          assert manifest['format'] == ('logbook-data-pack-v2' if required else 'logbook-data-pack-v1')
+          assert manifest.get('required_capabilities', []) == sorted(required)
+          if required:
+              target = Path('dist/logbook-data-pack-v2.zip')
+              with source.open('rb') as src, target.open('xb') as dst:
+                  shutil.copyfileobj(src, dst)
+              print(target)
+          else:
+              print(source)
+          PY
+          )"
           printf 'Verified JSON-only definition archive from commit %s. No application JAR is included.\n' "$GITHUB_SHA" > release-notes.txt
-          printf 'SHA-256: %s\n' "$(sha256sum dist/logbook-data-pack.zip | cut -d' ' -f1)" >> release-notes.txt
-          gh release create "$DATA_TAG" dist/logbook-data-pack.zip \
+          printf 'SHA-256: %s\n' "$(sha256sum "$ASSET" | cut -d' ' -f1)" >> release-notes.txt
+          gh release create "$DATA_TAG" "$ASSET" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --latest=false \

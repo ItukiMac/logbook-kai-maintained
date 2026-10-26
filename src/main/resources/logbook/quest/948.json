@@ -4,6 +4,7 @@
     "resetType" : "イヤリー",
     "yearlyResetMonth": 6,
     "filter" : {
+        "deckIds": [1],
         "area": ["5-2", "5-5", "6-4", "6-5"],
         "fleet": {"stype": ["軽空母", "正規空母", "装甲空母"], "order": 1}
         },

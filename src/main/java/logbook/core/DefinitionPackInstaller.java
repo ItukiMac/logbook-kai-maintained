@@ -29,7 +29,9 @@ import java.util.zip.ZipFile;
  * archive SHA-256 MUST be independently obtained from the trusted publisher.
  */
 final class DefinitionPackInstaller {
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = new ObjectMapper()
+            .enable(com.fasterxml.jackson.core.JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
+            .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
     private static final long MAX_ARCHIVE_BYTES = 128L * 1024 * 1024;
     private static final long MAX_UNCOMPRESSED_BYTES = 128L * 1024 * 1024;
     private static final int MAX_FILES = 2000;
@@ -64,6 +66,7 @@ final class DefinitionPackInstaller {
         Path temporary = Files.createTempDirectory(releases, ".install-");
         byte[] manifestBytes;
         Map<String, ExpectedFile> expected;
+        Set<String> requiredCapabilities;
         try {
             try (ZipFile archive = new ZipFile(zip.toFile())) {
                 ZipEntry manifestEntry = archive.getEntry("manifest.json");
@@ -73,6 +76,7 @@ final class DefinitionPackInstaller {
                 }
                 manifestBytes = readBounded(archive.getInputStream(manifestEntry), 2 * 1024 * 1024);
                 expected = parseManifest(manifestBytes);
+                requiredCapabilities = DefinitionPackCompatibility.requireManifest(JSON.readTree(manifestBytes));
 
                 Set<String> seen = new HashSet<>();
                 long[] total = {0};
@@ -120,9 +124,7 @@ final class DefinitionPackInstaller {
                     // A correctly hashed file can still contain invalid JSON.
                     // Reject the entire generation before active.json changes.
                     try (InputStream jsonInput = Files.newInputStream(target)) {
-                        if (JSON.readTree(jsonInput) == null) {
-                            throw new IOException("Empty definition JSON: " + name);
-                        }
+                        DefinitionPackCompatibility.requireDefinition(name, JSON.readTree(jsonInput), requiredCapabilities);
                     } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
                         throw new IOException("Malformed definition JSON: " + name, e);
                     }
@@ -182,6 +184,7 @@ final class DefinitionPackInstaller {
         }
         byte[] rawManifest = readBounded(Files.newInputStream(manifest), 2 * 1024 * 1024);
         Map<String, ExpectedFile> expected = parseManifest(rawManifest);
+        Set<String> requiredCapabilities = DefinitionPackCompatibility.requireManifest(JSON.readTree(rawManifest));
         for (Map.Entry<String, ExpectedFile> item : expected.entrySet()) {
             Path target = selected;
             String[] parts = item.getKey().split("/");
@@ -197,9 +200,7 @@ final class DefinitionPackInstaller {
             }
             // A data file with an intact recorded hash can still be malformed.
             try (InputStream input = Files.newInputStream(target)) {
-                if (JSON.readTree(input) == null) {
-                    throw new IOException("Empty retained JSON: " + item.getKey());
-                }
+                DefinitionPackCompatibility.requireDefinition(item.getKey(), JSON.readTree(input), requiredCapabilities);
             } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
                 throw new IOException("Malformed retained JSON: " + item.getKey(), e);
             }
@@ -254,9 +255,7 @@ final class DefinitionPackInstaller {
 
     private static Map<String, ExpectedFile> parseManifest(byte[] manifest) throws IOException {
         JsonNode document = JSON.readTree(manifest);
-        if (document == null || !FORMAT.equals(document.path("format").asText())) {
-            throw new IOException("Unsupported data manifest format");
-        }
+        DefinitionPackCompatibility.requireManifest(document);
         JsonNode files = document.path("files");
         if (!files.isArray() || files.isEmpty() || files.size() > MAX_FILES) {
             throw new IOException("Invalid definition file list");

@@ -32,9 +32,7 @@ final class GameDefinitionLoader {
         Path selected = definitions.getParent();
         String generation = selected.getFileName().toString();
         JsonNode manifest = JSON.readTree(readRegular(selected.resolve("manifest.json"), 2 * 1024 * 1024));
-        if (manifest == null || !DefinitionPackInstaller.FORMAT.equals(manifest.path("format").asText())) {
-            throw new IOException("Unsupported definition manifest");
-        }
+        Set<String> requiredCapabilities = DefinitionPackCompatibility.requireManifest(manifest);
         JsonNode entries = manifest.path("files");
         if (!entries.isArray() || entries.isEmpty() || entries.size() > GameDefinitionSnapshot.MAX_FILES) {
             throw new IOException("Invalid definition file list");
@@ -63,7 +61,7 @@ final class GameDefinitionLoader {
             if (bytes.length != length || !checksum.equals(sha256(bytes))) {
                 throw new IOException("Definition checksum or size mismatch: " + resource);
             }
-            if (JSON.readTree(bytes) == null) throw new IOException("Empty definition JSON: " + resource);
+            DefinitionPackCompatibility.requireDefinition(resource, JSON.readTree(bytes), requiredCapabilities);
             loaded.put(resource, bytes);
         }
         return new GameDefinitionSnapshot(generation, loaded);

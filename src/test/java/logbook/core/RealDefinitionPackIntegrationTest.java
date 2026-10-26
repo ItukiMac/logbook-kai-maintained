@@ -44,7 +44,7 @@ class RealDefinitionPackIntegrationTest {
         int count;
         try (ZipFile zip = new ZipFile(pack.toFile())) {
             JsonNode manifest = JSON.readTree(zip.getInputStream(zip.getEntry("manifest.json")));
-            assertEquals("logbook-data-pack-v1", manifest.path("format").asText());
+            assertNotNull(DefinitionPackCompatibility.requireManifest(manifest));
             var entries = manifest.path("files");
             assertTrue(entries.isArray());
             count = entries.size();

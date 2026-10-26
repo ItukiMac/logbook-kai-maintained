@@ -34,7 +34,17 @@ jobs:
           from zipfile import ZipFile
           with ZipFile('target/logbook-data-pack.zip') as f:
               manifest = json.loads(f.read('manifest.json'))
-              assert manifest['format'] == 'logbook-data-pack-v1'
+              from tools.build_data_pack import CAPABILITIES, CAPABILITY_FORMAT, FORMAT
+              required = set()
+              for entry in manifest['files']:
+                  if entry['path'].startswith(('definitions/quest/', 'definitions/eventquest/')):
+                      archive = f
+                      rule = json.loads(archive.read(entry['path']))
+                      filter_node = rule.get('filter', {}) if isinstance(rule, dict) else {}
+                      if isinstance(filter_node, dict):
+                          required.update(value for key, value in CAPABILITIES.items() if key in filter_node)
+              assert manifest['format'] == (CAPABILITY_FORMAT if required else FORMAT)
+              assert manifest.get('required_capabilities', []) == sorted(required)
               files = manifest['files']
               source_root = Path('src/main/resources/logbook')
               categories = ('quest', 'eventquest', 'kousyou', 'mission', 'map', 'supplemental')
