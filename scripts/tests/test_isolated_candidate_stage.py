@@ -57,6 +57,17 @@ class IsolatedStageTest(unittest.TestCase):
         self.out=self.root/'nested'
         with self.assertRaises(ValueError):self.run_stage()
         self.assertFalse(self.out.exists())
+    def test_parent_traversal_cannot_hide_output_inside_source(self):
+        (self.base/'outside').mkdir()
+        self.out=self.base/'outside/../repo/nested'
+        with self.assertRaisesRegex(ValueError,'Parent-traversal'):self.run_stage()
+        self.assertFalse((self.root/'nested').exists())
+        self.assertEqual([b'{}']*6,[p.read_bytes() for p in self.paths])
+    def test_parent_traversal_source_alias_is_rejected_before_writes(self):
+        (self.base/'outside').mkdir()
+        self.root=self.base/'outside/../repo'
+        with self.assertRaisesRegex(ValueError,'Parent-traversal'):self.run_stage()
+        self.assertFalse(self.out.exists())
     def test_symlinked_output_parent_is_rejected(self):
         alias=self.base/'alias';alias.symlink_to(self.base,target_is_directory=True);self.out=alias/'stage'
         with self.assertRaises(ValueError):self.run_stage()
