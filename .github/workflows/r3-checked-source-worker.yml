@@ -1,0 +1,120 @@
+name: R3 exact-source verification worker (tooling only)
+on:
+  push:
+    branches: ['maintenance/r3-checked-worker-20261026']
+permissions:
+  contents: write
+concurrency:
+  group: r3-checked-worker-20261026
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 91f0926cff0aa8293947ca9bab669aede6224d31
+      TARGET: maintenance/r3-definition-features-stage-20261026
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: payload
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: candidate
+          ref: 91f0926cff0aa8293947ca9bab669aede6224d31
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Verify base and all 26 exact file bytes before isolated writes
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import base64,hashlib,json,lzma,os
+          from pathlib import Path,PurePosixPath
+          encoded=''.join((Path('../payload/.maintenance-transfers/r3')/f'part-{i}.txt').read_text() for i in range(3))
+          assert len(encoded)==33016
+          assert hashlib.sha256(encoded.encode()).hexdigest()=='ad25cd7c67bee656b7f6e85256c9f9cd4912b6cadf6e37a69fbd7a6092cff85b'
+          dec=lzma.LZMADecompressor(memlimit=128*1024*1024)
+          raw=dec.decompress(base64.b64decode(encoded,validate=True),max_length=200001)
+          assert len(raw)==141635 and dec.eof and not dec.unused_data
+          spec=json.loads(raw)
+          assert spec['base']==os.environ['BASE'] and len(spec['files'])==26
+          output={};h=hashlib.sha256()
+          for item in spec['files']:
+              name=item['path'];p=Path(name);rel=PurePosixPath(name)
+              assert not rel.is_absolute() and '..' not in rel.parts and '\\' not in name
+              assert name not in output and (rel.parts[0] in ('src','scripts','docs') or name=='.github/workflows/r3-candidate-validation.yml')
+              assert not any(q.is_symlink() for q in (p,*p.parents))
+              old=item['old_sha256']
+              assert not p.exists() if old is None else p.is_file() and hashlib.sha256(p.read_bytes()).hexdigest()==old
+              data=item['text'].encode('utf-8');output[name]=data
+              h.update(name.encode()+b'\0'+data+b'\0')
+          assert h.hexdigest()==spec['aggregate_sha256']=='23075bcc14cb97b4a411a715620af25f246989bdf9a50a17aa32145e2d6cbbc3'
+          for name,data in output.items():
+              p=Path(name);p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data)
+          Path('../verified-paths.json').write_text(json.dumps(list(output)))
+          print('VERIFIED_SOURCE_FILES',len(output),'AGGREGATE',h.hexdigest())
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Full original-host, physically split GUI and isolated typed-pack verification
+        working-directory: candidate
+        run: bash scripts/verify_r3.sh
+      - name: Exercise bounded public collection once (no inference or approval)
+        working-directory: candidate
+        shell: bash
+        run: |
+          set +e
+          timeout 90s python3 scripts/collect_maintenance_sources.py --url 'https://wikiwiki.jp/kancolle/%E9%81%A0%E5%BE%81/%E8%A9%B3%E7%B4%B0%E4%B8%80%E8%A6%A7%E8%A1%A8' --url 'https://zekamashi.net/kancolle-kouryaku/ensei/' --out target/r3-public-evidence > target/r3-public-collection.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > target/r3-public-collection-exit.txt
+          cat target/r3-public-collection.log
+          echo "Collection exit=$status; this is not semantic review or user approval."
+          exit 0
+      - name: Commit only tested source paths, then non-force update the dedicated branch
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import hashlib,json,subprocess
+          from pathlib import Path
+          paths=json.loads(Path('../verified-paths.json').read_text());h=hashlib.sha256()
+          for name in paths:h.update(name.encode()+b'\0'+Path(name).read_bytes()+b'\0')
+          assert h.hexdigest()=='23075bcc14cb97b4a411a715620af25f246989bdf9a50a17aa32145e2d6cbbc3'
+          # Workflow addition is performed separately by the connected workflow-authorized API.
+          source=[p for p in paths if not p.startswith('.github/')]
+          assert len(source)==25
+          subprocess.run(['git','add','--',*source],check=True)
+          assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())==set(source)
+          PY
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'R3: review and correct expedition scalars, split seven feature UIs into validation JARs, and stage approved changes without touching live data'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > target/r3-verification/source-commit.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: r3-checked-source-evidence
+          path: |
+            candidate/target/r3-verification/*.json
+            candidate/target/r3-verification/*.log
+            candidate/target/r3-verification/*.txt
+            candidate/target/surefire-reports/
+            candidate/target/r3-public-evidence/evidence.json
+            candidate/target/r3-public-collection.log
+            candidate/target/r3-public-collection-exit.txt
+          retention-days: 14
+          if-no-files-found: error
