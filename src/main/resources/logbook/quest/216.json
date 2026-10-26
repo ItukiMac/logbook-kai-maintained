@@ -2,6 +2,6 @@
 {
     "resetType" : "デイリー",
     "conditions" : [
-        {"rank": ["S", "A", "B"], "count": 1}
+        {"count": 1}
     ]
 }
