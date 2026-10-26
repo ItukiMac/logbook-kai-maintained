@@ -50,6 +50,13 @@ public class Missions {
      * @throws IOException
      */
     public static Optional<MissionCondition> getMissionCondition(Integer missionId) throws IOException {
+        try (var lease = LogBookCoreServices.pinDefinitions()) {
+            var result = getPinnedMissionCondition(missionId);
+            if (logbook.core.GameDefinitionRuntime.active()) result.ifPresent(c -> c.bindDefinitionSnapshot(lease.snapshot()));
+            return result;
+        }
+    }
+    private static Optional<MissionCondition> getPinnedMissionCondition(Integer missionId) throws IOException {
         Mission mission = Missions.getMission(missionId);
 
         if (mission == null) {

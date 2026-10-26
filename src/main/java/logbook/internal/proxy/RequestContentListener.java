@@ -1,45 +1,31 @@
 package logbook.internal.proxy;
 
 import java.nio.ByteBuffer;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.jetty.client.Request;
 import org.eclipse.jetty.client.Request.ContentListener;
 
-/**
- * リクエストをキャプチャします
- *
- */
+/** Captures each transmitted chunk once; any aggregate overflow leaves a rejected tombstone. */
 public final class RequestContentListener implements ContentListener {
-
     private final HttpServletRequest httpRequest;
-
-    /**
-     * @param request {@link HttpServletRequest}
-     */
-    public RequestContentListener(HttpServletRequest request) {
-        this.httpRequest = request;
+    private final CapturedHttpRequestResponse fixedCapture;
+    public RequestContentListener(HttpServletRequest request) { this(request, null); }
+    RequestContentListener(HttpServletRequest request, CapturedHttpRequestResponse capture) {
+        httpRequest = request; fixedCapture = capture;
     }
-
-    /**
-     * 必要なPOSTデータの場合キャプチャします
-     */
-    @Override
-    public void onContent(Request request, ByteBuffer buffer) {
-        ByteBuffer capture = buffer.asReadOnlyBuffer();
-        int length = capture.remaining();
-
-        if (((length > 0) && (length <= CapturedHttpRequestResponseConst.MAX_POST_FIELD_SIZE))) {
-            byte[] bytes = new byte[length];
-            capture.get(bytes);
-
-            CapturedHttpRequestResponse capturedHttpRequestResponse = (CapturedHttpRequestResponse) this.httpRequest.getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
-            if (capturedHttpRequestResponse == null) {
-                capturedHttpRequestResponse = new CapturedHttpRequestResponse();
-                this.httpRequest.setAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER, capturedHttpRequestResponse);
+    @Override public void onContent(Request request, ByteBuffer buffer) {
+        if (!buffer.hasRemaining()) return;
+        CapturedHttpRequestResponse captured = fixedCapture;
+        if (captured == null) {
+            synchronized (httpRequest) {
+                if (Boolean.TRUE.equals(httpRequest.getAttribute(ReverseProxyServlet.CAPTURE_FINISHED))) return;
+                captured = (CapturedHttpRequestResponse) httpRequest.getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
+                if (captured == null) {
+                    captured = new CapturedHttpRequestResponse();
+                    httpRequest.setAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER, captured);
+                }
             }
-            capturedHttpRequestResponse.putOriginRequest(bytes);
         }
+        captured.putOriginRequest(buffer);
     }
 }

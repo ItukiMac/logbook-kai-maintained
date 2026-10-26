@@ -121,16 +121,23 @@ public class RequestMetaDataWrapper implements RequestMetaData, Cloneable {
 
     public void set(InputStream body) {
         String bodystr;
-        try (Reader reader = new InputStreamReader(body, StandardCharsets.UTF_8)) {
+        body.mark(Integer.MAX_VALUE);
+        try {
+            Reader reader = new InputStreamReader(body, StandardCharsets.UTF_8);
             int len;
             char[] cbuf = new char[128];
             StringBuilder sb = new StringBuilder();
             while ((len = reader.read(cbuf)) > 0) {
                 sb.append(cbuf, 0, len);
             }
-            bodystr = URLDecoder.decode(sb.toString(), "UTF-8");
+            bodystr = sb.toString();
         } catch (IOException e) {
             bodystr = "";
+        } finally {
+            if (body.markSupported()) {
+                try { body.reset(); }
+                catch (IOException e) { throw new IllegalArgumentException("Cannot restore captured request", e); }
+            }
         }
         Map<String, List<String>> map = new LinkedHashMap<>();
         for (String part : bodystr.split("&")) {
@@ -144,8 +151,10 @@ public class RequestMetaDataWrapper implements RequestMetaData, Cloneable {
                 key = part;
                 value = null;
             }
-            map.computeIfAbsent(key, k -> new ArrayList<>())
-                    .add(value);
+            // Split before decoding: %26 and %3D are data, not parameter separators.
+            key = URLDecoder.decode(key, StandardCharsets.UTF_8);
+            if (value != null) value = URLDecoder.decode(value, StandardCharsets.UTF_8);
+            map.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
         }
         this.setParameterMap(map);
         this.setRequestBody(Optional.of(body));

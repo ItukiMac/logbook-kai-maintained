@@ -19,6 +19,16 @@ import lombok.Data;
 @Data
 public class MissionCondition implements TestAllPredicate<List<Ship>> {
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @lombok.EqualsAndHashCode.Exclude
+    private transient logbook.plugin.api.GameDefinitionSnapshot definitionSnapshot;
+
+    public void bindDefinitionSnapshot(logbook.plugin.api.GameDefinitionSnapshot value) {
+        this.definitionSnapshot = value;
+        if (conditions != null) conditions.forEach(c -> c.bindDefinitionSnapshot(value));
+        if (greatSuccessCondition != null) greatSuccessCondition.bindDefinitionSnapshot(value);
+    }
+
     @JsonProperty("description")
     private String description;
 
@@ -57,6 +67,11 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
 
     @Override
     public boolean test(List<Ship> ships) {
+        try (var scope = definitionSnapshot == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
+            return testPinned(ships);
+        }
+    }
+    private boolean testPinned(List<Ship> ships) {
         this.result = false;
         if (this.type != null) {
             if (this.type.equals("艦娘")) {

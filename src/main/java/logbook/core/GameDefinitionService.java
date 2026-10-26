@@ -14,8 +14,10 @@ import logbook.plugin.api.GameDefinitionSnapshot;
 
 /** Explicit host-side service; never installs, changes active.json, or auto-enables legacy cache reload. */
 public final class GameDefinitionService implements GameDataView {
-    private final AtomicReference<GameDefinitionSnapshot> current = new AtomicReference<>(
-            new GameDefinitionSnapshot("bundled-unloaded", Map.of()));
+    record Publication(GameDefinitionSnapshot snapshot, Object prepared) {}
+    private final AtomicReference<Publication> current = new AtomicReference<>(
+            new Publication(new GameDefinitionSnapshot("bundled-unloaded", Map.of()), null));
+    private final java.util.function.Function<GameDefinitionSnapshot, Object> prepare;
     private final CopyOnWriteArrayList<Subscription> listeners = new CopyOnWriteArrayList<>();
     /** Fingerprints, not old payloads, are retained for this service instance's lifetime. */
     private final Map<String, String> publishedFingerprints = new HashMap<>();
@@ -27,10 +29,15 @@ public final class GameDefinitionService implements GameDataView {
         this(error -> LoggerHolder.get().warn("ゲーム定義の更新通知で例外が発生", error));
     }
     public GameDefinitionService(Consumer<RuntimeException> errors) {
-        this.errors = Objects.requireNonNull(errors);
-        publishedFingerprints.put(current.get().generation(), current.get().fingerprint());
+        this(errors, snapshot -> null);
     }
-    @Override public GameDefinitionSnapshot snapshot() { return current.get(); }
+    GameDefinitionService(Consumer<RuntimeException> errors, java.util.function.Function<GameDefinitionSnapshot, Object> prepare) {
+        this.errors = Objects.requireNonNull(errors);
+        this.prepare = Objects.requireNonNull(prepare);
+        publishedFingerprints.put(snapshot().generation(), snapshot().fingerprint());
+    }
+    @Override public GameDefinitionSnapshot snapshot() { return current.get().snapshot(); }
+    Publication publication() { return current.get(); }
     @Override public AutoCloseable subscribe(Consumer<Change> listener) {
         Subscription subscription = new Subscription(Objects.requireNonNull(listener));
         listeners.add(subscription);
@@ -47,11 +54,12 @@ public final class GameDefinitionService implements GameDataView {
         if (known != null && !known.equals(candidate.fingerprint())) {
             throw new IllegalArgumentException("An immutable generation changed contents");
         }
-        GameDefinitionSnapshot old = current.get();
+        GameDefinitionSnapshot old = snapshot();
         if (old.generation().equals(candidate.generation())) return old;
+        Object prepared = prepare.apply(candidate); // Fail before changing sequence, identity history or any visible state.
         Change change = new Change(++sequence, old, candidate);
         publishedFingerprints.put(candidate.generation(), candidate.fingerprint());
-        current.set(candidate);
+        current.set(new Publication(candidate, prepared));
         notifying = true;
         try {
             for (Subscription listener : listeners) {

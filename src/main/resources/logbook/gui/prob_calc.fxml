@@ -34,6 +34,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="0.0" />
          </padding>
       </HBox>
+      <Label fx:id="inputMessage" wrapText="true" maxWidth="Infinity" minHeight="-Infinity" accessibleRole="TEXT">
+         <VBox.margin><Insets bottom="5.0" left="5.0" right="5.0" /></VBox.margin>
+      </Label>
       <TableView fx:id="resultTable" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn prefWidth="100.0" text="出撃回数">

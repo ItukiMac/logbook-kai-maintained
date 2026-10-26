@@ -81,6 +81,8 @@ import lombok.Setter;
  *
  */
 public class ItemItemController extends WindowController {
+    private boolean refreshingDefinitions;
+    private final List<CheckBox> categoryCheckBoxes = new ArrayList<>();
 
     @FXML
     private SplitPane splitPane;
@@ -267,49 +269,14 @@ public class ItemItemController extends WindowController {
             this.textValue.getSelectionModel().selectedItemProperty().addListener(this::filterAction);
 
             this.typeFilterTitledPane.expandedProperty().addListener((ob, o, n) -> saveConfig());
-            // カテゴリを調べて存在するものだけ表示する
-            Map<Integer, SlotitemMst> slotitemMap = SlotitemMstCollection.get().getSlotitemMap();
-            Set<Integer> existingTypes = SlotItemCollection.get().getSlotitemMap().values().stream()
-                    .map(SlotItem::getSlotitemId)
-                    .map(slotitemMap::get)
-                    .map(mst -> mst.getType().get(2))
-                    .collect(Collectors.toSet());
-            Map<String, List<SlotitemEquiptype>> categories = Items.getCategories();
-            final AtomicInteger row = new AtomicInteger(1);
-            final List<CheckBox> categoryCheckBoxes = new ArrayList<CheckBox>();
-            categories.forEach((name, equipTypes) -> {
-                List<CheckBox> types = equipTypes.stream()
-                        // 該当の装備を1つも持ってないものは除外
-                        .filter(type -> type != null && existingTypes.contains(type.getId()))
-                        .map(type -> {
-                            CheckBox check = new CheckBox(type.getName());
-                            check.setDisable(true);
-                            check.selectedProperty().addListener(this::filterAction);
-                            this.typeFilters.put(type.getId(), check);
-                            return check;
-                        })
-                        .collect(Collectors.toList());
-                if (types.isEmpty()) {
-                    // 空であれば何もしない
-                    return;
-                }
-
-                FlowPane categoryPane = new FlowPane();
-                CheckBox category = new CheckBox(name);
-                category.setDisable(true);
-                category.setAllowIndeterminate(true);
-                categoryPane.getChildren().add(category);
-                this.typeFilterPane.add(categoryPane, 0, row.get());
-                categoryCheckBoxes.add(category);
-
-                FlowPane typesPane = new FlowPane(5, 0);
-                typesPane.setPrefWidth(Integer.MAX_VALUE);
-                typesPane.getChildren().addAll(types);
-                this.typeFilterPane.add(typesPane, 1, row.getAndIncrement());
-                Tools.Controls.bindChildCheckBoxes(category, types);
-                category.disabledProperty().addListener((ob, o, n) -> types.forEach(c -> c.setDisable(n)));
+            rebuildCategories();
+            this.allTypes.setOnAction(event -> {
+                boolean selected = this.allTypes.isSelected();
+                refreshingDefinitions = true;
+                try { this.typeFilters.values().forEach(check -> check.setSelected(selected)); }
+                finally { refreshingDefinitions = false; }
+                refreshAllTypesState(); createFilter(); saveConfig();
             });
-            Tools.Controls.bindChildCheckBoxes(this.allTypes, categoryCheckBoxes);
             this.typeFilter.selectedProperty().addListener(this::filterAction);
             this.typeFilter.selectedProperty().addListener((ob, o, n) -> {
                 categoryCheckBoxes.forEach(c -> c.setDisable(!n));
@@ -426,11 +393,81 @@ public class ItemItemController extends WindowController {
      * フィルターを設定する
      */
     private void filterAction(ObservableValue<?> observable, Object oldValue, Object newValue) {
+        if (refreshingDefinitions) return;
+        refreshAllTypesState();
         createFilter();
         saveConfig();
     }
 
+    private void refreshAllTypesState() {
+        long selected = typeFilters.values().stream().filter(CheckBox::isSelected).count();
+        allTypes.setIndeterminate(selected > 0 && selected < typeFilters.size());
+        allTypes.setSelected(!typeFilters.isEmpty() && selected == typeFilters.size());
+    }
+
+    private void rebuildCategories() {
+        Set<Integer> selected = getSelectedTypes();
+        refreshingDefinitions = true;
+        try {
+            typeFilters.clear();
+            typeFilterPane.getChildren().removeIf(node -> {
+                Integer row = javafx.scene.layout.GridPane.getRowIndex(node);
+                return row != null && row > 0;
+            });
+            Map<Integer, SlotitemMst> slotitemMap = SlotitemMstCollection.get().getSlotitemMap();
+            Set<Integer> existingTypes = SlotItemCollection.get().getSlotitemMap().values().stream()
+                    .map(SlotItem::getSlotitemId)
+                    .map(slotitemMap::get)
+                    .map(mst -> mst.getType().get(2))
+                    .collect(Collectors.toSet());
+            Map<String, List<SlotitemEquiptype>> categories = Items.getCategories();
+            final AtomicInteger row = new AtomicInteger(1);
+            categoryCheckBoxes.clear();
+            categories.forEach((name, equipTypes) -> {
+                List<CheckBox> types = equipTypes.stream()
+                        // 該当の装備を1つも持ってないものは除外
+                        .filter(type -> type != null && existingTypes.contains(type.getId()))
+                        .map(type -> {
+                            CheckBox check = new CheckBox(type.getName());
+                            check.setDisable(!this.typeFilter.isSelected());
+                            check.setSelected(selected.contains(type.getId()));
+                            check.selectedProperty().addListener(this::filterAction);
+                            this.typeFilters.put(type.getId(), check);
+                            return check;
+                        })
+                        .collect(Collectors.toList());
+                if (types.isEmpty()) {
+                    // 空であれば何もしない
+                    return;
+                }
+
+                FlowPane categoryPane = new FlowPane();
+                CheckBox category = new CheckBox(name);
+                category.setDisable(!this.typeFilter.isSelected());
+                category.setAllowIndeterminate(true);
+                categoryPane.getChildren().add(category);
+                this.typeFilterPane.add(categoryPane, 0, row.get());
+                categoryCheckBoxes.add(category);
+
+                FlowPane typesPane = new FlowPane(5, 0);
+                typesPane.setPrefWidth(Integer.MAX_VALUE);
+                typesPane.getChildren().addAll(types);
+                this.typeFilterPane.add(typesPane, 1, row.getAndIncrement());
+                Tools.Controls.bindChildCheckBoxes(category, types);
+                category.disabledProperty().addListener((ob, o, n) -> types.forEach(c -> c.setDisable(n)));
+            });
+
+            this.allTypes.setDisable(!this.typeFilter.isSelected());
+            refreshAllTypesState();
+        } finally {refreshingDefinitions = false;}
+    }
+
+    @Override protected void onDefinitionsChanged() {
+        if (types != null) { rebuildCategories(); createFilter(); typeTable.refresh(); }
+    }
+
     private void createFilter() {
+        Map<String, List<String>> currentDays = logbook.core.GameDefinitionRuntime.arsenalDays();
         Predicate<Item> filter = ItemFilter.DefaultFilter.builder()
                 .typeFilter(this.textFilter.isSelected())
                 .typeValue(this.textValue.getValue() == null ? "" : this.textValue.getValue())
@@ -449,7 +486,7 @@ public class ItemItemController extends WindowController {
             Set<String> selectedRemodelDays = getSelectedRemodelDays();
             filter = filterAnd(filter, (item) -> {
                 if (item instanceof RemodelItem) {
-                    Set<String> itemDays = ((RemodelItem) item).getRemodelDays();
+                    Set<String> itemDays = currentDays == null ? ((RemodelItem) item).getRemodelDays() : new java.util.HashSet<>(currentDays.getOrDefault(item.getName(), List.of()));
                     // AllAvailableDays情報を持っていないItemは非表示
                     if (itemDays.isEmpty()) {
                         return false;

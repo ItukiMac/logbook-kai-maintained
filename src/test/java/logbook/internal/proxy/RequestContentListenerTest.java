@@ -58,14 +58,18 @@ class RequestContentListenerTest {
         assertArrayEquals(new byte[] {1, 2, 1, 2}, captured(request).getOriginRequest().readAllBytes());
     }
 
-    @Test void emptyAndOverLimitChunksDoNotCreateCaptureHolder() {
+    @Test void emptyChunkIsIgnoredButOversizedChunkInvalidatesTheWholeCapture() {
         HttpServletRequest request = requestWithAttributes();
         RequestContentListener listener = new RequestContentListener(request);
         listener.onContent(null, ByteBuffer.allocate(0));
         assertNull(captured(request));
         ByteBuffer oversized = ByteBuffer.allocate(CapturedHttpRequestResponseConst.MAX_POST_FIELD_SIZE + 1);
         listener.onContent(null, oversized);
-        assertNull(captured(request));
+        assertNotNull(captured(request));
+        assertFalse(captured(request).isComplete());
+        listener.onContent(null, ByteBuffer.wrap(new byte[] {1, 2}));
+        assertFalse(captured(request).isComplete());
+        assertThrows(IllegalStateException.class, () -> captured(request).getOriginRequest());
         assertEquals(0, oversized.position());
     }
 }

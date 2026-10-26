@@ -23,6 +23,8 @@ public interface ContentListenerSpi {
 
     /**
      * レスポンスを処理します
+     * <p>ボディストリームはこのコールバック内で読み取ってください。戻った後はホストが閉じます。
+     * 非同期処理へ渡す場合は、必要な解析結果をコールバック内で作成してください。</p>
      * 
      * @param requestMetaData リクエストに含まれている情報
      * @param responseMetaData レスポンスに含まれている情報

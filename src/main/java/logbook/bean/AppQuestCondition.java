@@ -28,6 +28,11 @@ import lombok.Data;
 @Data
 public class AppQuestCondition implements Predicate<QuestCollect> {
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    private transient logbook.plugin.api.GameDefinitionSnapshot definitionSnapshot;
+
     /** 任務のタイプ(enum: 出撃, 遠征) */
     private Type type;
 
@@ -59,6 +64,14 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
      * @return 任務条件設定
      */
     public static AppQuestCondition loadFromResource(int questNo) {
+        try (var lease = LogBookCoreServices.pinDefinitions()) {
+            AppQuestCondition result = loadPinned(questNo);
+            if (result != null && logbook.core.GameDefinitionRuntime.active()) result.definitionSnapshot = lease.snapshot();
+            return result;
+        }
+    }
+
+    private static AppQuestCondition loadPinned(int questNo) {
         InputStream is = LogBookCoreServices.getQuestResourceAsStream(questNo, true);
         if (is != null) {
             try {
@@ -120,6 +133,12 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
     @Override
     public boolean test(QuestCollect t) {
+        try (var lease = definitionSnapshot == null ? LogBookCoreServices.pinDefinitions() : LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
+            return testPinned(t);
+        }
+    }
+
+    private boolean testPinned(QuestCollect t) {
         Predicate<QuestCollect> predicate = null;
         for (Condition condition : this.conditions) {
             condition.test(t);

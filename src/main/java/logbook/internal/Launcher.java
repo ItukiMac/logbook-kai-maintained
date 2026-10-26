@@ -103,6 +103,7 @@ public final class Launcher {
             }
         }
         LogBookCoreServices.init(plugins);
+        logbook.core.GameDefinitionRuntime.initialize();
     }
 
     /**

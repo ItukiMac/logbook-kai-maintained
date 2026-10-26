@@ -20,7 +20,7 @@ import logbook.api.API;
 import logbook.api.APIListenerSpi;
 import logbook.common.Messages;
 import logbook.core.LogBookCoreServices;
-import logbook.internal.ThreadManager;
+import logbook.core.GameStateService;
 import logbook.internal.Tuple;
 import logbook.internal.Tuple.Pair;
 import logbook.internal.logger.LoggerHolder;
@@ -49,7 +49,9 @@ public final class APIListener implements ContentListenerSpi {
     /** 全てのURLで実行される設定がされているフラグ */
     private final boolean isAllEventExec;
 
-    public APIListener() {
+    public APIListener() { this(LogBookCoreServices.getServiceProviders(APIListenerSpi.class)); }
+
+    APIListener(Stream<APIListenerSpi> providers) {
         Function<APIListenerSpi, Stream<Pair<String, APIListenerSpi>>> mapper = impl -> {
             API target = impl.getClass().getAnnotation(API.class);
             if (target != null) {
@@ -60,10 +62,10 @@ public final class APIListener implements ContentListenerSpi {
             }
             return Stream.empty();
         };
-        this.isAllEventExec = !this.allEventExec.isEmpty();
-        this.targetEventExec = LogBookCoreServices.getServiceProviders(APIListenerSpi.class)
+        this.targetEventExec = providers
                 .flatMap(mapper)
                 .collect(Collectors.groupingBy(Pair::getKey));
+        this.isAllEventExec = !this.allEventExec.isEmpty();
         this.isDebugEnabled = LoggerHolder.get().isDebugEnabled();
 
         if (this.isDebugEnabled) {
@@ -90,7 +92,7 @@ public final class APIListener implements ContentListenerSpi {
     @Override
     public boolean test(RequestMetaData requestMetaData) {
         String uri = requestMetaData.getRequestURI();
-        return uri.startsWith("/kcsapi/") && (this.isAllEventExec || this.targetEventExec.containsKey(uri));
+        return uri != null && uri.startsWith("/kcsapi/") && (this.isAllEventExec || this.targetEventExec.containsKey(uri));
     }
 
     /**
@@ -116,51 +118,23 @@ public final class APIListener implements ContentListenerSpi {
             }
         } catch (Exception e) {
             LoggerHolder.get().warn(Messages.getString("APIListener.2"), e); //$NON-NLS-1$
-            // 例外発生時のレスポンスの内容をログに出力する
-            StringBuilder sb = new StringBuilder();
-            sb.append("uri=");
-            try {
-                if (requestMetaData != null) {
-                    sb.append(requestMetaData.getRequestURI());
-                }
-            } catch (Exception e2) {
-                sb.append(e2.toString());
-            }
-            sb.append(",body=");
-            try {
-                if (responseMetaData != null) {
-                    InputStream in = responseMetaData.getResponseBody().orElse(null);
-                    if (in != null) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        byte[] buf = new byte[1024];
-                        int len;
-                        while ((len = in.read(buf)) > 0) {
-                            out.write(buf, 0, len);
-                        }
-                        sb.append(new String(out.toByteArray(), StandardCharsets.UTF_8));
-                        in.close();
-                    }
-                }
-            } catch (Exception e2) {
-                sb.append(e2.toString());
-            }
-            LoggerHolder.get().warn(sb.toString());
+            LoggerHolder.get().warn("API response rejected; raw body omitted");
         }
     }
 
     void send(RequestMetaData req, ResponseMetaData res, JsonObject json) {
         String uri = req.getRequestURI();
-
-        List<Pair<String, APIListenerSpi>> pairs = this.targetEventExec.getOrDefault(uri, Collections.emptyList());
-        for (Pair<String, APIListenerSpi> pair : pairs) {
-            Runnable task = () -> this.createTask(pair, json, req, res);
-            ThreadManager.getExecutorService().submit(task);
-        }
-
-        for (Pair<String, APIListenerSpi> pair : this.allEventExec) {
-            Runnable task = () -> this.createTask(pair, json, req, res);
-            ThreadManager.getExecutorService().submit(task);
-        }
+        // Already running on the bounded capture dispatcher: no second unbounded queue.
+        GameStateService.shared().applyApiUpdate(uri, () -> {
+            boolean success = true;
+            for (Pair<String, APIListenerSpi> pair : this.targetEventExec.getOrDefault(uri, Collections.emptyList())) {
+                success &= this.createTask(pair, json, req, res);
+            }
+            for (Pair<String, APIListenerSpi> pair : this.allEventExec) {
+                success &= this.createTask(pair, json, req, res);
+            }
+            return success;
+        });
     }
 
     /**
@@ -176,7 +150,7 @@ public final class APIListener implements ContentListenerSpi {
      * @param req
      * @param res
      */
-    private void createTask(Pair<String, APIListenerSpi> pair, JsonObject json, RequestMetaData req,
+    private boolean createTask(Pair<String, APIListenerSpi> pair, JsonObject json, RequestMetaData req,
             ResponseMetaData res) {
         try {
             long start = System.currentTimeMillis();
@@ -200,9 +174,10 @@ public final class APIListener implements ContentListenerSpi {
                     this.writePerformanceLog(metrics);
                 }
             }
+            return true;
         } catch (Exception e) {
             LoggerHolder.get().warn(Messages.getString("APIListener.1"), e); //$NON-NLS-1$
-            LoggerHolder.get().warn(json.toString());
+            return false; // Publication marks the observed update as partial; never claim a successful transaction.
         }
     }
 

@@ -92,7 +92,12 @@ public class MissionCheck extends WindowController {
         this.buildTree(deck);
     }
 
+    @Override protected void onDefinitionsChanged() { update(null); }
+
     private void buildTree(DeckPort deck) {
+        try(var scope = logbook.core.LogBookCoreServices.pinDefinitions()) { buildPinnedTree(deck); }
+    }
+    private void buildPinnedTree(DeckPort deck) {
         TreeItem<String> root = new TreeItem<>();
         if (deck != null) {
             Map<Integer, Ship> shipMap = ShipCollection.get()

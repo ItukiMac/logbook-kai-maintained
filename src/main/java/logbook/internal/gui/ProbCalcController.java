@@ -4,8 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import logbook.internal.calc.ProbabilityCalculator;
+import logbook.internal.calc.ProbabilityInput;
 
 public class ProbCalcController extends WindowController {
 
@@ -21,6 +22,9 @@ public class ProbCalcController extends WindowController {
     @FXML
     private TableView<ProbRow> resultTable;
 
+    @FXML
+    private Label inputMessage;
+
     private ObservableList<ProbRow> rows = FXCollections.observableArrayList();
 
     @FXML
@@ -29,25 +33,17 @@ public class ProbCalcController extends WindowController {
         this.probInput.textProperty().addListener((ob, o, n) -> this.update());
         this.limitInput.textProperty().addListener((ob, o, n) -> this.update());
         this.stepInput.textProperty().addListener((ob, o, n) -> this.update());
+        this.update();
     }
 
     private void update() {
-        this.rows.clear();
-        String text = this.probInput.getText();
-        if (this.limitInput == null || this.stepInput == null) return;
-        String limitText = this.limitInput.getText();
-        String stepText = this.stepInput.getText();
-        if (text == null || text.isEmpty() || limitText == null || limitText.isEmpty()
-                || stepText == null || stepText.isEmpty()) {
-            return;
-        }
-        try {
-            this.rows.setAll(ProbabilityCalculator.calculate(
-                    Double.parseDouble(text), Integer.parseInt(limitText), Integer.parseInt(stepText))
-                    .stream().map(point -> new ProbRow(point.count(), point.probability())).toList());
-        } catch (NumberFormatException e) {
-            // Ignore invalid input, preserving the existing empty-table behavior.
-        }
+        var result = ProbabilityInput.evaluate(this.probInput.getText(),
+                this.limitInput.getText(), this.stepInput.getText());
+        this.rows.setAll(result.points().stream()
+                .map(point -> new ProbRow(point.count(), point.probability())).toList());
+        this.inputMessage.setText(result.message());
+        this.inputMessage.setVisible(!result.valid());
+        this.inputMessage.setManaged(!result.valid());
     }
 
     // Preserve the public row type/getters used by the existing FXML and callers.

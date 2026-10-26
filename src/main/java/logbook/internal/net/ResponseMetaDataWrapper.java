@@ -15,6 +15,8 @@ import logbook.net.ResponseMetaData;
  */
 public class ResponseMetaDataWrapper implements ResponseMetaData, Cloneable {
 
+    public static final long MAX_DECODED_BYTES = 32L * 1024 * 1024;
+
     private int status;
 
     private String contentType;
@@ -77,7 +79,7 @@ public class ResponseMetaDataWrapper implements ResponseMetaData, Cloneable {
     }
 
     public void set(InputStream body) throws IOException {
-        this.setResponseBody(Optional.of(ungzip(body)));
+        this.setResponseBody(Optional.of(decoded(body, MAX_DECODED_BYTES)));
     }
 
     @Override
@@ -90,6 +92,18 @@ public class ResponseMetaDataWrapper implements ResponseMetaData, Cloneable {
             clone.setHeaders(new java.util.LinkedHashMap<>(this.headers));
         }
         return clone;
+    }
+
+    static InputStream decoded(InputStream body, long limit) throws IOException {
+        return new BoundedBodyInputStream(ungzip(body), limit);
+    }
+
+    /** Check the entire decoded response BEFORE any listener sees a supposedly complete exchange. */
+    public static void validateBody(InputStream body) throws IOException {
+        try (InputStream decoded = decoded(body, MAX_DECODED_BYTES)) {
+            byte[] buffer = new byte[8192];
+            while (decoded.read(buffer) != -1) { /* Bounded streaming validation, no retained decoded copy. */ }
+        }
     }
 
     private static InputStream ungzip(InputStream body) throws IOException {
