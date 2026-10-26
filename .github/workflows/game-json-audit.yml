@@ -1,0 +1,41 @@
+name: Read-only complete game JSON syntax audit
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'src/main/resources/**'
+      - '.github/workflows/game-json-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+      - name: Fresh full audit (never reuse cached assertions in CI)
+        run: |
+          mkdir -p target/game-json-audit
+          status=0
+          python3 scripts/audit_game_json.py --root . > target/game-json-audit/audit.json || status=$?
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('target/game-json-audit/audit.json').read_text())
+          print('AUDIT_COUNTS', json.dumps(report['counts'], sort_keys=True))
+          print('AUDIT_COMPLETE', report['complete'])
+          for item in report['entries']:
+              if item['status'] == 'error': print('AUDIT_ERROR', item['path'], item['error'])
+          PY
+          git diff --exit-code -- src scripts pom.xml
+          exit "$status"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: game-json-syntax-audit
+          path: target/game-json-audit/
+          retention-days: 14
