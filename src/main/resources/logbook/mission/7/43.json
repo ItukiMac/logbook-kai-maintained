@@ -5,6 +5,7 @@
          "type": "艦隊", "count_type": "旗艦レベル＋キラキラ"
     },
     "conditions": [
+        {"operator": "AND", "conditions": [{"type": "艦娘", "level": 55, "order": 1}]},
         {"type": "艦隊", "count_type": "火力", "value": 500},
         {"type": "艦隊", "count_type": "対潜", "value": 280},
         {
