@@ -1,0 +1,69 @@
+package logbook.core;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import logbook.internal.logger.LoggerHolder;
+import logbook.plugin.api.GameDataView;
+import logbook.plugin.api.GameDefinitionSnapshot;
+
+/** Explicit host-side service; never installs, changes active.json, or auto-enables legacy cache reload. */
+public final class GameDefinitionService implements GameDataView {
+    private final AtomicReference<GameDefinitionSnapshot> current = new AtomicReference<>(
+            new GameDefinitionSnapshot("bundled-unloaded", Map.of()));
+    private final CopyOnWriteArrayList<Subscription> listeners = new CopyOnWriteArrayList<>();
+    private final Consumer<RuntimeException> errors;
+    private long sequence;
+    private boolean notifying;
+
+    public GameDefinitionService() {
+        this(error -> LoggerHolder.get().warn("ゲーム定義の更新通知で例外が発生", error));
+    }
+    public GameDefinitionService(Consumer<RuntimeException> errors) { this.errors = Objects.requireNonNull(errors); }
+    @Override public GameDefinitionSnapshot snapshot() { return current.get(); }
+    @Override public AutoCloseable subscribe(Consumer<Change> listener) {
+        Subscription subscription = new Subscription(Objects.requireNonNull(listener));
+        listeners.add(subscription);
+        return subscription;
+    }
+    public synchronized GameDefinitionSnapshot reload(Path root) throws IOException {
+        if (notifying) throw new IllegalStateException("Reload from a change callback is not supported");
+        // Any I/O, checksum or JSON failure occurs BEFORE publishing anything.
+        return publish(GameDefinitionLoader.load(root));
+    }
+    synchronized GameDefinitionSnapshot publish(GameDefinitionSnapshot candidate) {
+        Objects.requireNonNull(candidate);
+        if (notifying) throw new IllegalStateException("Reentrant publication is not supported");
+        GameDefinitionSnapshot old = current.get();
+        if (old.generation().equals(candidate.generation())) {
+            if (!old.fingerprint().equals(candidate.fingerprint())) {
+                throw new IllegalArgumentException("An immutable generation changed contents");
+            }
+            return old;
+        }
+        Change change = new Change(++sequence, old, candidate);
+        current.set(candidate); // Readers never see a partially constructed generation.
+        notifying = true;
+        try {
+            for (Subscription listener : listeners) {
+                if (!listener.active) continue;
+                try { listener.callback.accept(change); }
+                catch (RuntimeException error) {
+                    try { errors.accept(error); }
+                    catch (RuntimeException ignored) { /* A failed error sink cannot suppress later subscribers. */ }
+                }
+            }
+        } finally { notifying = false; }
+        return candidate;
+    }
+    private final class Subscription implements AutoCloseable {
+        final Consumer<Change> callback;
+        volatile boolean active = true;
+        Subscription(Consumer<Change> callback) { this.callback = callback; }
+        @Override public void close() { active = false; listeners.remove(this); }
+    }
+}
