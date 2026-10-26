@@ -1,6 +1,7 @@
 /* [854]戦果拡張任務！「Z作戦」前段作戦 */
 {
     "resetType" : "クオータリー",
+    "filter" : {"deckIds": [1]},
     "conditions" : [
         {"boss": true, "area": ["2-4"], "rank": ["S", "A"], "count": 1},
         {"boss": true, "area": ["6-1"], "rank": ["S", "A"], "count": 1},
