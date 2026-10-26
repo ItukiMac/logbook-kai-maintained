@@ -2,10 +2,11 @@
 {
     "operator": "AND",
     "conditions": [
+        {"type": "艦隊", "count_type": "レベル", "value": 10},
         {
             "operator": "AND",
             "conditions": [
-                {"type": "艦娘", "level": 20, "order": 1}
+                {"type": "艦娘", "level": 5, "order": 1}
             ]
         },
         {

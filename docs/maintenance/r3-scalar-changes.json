@@ -1,0 +1,41 @@
+{
+  "base_commit": "91f0926cff0aa8293947ca9bab669aede6224d31",
+  "changes": [
+    {
+      "path": "src/main/resources/logbook/mission/1/A1.json",
+      "old_sha256": "16ae6a8884e85902c4599611a1211c906de0637d32ea08898d3c2fdfaf7c6b73",
+      "new_sha256": "3d54ef276525bde44794157f4747bd7b65cef57c3a6ad372b6499ea260198a69"
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/A3.json",
+      "old_sha256": "3b581e90987e28337d674908055afe526ad0020fc8620f1559e78e488003062a",
+      "new_sha256": "39c898a7531f2290e69aade53addf2fa306ed14edcc351c6a80161f6530447c3"
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/15.json",
+      "old_sha256": "c7c8b00b4c5e7a0dccb4000c9e7ecd735a12916f5a89900eea328648a58a99ca",
+      "new_sha256": "c1dd92bdf2e8ac2942e91e2a60411a203c404794a8a5a27d91b145f47fe5fe40"
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B2.json",
+      "old_sha256": "766ec6e0eaba40c6d34488f0e602173745e2fb2e0527e021221291a28d11ef49",
+      "new_sha256": "deb22c90e8b422a2d2c91fa8af29af4a3b8599705b884278b321364fdde24e29"
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B6.json",
+      "old_sha256": "073d399d9691e689d6b6008f69bdc9ec60b3a5cafb2e7774ed49a8ea860f4ce2",
+      "new_sha256": "f1ca184750d1ac5dabc31d71c86f28882f2ef3509b0554cfc0928c8524612ab9"
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/42.json",
+      "old_sha256": "d738aed31c8c902fd9826fb11328ff2bfec526099eeb1b2319f13c95c3d8b7c5",
+      "new_sha256": "3656de837832e5dcbef6e39311bb8132f33e66919b4f87881274106d966a06d4"
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/43.json",
+      "old_sha256": "a32be1785ff3415926dc85ea25cfb4810b3885cd430238dc0342db1b40f6e058",
+      "new_sha256": "489538e5c1923f87ac37f4acc582f66226472b93eb504c18da6a6c1473950f6b"
+    }
+  ],
+  "scope": "listed scalar fields only; no production deployment"
+}

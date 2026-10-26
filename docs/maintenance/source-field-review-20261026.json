@@ -1,0 +1,1857 @@
+{
+  "format": "logbook-field-review-v1",
+  "checked_at": "2026-10-26T08:29:56+00:00",
+  "base_commit": "91f0926cff0aa8293947ca9bab669aede6224d31",
+  "evidence_kind": "Manual transcription of numerical facts/conditions from retrieved public pages; NOT a raw HTTP byte capture or approval.",
+  "limitations": [
+    "Source retrieval may be cached; checked_at is not publication date.",
+    "A5 flagship levels disagree (Wiki45, Zekamashi50); hold, no automatic selection.",
+    "Quest checks cover mission names/counts/reset only, not prerequisites/rewards or tracking behaviour.",
+    "Flagship-literal comparisons do not certify every Boolean branch or the full success conditions."
+  ],
+  "definitions": [
+    {
+      "path": "src/main/resources/logbook/mission/1/01.json",
+      "source_sha256": "809556a47d822a23e274f6a2aff3462d88c5be2242677ce47554bf392d7ace15",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 01 必要旗艦Lv",
+              "value": [
+                1
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "01: 練度",
+              "value": [
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/02.json",
+      "source_sha256": "52aed870689d3067458f3402d716dbddb0db40b44d6a2f2ed74974625e3ef12a",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 02 必要旗艦Lv",
+              "value": [
+                2
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "02: 練度",
+              "value": [
+                2
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/03.json",
+      "source_sha256": "30dd29d0282b6e6527b990eeb8a213a54073212e064629d56903c478d35b2058",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 03 必要旗艦Lv",
+              "value": [
+                3
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "03: 練度",
+              "value": [
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/04.json",
+      "source_sha256": "8fc071deba07190907a22325ef656a76e682273983af3bf7cad947edd3cb7cdd",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 04 必要旗艦Lv",
+              "value": [
+                3
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "04: 練度",
+              "value": [
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/05.json",
+      "source_sha256": "1ea486d718d9efc08c988929e7a5d8ffec55975d3d4bac92cb4edeae69ea881e",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 05 必要旗艦Lv",
+              "value": [
+                3
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "05: 練度",
+              "value": [
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/06.json",
+      "source_sha256": "0a2e9adda56fc87578450d633a112fa320d4bfc75ed9efbd5e9897241c838d3b",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 06 必要旗艦Lv",
+              "value": [
+                4
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "06: 練度",
+              "value": [
+                4
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/07.json",
+      "source_sha256": "c379e21e0ace123c7148f607c49fd1303d72bc7c1930436dec8472e37decaa04",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 07 必要旗艦Lv",
+              "value": [
+                5
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "07: 練度",
+              "value": [
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/08.json",
+      "source_sha256": "9fdcdb2e340a1f01d753a6fec5f0a5957057c4038079e480d135c07e29005076",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 08 必要旗艦Lv",
+              "value": [
+                6
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "08: 練度",
+              "value": [
+                6
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/A1.json",
+      "source_sha256": "3d54ef276525bde44794157f4747bd7b65cef57c3a6ad372b6499ea260198a69",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A1 必要旗艦Lv",
+              "value": [
+                5
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "A1: 練度",
+              "value": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "field": "fleet:レベル",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A1 レベル",
+              "value": [
+                10
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "ID A1 レベル",
+              "value": [
+                10
+              ]
+            }
+          ]
+        }
+      ],
+      "previous_source_sha256": "16ae6a8884e85902c4599611a1211c906de0637d32ea08898d3c2fdfaf7c6b73",
+      "review_action": "Corrected only the listed numerical fields; full semantic validation remains pending."
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/A2.json",
+      "source_sha256": "341bbb67eecb70bd392c1772ef3d4b46766cfcdf1b77eb4b383cd8b717aa26af",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A2 必要旗艦Lv",
+              "value": [
+                20
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "A2: 練度",
+              "value": [
+                20
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/A3.json",
+      "source_sha256": "39c898a7531f2290e69aade53addf2fa306ed14edcc351c6a80161f6530447c3",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A3 必要旗艦Lv",
+              "value": [
+                35
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "A3: 練度",
+              "value": [
+                35
+              ]
+            }
+          ]
+        },
+        {
+          "field": "fleet:索敵",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A3 索敵",
+              "value": [
+                60
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "ID A3 索敵",
+              "value": [
+                60
+              ]
+            }
+          ]
+        }
+      ],
+      "previous_source_sha256": "3b581e90987e28337d674908055afe526ad0020fc8620f1559e78e488003062a",
+      "review_action": "Corrected only the listed numerical fields; full semantic validation remains pending."
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/A4.json",
+      "source_sha256": "0fff8e0c096d120e91e4efcfe88773681f25873a6e08afec3d52234a03af65b3",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A4 必要旗艦Lv",
+              "value": [
+                40
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "A4: 練度",
+              "value": [
+                40
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/A5.json",
+      "source_sha256": "aed333992a44cf98d706c668651a5aad0a9f348536f969ba8761333968214f26",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A5 必要旗艦Lv",
+              "value": [
+                45
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "A5: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/1/A6.json",
+      "source_sha256": "4fee28b4a2a8b6b383063c03dc1679d10f8f48d600dd381a8b7089859871c047",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID A6 必要旗艦Lv",
+              "value": [
+                55
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "A6: 練度",
+              "value": [
+                55
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/09.json",
+      "source_sha256": "299671f5091a8c911ad36374fcaf86a038e5f89bc44aa2985c2e6251e50199c7",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 09 必要旗艦Lv",
+              "value": [
+                3
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "09: 練度",
+              "value": [
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/10.json",
+      "source_sha256": "e41b52fd40a204907ff5e3bb119879523a552814126dd92a3286268be26d70e0",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 10 必要旗艦Lv",
+              "value": [
+                3
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "10: 練度",
+              "value": [
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/11.json",
+      "source_sha256": "443697046adea73eaeb89ccf4f872c04f02e4d835fe6053f68a6aa70c8c8d108",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 11 必要旗艦Lv",
+              "value": [
+                6
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "11: 練度",
+              "value": [
+                6
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/12.json",
+      "source_sha256": "b053fdde6be2f2c32d8b91860da125daa061c7378596aa07eaf33b74c0ad7627",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 12 必要旗艦Lv",
+              "value": [
+                4
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "12: 練度",
+              "value": [
+                4
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/13.json",
+      "source_sha256": "ced2b6df7b574847fc2e820d369523bcc57d968efbd3f2b33bea5ba5e86d8191",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 13 必要旗艦Lv",
+              "value": [
+                5
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "13: 練度",
+              "value": [
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/14.json",
+      "source_sha256": "c4a13098ccd05735a987f5931cf0b1505008a101bf7e7f914cb31778c10229ca",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 14 必要旗艦Lv",
+              "value": [
+                6
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "14: 練度",
+              "value": [
+                6
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/15.json",
+      "source_sha256": "c1dd92bdf2e8ac2942e91e2a60411a203c404794a8a5a27d91b145f47fe5fe40",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 15 必要旗艦Lv",
+              "value": [
+                8
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "15: 練度",
+              "value": [
+                8
+              ]
+            }
+          ]
+        }
+      ],
+      "previous_source_sha256": "c7c8b00b4c5e7a0dccb4000c9e7ecd735a12916f5a89900eea328648a58a99ca",
+      "review_action": "Corrected only the listed numerical fields; full semantic validation remains pending."
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/16.json",
+      "source_sha256": "f7395f9f97de6bb849545169402300b95940d434de2402cda22919ea97612c34",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 16 必要旗艦Lv",
+              "value": [
+                10
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "16: 練度",
+              "value": [
+                10
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B1.json",
+      "source_sha256": "3a3f0be7cbe6313db454d4369d0fc54eec21f262f33157b0424457ef221c4527",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B1 必要旗艦Lv",
+              "value": [
+                40
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "B1: 練度",
+              "value": [
+                40
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B2.json",
+      "source_sha256": "deb22c90e8b422a2d2c91fa8af29af4a3b8599705b884278b321364fdde24e29",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B2 必要旗艦Lv",
+              "value": [
+                45
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "B2: 練度",
+              "value": [
+                45
+              ]
+            }
+          ]
+        },
+        {
+          "field": "fleet:レベル",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B2 レベル",
+              "value": [
+                220
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "ID B2 レベル",
+              "value": [
+                220
+              ]
+            }
+          ]
+        },
+        {
+          "field": "fleet:火力",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B2 火力",
+              "value": [
+                360
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "ID B2 火力",
+              "value": [
+                360
+              ]
+            }
+          ]
+        },
+        {
+          "field": "fleet:対空",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B2 対空",
+              "value": [
+                160
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "ID B2 対空",
+              "value": [
+                160
+              ]
+            }
+          ]
+        },
+        {
+          "field": "fleet:対潜",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B2 対潜",
+              "value": [
+                160
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "ID B2 対潜",
+              "value": [
+                160
+              ]
+            }
+          ]
+        },
+        {
+          "field": "fleet:索敵",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B2 索敵",
+              "value": [
+                140
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "ID B2 索敵",
+              "value": [
+                140
+              ]
+            }
+          ]
+        }
+      ],
+      "previous_source_sha256": "766ec6e0eaba40c6d34488f0e602173745e2fb2e0527e021221291a28d11ef49",
+      "review_action": "Corrected only the listed numerical fields; full semantic validation remains pending."
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B3.json",
+      "source_sha256": "ed4d93eb2830a7d058d70cd04f8abd39f78f85e74de4e2f49e728293b30cde9e",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B3 必要旗艦Lv",
+              "value": [
+                50
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "B3: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B4.json",
+      "source_sha256": "26384180179907a1351abb2e669ae85404462bff33abdaea3f482633bee85c9c",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B4 必要旗艦Lv",
+              "value": [
+                55
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "B4: 練度",
+              "value": [
+                55
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B5.json",
+      "source_sha256": "b362f3a01964b329b396894805e9e5f463864e64552b0bd3bfb95592582adf8a",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B5 必要旗艦Lv",
+              "value": [
+                60
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "B5: 練度",
+              "value": [
+                60
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/2/B6.json",
+      "source_sha256": "f1ca184750d1ac5dabc31d71c86f28882f2ef3509b0554cfc0928c8524612ab9",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID B6 必要旗艦Lv",
+              "value": [
+                75
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "B6: 練度",
+              "value": [
+                75
+              ]
+            }
+          ]
+        }
+      ],
+      "previous_source_sha256": "073d399d9691e689d6b6008f69bdc9ec60b3a5cafb2e7774ed49a8ea860f4ce2",
+      "review_action": "Corrected only the listed numerical fields; full semantic validation remains pending."
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/17.json",
+      "source_sha256": "50bc372137d4feef13dfe29ac4fd477c5c72b004013344199b423ee4d6a8c1df",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 17 必要旗艦Lv",
+              "value": [
+                20
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "17: 練度",
+              "value": [
+                20
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/18.json",
+      "source_sha256": "a98951ed8a1b6a4d8c26a523f7dbd4098fa31cb55cb229e1b0f27ca0a3fc1bc3",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 18 必要旗艦Lv",
+              "value": [
+                15
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "18: 練度",
+              "value": [
+                15
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/19.json",
+      "source_sha256": "fb0cca7680721ed36a112b3caa761293eddc37f55254d91b3eb561ec4aa10943",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 19 必要旗艦Lv",
+              "value": [
+                20
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "19: 練度",
+              "value": [
+                20
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/20.json",
+      "source_sha256": "2cf524071557cb5e1cf4919480ff4efc6ceb47968e84d50f31f7272b10c925e7",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 20 必要旗艦Lv",
+              "value": [
+                1
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "20: 練度",
+              "value": [
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/21.json",
+      "source_sha256": "906e2696bc67e4ce2e9cfa543eb0fa1e89d801ea6beb2b71f347c8428e4f4294",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 21 必要旗艦Lv",
+              "value": [
+                15
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "21: 練度",
+              "value": [
+                15
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/22.json",
+      "source_sha256": "b688b17086fa984ddc931dbea73ab824b65903fc5ad8b09f5b4eedae6e9bdd1b",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 22 必要旗艦Lv",
+              "value": [
+                30
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "22: 練度",
+              "value": [
+                30
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/23.json",
+      "source_sha256": "7ae932240c5d9f4b6df8e1940fd45b503ccbc19abf0fa8410b6c48155e936529",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 23 必要旗艦Lv",
+              "value": [
+                50
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "23: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/3/24.json",
+      "source_sha256": "9c73ea975827e1c24f2d050eb044a3a345067e6c2ae391355a4793394fb34115",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 24 必要旗艦Lv",
+              "value": [
+                50
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "24: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/25.json",
+      "source_sha256": "886c1b0a8ae350bf01bd076684006087b2d1d990010425f251a8f07d2ad8b8a8",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 25 必要旗艦Lv",
+              "value": [
+                25
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "25: 練度",
+              "value": [
+                25
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/26.json",
+      "source_sha256": "3d6029b40096ba5b208fbcec5aad8e5fef66761e3ea759f14a33b6ef20209e5a",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 26 必要旗艦Lv",
+              "value": [
+                30
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "26: 練度",
+              "value": [
+                30
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/27.json",
+      "source_sha256": "21674cfaa228f2c50a1ed7e0a1db6cecfcbb83f4cad158beb1bfc35166387e73",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 27 必要旗艦Lv",
+              "value": [
+                1
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "27: 練度",
+              "value": [
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/28.json",
+      "source_sha256": "ed4dddbc45d4c84ebf76c55404342504f01c10a68f9c6847acf0972325f94133",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 28 必要旗艦Lv",
+              "value": [
+                30
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "28: 練度",
+              "value": [
+                30
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/29.json",
+      "source_sha256": "474b78c80b6b6b258fde72899c252d619b1e49348dc6d4ef0dda137baed5e954",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 29 必要旗艦Lv",
+              "value": [
+                50
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "29: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/30.json",
+      "source_sha256": "c64728ee9e0cfdca89fd2445fb15b9b8ece1ea445081c459652a675ebc762bb5",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 30 必要旗艦Lv",
+              "value": [
+                55
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "30: 練度",
+              "value": [
+                55
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/31.json",
+      "source_sha256": "e4c646c5d987434bec00ce04b1df37789c539b109fdeee7a012f4cfb9f948dbe",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 31 必要旗艦Lv",
+              "value": [
+                60
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "31: 練度",
+              "value": [
+                60
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/32.json",
+      "source_sha256": "64a664f6e83352bbce7a21d6e3ed5589d7d384b1563a121fcad6878bc9a53450",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 32 必要旗艦Lv",
+              "value": [
+                5
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "32: 練度",
+              "value": [
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/D1.json",
+      "source_sha256": "ce5b2fe956b1a0eb23a1db6972b01ec8ff1fd84731fc98c8a0510e196def98cc",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID D1 必要旗艦Lv",
+              "value": [
+                50
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "D1: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/D2.json",
+      "source_sha256": "b8183d15747efa583c69c3317d9335adf373c357b66c75131cc82e3306cf4bba",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID D2 必要旗艦Lv",
+              "value": [
+                55
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "D2: 練度",
+              "value": [
+                55
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/4/D3.json",
+      "source_sha256": "2cc0bf1ea12fe75fa96c2d35db7ed999f638a6ccc54c3ab986a83d6e1da54508",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID D3 必要旗艦Lv",
+              "value": [
+                65
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "D3: 練度",
+              "value": [
+                65
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/33.json",
+      "source_sha256": "a291fce1fb68393b8017e77278df1893c20f35fdf770720952c6f30fcefd6896",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 33 必要旗艦Lv",
+              "value": null
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "33: 練度",
+              "value": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/34.json",
+      "source_sha256": "a291fce1fb68393b8017e77278df1893c20f35fdf770720952c6f30fcefd6896",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 34 必要旗艦Lv",
+              "value": null
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "34: 練度",
+              "value": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/35.json",
+      "source_sha256": "ce171902adc4ddd1cb687021760c1c118fbdd9f23976a27d80dd3d1570db2ab9",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 35 必要旗艦Lv",
+              "value": [
+                40
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "35: 練度",
+              "value": [
+                40
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/36.json",
+      "source_sha256": "c3b29fa3e5ecdeb83ef354694c79c49f7410edf1734494f62bf597fb6c5af02e",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 36 必要旗艦Lv",
+              "value": [
+                30
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "36: 練度",
+              "value": [
+                30
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/37.json",
+      "source_sha256": "e72a454ad7846fda56bce6a40cb001613f88925ac172024b99521bd15d3801b4",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 37 必要旗艦Lv",
+              "value": [
+                50
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "37: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/38.json",
+      "source_sha256": "017df9fe4cb4341ed76b288ed00017bf8a74e6f986f3b247ffb09bee395e4a02",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 38 必要旗艦Lv",
+              "value": [
+                65
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "38: 練度",
+              "value": [
+                65
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/39.json",
+      "source_sha256": "14cead59ad5c56625e6245d39f6b708fec7fd86b8af1b662150dad8f311fe655",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 39 必要旗艦Lv",
+              "value": [
+                3
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "39: 練度",
+              "value": [
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/40.json",
+      "source_sha256": "eb6008bbef562e686eac68af60579f86f6d63cdd2ed5a9ebcf5457d3fa7b6331",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 40 必要旗艦Lv",
+              "value": [
+                25
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "40: 練度",
+              "value": [
+                25
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/E1.json",
+      "source_sha256": "ff7c3735f3603a5454a3baeb6a9343a75d5ce1d7d63b35c7df7b231290e31cb8",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID E1 必要旗艦Lv",
+              "value": [
+                55
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "E1: 練度",
+              "value": [
+                55
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/5/E2.json",
+      "source_sha256": "3f2c6bf7abeaa975601f6693be100b433682f84776dcf8fe976efb4e23cbd23c",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID E2 必要旗艦Lv",
+              "value": [
+                70
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "E2: 練度",
+              "value": [
+                70
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/41.json",
+      "source_sha256": "c6f49710f44e517a91769b72179e18804fa31a95d257072fad6281c7b46fe36c",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 41 必要旗艦Lv",
+              "value": [
+                30
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "41: 練度",
+              "value": [
+                30
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/42.json",
+      "source_sha256": "3656de837832e5dcbef6e39311bb8132f33e66919b4f87881274106d966a06d4",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 42 必要旗艦Lv",
+              "value": [
+                45
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "42: 練度",
+              "value": [
+                45
+              ]
+            }
+          ]
+        }
+      ],
+      "previous_source_sha256": "d738aed31c8c902fd9826fb11328ff2bfec526099eeb1b2319f13c95c3d8b7c5",
+      "review_action": "Corrected only the listed numerical fields; full semantic validation remains pending."
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/43.json",
+      "source_sha256": "489538e5c1923f87ac37f4acc582f66226472b93eb504c18da6a6c1473950f6b",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 43 必要旗艦Lv",
+              "value": [
+                55
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "43: 練度",
+              "value": [
+                55
+              ]
+            }
+          ]
+        }
+      ],
+      "previous_source_sha256": "a32be1785ff3415926dc85ea25cfb4810b3885cd430238dc0342db1b40f6e058",
+      "review_action": "Corrected only the listed numerical fields; full semantic validation remains pending."
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/44.json",
+      "source_sha256": "5e2c5c8750f51a84bcff68b5ce521227d8fe13bc8d9dfa942e6ae4d78ef94011",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 44 必要旗艦Lv",
+              "value": [
+                35
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "44: 練度",
+              "value": [
+                35
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/45.json",
+      "source_sha256": "203abafcf23c1cd01282c01c0536afb36df003cc5db8dc93c689fba0e2b0a71f",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 45 必要旗艦Lv",
+              "value": [
+                50
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "45: 練度",
+              "value": [
+                50
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/mission/7/46.json",
+      "source_sha256": "0f94f926acb512d49076699313a4b0ca16155914b72e45a3a727c1bffd0774f6",
+      "fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+              "locator": "ID 46 必要旗艦Lv",
+              "value": [
+                60
+              ]
+            },
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+              "locator": "46: 練度",
+              "value": [
+                60
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/quest/424.json",
+      "source_sha256": "8b46736daf5632e601a99fdafe1fddf88dea16a6fdd1bfc6af03cf2e84ac2a72",
+      "fields": [
+        {
+          "field": "quest_reset",
+          "observations": [
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/yusousendan-goei/",
+              "locator": "任務情報; article update 2021-02-12/13, retrieved 2026-10-26 (not a 2026 publication)",
+              "value": "マンスリー"
+            }
+          ]
+        },
+        {
+          "field": "quest_missions",
+          "observations": [
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/yusousendan-goei/",
+              "locator": "任務情報; article update 2021-02-12/13, retrieved 2026-10-26 (not a 2026 publication)",
+              "value": [
+                [
+                  [
+                    "海上護衛任務"
+                  ],
+                  4
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/quest/426.json",
+      "source_sha256": "c21c0b5cd9382133f14e217c7ebe6193f95955b7c61f17c2d0f03e2db7cdcc84",
+      "fields": [
+        {
+          "field": "quest_reset",
+          "observations": [
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/kaizyou-gentoseyo/",
+              "locator": "任務情報; article update 2021-02-12/13, retrieved 2026-10-26 (not a 2026 publication)",
+              "value": "クオータリー"
+            }
+          ]
+        },
+        {
+          "field": "quest_missions",
+          "observations": [
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/kaizyou-gentoseyo/",
+              "locator": "任務情報; article update 2021-02-12/13, retrieved 2026-10-26 (not a 2026 publication)",
+              "value": [
+                [
+                  [
+                    "対潜警戒任務"
+                  ],
+                  1
+                ],
+                [
+                  [
+                    "強行偵察任務"
+                  ],
+                  1
+                ],
+                [
+                  [
+                    "海上護衛任務"
+                  ],
+                  1
+                ],
+                [
+                  [
+                    "警備任務"
+                  ],
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/main/resources/logbook/quest/428.json",
+      "source_sha256": "a5b775c0c4c88fee407e9fe0d27f971130c3b19225cb67def0ec1033e4bcf111",
+      "fields": [
+        {
+          "field": "quest_reset",
+          "observations": [
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/kinkai-tekisen/",
+              "locator": "任務情報; article update 2021-02-12/13, retrieved 2026-10-26 (not a 2026 publication)",
+              "value": "クオータリー"
+            }
+          ]
+        },
+        {
+          "field": "quest_missions",
+          "observations": [
+            {
+              "url": "https://zekamashi.net/kancolle-kouryaku/kinkai-tekisen/",
+              "locator": "任務情報; article update 2021-02-12/13, retrieved 2026-10-26 (not a 2026 publication)",
+              "value": [
+                [
+                  [
+                    "対潜警戒任務"
+                  ],
+                  2
+                ],
+                [
+                  [
+                    "海峡警備行動"
+                  ],
+                  2
+                ],
+                [
+                  [
+                    "長時間対潜警戒"
+                  ],
+                  2
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

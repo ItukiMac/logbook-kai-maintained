@@ -6,7 +6,7 @@
         {
             "operator": "AND",
             "conditions": [
-                {"type": "艦娘", "level": 50, "order": 1}
+                {"type": "艦娘", "level": 45, "order": 1}
             ]
         },
         {
