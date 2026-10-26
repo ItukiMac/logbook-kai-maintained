@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - name: Validate packager independently
         run: python3 -m unittest discover -s tools/tests -p 'test_*.py' -v
       - name: Build versioned JSON-only archive
@@ -47,7 +47,7 @@ jobs:
                   json.loads(body)
               print('verified', len(files), 'strict JSON definitions')
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: logbook-json-data-pack
           path: target/logbook-data-pack.zip
