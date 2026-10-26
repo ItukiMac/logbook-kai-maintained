@@ -53,6 +53,26 @@ class QuestDocumentStoreTest {
         assertThrows(IOException.class, () -> QuestDocumentStore.read(root.resolve("x/../original")));
         assertEquals("keep", Files.readString(target));
     }
+    @Test void removalRetainsOriginalAndVerifiedCopyAndAllowsRecreation() throws Exception {
+        Path file = root.resolve("10001.json"); byte[] old = bytes("// original\r\n{}");
+        Files.write(file, old);
+        Path retained = QuestDocumentStore.remove(file, old);
+        assertFalse(Files.exists(file));
+        assertArrayEquals(old, Files.readAllBytes(retained));
+        try (var files = Files.list(root)) {
+            var copies = files.filter(p -> p.getFileName().toString().contains(".before-remove-")).toList();
+            assertEquals(1, copies.size()); assertArrayEquals(old, Files.readAllBytes(copies.get(0)));
+        }
+        QuestDocumentStore.save(file, null, bytes("{\"new\":1}"));
+        assertEquals("{\"new\":1}", Files.readString(file));
+        assertArrayEquals(old, Files.readAllBytes(retained));
+    }
+    @Test void removalConflictLeavesTheChangedActiveFileUntouched() throws Exception {
+        Path file = root.resolve("10001.json"); Files.writeString(file, "external");
+        assertThrows(IOException.class, () -> QuestDocumentStore.remove(file, bytes("old")));
+        assertEquals("external", Files.readString(file));
+        try (var files = Files.list(root)) { assertEquals(1, files.count()); }
+    }
     @Test void oversizedAndDirectoryInputsAreRefused() throws Exception {
         assertThrows(IOException.class, () -> QuestDocumentStore.read(root));
         Path file = root.resolve("1.json");

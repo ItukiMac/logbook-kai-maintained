@@ -68,6 +68,26 @@ public final class QuestDocumentStore {
         return backup;
     }
 
+    /** Remove from the active filename only; keep both a verified copy and the original file. */
+    public static synchronized Path remove(Path input, byte[] expected) throws IOException {
+        Path path = safe(input);
+        byte[] actual = read(path);
+        if (!Arrays.equals(expected, actual)) throw new IOException("読込後に設定が変更されています。除去を中止しました。");
+        if (actual == null) return null;
+        String suffix = UUID.randomUUID().toString();
+        Path backup = path.resolveSibling(path.getFileName() + ".before-remove-" + suffix + ".bak");
+        writeNew(backup, actual);
+        if (!Arrays.equals(actual, read(backup))) throw new IOException("除去前のバックアップ検証に失敗しました。");
+        if (!Arrays.equals(expected, read(path))) throw new IOException("除去準備中に設定が変更されました。元設定はそのまま保持します。");
+        safe(path);
+        Path retained = path.resolveSibling(path.getFileName() + ".removed-" + suffix + ".bak");
+        if (Files.exists(retained, LinkOption.NOFOLLOW_LINKS)) throw new IOException("退避先が既に存在します。");
+        // No deletion: the original is atomically renamed to its unique retained path.
+        // On unsupported filesystems, fail without a non-atomic fallback.
+        Files.move(path, retained, StandardCopyOption.ATOMIC_MOVE);
+        return retained;
+    }
+
     private static void writeNew(Path path, byte[] bytes) throws IOException {
         try (FileChannel channel = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             ByteBuffer buffer = ByteBuffer.wrap(bytes);

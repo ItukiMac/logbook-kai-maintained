@@ -88,6 +88,24 @@ class QuestConditionEditorGuiTest {
             return null;
         });
     }
+    @Test void removalThenSaveInTheSameSlotResetsSnapshotAndGuardsWithoutLosingOriginal() throws Exception {
+        Path file = root.resolve("10001.json"); Files.writeString(file, source());
+        fx(() -> {
+            try (Window window = open()) {
+                Path retained = window.controller().removeDocument();
+                assertFalse(Files.exists(file)); assertEquals(source(), Files.readString(retained));
+                assertEquals(10001, window.quests().getValue().getQuest().getNo());
+                assertEquals("", window.text("filterDeckIds").getText()); assertFalse(window.noRetreat().isSelected());
+                window.text("customNameField").setText("recreated");
+                assertNull(window.controller().saveDocument());
+                var saved = QuestEditorDocument.mapper().readTree(file.toFile());
+                assertEquals("recreated", saved.path("customName").asText());
+                assertFalse(saved.path("filter").has("deckIds")); assertFalse(saved.path("filter").has("noRetreat"));
+                assertEquals(source(), Files.readString(retained));
+            }
+            return null;
+        });
+    }
     @Test void malformedLoadedFileAndExternalChangeCannotBeOverwritten() throws Exception {
         Path file = root.resolve("10001.json"); Files.writeString(file, "{broken");
         fx(() -> {

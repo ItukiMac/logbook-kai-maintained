@@ -751,7 +751,7 @@ public class QuestConditionEditController extends WindowController {
                 // Logic (Row 2+)
                 if (i > 0) {
                     ComboBox<String> logicCombo = (ComboBox<String>) row.getChildren().get(idx++);
-                    String l = logicCombo.getSelectionModel().getSelectedItem();
+                    String l = logicCombo.getSelectionModel().getSelectedItem(); // "艦種" or "艦名"
                     if (i == 1) {
                         globalLogic = "または".equals(l) ? "OR" : "AND";
                     }
@@ -1026,6 +1026,21 @@ public class QuestConditionEditController extends WindowController {
         }
     }
 
+    java.nio.file.Path removeDocument() throws java.io.IOException {
+        AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        if (appQuest == null || appQuest.getQuest() == null
+                || appQuest.getQuest().getNo() < 10001 || appQuest.getQuest().getNo() > 10005)
+            throw new java.io.IOException("カスタム任務が選択されていません。");
+        java.nio.file.Path retained = logbook.internal.util.QuestDocumentStore.remove(
+                this.questDirectory().resolve(appQuest.getQuest().getNo() + ".json"), this.loadedBytes);
+        if (retained != null) {
+            // Reset snapshots AND all controls only after our own successful removal.
+            this.setQuestData(appQuest);
+            this.removeBtn.setDisable(true);
+        }
+        return retained;
+    }
+
     @FXML
     void remove(javafx.event.ActionEvent e) {
         AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
@@ -1038,22 +1053,16 @@ public class QuestConditionEditController extends WindowController {
         }
 
         try {
-            java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + no + ".json");
-            boolean deleted = java.nio.file.Files.deleteIfExists(file);
+            java.nio.file.Path retained = this.removeDocument();
             
-            if (deleted) {
-                // UI状態をクリア
-                this.filterArea.setText("");
-                this.fleetConditionsBox.getChildren().clear();
-                this.conditionsBox.getChildren().clear();
-                this.removeBtn.setDisable(true);
+            if (retained != null) {
                 
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                         javafx.scene.control.Alert.AlertType.INFORMATION);
                 alert.initOwner(this.questSelector.getScene().getWindow());
                 alert.setTitle("除去成功");
                 alert.setHeaderText(null);
-                alert.setContentText("./customquest/" + no + ".json を削除しました。");
+                alert.setContentText("./customquest/" + no + ".json を除去しました。\n元設定の保存先: " + retained);
                 alert.showAndWait();
             } else {
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
