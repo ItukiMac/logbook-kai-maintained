@@ -58,6 +58,16 @@ public class QuestConditionEditController extends WindowController {
 
     @FXML
     private TextField filterArea;
+    @FXML private TextField filterDeckIds;
+    @FXML private CheckBox filterNoRetreat;
+    @FXML private Label editNotice;
+    private com.fasterxml.jackson.databind.JsonNode originalDocument;
+    private com.fasterxml.jackson.databind.JsonNode loadedForm;
+    private byte[] loadedBytes;
+    private boolean loadFailed;
+
+    // Overridden only by the isolated FXML test controller, not a runtime property.
+    java.nio.file.Path questDirectory() { return java.nio.file.Paths.get("./customquest"); }
     @FXML
     private VBox fleetConditionsBox;
 
@@ -97,7 +107,7 @@ public class QuestConditionEditController extends WindowController {
 
             // ResetType初期化
             this.resetType.setItems(FXCollections.observableArrayList(
-                    "デイリー", "ウィークリー", "マンスリー", "単発", "クォータリー", "イヤリー"));
+                    "デイリー", "ウィークリー", "マンスリー", "単発", "クオータリー", "イヤリー"));
 
             // 任務選択時の動作
             this.questSelector.getSelectionModel().selectedItemProperty().addListener((ob, o, n) -> {
@@ -150,7 +160,7 @@ public class QuestConditionEditController extends WindowController {
                     type = "単発";
                     break;
                 case 5:
-                    type = "クォータリー";
+                    type = "クオータリー";
                     break; // 他、だが一旦クォータリーとみなす
             }
             this.resetType.getSelectionModel().select(type);
@@ -158,6 +168,13 @@ public class QuestConditionEditController extends WindowController {
 
             // Filter / Conditions Clear
             this.filterArea.setText("");
+            this.filterDeckIds.clear();
+            this.filterNoRetreat.setSelected(false);
+            this.originalDocument = null;
+            this.loadedForm = null;
+            this.loadedBytes = null;
+            this.loadFailed = false;
+            this.editNotice.setText("艦隊番号は1～4をカンマ区切り。空欄は制限なし。保存前のファイルは別名で保持します。");
             this.fleetConditionsBox.getChildren().clear();
             this.conditionsBox.getChildren().clear();
             
@@ -171,14 +188,14 @@ public class QuestConditionEditController extends WindowController {
 
     @SuppressWarnings("unchecked")
     private void loadQuestData(Quest quest) {
-        java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + quest.getNo() + ".json");
-        if (!java.nio.file.Files.exists(file)) {
-            return;
-        }
-
+        java.nio.file.Path file = this.questDirectory().resolve(quest.getNo() + ".json");
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            mapper.enable(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_COMMENTS);
+            this.loadedBytes = logbook.internal.util.QuestDocumentStore.read(file);
+            if (this.loadedBytes == null) return;
+            com.fasterxml.jackson.databind.ObjectMapper mapper = QuestEditorDocument.mapper();
+            this.originalDocument = mapper.readTree(this.loadedBytes);
+            QuestEditorDocument.validate(this.originalDocument);
+            mapper.disable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
             // Register MixIns to safely ignore unknown properties or handle specific fields
             // if necessary
@@ -186,7 +203,7 @@ public class QuestConditionEditController extends WindowController {
             // For reading, standard mapping should suffice if the JSON matches the bean
             // structure.
 
-            logbook.bean.AppQuestCondition condition = mapper.readValue(file.toFile(),
+            logbook.bean.AppQuestCondition condition = mapper.treeToValue(this.originalDocument,
                     logbook.bean.AppQuestCondition.class);
 
             if (condition != null) {
@@ -203,6 +220,13 @@ public class QuestConditionEditController extends WindowController {
                 }
                 if (condition.getStartDate() != null) {
                     this.customStartDateField.setText(condition.getStartDate());
+                }
+
+                if (condition.getFilter() != null) {
+                    if (condition.getFilter().getDeckIds() != null)
+                        this.filterDeckIds.setText(condition.getFilter().getDeckIds().stream()
+                                .sorted().map(String::valueOf).collect(Collectors.joining(",")));
+                    this.filterNoRetreat.setSelected(Boolean.TRUE.equals(condition.getFilter().getNoRetreat()));
                 }
 
                 // Filter Area
@@ -366,8 +390,11 @@ public class QuestConditionEditController extends WindowController {
                     }
                 }
             }
-
+            this.loadedForm = formMapper().valueToTree(this.readForm());
+            this.editNotice.setText("表示に対応していない既存条件も保持します。表現できない構造の変更は保存を中止します。");
         } catch (Exception e) {
+            this.loadFailed = true;
+            this.editNotice.setText("読込に失敗したため保存できません。元ファイルは変更しません: " + e.getMessage());
             LoggerHolder.get().error("カスタム任務設定の読み込みに失敗しました", e);
         }
     }
@@ -656,14 +683,10 @@ public class QuestConditionEditController extends WindowController {
     }
 
     @SuppressWarnings("unchecked")
-    @FXML
-    void save(javafx.event.ActionEvent e) {
+    logbook.bean.AppQuestCondition readForm() {
         AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (appQuest == null || appQuest.getQuest() == null) {
-            return;
-        }
-
-        try {
+        if (appQuest == null || appQuest.getQuest() == null)
+            throw new IllegalStateException("任務が選択されていません。");
             // Root Object
             logbook.bean.AppQuestCondition condition = new logbook.bean.AppQuestCondition();
 
@@ -683,6 +706,8 @@ public class QuestConditionEditController extends WindowController {
 
             // Filter
             logbook.bean.AppQuestCondition.FilterCondition filter = new logbook.bean.AppQuestCondition.FilterCondition();
+            filter.setDeckIds(QuestEditorDocument.deckIds(this.filterDeckIds.getText()));
+            if (this.filterNoRetreat.isSelected()) filter.setNoRetreat(true);
             String areaText = this.filterArea.getText();
             if (areaText != null && !areaText.isEmpty()) {
                 filter.setArea(Arrays.stream(areaText.split(","))
@@ -903,36 +928,51 @@ public class QuestConditionEditController extends WindowController {
                 condition.getConditions().add(cond);
             }
 
-            // Save to JSON
-            // customquest/[id].json
-            java.nio.file.Path dir = java.nio.file.Paths.get("./customquest");
-            if (!java.nio.file.Files.exists(dir)) {
-                java.nio.file.Files.createDirectories(dir);
-            }
+            return condition;
+    }
 
-            java.nio.file.Path file = dir.resolve(appQuest.getQuest().getNo() + ".json");
+    private static com.fasterxml.jackson.databind.ObjectMapper formMapper() {
+        var mapper = QuestEditorDocument.mapper();
+        mapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+        mapper.addMixIn(logbook.bean.AppQuestCondition.FleetCondition.class, FleetConditionMixin.class);
+        mapper.addMixIn(logbook.bean.AppQuestCondition.Condition.class, ConditionMixin.class);
+        mapper.addMixIn(logbook.bean.AppQuestCondition.class, AppQuestConditionMixin.class);
+        return mapper;
+    }
 
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            mapper.enable(com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT);
-            mapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+    java.nio.file.Path saveDocument() throws java.io.IOException {
+        if (this.loadFailed) throw new java.io.IOException("読込失敗のため保存を中止しました。");
+        var currentForm = formMapper().valueToTree(this.readForm());
+        var output = this.originalDocument == null ? currentForm
+                : QuestEditorDocument.merge(this.originalDocument, this.loadedForm, currentForm);
+        QuestEditorDocument.validate(output);
+        var appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        var file = this.questDirectory().resolve(appQuest.getQuest().getNo() + ".json");
+        // Exact no-edit saves retain comments/formatting as well as all unrepresented fields.
+        byte[] bytes = this.originalDocument != null && output.equals(this.originalDocument)
+                ? this.loadedBytes
+                : formMapper().writerWithDefaultPrettyPrinter().writeValueAsBytes(output);
+        var backup = logbook.internal.util.QuestDocumentStore.save(file, this.loadedBytes, bytes);
+        this.loadedBytes = bytes.clone();
+        this.originalDocument = output.deepCopy();
+        this.loadedForm = currentForm.deepCopy();
+        return backup;
+    }
 
-            // Mixins to ignore unneeded boolean fields
-            mapper.addMixIn(logbook.bean.AppQuestCondition.FleetCondition.class, FleetConditionMixin.class);
-            mapper.addMixIn(logbook.bean.AppQuestCondition.Condition.class, ConditionMixin.class);
-            mapper.addMixIn(logbook.bean.AppQuestCondition.class, AppQuestConditionMixin.class);
-
-            try (java.io.Writer writer = java.nio.file.Files.newBufferedWriter(file,
-                    java.nio.charset.StandardCharsets.UTF_8)) {
-                mapper.writeValue(writer, condition);
-            }
-
+    @FXML
+    void save(javafx.event.ActionEvent e) {
+        AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        if (appQuest == null || appQuest.getQuest() == null) return;
+        try {
+            java.nio.file.Path backup = this.saveDocument();
             // Show Alert
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                     javafx.scene.control.Alert.AlertType.INFORMATION);
             alert.initOwner(this.questSelector.getScene().getWindow());
             alert.setTitle("保存成功");
             alert.setHeaderText(null);
-            alert.setContentText("./customquest/" + appQuest.getQuest().getNo() + ".jsonを出力しました。");
+            alert.setContentText("./customquest/" + appQuest.getQuest().getNo() + ".jsonを出力しました。"
+                    + (backup == null ? "" : "\n変更前の保存先: " + backup));
             alert.showAndWait();
 
         } catch (Exception ex) {

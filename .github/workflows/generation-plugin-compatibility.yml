@@ -48,6 +48,8 @@ jobs:
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package
           mvn -f .external/legacy-host/pom.xml --batch-mode --no-transfer-progress -DskipTests package
+      - name: Reject capability packs in the actual legacy host without changing its active data
+        run: java -cp target/logbook-kai.jar:target/test-classes logbook.core.LegacyDefinitionPackProbe .external/legacy-host/target/logbook-kai.jar target/legacy-data-pack-proof
       - name: Whole-export generation and observed-state contract against the current host
         working-directory: .external/kqs-r2
         env:

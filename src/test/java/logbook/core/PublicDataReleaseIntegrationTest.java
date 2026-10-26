@@ -60,7 +60,7 @@ class PublicDataReleaseIntegrationTest {
         Path manifestFile = active.getParent().resolve("manifest.json");
         assertTrue(Files.isRegularFile(manifestFile));
         JsonNode manifest = JSON.readTree(Files.readAllBytes(manifestFile));
-        assertEquals("logbook-data-pack-v1", manifest.path("format").asText());
+        DefinitionPackCompatibility.requireManifest(manifest);
         assertTrue(manifest.path("files").isArray());
         assertTrue(manifest.path("files").size() >= 85);
 
