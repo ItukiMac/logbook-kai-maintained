@@ -1,0 +1,135 @@
+name: R2 exact-source integration worker (not for master)
+on:
+  push:
+    branches: ['maintenance/r2-checked-integration-worker-20261026']
+permissions:
+  contents: write
+concurrency:
+  group: r2-checked-integration-20261026
+  cancel-in-progress: false
+jobs:
+  integrate:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE: 4f310942b231154d0d37d31d93a7a58f3793cf11
+      TARGET: maintenance/r2-consumers-capacity-state-20261026
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: payload
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 4f310942b231154d0d37d31d93a7a58f3793cf11
+          path: candidate
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Apply hash-checked line edits only to the pinned isolated checkout
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, os
+          from pathlib import Path, PurePosixPath
+          encoded = ''.join((Path('../payload/.maintenance-transfers/r2') / f'host-{i}.txt').read_text() for i in range(5))
+          assert len(encoded) == 44716
+          assert hashlib.sha256(encoded.encode()).hexdigest() == 'aad891f50f601d556d9f72a7a9bacd5bfea3857d84c573b08b664f335f50bff5'
+          dec = lzma.LZMADecompressor(memlimit=128*1024*1024)
+          raw = dec.decompress(base64.b64decode(encoded, validate=True), max_length=300001)
+          assert len(raw) <= 300000 and dec.eof and not dec.unused_data
+          spec = json.loads(raw)
+          assert spec['base'] == os.environ['BASE'] and len(spec['files']) == 63
+          expected = 'd7e0005ac02f0c7679d385698405bba77b066c8f5008c8587dcc55dfa505baec'
+          assert spec['result_sha256'] == expected
+          output, paths, digest = {}, [], hashlib.sha256()
+          for item in spec['files']:
+              name = item['p']; rel = PurePosixPath(name); path = Path(name)
+              assert not rel.is_absolute() and '..' not in rel.parts and '\\' not in name
+              assert rel.parts[0] in ('src','scripts','docs') and name not in output
+              assert not any(p.is_symlink() for p in (path, *path.parents))
+              assert not path.exists() if item['a'] else path.is_file()
+              lines = ([] if item['a'] else path.read_bytes().decode('utf-8').splitlines(True))
+              previous_end = 0
+              for start, end, text in item['e']:
+                  assert 0 <= previous_end <= start <= end <= len(lines) and isinstance(text, str)
+                  previous_end = end
+              for start, end, text in reversed(item['e']): lines[start:end] = text.splitlines(True)
+              data = ''.join(lines).encode('utf-8')
+              digest.update(name.encode() + b'\0' + data + b'\0')
+              output[name] = data; paths.append(name)
+          assert digest.hexdigest() == expected
+          for name, data in output.items():
+              p = Path(name); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data)
+          Path('../verified-paths.json').write_text(json.dumps(paths))
+          print('VERIFIED_SOURCE_FILES', len(paths), 'RESULT_SHA256', digest.hexdigest())
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Execute real GUI, real-pack, capacity and state tests before any source ref update
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/r2-evidence
+          python3 tools/build_data_pack.py --source-sha "$BASE"
+          xvfb-run -a mvn --batch-mode --no-transfer-progress -DargLine=-XX:-EnableDynamicAgentLoading -Dlogbook.gui.tests=true -Dlogbook.test.dataPackPath=target/logbook-data-pack.zip verify > target/r2-evidence/maven.log 2>&1 || { tail -150 target/r2-evidence/maven.log; exit 1; }
+          python3 -m unittest discover -s tools/tests -p 'test_*.py' -v
+          python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+          python3 scripts/audit_game_json.py --root . > target/r2-evidence/audit.json
+          java -cp target/logbook-kai.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
+          python3 - <<'PY'
+          import json, xml.etree.ElementTree as E
+          from pathlib import Path
+          suites = [E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
+          totals = {k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          assert totals == {'tests':182,'failures':0,'errors':0,'skipped':1}, totals
+          for s in suites:
+              if int(s.get('skipped',0)): assert s.get('name') == 'logbook.core.PublicDataReleaseIntegrationTest'
+          audit = json.loads(Path('target/r2-evidence/audit.json').read_text())
+          assert audit['complete'] and audit['counts']['validated'] == 152
+          print('R2_FULL_TEST_SUMMARY', json.dumps(totals))
+          Path('target/r2-evidence/summary.json').write_text(json.dumps(totals, indent=2))
+          PY
+      - name: Commit only verified source paths and non-force push the dedicated branch
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          paths = json.loads(Path('../verified-paths.json').read_text())
+          digest = hashlib.sha256()
+          for name in paths: digest.update(name.encode() + b'\0' + Path(name).read_bytes() + b'\0')
+          assert digest.hexdigest() == 'd7e0005ac02f0c7679d385698405bba77b066c8f5008c8587dcc55dfa505baec'
+          subprocess.run(['git','add','--',*paths], check=True)
+          actual = subprocess.check_output(['git','diff','--cached','--name-only'], text=True).splitlines()
+          assert set(actual) == set(paths), actual
+          PY
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'R2: connect generation-aware consumers, bound capture, publish immutable state, modularize features and validate maintenance plans'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD | tee target/r2-evidence/source-commit.txt
+          git rev-parse HEAD^{tree} | tee target/r2-evidence/source-tree.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: r2-checked-source-evidence
+          path: |
+            candidate/target/r2-evidence/
+            candidate/target/surefire-reports/
+          retention-days: 14
