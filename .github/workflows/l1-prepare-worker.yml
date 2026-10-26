@@ -1,0 +1,106 @@
+name: One-shot checked L1 candidate preparation
+on:
+  push:
+    branches: ['maintenance/l1-prepare-worker-20261026']
+permissions:
+  contents: write
+concurrency:
+  group: l1-candidate-prepare-20261026
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SEED: e5d5266235860141ae72a7919f4fe1896aa082bf
+      SEED_TREE: c570b50532c9e7e66bfed9c854e6ca4d4cea411b
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: e5d5266235860141ae72a7919f4fe1896aa082bf
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Prepare narrowly scoped source edits from the exact seed
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SEED"
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          path = Path('pom.xml')
+          assert subprocess.check_output(['git','hash-object',str(path)], text=True).strip() == 'df69bc328a944b3f9c9edbdf0ae2940898bb7394'
+          text = path.read_text()
+          replacements = {
+              '<java.version>21</java.version>': '<java.version>21</java.version>\n        <mockito.version>5.24.0</mockito.version>\n        <argLine></argLine>',
+              '<artifactId>mockito-core</artifactId>\n            <version>5.24.0</version>': '<artifactId>mockito-core</artifactId>\n            <version>${mockito.version}</version>',
+              '<useSystemClassLoader>false</useSystemClassLoader>': '<useSystemClassLoader>false</useSystemClassLoader>\n                    <argLine>@{argLine} -javaagent:&quot;${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar&quot;</argLine>',
+              '<!-- LTS until September 2026 -->': '<!-- JavaFX compatibility baseline; native upgrades require GUI validation. -->',
+          }
+          for old, new in replacements.items():
+              assert text.count(old) == 1, old
+              text = text.replace(old, new)
+          anchor = '        <dependency>\n            <groupId>org.projectlombok</groupId>'
+          bridge = '        <dependency>\n            <groupId>org.apache.logging.log4j</groupId>\n            <artifactId>log4j-slf4j2-impl</artifactId>\n            <version>2.26.1</version>\n            <scope>runtime</scope>\n        </dependency>\n'
+          assert text.count(anchor) == 1
+          path.write_text(text.replace(anchor, bridge + anchor))
+          versions = {'checkout': 'v7.0.1', 'setup-java': 'v6.1.0', 'upload-artifact': 'v7.0.2', 'download-artifact': 'v8.0.2'}
+          pattern = re.compile(r'(?m)^(\s*-\s+uses:\s+)actions/(checkout|setup-java|upload-artifact|download-artifact)@(v4|v6)(\s*(?:#.*)?)$')
+          changed = []
+          for workflow in sorted(Path('.github/workflows').glob('*.yml')):
+              old = workflow.read_text()
+              new, count = pattern.subn(lambda m: m[1] + 'actions/' + m[2] + '@' + versions[m[2]] + m[4], old)
+              if count:
+                  workflow.write_text(new)
+                  changed.append(str(workflow))
+              assert not pattern.search(new), workflow
+          assert len(changed) >= 10, changed
+          diff = subprocess.check_output(['git','diff','--name-only'], text=True).splitlines()
+          assert set(diff) == {'pom.xml', *changed}, diff
+          print('PREPARED_PATHS', diff)
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Compile, execute all headless tests and probe the assembled JAR before preparing Git objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/worker-evidence
+          mvn --batch-mode --no-transfer-progress -DargLine=-XX:-EnableDynamicAgentLoading verify > target/worker-evidence/maven.log 2>&1 || { tail -100 target/worker-evidence/maven.log; exit 1; }
+          ! grep -E 'Mockito is currently self-attaching|A Java agent has been loaded dynamically|No SLF4J providers were found' target/worker-evidence/maven.log
+          grep 'Tests run:' target/worker-evidence/maven.log | tail -3
+          java -cp target/logbook-kai.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
+      - name: Prepare Git objects only (no branch updates, merge, tag or release)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          repo = os.environ['GITHUB_REPOSITORY']
+          def api(endpoint, data):
+              return json.loads(subprocess.check_output(['gh','api','--method','POST', f'repos/{repo}/git/{endpoint}', '--input','-'], input=json.dumps(data).encode()))
+          changed = subprocess.check_output(['git','diff','--name-only'], text=True).splitlines()
+          assert changed and all(p == 'pom.xml' or p.startswith('.github/workflows/') for p in changed)
+          entries = [{'path': p, 'mode': '100644', 'type': 'blob', 'content': Path(p).read_text()} for p in changed]
+          tree = api('trees', {'base_tree': os.environ['SEED_TREE'], 'tree': entries})['sha']
+          commit = api('commits', {'message': 'L1/L2: refresh official Actions and wire explicit Mockito agent and Log4j bridge after verification', 'tree': tree, 'parents': [os.environ['SEED']]})['sha']
+          evidence = {'seed': os.environ['SEED'], 'tree': tree, 'commit': commit, 'changed_paths': changed, 'branch_updates': False}
+          Path('target/worker-evidence/prepared.json').write_text(json.dumps(evidence, indent=2))
+          print('PREPARED_TREE_SHA=' + tree)
+          print('PREPARED_COMMIT_SHA=' + commit)
+          PY
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: l1-preparation-evidence
+          path: |
+            target/worker-evidence/
+            target/surefire-reports/
+          retention-days: 14
