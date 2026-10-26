@@ -1,0 +1,41 @@
+name: Public JavaFX autocomplete integration
+on:
+  pull_request:
+    paths:
+      - 'src/main/java/logbook/internal/gui/**'
+      - 'src/test/java/logbook/internal/gui/**'
+      - '.github/workflows/public-autocomplete-gui.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gui:
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+          cache: maven
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Check actual call sites have migrated
+        run: |
+          ! grep -n 'TextFields.bindAutoCompletion' src/main/java/logbook/internal/gui/{ItemItemController,ShipTablePane}.java
+          grep -q 'PublicAutoCompletion.bindAutoCompletion' src/main/java/logbook/internal/gui/ItemItemController.java
+          grep -q 'PublicAutoCompletion.bindAutoCompletion' src/main/java/logbook/internal/gui/ShipTablePane.java
+          ! grep -E 'com.sun.|impl.org.controlsfx' src/main/java/logbook/internal/gui/PublicAutoCompletion.java
+      - name: Exercise real JavaFX popup and lifecycle in Xvfb
+        run: xvfb-run -a mvn --batch-mode --no-transfer-progress -Dlogbook.gui.tests=true -Dtest=PublicAutoCompletionGuiTest,SuggestSupportTest test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: autocomplete-gui-java${{ matrix.java }}
+          path: target/surefire-reports/
