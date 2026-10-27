@@ -1,6 +1,7 @@
 package logbook.bean;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +45,12 @@ public class QuestList implements Serializable {
     public static class Quest implements Serializable {
 
         private static final long serialVersionUID = 257861496728265702L;
+
+        /** Receipt time from actual API decoding; restored settings are not a live observation. */
+        @com.fasterxml.jackson.annotation.JsonIgnore
+        @lombok.ToString.Exclude
+        @lombok.EqualsAndHashCode.Exclude
+        private transient Instant observedAt;
 
         /** api_no */
         private Integer no;
@@ -111,6 +118,7 @@ public class QuestList implements Serializable {
                     }
                 }
 
+                bean.observedAt = Instant.now();
                 return bean;
             } else {
                 return null;

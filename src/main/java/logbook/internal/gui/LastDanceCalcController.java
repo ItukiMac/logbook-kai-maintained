@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -23,7 +25,7 @@ import logbook.internal.util.DateUtil;
  * ラスダン計算機コントローラー
  *
  */
-public class LastDanceCalcController extends WindowController {
+public class LastDanceCalcController extends FeatureUiV1.Window {
 
     @FXML
     private TextField area;

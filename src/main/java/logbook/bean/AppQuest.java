@@ -61,8 +61,8 @@ public class AppQuest implements Serializable {
         int type = quest.getType();
         int yearlyResetMonth = 0;
         
-        AppQuestCondition condition = AppQuestCondition.loadFromResource(quest.getNo());
-        if (condition != null) {
+        AppQuestCondition condition = AppQuestCondition.loadFromResource(quest);
+        if (condition != null && condition.isRuleUsable()) {
             String resetType = condition.getResetType();
             if (resetType != null) {
                 switch (resetType) {

@@ -1,0 +1,35 @@
+package logbook.features;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import logbook.plugin.api.FeatureModule;
+
+/** Compiled only into a synthetic copied bundle, never into the application. */
+public final class CalculatorFeatures implements FeatureModule {
+    @Override public Descriptor descriptor() {
+        return new Descriptor("calculators", "@VERSION@", @HOST_API@, List.of());
+    }
+
+    @Override public List<Feature> features() {
+        @API_CHECK@
+        return List.of(
+                new Feature("experience", "経験値計算機", "logbook/gui/calc_exp.fxml", Group.CALCULATOR, 10, "Ctrl+C"),
+                new Feature("mission-check", "遠征条件確認", "logbook/gui/missioncheck.fxml", Group.CALCULATOR, 20, ""),
+                new Feature("probability", "確率計算機", "logbook/gui/prob_calc.fxml", Group.CALCULATOR, 30, ""),
+                new Feature("last-dance", "ラスダン計算機", "logbook/gui/last_dance_calc.fxml", Group.CALCULATOR, 40, ""));
+    }
+
+    private void requireFutureApi() {
+        try {
+            Files.writeString(Path.of("incompatible-features-entered.txt"), "API 2 was executed\n",
+                    StandardOpenOption.CREATE_NEW);
+            // This fixture really cannot execute on API 1. The declaration must
+            // reject it before features() or the absent method can be invoked.
+            FeatureModule.class.getMethod("fixtureHostApiV2").invoke(null);
+        } catch (ReflectiveOperationException | java.io.IOException failure) {
+            throw new AssertionError("Incompatible feature code must not execute", failure);
+        }
+    }
+}

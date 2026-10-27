@@ -19,6 +19,24 @@ class FeatureRegistryTest {
         FeatureModule missing=()->List.of(new FeatureModule.Feature("missing","test","logbook/gui/no-such.fxml",FeatureModule.Group.CALCULATOR,1,""));
         assertThrows(IllegalArgumentException.class,()->new FeatureRegistry(Stream.of(missing),getClass().getClassLoader()));
     }
+    @Test void managedBundleRejectsUnversionedModuleBeforeItCanPublishFeatures(){
+        var accessed = new java.util.concurrent.atomic.AtomicBoolean();
+        FeatureModule legacy = () -> {
+            accessed.set(true);
+            return List.of(new FeatureModule.Feature("legacy", "legacy",
+                    "logbook/gui/prob_calc.fxml", FeatureModule.Group.CALCULATOR, 1, ""));
+        };
+        String old = System.getProperty("logbook.runtime.managedBundle");
+        System.setProperty("logbook.runtime.managedBundle", "true");
+        try {
+            assertThrows(IllegalArgumentException.class,
+                    () -> new FeatureRegistry(Stream.of(legacy), getClass().getClassLoader()));
+            assertFalse(accessed.get(), "incompatible modules must fail before features() is called");
+        } finally {
+            if (old == null) System.clearProperty("logbook.runtime.managedBundle");
+            else System.setProperty("logbook.runtime.managedBundle", old);
+        }
+    }
     @Test void resourceTraversalIsRejected(){
         assertThrows(IllegalArgumentException.class,()->new FeatureModule.Feature("test","test","logbook/gui/../x.fxml",FeatureModule.Group.CALCULATOR,1,""));
     }

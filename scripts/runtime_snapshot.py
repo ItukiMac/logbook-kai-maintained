@@ -24,6 +24,7 @@ CHUNK = 1024 * 1024
 PATH_FIELDS = ('reportPath', 'performanceDir', 'pluginsDir', 'resourcesDir', 'battleLogDir',
                'captureDir', 'storeApiStart2Dir', 'missionSoundDir', 'ndockSoundDir',
                'alertSoundDir', 'defaultNotifySound', 'ffmpegPath')
+APP_CONFIG = 'config/logbook.bean.AppConfig.json'
 
 
 @dataclass(frozen=True)
@@ -42,6 +43,11 @@ def checked(path: Path) -> Path:
     path = Path(path)
     if '..' in path.parts:
         raise ValueError('Parent traversal is not a snapshot boundary')
+    # POSIX reserves // for implementation-defined roots; pathlib preserves the
+    # distinct lexical anchor while Linux aliases it to /. Accepting both lets
+    # is_relative_to() miss a destination physically inside the original tree.
+    if path.anchor == '//':
+        raise ValueError('Ambiguous double-root paths are not supported')
     path = path.absolute()
     for part in (path, *path.parents):
         if part.is_symlink():
@@ -155,40 +161,137 @@ def inventory(root, limits=Limits()):
     return entries
 
 
-def path_review(root):
-    """Report only known AppConfig paths. Never access external references."""
-    config = checked(root / 'config/logbook.bean.AppConfig.json')
-    result = {'config_present': config.exists(), 'references': [],
-              'third_party_paths_audited': False, 'launch_safe': False,
-              'note': 'All bytes under the selected root only. Absolute references are not rewritten; do not launch the clone before path review.'}
-    if not config.exists():
-        return result
-    try:
-        data = json.loads(read_bytes(config, 2 * 1024**2), object_pairs_hook=unique)
-        if not isinstance(data, dict):
-            raise ValueError('Config must be an object')
-        for key in PATH_FIELDS:
-            raw = data.get(key)
-            if raw is None or raw == '':
-                continue
-            if not isinstance(raw, str):
-                result['references'].append({'field': key, 'status': 'invalid_path_value'})
-                continue
-            win = PureWindowsPath(raw)
-            if win.drive or '\\' in raw:
-                status = 'other_platform_or_ambiguous'
+def _inside_kind(root, relative):
+    """lstat only from the root outward, stopping BEFORE any symbolic ancestor.
+
+    Calling Path.is_symlink() on a leaf first would traverse a symbolic parent.
+    Missing paths are reported without looking up any descendants.
+    """
+    cursor = root
+    mode = root.lstat().st_mode
+    for part in Path(relative).parts:
+        cursor = cursor / part
+        try:
+            mode = cursor.lstat().st_mode
+        except FileNotFoundError:
+            return 'missing'
+        except OSError:
+            return 'unreadable'
+        if stat.S_ISLNK(mode):
+            return 'symbolic'
+        if not stat.S_ISREG(mode) and not stat.S_ISDIR(mode):
+            return 'special'
+    return 'directory' if stat.S_ISDIR(mode) else 'file'
+
+
+def _path_references(root, data):
+    references = []
+    for key in PATH_FIELDS:
+        raw = data.get(key)
+        if raw is None or raw == '':
+            continue
+        if not isinstance(raw, str) or any(ord(char) < 32 for char in raw):
+            references.append({'field': key, 'status': 'invalid_path_value'})
+            continue
+        win = PureWindowsPath(raw)
+        kind = None
+        if win.drive or '\\' in raw:
+            status = 'other_platform_or_ambiguous'
+        elif '..' in Path(raw).parts:
+            status = 'parent_traversal_needs_review'
+        else:
+            target = Path(os.path.abspath(root / raw))
+            if not target.is_relative_to(root):
+                # Do not stat, resolve, read or check ancestors of an external target.
+                status = 'outside_root_not_copied'
             else:
-                target = Path(os.path.abspath(root / raw))
-                if not target.is_relative_to(root):
-                    status = 'outside_root_not_copied'
+                kind = _inside_kind(root, target.relative_to(root))
+                if kind in ('symbolic', 'special', 'unreadable'):
+                    status = kind + '_reference_unreviewed'
                 elif Path(raw).is_absolute():
                     status = 'absolute_reference_to_original_needs_review'
                 else:
                     status = 'relative_within_root'
-            # Values stay in the local receipt; callers must not upload real snapshots to CI/GitHub.
-            result['references'].append({'field': key, 'value': raw, 'status': status})
-    except (ValueError, UnicodeError, OSError, RecursionError):
-        result['config_unreadable'] = True
+        row = {'field': key, 'value': raw, 'status': status}
+        if kind is not None:
+            row['target_kind'] = kind
+        references.append(row)
+    return references
+
+
+def read_app_config(root):
+    """Read the primary and backup without writing either; return data, review.
+
+    Missing, empty or invalid primary JSON selects the backup, as Config.read()
+    does. A JSON null selects defaults rather than the backup. This structural
+    reader does NOT certify Jackson bean binding: both candidates' references
+    remain visible and a typed Java validation is still required for migration.
+    """
+    root = checked(Path(root))
+    candidates, parsed = [], {}
+    for relative in (APP_CONFIG, APP_CONFIG + '.backup'):
+        kind = _inside_kind(root, relative)
+        row = {'path': relative, 'status': kind, 'references': []}
+        if kind == 'symbolic':
+            row['status'] = 'symbolic_config_unreviewed'
+        elif kind == 'file':
+            try:
+                raw = read_bytes(root / relative, 2 * 1024**2)
+                row['sha256'] = digest(raw)
+                if not raw.strip():
+                    row['status'] = 'empty'
+                else:
+                    try:
+                        def reject_constant(value):
+                            raise ValueError('Non-finite JSON constant')
+                        data = json.loads(raw, object_pairs_hook=unique,
+                                          parse_constant=reject_constant)
+                        if data is None:
+                            row['status'] = 'null_config'
+                            parsed[relative] = None
+                        elif isinstance(data, dict):
+                            row['status'] = 'parsed'
+                            row['references'] = _path_references(root, data)
+                            parsed[relative] = data
+                        else:
+                            row['status'] = 'invalid_json'
+                    except (ValueError, UnicodeError, RecursionError):
+                        row['status'] = 'invalid_json'
+            except (OSError, ValueError):
+                row['status'] = 'unreadable'
+        candidates.append(row)
+    selected = next((row['path'] for row in candidates if row['path'] in parsed), None)
+    data = parsed.get(selected)
+    review = {
+        'config_present': candidates[0]['status'] != 'missing',
+        'backup_present': candidates[1]['status'] != 'missing',
+        'config_source': selected,
+        'config_fallback': selected == APP_CONFIG + '.backup',
+        'config_candidates': candidates,
+        'config_errors': [{'path': row['path'], 'status': row['status']} for row in candidates
+                          if row['status'] not in ('missing', 'parsed')],
+        'typed_config_validation_required': True,
+        'defaulted_fields': [field for field in PATH_FIELDS if data is None or field not in data],
+    }
+    if data is None and any(row['status'] != 'missing' for row in candidates):
+        review['config_unreadable'] = True
+    return data, review
+
+
+def path_review(root):
+    """Report known primary AND fallback paths; never access external targets."""
+    _, result = read_app_config(root)
+    selected = next((row for row in result['config_candidates']
+                     if row['path'] == result['config_source']), None)
+    backup = result['config_candidates'][1]
+    result.update({
+        'references': selected['references'] if selected else [],
+        'backup_references': backup['references'],
+        'third_party_paths_audited': False,
+        'unreviewed_scopes': ['plugin_configuration', 'startup_scripts'],
+        'launch_safe': False,
+        'note': 'Known AppConfig paths only; both primary and fallback need copy-side review. Plugin configuration and startup scripts remain unreviewed. No paths were rewritten.',
+    })
     return result
 
 

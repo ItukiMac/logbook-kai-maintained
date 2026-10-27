@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,7 +59,7 @@ import logbook.internal.util.DateUtil;
  * 資材チャート
  *
  */
-public class ResourceChartController extends WindowController {
+public class ResourceChartController extends FeatureUiV1.Window {
 
     /** 資材ログで使用するタイムゾーン */
     private static final ZoneId TIME_ZONE = ZoneId.of("Asia/Tokyo");
@@ -170,11 +172,11 @@ public class ResourceChartController extends WindowController {
 
     @FXML
     void initialize() {
-        TableTool.setVisible(this.table, this.getClass().toString() + "#" + "table");
+        FeatureUiV1.Tables.setVisible(this.table, this.getClass().toString() + "#" + "table");
         // SplitPaneの分割サイズ
         Timeline x = new Timeline();
         x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-            Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
+            FeatureUiV1.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
         }));
         x.play();
         this.term.setItems(FXCollections.observableArrayList(ScaleOption.values()));
@@ -424,7 +426,7 @@ public class ResourceChartController extends WindowController {
             this.table.setItems(sortedList);
             sortedList.comparatorProperty().bind(this.table.comparatorProperty());
             this.table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.table.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.table.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
         } catch (Exception e) {
             LoggerHolder.get().warn("資材ログの読込中に例外", e);
         }
@@ -435,7 +437,7 @@ public class ResourceChartController extends WindowController {
      */
     @FXML
     void copy() {
-        TableTool.selectionCopy(this.table);
+        FeatureUiV1.Tables.selectionCopy(this.table);
     }
 
     /**
@@ -443,7 +445,7 @@ public class ResourceChartController extends WindowController {
      */
     @FXML
     void selectAll() {
-        TableTool.selectAll(this.table);
+        FeatureUiV1.Tables.selectAll(this.table);
     }
 
     /**
@@ -452,7 +454,7 @@ public class ResourceChartController extends WindowController {
     @FXML
     void columnVisible() {
         try {
-            TableTool.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
+            FeatureUiV1.Tables.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);

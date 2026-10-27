@@ -36,10 +36,16 @@ assert all(int(s.get('skipped',0))==0 or s.get('name')=='logbook.core.PublicData
 assert 'SPLIT_GUI_OK features=7 windows=8' in (p/'split-gui.log').read_text()
 assert 'ISOLATED_TYPED_VALIDATION_OK files=152' in (p/'stage-java.log').read_text()
 assert 'RUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2' in (p/'python-scripts.log').read_text()
+assert 'PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true' in (p/'python-scripts.log').read_text()
 audit=json.loads((p/'json-audit.json').read_text());assert audit['complete'] and audit['counts']['validated']==152
 review=json.loads((p/'review-ledger.json').read_text());assert review['definitions']==148 and not review['complete'] and review['whole_rule_verified']==0
-assert review['field_comparisons']==76
-report={'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+assert review['field_comparisons']==77
+combined=[json.loads(f.read_text()) for f in p.glob('parallel-integration-*.json')]
+assert len(combined)==1 and combined[0]['result']=='passed' and combined[0]['original_unchanged']
+assert combined[0]['calculations']==[10,15,10] and combined[0]['tracking_checkpoints']==4
+required=[r for r in suites if r.get('name','').endswith('.SeasonalRetreatIntegrationTest')]
+assert len(required)==1 and int(required[0].get('tests',0))==8 and int(required[0].get('skipped',0))==0
+report={'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'review_ledger':{k:v for k,v in review.items() if k!='entries'},'production_deployed':False}
 (p/'summary.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')

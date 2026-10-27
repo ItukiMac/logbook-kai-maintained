@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
@@ -33,7 +35,7 @@ import logbook.internal.util.TimeUtil;
  * お風呂に入りたい艦娘のコントローラー
  *
  */
-public class RequireNdockController extends WindowController {
+public class RequireNdockController extends FeatureUiV1.Window {
 
     /** 入渠中 */
     @FXML
@@ -90,7 +92,7 @@ public class RequireNdockController extends WindowController {
 
     @FXML
     void initialize() {
-        TableTool.setVisible(this.table, this.getClass().toString() + "#" + "table");
+        FeatureUiV1.Tables.setVisible(this.table, this.getClass().toString() + "#" + "table");
 
         // カラムとオブジェクトのバインド
         this.row.setCellFactory(e -> {
@@ -122,7 +124,7 @@ public class RequireNdockController extends WindowController {
         this.table.setItems(sortedList);
         sortedList.comparatorProperty().bind(this.table.comparatorProperty());
         this.table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        this.table.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+        this.table.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
 
         this.timeline = new Timeline();
         this.timeline.setCycleCount(Timeline.INDEFINITE);
@@ -164,7 +166,7 @@ public class RequireNdockController extends WindowController {
      */
     @FXML
     void copy() {
-        TableTool.selectionCopy(this.table);
+        FeatureUiV1.Tables.selectionCopy(this.table);
     }
 
     /**
@@ -172,7 +174,7 @@ public class RequireNdockController extends WindowController {
      */
     @FXML
     void selectAll() {
-        TableTool.selectAll(this.table);
+        FeatureUiV1.Tables.selectAll(this.table);
     }
 
     /**
@@ -181,7 +183,7 @@ public class RequireNdockController extends WindowController {
     @FXML
     void columnVisible() {
         try {
-            TableTool.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
+            FeatureUiV1.Tables.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
@@ -235,7 +237,7 @@ public class RequireNdockController extends WindowController {
             super.updateItem(ship, empty);
 
             if (!empty) {
-                this.setGraphic(Tools.Controls.zoomImage(new ImageView(Ships.shipWithItemImage(ship))));
+                this.setGraphic(FeatureUiV1.Controls.zoomImage(new ImageView(Ships.shipWithItemImage(ship))));
                 this.setText(Ships.shipMst(ship)
                         .map(ShipMst::getName)
                         .orElse(""));

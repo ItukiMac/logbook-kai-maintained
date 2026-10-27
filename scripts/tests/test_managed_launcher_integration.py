@@ -17,6 +17,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import feature_bundle_manager as m
 from build_feature_distribution import build
+from run_feature_distribution import FEATURE_METADATA, METADATA_KEYS
 
 ROOT = Path(__file__).resolve().parents[2]
 HOOK = 'logbook/internal/logger/ManagedLauncherSmokeHook.class'
@@ -48,6 +49,20 @@ class ManagedLauncherIntegrationTest(unittest.TestCase):
                         self.assertNotIn(MARK, archive.namelist())
                         archive.writestr(MARK, label.encode())
                     report['files'][name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                # The synthetic core marker changes its digest. Re-pin each
+                # module in this NEW fixture copy; retain all original bundles.
+                report['host']['sha256'] = report['files'][m.JARS[0]]
+                for module in report['modules']:
+                    module['host_sha256'] = report['host']['sha256']
+                    path = target / module['path']
+                    with ZipFile(path) as archive:
+                        entries = {entry.filename: archive.read(entry) for entry in archive.infolist()}
+                    entries[FEATURE_METADATA] = json.dumps({key: module[key] for key in METADATA_KEYS}).encode()
+                    with ZipFile(path, 'w', ZIP_DEFLATED) as archive:
+                        for name, data in entries.items():
+                            archive.writestr(name, data)
+                    module['sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+                    report['files'][module['path']] = module['sha256']
                 (target/'distribution.json').write_text(json.dumps(report, sort_keys=True))
                 ids[label] = hashlib.sha256((target/'distribution.json').read_bytes()).hexdigest()
             m.initialize(store)

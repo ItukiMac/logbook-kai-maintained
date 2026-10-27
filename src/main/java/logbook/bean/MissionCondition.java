@@ -139,7 +139,10 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
                     .orElse(null);
             result &= this.shipType.contains(stype)
                     || (this.shipType.contains("護衛空母")
-                            && Ships.shipMst(ship).map(ShipMst::getTais).orElse(null) != null);
+                            && "軽空母".equals(stype)
+                            && Ships.shipMst(ship).map(ShipMst::getTais)
+                                    .filter(values -> values.stream().anyMatch(value -> value != null && value > 0))
+                                    .isPresent());
         }
         // レベル条件
         if (result && this.level != null) {
