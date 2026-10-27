@@ -1,0 +1,101 @@
+name: Record GUI implementation and before-after tests (tooling only)
+on:
+  push:
+    branches: ['maintenance/records-boundary-worker-20261027']
+    paths: ['.github/workflows/record-ui-implementation.yml']
+permissions:
+  contents: write
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 7004a3e5937b47328f5c6bfc80b1f663a6a5c1f5
+      TARGET: maintenance/record-ui-api-20261027
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 7004a3e5937b47328f5c6bfc80b1f663a6a5c1f5
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Prove the existing hidden GUI dependency is detected
+        working-directory: candidate
+        shell: bash
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          python3 ../tooling/.maintenance-tools/record_ui_boundary.py baseline
+          set +e
+          mvn -B -ntp -Dtest=RecordUiBoundaryTest test > ../evidence/baseline.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json
+          r=E.parse('target/surefire-reports/TEST-logbook.internal.gui.RecordUiBoundaryTest.xml').getroot()
+          assert r.get('tests')=='1' and r.get('failures')=='1' and r.get('errors')=='0',r.attrib
+          failure=r.find('testcase/failure');assert 'links host GUI' in failure.get('message','')
+          Path('../evidence/baseline.json').write_text(json.dumps({'expected_failure':failure.get('message'),'tests':1,'failures':1,'errors':0},indent=2))
+          PY
+      - name: Apply reviewed narrow API changes
+        working-directory: candidate
+        run: |
+          python3 ../tooling/.maintenance-tools/apply_record_ui.py > ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          git diff --stat > ../evidence/diff-stat.txt
+      - name: Compile and execute unchanged before-after assertions plus new API contracts
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=RecordUiBoundaryTest,RecordUiContractTest test > ../evidence/after.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Preserve tested source only on the new candidate branch
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main/java/logbook/plugin/api/FeatureUiV1.java src/main/java/logbook/plugin/api/RecordViewsV1.java src/main/java/logbook/internal/gui/FeatureUiBridgeV1.java src/main/java/logbook/internal/gui/RecordViewBridgeV1.java src/main/java/logbook/internal/gui/BattleLogController.java src/main/java/logbook/internal/gui/MissionLogController.java src/main/java/logbook/internal/gui/CreateItemController.java src/test/java/logbook/internal/gui/RecordUiBoundaryTest.java src/test/java/logbook/internal/gui/RecordUiContractTest.java
+          git commit -m 'Expose record GUI services through additive public contracts; retain storage and bundle formats'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain exact results without treating compilation as complete GUI validation
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,xml.etree.ElementTree as E
+          e=Path('../evidence');r={'base':'7004a3e5937b47328f5c6bfc80b1f663a6a5c1f5','full_gui_validated':False,'production_accessed':False}
+          for p in e.glob('*'):
+              if p.suffix=='.json':r[p.name]=json.loads(p.read_text())
+              elif p.suffix in ('.log','.txt'):
+                  lines=p.read_text(errors='replace').splitlines()
+                  r[p.name]={'tail':lines[-45:],'errors':[l for l in lines if '[ERROR]' in l][-30:]}
+          r['suites']=[]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*RecordUi*.xml'):
+              s=E.parse(p).getroot();r['suites'].append(s.attrib)
+          Path('.maintenance-evidence/record-ui-build.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/record-ui-build.json
+          git commit -m 'Retain exact before-after record UI build evidence, including failures'
+          git push origin HEAD:refs/heads/maintenance/records-boundary-worker-20261027
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: record-ui-build-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+          retention-days: 14
