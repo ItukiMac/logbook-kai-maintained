@@ -97,7 +97,9 @@ jobs:
           test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$SEED"
           test "$(git rev-parse HEAD^{tree})" = "$TREE"
           git diff --exit-code
-          git -c core.whitespace=cr-at-eol diff "$BASE" HEAD --check
+          # Archive patch context lines contain meaningful leading spaces. Keep
+          # those two reviewed payload documents unchanged, not stripped for lint.
+          git -c core.whitespace=cr-at-eol diff "$BASE" HEAD --check -- . ':!docs/maintenance/integration/runtime-migration-feature-v2.patch' ':!docs/maintenance/seasonal-common-integration.patch'
           python3 - <<'PY'
           import json,xml.etree.ElementTree as E
           from pathlib import Path
