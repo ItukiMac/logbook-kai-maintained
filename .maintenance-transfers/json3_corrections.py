@@ -15,3 +15,4 @@ def form(s):
  return s
 edit('src/main/java/logbook/internal/gui/QuestConditionEditController.java',form)
 edit('src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java',lambda s:s.replace('catch (IOException e)', 'catch (tools.jackson.core.JacksonException e)'))
+edit('src/test/java/logbook/map/MappingGenerator.java',lambda s:s.replace('JsonParseException', 'JacksonException'))
