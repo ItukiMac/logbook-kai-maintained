@@ -220,11 +220,16 @@ public class QuestCollect {
                     if (filter.getDeckIds() != null && !filter.getDeckIds().contains(arrival.deckId())) continue;
                     if (Boolean.TRUE.equals(filter.getNoRetreat()) && !arrival.noRetreat()) continue;
                     if (filter.getFleet() != null) {
-                        // This journal preserves departure slots, not reconstructed retreat survivors.
-                        if (!arrival.noRetreat()) continue;
-                        List<ShipMst> ships = arrival.shipMasterIds().stream()
-                                .map(id -> logbook.bean.ShipMstCollection.get().getShipMap().get(id)).toList();
-                        if (!filter.getFleet().test(ships)) continue;
+                        if (arrival.noRetreat()) {
+                            List<ShipMst> ships = arrival.shipMasterIds().stream()
+                                    .map(id -> logbook.bean.ShipMstCollection.get().getShipMap().get(id)).toList();
+                            if (!filter.getFleet().test(ships)) continue;
+                        } else {
+                            // Legacy records alone do not prove which departure slots survived.
+                            // Only a separately validated, matching observation may supply them.
+                            var fleet = PortArrivalRuntime.readFleet(arrival);
+                            if (fleet.isEmpty() || !fleet.get().matches(filter.getFleet())) continue;
+                        }
                     }
                 }
                 collect.getArea().computeIfAbsent(arrival.map(), key -> new Count()).arrivals++;
