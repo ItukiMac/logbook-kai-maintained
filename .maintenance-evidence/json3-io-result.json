@@ -1,0 +1,89 @@
+{
+  "changes.json": [
+    {
+      "path": "src/main/java/logbook/core/DefinitionPackInstaller.java",
+      "line": 44,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/core/DefinitionPackInstaller.java",
+      "line": 167,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/core/DefinitionPackInstaller.java",
+      "line": 226,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/core/DefinitionPackInstaller.java",
+      "line": 254,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/core/DataPackReleaseClient.java",
+      "line": 42,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/core/GameDefinitionLoader.java",
+      "line": 26,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/bean/AppQuestCondition.java",
+      "line": 121,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/Missions.java",
+      "line": 59,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/PortArrivalStore.java",
+      "line": 37,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/PortArrivalStore.java",
+      "line": 76,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/PortArrivalStore.java",
+      "line": 89,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/PortArrivalStore.java",
+      "line": 149,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/PortArrivalJournal.java",
+      "line": 80,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/PortArrivalJournal.java",
+      "line": 167,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/kancolle/PortArrivalJournal.java",
+      "line": 209,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestConditionEditController.java",
+      "line": 1021,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    },
+    {
+      "path": "src/main/java/logbook/internal/listener/ImageListener.java",
+      "line": 299,
+      "reason": "retain declared checked I/O boundary for Jackson3 parser errors"
+    }
+  ]
+}
