@@ -38,7 +38,7 @@ assert 'ISOLATED_TYPED_VALIDATION_OK files=152' in (p/'stage-java.log').read_tex
 assert 'RUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2' in (p/'python-scripts.log').read_text()
 audit=json.loads((p/'json-audit.json').read_text());assert audit['complete'] and audit['counts']['validated']==152
 review=json.loads((p/'review-ledger.json').read_text());assert review['definitions']==148 and not review['complete'] and review['whole_rule_verified']==0
-assert review['field_comparisons']==76
+assert review['field_comparisons']==77
 report={'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'review_ledger':{k:v for k,v in review.items() if k!='entries'},'production_deployed':False}
