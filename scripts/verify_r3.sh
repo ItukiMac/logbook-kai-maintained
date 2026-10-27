@@ -58,9 +58,24 @@ record_suites=[s for s in suites if s.get('name') in {'logbook.core.RecordDataCo
 assert len(record_suites)==2 and all(int(s.get('skipped',0))==0 for s in record_suites)
 record_test_count=sum(int(s.get('tests',0)) for s in record_suites)
 assert record_test_count>=24
+# Equipment verification uses the actual status module, not a host fallback or skipped test.
+equipment_reports=[json.loads(f.read_text()) for f in p.glob('equipment-ui-fixture-*.json')]
+assert len(equipment_reports)==1 and equipment_reports[0]['result']=='passed'
+equipment=equipment_reports[0]
+assert equipment['product_distribution'] and equipment['equipment_ui_profile']=='equipment-ui-in-status-v1'
+assert equipment['equipment_module']=='status' and equipment['tabs']==2 and equipment['owned_instances']==6
+assert equipment['normal_and_expansion_owner'] and equipment['locked_export']==3
+assert equipment['settings_reread'] and equipment['original_history_unchanged'] and equipment['source_jar_unchanged']
+assert not equipment['production_accessed']
+assert json.loads((p/'feature-manifest.json').read_text())['equipment_ui_profile']=='equipment-ui-in-status-v1'
+equipment_suites=[s for s in suites if s.get('name') in {'logbook.core.EquipmentDataContractTest','logbook.internal.gui.EquipmentProjectionTest'}]
+assert len(equipment_suites)==2 and all(int(s.get('skipped',0))==0 for s in equipment_suites)
+equipment_test_count=sum(int(s.get('tests',0)) for s in equipment_suites)
+assert equipment_test_count>=21
 report={'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
+        'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,
         'review_ledger':{k:v for k,v in review.items() if k!='entries'},'production_deployed':False}
 (p/'summary.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(report,ensure_ascii=False))
