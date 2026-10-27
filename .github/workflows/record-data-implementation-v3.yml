@@ -1,0 +1,111 @@
+name: Immutable record data verified candidate (tooling only)
+on:
+  push:
+    branches: ['maintenance/record-data-worker-20261028']
+    paths: ['.github/workflows/record-data-implementation-v3.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: eb0bf6a0fa56d35877f332536551361a5de7b996
+      TARGET: maintenance/record-data-api-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: eb0bf6a0fa56d35877f332536551361a5de7b996
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Apply guarded source and corrected test imports in a fresh checkout
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          python3 ../tooling/.maintenance-tools/apply_record_data.py > ../evidence/apply.log 2>&1
+          python3 - <<'PY' > ../evidence/tests-apply.log 2>&1
+          from pathlib import Path
+          source=Path('../tooling/.maintenance-tools/add_record_tests.py').read_text()
+          old="lambda s:s.replace('CollectPeriod','CollectUnit')"
+          assert source.count(old)==1
+          source=source.replace(old,"lambda s:s.replace('collectPeriod','collectUnit').replace('setPeriod(', 'setUnit(')")
+          exec(compile(source,'add_record_tests_corrected.py','exec'))
+          p=Path('src/test/java/logbook/core/RecordDataContractTest.java');s=p.read_text()
+          assert s.count('import java.time.*;')==1
+          p.write_text(s.replace('import java.time.*;', 'import java.time.LocalDate;\nimport java.time.ZoneId;\nimport java.time.ZonedDateTime;'))
+          p=Path('scripts/java/RecordUiProbe.java');s=p.read_text()
+          assert s.count('root.applyCss();root.layout();')==1
+          p.write_text(s.replace('root.applyCss();root.layout();', 'detail.scrollToColumn(exp);root.applyCss();root.layout();'))
+          PY
+          python3 ../tooling/.maintenance-tools/compact_record_views.py > ../evidence/compact.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Verify value and API regression suites
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=RecordDataContractTest,RecordDataViewTest,RecordUiBoundaryTest,RecordUiContractTest test > ../evidence/unit.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Exercise actual current, old and malformed history rows through all three windows
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_record_ui_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Commit only passing source onto a separate branch
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,subprocess
+          paths=json.loads(Path('../evidence/changed-paths.json').read_text())
+          assert len(paths)==len(set(paths))
+          subprocess.run(['git','add','--',*paths],check=True)
+          assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())==set(paths)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Detach record data with immutable snapshots and screen-owned projections; preserve old APIs and unknown values'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain exact passing or failing evidence with no product publication
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,xml.etree.ElementTree as E
+          result={'base':'eb0bf6a0fa56d35877f332536551361a5de7b996','production_accessed':False,'full_regression_verified':False,'logs':{},'suites':[],'gui_reports':{}}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix=='.json':result[p.name]=json.loads(p.read_text())
+              else:
+                  text=p.read_text(errors='replace');result['logs'][p.name]={'tail':text[-20000:],'errors':[line for line in text.splitlines() if '[ERROR]' in line][-60:]}
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*Record*.xml'):
+              result['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('record-ui-*.json'):
+              result['gui_reports'][p.name]=json.loads(p.read_text())
+          Path('.maintenance-evidence/record-data-build-v3.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/record-data-build-v3.json
+          git commit -m 'Retain final focused immutable record data verification'
+          git push origin HEAD:refs/heads/maintenance/record-data-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: record-data-build-v3-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/record-ui-*.json
+            candidate/target/r3-verification/record-ui-*.log
+          retention-days: 14
