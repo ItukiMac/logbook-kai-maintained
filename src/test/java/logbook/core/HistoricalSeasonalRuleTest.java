@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuestCondition;
 import logbook.bean.ShipMst;
 import logbook.bean.Stype;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.TestFactory;
 
 /** Published historical requirements, exercised through the actual fleet/count predicates. */
 class HistoricalSeasonalRuleTest {
-    private static final ObjectMapper JSON = new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
 
     private static AppQuestCondition rule(int id) throws Exception {
         String edition = switch (id) {

@@ -8,7 +8,7 @@ import java.time.*;
 import java.nio.file.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import com.fasterxml.jackson.databind.*;
+import tools.jackson.databind.*;
 import logbook.bean.AppQuest;
 import logbook.bean.AppQuestCondition;
 import logbook.bean.QuestList.Quest;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
 class SeasonalQuestLoadingTest {
-    static final ObjectMapper JSON = new ObjectMapper();
+    static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     @TempDir Path root;
     String previous;
     @BeforeEach void start() throws Exception {

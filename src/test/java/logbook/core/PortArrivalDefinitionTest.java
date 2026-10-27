@@ -2,14 +2,14 @@ package logbook.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuestCondition;
 import logbook.internal.kancolle.QuestCollect;
 import logbook.plugin.api.GameDefinitionSnapshot;
 import org.junit.jupiter.api.Test;
 
 class PortArrivalDefinitionTest {
-    private static final ObjectMapper JSON=new ObjectMapper().enable(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_COMMENTS);
+    private static final ObjectMapper JSON=logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
     private static String rule(String extra) {return "{\"conditions\":[{\"area\":[\"1-6\"],\"arrival\":true,\"count\":1"+extra+"}]}";}
     @Test void precedingBattleNeverSatisfiesTheNewArrivalCondition() throws Exception {
         var c=JSON.readValue(rule(""),AppQuestCondition.class).getConditions().getFirst();

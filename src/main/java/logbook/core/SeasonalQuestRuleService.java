@@ -20,10 +20,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.QuestList.Quest;
 import logbook.plugin.api.GameDefinitionSnapshot;
 
@@ -40,9 +40,7 @@ public final class SeasonalQuestRuleService {
     private static final int MAX_BYTES = 1_048_576;
     private static final Set<Integer> KNOWN_IDS = Set.of(441, 840, 841, 843, 906, 907, 909,
         953, 954, 955, 987, 1039, 1040);
-    private static final ObjectMapper JSON = new ObjectMapper()
-        .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-        .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     private static final DateTimeFormatter LOG_DATE = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")
         .withResolverStyle(ResolverStyle.STRICT);
 
@@ -227,7 +225,7 @@ public final class SeasonalQuestRuleService {
             // Reuse the real typed validator, including fleet operands and port-arrival invariants.
             PreparedGameDefinitions.prepare(new GameDefinitionSnapshot("seasonal-" + chosen.editionId,
                 Map.of("logbook/" + chosen.origin + "/" + questId + ".json", candidate)));
-            JsonNode rule = new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS).readTree(candidate);
+            JsonNode rule = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build().readTree(candidate);
             require((chosen.category == 2 ? "出撃" : "遠征").equals(rule.path("type").asText()), "category differs from rule");
             String reset = switch (chosen.type) {
                 case 1 -> "デイリー"; case 2 -> "ウィークリー"; case 3 -> "マンスリー";
@@ -235,7 +233,7 @@ public final class SeasonalQuestRuleService {
             };
             require(reset != null && reset.equals(rule.path("resetType").asText()), "period differs from observed type");
             return result(Status.SELECTED, chosen, observed, candidate);
-        } catch (IOException | RuntimeException invalid) { return result(Status.DEFINITION_CHANGED, null, observed, null); }
+        } catch (RuntimeException invalid) { return result(Status.DEFINITION_CHANGED, null, observed, null); }
     }
 
     private Resolution result(Status status, Edition edition, Observation observed, byte[] bytes) {

@@ -24,7 +24,7 @@ import org.controlsfx.control.ToggleSwitch;
 // Completion is implemented with public JavaFX APIs in this package.
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -862,7 +862,7 @@ public class ShipTablePane extends VBox {
                     .sorted(Comparator.comparing(KancolleFleetanalysisItem::getId)
                             .thenComparing(Comparator.comparing(KancolleFleetanalysisItem::getLv)))
                     .collect(Collectors.toList());
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
             String input = mapper.writeValueAsString(list);
 
             ClipboardContent content = new ClipboardContent();

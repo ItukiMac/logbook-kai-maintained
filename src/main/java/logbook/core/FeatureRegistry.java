@@ -1,10 +1,10 @@
 package logbook.core;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.json.JsonFactory;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -167,9 +167,8 @@ public final class FeatureRegistry {
             if (raw.length > maxMetadataBytes) {
                 throw new IllegalArgumentException("Oversized embedded feature descriptor: " + provider);
             }
-            ObjectMapper mapper = new ObjectMapper(new JsonFactory()
-                    .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION))
-                    .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+                    .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
             JsonNode metadata = mapper.readTree(raw);
             requireFields(metadata, Set.of("id", "version", "host_api", "host_sha256", "dependencies", "provider", "features"));
             if (!metadata.get("host_api").isInt() || !metadata.get("dependencies").isArray()
@@ -228,7 +227,7 @@ public final class FeatureRegistry {
             throw new IllegalArgumentException("Expected feature metadata object");
         }
         Set<String> fields = new HashSet<>();
-        value.fieldNames().forEachRemaining(fields::add);
+        value.propertyNames().iterator().forEachRemaining(fields::add);
         if (!fields.equals(expected)) {
             throw new IllegalArgumentException("Invalid feature metadata fields");
         }

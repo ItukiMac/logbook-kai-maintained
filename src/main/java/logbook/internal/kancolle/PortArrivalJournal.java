@@ -9,10 +9,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.*;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.*;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Immutable observation checkpoints, separate from credited arrivals. Each JST day is an
@@ -28,9 +28,7 @@ final class PortArrivalJournal {
     private static final int MAX_DAYS = 8_000;
     private static final Set<String> FIELDS = Set.of("format", "sequence", "previousDigest", "kind",
             "observedAt", "payload", "reason", "digest");
-    private static final ObjectMapper JSON = new ObjectMapper()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     private final Path root;
 
     record Entry(long sequence, String previousDigest, String kind, long observedAt,
@@ -175,7 +173,7 @@ final class PortArrivalJournal {
         if (bytes.length > MAX_BYTES) throw new IOException("Tracking checkpoint exceeds size limit");
         JsonNode tree = JSON.readTree(bytes);
         if (tree == null || !tree.isObject()) throw new IOException("Invalid tracking checkpoint object");
-        Set<String> keys = new HashSet<>(); tree.fieldNames().forEachRemaining(keys::add);
+        Set<String> keys = new HashSet<>(); tree.propertyNames().iterator().forEachRemaining(keys::add);
         if (!keys.equals(FIELDS) || !tree.get("format").isTextual() || !FORMAT.equals(tree.get("format").textValue()))
             throw new IOException("Unknown tracking checkpoint format or fields");
         if (!tree.get("sequence").isIntegralNumber() || !tree.get("sequence").canConvertToLong()

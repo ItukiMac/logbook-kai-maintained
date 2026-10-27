@@ -7,8 +7,8 @@ import java.nio.file.*;
 import java.time.*;
 import java.util.*;
 import java.util.function.Consumer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import logbook.bean.*;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.io.TempDir;
 class PortArrivalFleetStoreTest {
     @TempDir Path temp;
     private static final long T = Instant.parse("2026-10-27T01:00:00Z").toEpochMilli();
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     private Path root() { return temp.resolve("arrivals"); }
     private PortArrivalStore store() { return new PortArrivalStore(root()); }
     private static PortArrival arrival(boolean noRetreat) {
@@ -108,7 +108,7 @@ class PortArrivalFleetStoreTest {
     }
     @Test void changedMasterAndRetreatEvidenceCannotMatchAnOldArrival() throws Exception {
         var value = arrival(false); store().appendFleet(fleet(value));
-        mutate(value, n -> { ((com.fasterxml.jackson.databind.node.ArrayNode) n.get("arrival").get("shipMasterIds")).set(0, JSON.getNodeFactory().numberNode(201));
+        mutate(value, n -> { ((tools.jackson.databind.node.ArrayNode) n.get("arrival").get("shipMasterIds")).set(0, JSON.getNodeFactory().numberNode(201));
             ((ObjectNode) n.get("members").get(0)).put("masterId", 201); });
         assertThrows(IOException.class, () -> store().readFleet(value));
         Files.writeString(sidecar(value), JSON.writeValueAsString(fleet(value)));

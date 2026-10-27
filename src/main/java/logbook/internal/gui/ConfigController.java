@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -751,7 +751,7 @@ public class ConfigController extends WindowController {
 
     private void setFFmpegTemplate() {
         try {
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
             List<?> list;
             try (InputStream is = LogBookCoreServices.getResourceAsStream("logbook/capture_options/list.json")) {
                 list = mapper.readValue(is, List.class);

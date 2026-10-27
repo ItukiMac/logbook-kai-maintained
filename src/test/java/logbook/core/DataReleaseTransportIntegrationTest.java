@@ -1,7 +1,7 @@
 package logbook.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * seam is replaced with localhost HTTP, never the production index URL.
  */
 class DataReleaseTransportIntegrationTest {
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
 
     @TempDir Path temp;
 

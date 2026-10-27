@@ -9,9 +9,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * KC3Kaiからmapping情報を取得し、mapping.jsonにconvertします
@@ -23,12 +23,15 @@ public class MappingGenerator {
     private static final String KEY_PREFIX = "World ";
     
     @SuppressWarnings("unchecked")
-    public static void main(String[] args) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
+    public static void main(String[] args) throws JacksonException, DatabindException, MalformedURLException, IOException {
         
         System.out.println("convert start");
         
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Map<String, List<String>>> json = mapper.readValue(new URL(SOURCE_URL), Map.class);
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
+        Map<String, Map<String, List<String>>> json;
+        try (var input = new URL(SOURCE_URL).openStream()) {
+            json = mapper.readValue(input, Map.class);
+        }
         try (FileOutputStream fos = new FileOutputStream(new File("src/main/resources/logbook/map/mapping.json"));
                 PrintWriter pw = new PrintWriter(fos)) {
             // generate the JSON on our own to keep the order in the original JSON file

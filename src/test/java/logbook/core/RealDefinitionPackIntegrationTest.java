@@ -11,8 +11,8 @@ import java.util.HexFormat;
 import java.util.Set;
 import java.util.zip.ZipFile;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.io.TempDir;
  * real data ZIP from the checked out resource definitions (no game traffic).
  */
 class RealDefinitionPackIntegrationTest {
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     private static final String PACK_PROPERTY = "logbook.test.dataPackPath";
 
     @TempDir

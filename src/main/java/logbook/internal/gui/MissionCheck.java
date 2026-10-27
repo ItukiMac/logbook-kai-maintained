@@ -18,8 +18,8 @@ import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.databind.ObjectMapper;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -56,12 +56,12 @@ public class MissionCheck extends FeatureUiV1.Window {
     @FXML
     private TreeView<String> conditionTree;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private tools.jackson.databind.json.JsonMapper mapper = logbook.internal.json.JsonMappers.builder().build();
 
     private Set<Mission> expanded = new HashSet<>();
 
     public MissionCheck() {
-        this.mapper.configure(Feature.ALLOW_COMMENTS, true);
+        this.mapper = this.mapper.rebuild().configure(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS, true).build();
     }
 
     @FXML

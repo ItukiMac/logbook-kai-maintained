@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -59,8 +59,7 @@ public class SeaAreaEditController extends WindowController {
                 Image baseImage = new Image(eventPngPath.toUri().toString());
                 if (Files.exists(eventJsonPath)) {
                     try (Reader reader = Files.newBufferedReader(eventJsonPath, StandardCharsets.UTF_8)) {
-                        ObjectMapper mapper = new ObjectMapper();
-                        mapper.disable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).build();
                         Spritesmith sprites = mapper.readValue(reader, Spritesmith.class);
                         if (sprites != null && sprites.getFrames() != null) {
                             double width = baseImage.getWidth();
@@ -116,7 +115,7 @@ public class SeaAreaEditController extends WindowController {
             Path customJsonPath = resourcesDir.resolve(Paths.get("common", "common_event", "common_event_custom.json"));
             if (Files.exists(customJsonPath)) {
                 try (Reader reader = Files.newBufferedReader(customJsonPath, StandardCharsets.UTF_8)) {
-                    ObjectMapper mapper = new ObjectMapper();
+                    ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
                     List<SeaAreaCustomEntry> customEntries = mapper.readValue(reader, new TypeReference<List<SeaAreaCustomEntry>>() {});
                     if (customEntries != null) {
                         for (SeaAreaCustomEntry entry : customEntries) {
@@ -304,8 +303,7 @@ public class SeaAreaEditController extends WindowController {
 
             Path file = dir.resolve("common_event_custom.json");
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
 
             try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
                 mapper.writeValue(writer, entries);

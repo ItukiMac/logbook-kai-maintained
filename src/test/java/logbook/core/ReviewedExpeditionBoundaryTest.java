@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.MissionCondition;
 import logbook.bean.Ship;
 import logbook.bean.ShipMst;
@@ -23,7 +23,7 @@ import org.mockito.MockedStatic;
 
 /** Real expedition predicates with fixture-only master/state collections. */
 class ReviewedExpeditionBoundaryTest {
-    private static final ObjectMapper JSON = new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
 
     private static MissionCondition a5() throws Exception {
         try (var in = ReviewedExpeditionBoundaryTest.class.getResourceAsStream("/logbook/mission/1/A5.json")) {

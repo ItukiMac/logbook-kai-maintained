@@ -10,8 +10,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.databind.ObjectMapper;
 
 import logbook.core.LogBookCoreServices;
 import logbook.internal.kancolle.Operator;
@@ -123,7 +123,7 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
         if (original.length > 1_048_576) throw new java.io.IOException("Quest definition size limit");
         var resolution = rules.resolve(questNo, origin, original, observation);
         byte[] chosen = resolution.definition();
-        ObjectMapper mapper = new ObjectMapper().enable(Feature.ALLOW_COMMENTS);
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
         AppQuestCondition result = mapper.readValue(chosen == null ? original : chosen, AppQuestCondition.class);
         if (resolution.selection().status() != logbook.core.SeasonalQuestRuleService.Status.NOT_SEASONAL)
             result.seasonalSelection = resolution.selection();

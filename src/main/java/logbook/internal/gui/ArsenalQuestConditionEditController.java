@@ -8,8 +8,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -133,12 +133,12 @@ public class ArsenalQuestConditionEditController extends WindowController {
     private void loadSetting(AppQuest quest) {
         Path path = this.getSettingPath(quest);
         if (Files.exists(path)) {
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
             try {
                 ArsenalQuestSetting setting = mapper.readValue(path.toFile(), ArsenalQuestSetting.class);
                 this.discard.setSelected(setting.isDiscard());
                 this.comment.setText(setting.getComment());
-            } catch (IOException e) {
+            } catch (tools.jackson.core.JacksonException e) {
                 LoggerHolder.get().error("設定の読み込みに失敗しました", e);
             }
         } else {
@@ -164,8 +164,7 @@ public class ArsenalQuestConditionEditController extends WindowController {
                 Files.createDirectories(path.getParent());
             }
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
             try (java.io.Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
                 mapper.writeValue(writer, setting);
             }
@@ -195,11 +194,11 @@ public class ArsenalQuestConditionEditController extends WindowController {
     private boolean isDiscard(AppQuest quest) {
         Path path = this.getSettingPath(quest);
         if (Files.exists(path)) {
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
             try {
                 ArsenalQuestSetting setting = mapper.readValue(path.toFile(), ArsenalQuestSetting.class);
                 return setting.isDiscard();
-            } catch (IOException e) {
+            } catch (tools.jackson.core.JacksonException e) {
                 // ignore
             }
         }

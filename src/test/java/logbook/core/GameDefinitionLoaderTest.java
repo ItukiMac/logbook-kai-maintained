@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class GameDefinitionLoaderTest {
     @TempDir Path root;
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     private Path stage(String id, Map<String, String> files) throws Exception {
         Path generation = root.resolve("generations").resolve(id);
         Files.createDirectories(generation.resolve("definitions"));
@@ -83,7 +83,7 @@ class GameDefinitionLoaderTest {
     @Test void duplicateManifestEntryIsRejected() throws Exception {
         Path generation = stage("a".repeat(64), Map.of("quest/1.json", "{}"));
         var manifest = JSON.readTree(generation.resolve("manifest.json").toFile());
-        var files = (com.fasterxml.jackson.databind.node.ArrayNode) manifest.path("files");
+        var files = (tools.jackson.databind.node.ArrayNode) manifest.path("files");
         files.add(files.get(0).deepCopy());
         JSON.writeValue(generation.resolve("manifest.json").toFile(), manifest);
         assertThrows(java.io.IOException.class, () -> GameDefinitionLoader.load(root));

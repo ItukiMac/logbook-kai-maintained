@@ -236,8 +236,7 @@ public class AppQuestDuration {
         try {
             java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + quest.getNo() + ".json");
             if (java.nio.file.Files.exists(file)) {
-                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                mapper.enable(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_COMMENTS);
+                tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
                 logbook.bean.AppQuestCondition condition = mapper.readValue(file.toFile(), logbook.bean.AppQuestCondition.class);
                 if (condition != null && condition.getStartDate() != null) {
                     from = condition.getStartDate();

@@ -1,7 +1,7 @@
 package logbook.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * No user data, game API, running application or plugins are accessed.
  */
 class PublicDataReleaseIntegrationTest {
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
 
     @TempDir Path temp;
 

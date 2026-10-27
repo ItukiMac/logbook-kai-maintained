@@ -7,9 +7,9 @@ import java.security.MessageDigest;
 import java.time.Clock;
 import java.util.*;
 import java.util.function.Supplier;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
 import jakarta.json.*;
 import logbook.bean.*;
 import logbook.internal.logger.LoggerHolder;
@@ -19,7 +19,7 @@ import logbook.net.RequestMetaData;
 public final class PortArrivalRuntime {
     private static final PortArrivalRuntime SHARED = new PortArrivalRuntime(
             () -> new PortArrivalStore(Path.of("sortie-arrivals-v1")), Clock.systemUTC());
-    private static final ObjectMapper JSON = com.fasterxml.jackson.databind.json.JsonMapper.builder()
+    private static final ObjectMapper JSON = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults()
             .enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
             .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
             .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)

@@ -8,12 +8,12 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class DefinitionPackCompatibilityTest {
-    static final ObjectMapper JSON = new ObjectMapper();
+    static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     @TempDir Path temp;
     record Pack(Path path, String sha) { }
     static String hash(byte[] data) throws Exception { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(data)); }
@@ -75,7 +75,7 @@ class DefinitionPackCompatibilityTest {
         DefinitionPackInstaller.install(root, valid.path(), valid.sha());
         var service = new GameDefinitionService(error -> fail(error)); var pinned = service.reload(root);
         Path manifest = root.resolve("generations").resolve(valid.sha()).resolve("manifest.json");
-        var node = (com.fasterxml.jackson.databind.node.ObjectNode) JSON.readTree(manifest.toFile());
+        var node = (tools.jackson.databind.node.ObjectNode) JSON.readTree(manifest.toFile());
         node.set("required_capabilities", JSON.valueToTree(List.of("future-feature")));
         JSON.writeValue(manifest.toFile(), node);
         byte[] pointer = Files.readAllBytes(root.resolve("active.json"));

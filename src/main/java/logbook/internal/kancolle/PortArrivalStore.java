@@ -8,20 +8,18 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.YearMonth;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.*;
 
 /** Append-only, bounded new journal; never traverses or rewrites the existing battle log. */
 public final class PortArrivalStore {
     private static final int MAX_BYTES = 16 * 1024;
     private static final int MAX_RECORDS = 20_000;
-    private static final ObjectMapper JSON = new ObjectMapper()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     // New evidence must not turn absent/null/fractional values into known identities or vacancies.
     // The legacy record reader remains unchanged for existing v1 files.
-    private static final ObjectMapper EVIDENCE_JSON = com.fasterxml.jackson.databind.json.JsonMapper.builder()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
+    private static final ObjectMapper EVIDENCE_JSON = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults()
+            .enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
             .enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
             .enable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES)

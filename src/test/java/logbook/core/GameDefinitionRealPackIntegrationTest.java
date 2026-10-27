@@ -12,14 +12,14 @@ import java.util.HexFormat;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipFile;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuestCondition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /** Actual committed game pack -> installer -> immutable plugin API; isolated temporary storage only. */
 class GameDefinitionRealPackIntegrationTest {
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     @TempDir Path isolated;
 
     private Path pack() {

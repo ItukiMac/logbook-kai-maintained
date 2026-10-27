@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import logbook.bean.AppConfig;
 import logbook.constants.SeaArea;
@@ -104,8 +104,7 @@ public final class SeaAreas {
         
         if (file.exists() && file.canRead()) {
             try {
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(Feature.ALLOW_COMMENTS);
+                ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
                 
                 List<Map<String, Object>> customEntries = mapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
                 if (customEntries != null) {
@@ -122,7 +121,7 @@ public final class SeaAreas {
                         }
                     }
                 }
-            } catch (IOException e) {
+            } catch (tools.jackson.core.JacksonException e) {
                 LoggerHolder.get().error("海域カスタムJSONの読み込みに失敗しました", e);
             }
         }

@@ -2,17 +2,15 @@ package logbook.core;
 
 import java.io.IOException;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.*;
 import logbook.bean.AppQuestCondition;
 import logbook.bean.MissionCondition;
 import logbook.plugin.api.GameDefinitionSnapshot;
 
 /** Immutable, eagerly validated consumer data. Mutable predicate beans are never shared. */
 final class PreparedGameDefinitions {
-    static final ObjectMapper JSON = new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS)
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     record ShipInfo(int id, int minTaisen, int minSakuteki, int minKaihi, List<Integer> items) {}
     final Map<String,String> mapping;
     final Map<Integer,ShipInfo> ships;
@@ -41,7 +39,7 @@ final class PreparedGameDefinitions {
                     JSON.treeToValue(node, MissionCondition.class); mission(node); predicates(node);
                 } else if (name.equals("logbook/map/mapping.json")) {
                     require(node.isObject(), "mapping must be an object");
-                    var fields = node.fields();
+                    var fields = node.properties().iterator();
                     while (fields.hasNext()) {
                         var field = fields.next();
                         require(field.getKey().matches("[0-9]+-[0-9]+-[0-9]+") && field.getValue().isTextual(), "mapping entry");
@@ -155,7 +153,7 @@ final class PreparedGameDefinitions {
         if(node.hasNonNull("operator")) require(Set.of("AND","OR","NAND","NOR","EQ","NE","GE","GT","LE","LT").contains(node.path("operator").asText()),"unknown operator");
         if(node.hasNonNull("order")) require(node.get("order").isIntegralNumber() && node.get("order").asInt()>0,"positive order");
         if(node.hasNonNull("conditions")) require(node.get("conditions").isArray() && !node.get("conditions").isEmpty(),"nonempty conditions");
-        var values=node.elements();while(values.hasNext()) predicates(values.next());
+        var values=node.values().iterator();while(values.hasNext()) predicates(values.next());
     }
     private static void require(boolean valid,String reason) {if(!valid) throw new IllegalArgumentException(reason);}
 }

@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.time.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /** Synthetic journals only: old records and failed writes are deliberately retained. */
 class PortArrivalJournalTest {
     @TempDir Path temp;
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     private static final long T = Instant.parse("2026-10-27T01:00:00Z").toEpochMilli();
     private Path root() { return temp.resolve("tracking-v1"); }
     private Path day() { return root().resolve("2026-10-27"); }

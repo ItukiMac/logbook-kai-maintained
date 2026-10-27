@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.databind.ObjectMapper;
 
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -76,8 +76,7 @@ public class Missions {
         }
         MissionCondition condition;
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(Feature.ALLOW_COMMENTS);
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
             condition = mapper.readValue(is, MissionCondition.class);
         } finally {
             is.close();

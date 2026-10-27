@@ -3,7 +3,7 @@ package logbook.internal.kancolle;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +33,7 @@ class QuestRetreatArrivalCollectionTest {
     }
 
     private static AppQuestCondition rule(String filter) throws Exception {
-        return new ObjectMapper().readValue("{\"filter\":" + filter
+        return logbook.internal.json.JsonMappers.builder().build().readValue("{\"filter\":" + filter
                 + ",\"conditions\":[{\"area\":[\"1-6\"],\"arrival\":true,\"count\":1}]}", AppQuestCondition.class);
     }
 

@@ -570,8 +570,7 @@ public class MainController extends WindowController {
                     
                     String title = "カスタム任務" + i;
                     try {
-                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                        mapper.enable(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_COMMENTS);
+                        tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
                         logbook.bean.AppQuestCondition cond = mapper.readValue(file.toFile(), logbook.bean.AppQuestCondition.class);
                         if (cond != null && cond.getCustomName() != null && !cond.getCustomName().trim().isEmpty()) {
                             title = cond.getCustomName();

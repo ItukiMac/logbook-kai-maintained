@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import logbook.internal.kancolle.Mapping;
 import logbook.internal.kancolle.Ships;
 import logbook.bean.AppQuestCondition;
@@ -31,7 +31,7 @@ class GameDefinitionRuntimeTest {
             Path file=base.resolve("definitions/"+entry.getKey());Files.createDirectories(file.getParent());Files.write(file,bytes);
             records.add(Map.of("path","definitions/"+entry.getKey(),"bytes",bytes.length,"sha256",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes))));
         }
-        var mapper=new ObjectMapper();mapper.writeValue(base.resolve("manifest.json").toFile(),Map.of("format",DefinitionPackInstaller.FORMAT,"files",records));
+        var mapper=logbook.internal.json.JsonMappers.builder().build();mapper.writeValue(base.resolve("manifest.json").toFile(),Map.of("format",DefinitionPackInstaller.FORMAT,"files",records));
         mapper.writeValue(generation.resolve("active.json").toFile(),Map.of("schema",DefinitionPackInstaller.POINTER_FORMAT,"generation",id.repeat(64)));
         return generation;
     }

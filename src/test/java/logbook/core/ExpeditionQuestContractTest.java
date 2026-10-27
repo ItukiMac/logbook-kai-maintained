@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.stream.Stream;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuestCondition;
 import logbook.internal.kancolle.QuestCollect;
 import org.junit.jupiter.api.DynamicTest;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestFactory;
 
 /** Independent source transcriptions exercise actual mission-union and whole-quest predicates. */
 class ExpeditionQuestContractTest {
-    private static final ObjectMapper JSON = new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
     private static byte[] bytes(String name) throws Exception {
         try (InputStream in = ExpeditionQuestContractTest.class.getResourceAsStream('/' + name)) {
             assertNotNull(in, name); return in.readAllBytes();

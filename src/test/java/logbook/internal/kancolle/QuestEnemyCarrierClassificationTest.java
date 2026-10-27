@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuest;
 import logbook.bean.AppQuestCondition;
 import logbook.bean.AppQuestDuration;
@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 /** Saved-log aggregation through the real PhaseState, master lookup and bundled quest predicates. */
 class QuestEnemyCarrierClassificationTest {
-    private static final ObjectMapper JSON = new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
 
     private static AppQuestCondition condition(int questId) throws Exception {
         try (var in = QuestEnemyCarrierClassificationTest.class.getResourceAsStream(

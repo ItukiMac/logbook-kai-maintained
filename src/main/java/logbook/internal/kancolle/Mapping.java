@@ -6,9 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import logbook.bean.MapinfoMst;
 import logbook.bean.MapinfoMstCollection;
@@ -32,8 +32,7 @@ public class Mapping {
         if (is != null) {
             try {
                 try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    mapper.enable(Feature.ALLOW_COMMENTS);
+                    ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
                     mapping = mapper.readValue(is, new TypeReference<LinkedHashMap<String, String>>() {
                     });
                 } finally {

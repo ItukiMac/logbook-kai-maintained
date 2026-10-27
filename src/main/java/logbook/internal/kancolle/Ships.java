@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -288,9 +288,8 @@ public class Ships {
         if (is != null) {
             try {
                 try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    mapper.enable(Feature.ALLOW_COMMENTS);
-                    com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(is);
+                    ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+                    tools.jackson.databind.JsonNode rootNode = mapper.readTree(is);
                     List<ShipSupplementalInfo> list = null;
                     if (rootNode != null) {
                         if (rootNode.isArray()) {

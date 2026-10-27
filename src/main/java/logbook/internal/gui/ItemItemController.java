@@ -22,7 +22,7 @@ import org.controlsfx.control.ToggleSwitch;
 // Completion is implemented with public JavaFX APIs in this package.
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -699,7 +699,7 @@ public class ItemItemController extends WindowController {
                     .sorted(Comparator.comparing(KancolleFleetanalysisItem::getId)
                             .thenComparing(Comparator.comparing(KancolleFleetanalysisItem::getLv)))
                     .collect(Collectors.toList());
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
             String input = mapper.writeValueAsString(list);
 
             ClipboardContent content = new ClipboardContent();

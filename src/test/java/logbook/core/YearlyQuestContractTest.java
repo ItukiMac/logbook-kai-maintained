@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.stream.Stream;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuestCondition;
 import logbook.bean.ShipMst;
 import logbook.bean.Stype;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.TestFactory;
 
 /** Source-transcribed yearly map/count/month expectations; not full live-game certification. */
 class YearlyQuestContractTest {
-    private static final ObjectMapper JSON = new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
     private static byte[] resource(String name) throws Exception {
         try (InputStream in = YearlyQuestContractTest.class.getResourceAsStream('/' + name)) {
             assertNotNull(in, name); return in.readAllBytes();

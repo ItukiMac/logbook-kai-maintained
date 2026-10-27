@@ -3,7 +3,7 @@ package logbook.internal.kancolle;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.*;
 import logbook.bean.BattleTypes.IFormation;
 import logbook.internal.kancolle.BattleLogs.SimpleBattleLog;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 /** Exercise the real aggregation path, keeping fixture-only saved-log and master data. */
 class QuestFleetEvidenceTest {
     private static QuestCollect collect(List<Ship> members, Map<Ship, ShipMst> masters) throws Exception {
-        var condition = new ObjectMapper().readValue("""
+        var condition = logbook.internal.json.JsonMappers.builder().build().readValue("""
           {"filter":{"fleet":{"name":["required"],"order":1}},
            "conditions":[{"area":["1-4"],"boss":true,"rank":["S"],"count":1}]}
           """, AppQuestCondition.class);

@@ -3,7 +3,7 @@ package logbook.core;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuestCondition.FleetCondition;
 import logbook.bean.ShipMst;
 import logbook.bean.Stype;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 /** Null from an unresolved input is unknown; null consumed inside AND is not a ship. */
 class FleetPredicateIsolationTest {
     private static FleetCondition rule(String json) throws Exception {
-        return new ObjectMapper().readValue(json, FleetCondition.class);
+        return logbook.internal.json.JsonMappers.builder().build().readValue(json, FleetCondition.class);
     }
     private static ShipMst ship(String name, String type) {
         var ship = mock(ShipMst.class); var stype = new Stype(); stype.setName(type);

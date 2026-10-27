@@ -3,7 +3,7 @@ package logbook.internal.kancolle;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import java.math.BigDecimal;

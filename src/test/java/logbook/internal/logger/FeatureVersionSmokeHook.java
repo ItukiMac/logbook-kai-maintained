@@ -1,7 +1,7 @@
 package logbook.internal.logger;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -165,7 +165,7 @@ public final class FeatureVersionSmokeHook implements StartUp {
         String[] jars = System.getProperty("java.class.path").split(java.util.regex.Pattern.quote(File.pathSeparator));
         check(jars.length == 4, "Launcher classpath must contain only the four selected bundle JARs");
         var seen = new ArrayList<String>();
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
         for (String jarPath : jars) {
             Path path = Path.of(jarPath);
             check(Files.isRegularFile(path) && path.toString().contains("/versions/"),

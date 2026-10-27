@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -136,7 +136,7 @@ public class BattleLog implements Serializable {
             rawData = new RawData();
             log.setRaw(rawData);
         }
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
         StringWriter sw = new StringWriter(1024 * 4);
         try (JsonWriter jw = Json.createWriter(sw)) {
             jw.writeObject(json);

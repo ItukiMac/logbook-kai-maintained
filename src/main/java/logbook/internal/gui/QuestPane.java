@@ -163,7 +163,7 @@ public class QuestPane extends HBox {
             if (category == 6 || category == 11) {
                 java.nio.file.Path path = java.nio.file.Paths.get("./arsenalquest/" + quest.getNo() + ".json");
                 if (java.nio.file.Files.exists(path)) {
-                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
                     try {
                         logbook.bean.ArsenalQuestSetting setting = mapper.readValue(path.toFile(),
                                 logbook.bean.ArsenalQuestSetting.class);
@@ -182,7 +182,7 @@ public class QuestPane extends HBox {
                             this.name.setOpacity(0.5);
                             this.name.setStyle("-fx-text-fill: gray;");
                         }
-                    } catch (IOException e) {
+                    } catch (tools.jackson.core.JacksonException e) {
                         LoggerHolder.get().warn("工廠任務設定の読み込みに失敗しました", e);
                     }
                 }
