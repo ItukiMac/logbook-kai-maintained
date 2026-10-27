@@ -1,0 +1,37 @@
+name: Read Jackson3 evidence without cross-host auth forwarding (tooling only)
+on:
+  push:
+    branches: ['maintenance/json3-io-contract-worker-20261027']
+    paths: ['.github/workflows/json3-evidence-summary-retry.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Read declared artifacts with verified hashes and safe redirect headers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import textwrap
+          text=Path('.github/workflows/json3-evidence-summary.yml').read_text()
+          code=textwrap.dedent(text.split("python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0])
+          old="request=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})"
+          new="request=urllib.request.Request(base+path,headers={'Accept':'application/vnd.github+json'})\n    request.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])"
+          assert code.count(old)==1
+          code=code.replace(old,new)
+          Path('.maintenance-evidence').mkdir(exist_ok=True)
+          exec(compile(code,'hashed-artifact-summary','exec'))
+          PY
+      - name: Retain the report without product changes
+        run: |
+          git add .maintenance-evidence/json3-full-run-summary.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve hash-verified JSON3 GUI and runtime evidence from exact CI head'
+          git push origin HEAD:refs/heads/maintenance/json3-io-contract-worker-20261027
