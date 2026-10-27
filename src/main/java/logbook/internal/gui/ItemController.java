@@ -9,7 +9,7 @@ import logbook.bean.AppItemTableConfig;
  * 所有装備一覧のUIコントローラー(親)
  *
  */
-public class ItemController extends WindowController {
+public class ItemController extends logbook.plugin.api.FeatureUiV1.Window {
     @FXML
     private TabPane tab;
     

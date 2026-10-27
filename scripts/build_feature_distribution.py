@@ -15,7 +15,8 @@ from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 from run_feature_distribution import (FORMAT, HOST_API, HOST_VERSION, FEATURES,
                                      PROVIDERS, FEATURE_METADATA, HOST_METADATA, verify,
                                      GROUPS, EXTRA_CLASSES, required_entries, RECORD_UI_API, RECORD_UI_PROFILE,
-                                     record_ui_entry, record_ui_required_entries)
+                                     record_ui_entry, record_ui_required_entries, EQUIPMENT_UI_API, EQUIPMENT_UI_PROFILE,
+                                     equipment_ui_entry, equipment_ui_required_entries)
 
 SERVICE = 'META-INF/services/logbook.plugin.api.FeatureModule'
 STAMP = (2020, 1, 1, 0, 0, 0)
@@ -33,7 +34,9 @@ def new_directory(path: Path) -> None:
     path.mkdir(parents=False, exist_ok=False)
 
 
-def owner(name: str, record_ui: bool = False) -> str | None:
+def owner(name: str, record_ui: bool = False, equipment_ui: bool = False) -> str | None:
+    if equipment_ui and equipment_ui_entry(name):
+        return 'status'
     if record_ui and record_ui_entry(name):
         return 'charts'
     for group, (provider, controllers, resources) in GROUPS.items():
@@ -92,6 +95,11 @@ def build(source: Path, output: Path, revision: str) -> dict:
     expected = {'logbook.features.' + values[0] for values in GROUPS.values()}
     if providers != expected:
         raise ValueError('Feature service list changed; update the extraction contract')
+    equipment_ui = EQUIPMENT_UI_API in entries
+    if equipment_ui:
+        missing = equipment_ui_required_entries() - entries.keys()
+        if missing:
+            raise ValueError('Missing equipment UI input: ' + sorted(missing)[0])
     record_ui = RECORD_UI_API in entries
     if record_ui:
         missing = record_ui_required_entries() - entries.keys()
@@ -106,7 +114,7 @@ def build(source: Path, output: Path, revision: str) -> dict:
     groups = {g: {} for g in GROUPS}
     core = {}
     for name, data in entries.items():
-        group = owner(name, record_ui)
+        group = owner(name, record_ui, equipment_ui)
         if group:
             groups[group][name] = data
         elif name != SERVICE:
@@ -151,7 +159,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
                          'path': 'logbook-core.jar', 'sha256': host_hash},
                 'modules': modules,
                 'files': {n: sha((output / n).read_bytes()) for n in files},
-                'extracted': {g: sorted(n for n in entries if owner(n, record_ui) == g) for g in GROUPS}}
+                'extracted': {g: sorted(n for n in entries if owner(n, record_ui, equipment_ui) == g) for g in GROUPS}}
+    if equipment_ui:
+        manifest['equipment_ui_profile'] = EQUIPMENT_UI_PROFILE
     if record_ui:
         manifest['record_ui_profile'] = RECORD_UI_PROFILE
     # Written last. A failed/interrupted build has no valid distribution manifest.
