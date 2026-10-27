@@ -1,0 +1,104 @@
+name: Record GUI corrected fixture and battle rows (tooling only)
+on:
+  push:
+    branches: ['maintenance/records-boundary-worker-20261027']
+    paths: ['.github/workflows/record-ui-isolation-v2.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPECTED: 177460d4c678a1db122108303bd5b0edbf43cf54
+      TARGET: maintenance/record-ui-api-20261027
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 177460d4c678a1db122108303bd5b0edbf43cf54
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Prepare new fixture sources and preserve all existing rejection checks
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test ! -e scripts/java/RecordUiProbe.java
+          test ! -e scripts/tests/test_record_ui_integration.py
+          cp ../tooling/.maintenance-tools/RecordUiProbe.java scripts/java/RecordUiProbe.java
+          cp ../tooling/.maintenance-tools/test_record_ui_integration.py scripts/tests/test_record_ui_integration.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/java/RecordUiProbe.java');s=p.read_text()
+          def replace(old,new):
+              global s
+              assert s.count(old)==1,(old,s.count(old));s=s.replace(old,new)
+          replace('open(featureLoader, "battlelog", "BattleLogController", 0);','Object battleController = open(featureLoader, "battlelog", "BattleLogController", 1);')
+          replace('Object dialog = dialogType.getConstructor().newInstance();','var constructor = dialogType.getDeclaredConstructor(battleController.getClass());\n                constructor.setAccessible(true);\n                Object dialog = constructor.newInstance(battleController);')
+          replace('private static void open(ClassLoader loader, String resource, String name, int expectedRows)', 'private static Object open(ClassLoader loader, String resource, String name, int expectedRows)')
+          replace('            windows++;','            windows++;\n            return controller;')
+          replace('fixture(reports.resolve(new BattleResultLogFormat().fileName()), "synthetic battle header\\n");','''fixture(reports.resolve(new BattleResultLogFormat().fileName()), "synthetic battle header\\n"
+                  + String.join(",", "2026-10-27 12:00:00", "1-1 synthetic sea", "1", "出撃", "S", "同航戦",
+                          "単縦陣", "単縦陣", "航空優勢", "", "", "synthetic enemy", "駆逐艦", "synthetic drop") + "\\n");''')
+          replace('            windows++;\n            return controller;','''            if (resource.equals("battlelog")) {
+                          TableColumn<Object, String> rank = (TableColumn<Object, String>) fxml.getNamespace().get("rank");
+                          require("S".equals(rank.getCellObservableValue(detail.getItems().getFirst()).getValue()), "Battle rank changed");
+                      }
+                      windows++;
+                      return controller;''')
+          replace('windows=3 mission_fuel=75','windows=3 battle_rows=1 mission_fuel=75')
+          p.write_text(s)
+          p=Path('scripts/tests/test_record_ui_integration.py');s=p.read_text();assert s.count("summary.update(result='passed', windows=3,")==1
+          s=s.replace("summary.update(result='passed', windows=3,", "summary.update(result='passed', windows=3, battle_rows=1,")
+          p.write_text(s)
+          PY
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Require all three actual windows, nested dialog, settings and unchanged history
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_record_ui_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Preserve passing test sources without force or publication
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$EXPECTED"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/java/RecordUiProbe.java scripts/tests/test_record_ui_integration.py
+          git commit -m 'Test record GUI through separate archives, real log rows, nested dialog and settings round-trip'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain exact outcome including any new failure
+        if: always()
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          result={'base':'177460d4c678a1db122108303bd5b0edbf43cf54','production_accessed':False,'reports':{}}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):result[p.name]=p.read_text(errors='replace')[-24000:]
+          for p in Path('../candidate/target/r3-verification').glob('record-ui-*'):
+              if p.suffix=='.json':result['reports'][p.name]=json.loads(p.read_text())
+              elif p.suffix=='.log':result[p.name]=p.read_text(errors='replace')[-30000:]
+          Path('.maintenance-evidence/record-ui-integration-v2.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/record-ui-integration-v2.json
+          git commit -m 'Retain corrected record GUI isolation evidence; earlier failed fixture kept'
+          git push origin HEAD:refs/heads/maintenance/records-boundary-worker-20261027
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: record-ui-isolation-v2-evidence
+          path: |
+            evidence/
+            candidate/target/r3-verification/record-ui-*
+          retention-days: 14
