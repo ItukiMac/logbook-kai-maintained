@@ -1,0 +1,68 @@
+name: Isolated Jackson3 source migration (tooling only)
+on:
+  push:
+    branches: ['maintenance/modernization-inputs-20261027']
+    paths: ['.maintenance-transfers/modernize_json.py', '.github/workflows/modernize-json-worker.yml']
+permissions:
+  contents: write
+concurrency:
+  group: modernize-json-source-20261027
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE: b2d224adff26cedf0f049be4b454140a9fc8d176
+      TARGET: maintenance/json3-modern-runtime-20261027
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: b2d224adff26cedf0f049be4b454140a9fc8d176
+          path: candidate
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Apply source-only migration and retain full diff
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          mkdir -p ../evidence
+          python3 ../tooling/.maintenance-transfers/modernize_json.py . > ../evidence/migration.log
+          git add src/main/java src/test/java scripts/java/ArrivalArchiveProbe.java pom.xml
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git diff --cached > ../evidence/source.patch
+          git write-tree > ../evidence/source-tree.txt
+      - name: Compile main and test code without changing an installed runtime
+        working-directory: candidate
+        run: |
+          set -o pipefail
+          mvn -B -ntp -DskipTests package 2>&1 | tee ../evidence/compile.log
+      - name: Publish compiled source only to the dedicated candidate branch
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git diff --exit-code
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Migrate host JSON code to immutable Jackson3 while retaining old plugin runtime API'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: jackson3-source-compile-evidence
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error
