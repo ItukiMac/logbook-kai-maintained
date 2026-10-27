@@ -1,0 +1,126 @@
+name: Exact combined PR integration (tooling only)
+on:
+  push:
+    branches: ['integration/parallel-checked-worker-20261027']
+permissions:
+  contents: write
+concurrency:
+  group: parallel-checked-worker-20261027
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE: ef43b7de77552c87bf77126554e0cd8c2fac8190
+      SEED: 5f0676e26ad1dc00c8af71a08af79965bc0feb47
+      TARGET: integration/parallel-completion-20261027
+      TREE: 5b90c123bcf812931317bfe2136785a70b811286
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: payload
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: candidate
+          ref: ef43b7de77552c87bf77126554e0cd8c2fac8190
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Preserve all five PR histories and verify exact combined source
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$SEED"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python3 - <<'PY'
+          import base64,hashlib,lzma,os,subprocess
+          from pathlib import Path
+          def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+          heads=[('49','50bea5ac7a66788ef42036e703e2caeb1b3e44e7'),
+                 ('51','e6b9ef2711c1445d71118e660a60313d3e727ee3'),
+                 ('53','9d470fd811932f7f76363feddf30f15ebf06eec2'),
+                 ('52','40c0ea7e9022b8cf1559a0eb34bba6b45e6f47f9'),
+                 ('54','7631de153f40cee969196a51c1718e12bfeb9b0e')]
+          for number,sha in heads:
+              subprocess.run(['git','fetch','origin',f'refs/pull/{number}/head:refs/heads/input-pr{number}'],check=True)
+              assert git('rev-parse',f'input-pr{number}')==sha, 'Owner branch moved; reconcile before retry'
+              subprocess.run(['git','merge','--no-ff','--no-edit',sha],check=True)
+          assert git('rev-parse','HEAD^{tree}')=='1c70fa0e9ce97321ac0b70e2224788ba2e5aa753'
+          payload=Path('../payload/.maintenance-transfers/integration')
+          jobs=[(''.join((payload/f'part{i}.txt').read_text() for i in range(3)),25516,
+                 '84f128b4a0a7a7f13f7f8637b10d3ab03e233c6e432664d5db2e51ed3cc4beb6',73191,
+                 'f2824d51709bf7190fc5fa9f4227c290bbdc151d'),
+                ((payload/'fix.txt').read_text(),2992,
+                 'd74cfdef52dfd25ba3f71c92f8fc97d1159af51258a72b15ac4c8f0c95d32c2b',5072,
+                 os.environ['TREE'])]
+          for encoded,length,digest,raw_length,tree in jobs:
+              assert len(encoded)==length and hashlib.sha256(encoded.encode()).hexdigest()==digest
+              decoder=lzma.LZMADecompressor(memlimit=128*1024*1024)
+              raw=decoder.decompress(base64.b64decode(encoded,validate=True),max_length=100001)
+              assert len(raw)==raw_length and decoder.eof and not decoder.unused_data
+              subprocess.run(['git','apply','--check','--whitespace=nowarn','-'],input=raw,check=True)
+              subprocess.run(['git','apply','--index','--whitespace=nowarn','-'],input=raw,check=True)
+              assert git('write-tree')==tree
+          subprocess.run(['git','fetch','origin',os.environ['SEED']],check=True)
+          # Workflow edits are already authorized on the seed via the connector.
+          # GITHUB_TOKEN pushes only source changes relative to that first parent.
+          assert not git('diff',os.environ['SEED'],os.environ['TREE'],'--','.github')
+          parents=['-p',os.environ['SEED']]
+          for _,sha in heads: parents+=['-p',sha]
+          commit=git('commit-tree',os.environ['TREE'],*parents,'-m',
+              'Integrate B/C/D/E and completion tracking with safe restart handling, explicit journal migration and actual cross-feature regressions')
+          subprocess.run(['git','worktree','add','--detach','../verified',commit],check=True)
+          Path('../verified-source.txt').write_text(commit+'\n')
+          print('EXACT_COMBINED_SOURCE',commit,os.environ['TREE'])
+          PY
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Full combined GUI, real pack, Python and cross-implementation tests
+        working-directory: verified
+        run: bash scripts/verify_r3.sh
+      - name: Non-force source branch update only after complete verification
+        working-directory: verified
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$SEED"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git diff --exit-code
+          git -c core.whitespace=cr-at-eol diff "$BASE" HEAD --check
+          python3 - <<'PY'
+          import json,xml.etree.ElementTree as E
+          from pathlib import Path
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
+          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          assert totals=={'tests':751,'failures':0,'errors':0,'skipped':1},totals
+          report=json.loads(Path('target/r3-verification/summary.json').read_text())
+          assert report['seasonal_retreat_integration_tests']==8
+          assert report['parallel_integration']['result']=='passed'
+          assert report['parallel_integration']['calculations']==[10,15,10]
+          print('VERIFIED_COMBINED_TESTS',totals)
+          PY
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > target/r3-verification/source-commit.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: combined-source-verification
+          path: |
+            verified/target/r3-verification/*.json
+            verified/target/r3-verification/*.log
+            verified/target/r3-verification/*.txt
+            verified/target/surefire-reports/
+            verified-source.txt
+          if-no-files-found: warn
+          retention-days: 14
