@@ -1,0 +1,125 @@
+name: Preserve bounded mission record reads (tooling only)
+on:
+  push:
+    branches: ['maintenance/record-data-worker-20261028']
+    paths: ['.github/workflows/record-data-read-limit.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 70d916643b4e63eda8db9802fd0036615cb37bc4
+      TARGET: maintenance/record-data-api-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 70d916643b4e63eda8db9802fd0036615cb37bc4
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Avoid accumulating unrelated old rows while retaining old display scope
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          changed=[]
+          def edit(path,old,new):
+              p=Path(path);raw=p.read_bytes();crlf=b'\r\n' in raw;s=raw.decode().replace('\r\n','\n')
+              assert s.count(old)==1,(path,old,s.count(old))
+              p.write_bytes(s.replace(old,new).replace('\n','\r\n' if crlf else '\n').encode());changed.append(path)
+          edit('src/main/java/logbook/plugin/api/RecordDataV1.java',
+              '    public static List<MissionRow> missions() { return RecordDataService.missions(); }',
+              '    public static List<MissionRow> missions() { return RecordDataService.missions(); }\n    /** Apply an exclusive instant cutoff before materializing retained rows. */\n    public static List<MissionRow> missionsSince(ZonedDateTime exclusive) {\n        return RecordDataService.missionsSince(Objects.requireNonNull(exclusive));\n    }')
+          edit('src/main/java/logbook/core/RecordDataService.java',
+              '    public static List<DevelopmentRow> developments() {',
+              '    public static List<MissionRow> missionsSince(ZonedDateTime exclusive) {\n        Objects.requireNonNull(exclusive);\n        return MissionLogs.readSimpleLog(log -> log.getDate().isAfter(exclusive)).stream()\n                .map(RecordDataService::copyMission).toList();\n    }\n    public static List<DevelopmentRow> developments() {')
+          edit('src/main/java/logbook/internal/gui/MissionLogController.java',
+              'RecordDataV1.missions().stream().filter(log -> log.getDate().compareTo(limit) > 0).toList()',
+              'RecordDataV1.missionsSince(limit)')
+          edit('src/test/java/logbook/core/RecordDataContractTest.java',
+              '    @Test void versionIsExplicit() { assertEquals(1,RecordDataV1.version()); }',
+              '    @Test void versionIsExplicit() { assertEquals(1,RecordDataV1.version()); }\n    @Test void boundedQueryRejectsAnUndefinedCutoffBeforeReading() {\n        assertThrows(NullPointerException.class, () -> RecordDataV1.missionsSince(null));\n    }')
+          edit('scripts/java/RecordUiProbe.java',
+              '        require(RecordDataV1.missions().size()==2 && RecordDataV1.developments().size()==2, "Record service results changed");',
+              '''        require(RecordDataV1.missions().size()==2 && RecordDataV1.developments().size()==2, "Record service results changed");
+                  var cutoff = java.time.ZonedDateTime.of(2026,10,27,12,0,0,0,java.time.ZoneId.of("Asia/Tokyo"));
+                  require(RecordDataV1.missionsSince(cutoff.minusSeconds(1)).size()==2, "Before boundary lost rows");
+                  require(RecordDataV1.missionsSince(cutoff).size()==1, "Exclusive query included equal instant");
+                  require(RecordDataV1.missionsSince(cutoff.plusSeconds(1)).isEmpty(), "After boundary retained old rows");
+                  for (var rows : java.util.List.of(RecordDataV1.missionsSince(cutoff), RecordDataV1.developments())) {
+                      try { rows.clear(); throw new AssertionError("Mutable mission/development snapshot"); }
+                      catch (UnsupportedOperationException expected) { }
+                  }''')
+          p=Path('docs/maintenance/record-data-and-packaging-20261028.md');s=p.read_text()
+          s=s.replace('追加Java試験24件:', '追加Java試験25件:').replace('合わせた個別29件', '合わせた個別30件')
+          s=s.replace('期間選択は既存の期間判定へ委譲し、今回無関係なリセット規則を変更しない。',
+              '期間選択は既存の期間判定へ委譲し、今回無関係なリセット規則を変更しない。\n遠征画面の従来の直近2か月制限は読取段階で適用し、無関係な古い行を全件snapshot化しない。\n公開のexclusive cutoffは同一時刻を別タイムゾーンで指定しても同じ境界になるよう検証する。')
+          p.write_text(s);changed.append(str(p))
+          Path('../evidence/paths.json').write_text(json.dumps(changed,indent=2)+'\n')
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Recheck data contracts and build the real updated application
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=RecordDataContractTest,RecordDataViewTest,RecordUiBoundaryTest,RecordUiContractTest test > ../evidence/unit.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Check exclusive-time boundaries and all actual record windows
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_record_ui_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Preserve only verified changes on the candidate branch
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          subprocess.run(['git','add','--',*json.loads(Path('../evidence/paths.json').read_text())],check=True)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Filter mission history before immutable materialization and prove exclusive cutoff across time zones'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain exact read-limit evidence, including failures
+        if: always()
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,xml.etree.ElementTree as E
+          result={'base':'70d916643b4e63eda8db9802fd0036615cb37bc4','production_accessed':False,'logs':{},'suites':[],'gui_reports':{}}
+          for p in Path('../evidence').glob('*'):
+              result['logs'][p.name]=p.read_text(errors='replace')[-18000:]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*Record*.xml'):
+              result['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('record-ui-*.json'):
+              result['gui_reports'][p.name]=json.loads(p.read_text())
+          Path('.maintenance-evidence/record-data-read-limit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/record-data-read-limit.json
+          git commit -m 'Retain bounded-read and timezone-cutoff verification evidence'
+          git push origin HEAD:refs/heads/maintenance/record-data-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: record-data-read-limit-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/record-ui-*.json
+            candidate/target/r3-verification/record-ui-*.log
+          retention-days: 14
