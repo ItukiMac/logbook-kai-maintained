@@ -1,0 +1,56 @@
+name: Record GUI boundary inventory (tooling only)
+on:
+  push:
+    branches: ['maintenance/records-boundary-worker-20261027']
+    paths: ['.github/workflows/records-boundary-inventory.yml']
+permissions:
+  contents: write
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Read public source and retain bounded dependency evidence only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          root=Path('src/main/java/logbook/internal/gui')
+          names=['BattleLogController','BattleLogCollect','BattleLogDetail','BattleLogDetailAggregate','MissionLogController','MissionLogCollect','MissionLogDetail','MissionAggregate','CreateItemController','TreeTableTool','FeatureUiBridgeV1']
+          report={'base':'7004a3e5937b47328f5c6bfc80b1f663a6a5c1f5','sources':{},'outside_references':{},'packaging_assumptions':{}}
+          for name in names:
+              p=root/(name+'.java')
+              if not p.exists():continue
+              lines=p.read_text().splitlines()
+              keep=set()
+              for i,l in enumerate(lines):
+                  if re.search(r'(?:TreeTableTool|TableTool|Tools\.|InternalFXMLLoader|WindowController|FXMLLoader|BattleDetail|Config\.|getLog|readLog|public class|^import logbook)',l):
+                      keep.update(range(max(0,i-3),min(len(lines),i+9)))
+              report['sources'][str(p)]='\n'.join(f'{i+1}: {lines[i]}' for i in sorted(keep))
+          targets=set(names[:9])
+          for p in Path('src/main').rglob('*'):
+              if p.suffix not in ('.java','.fxml'):continue
+              if p.stem in targets:continue
+              found=[f'{i+1}: {l.strip()}' for i,l in enumerate(p.read_text().splitlines()) if any(re.search(r'\b'+n+r'\b',l) for n in targets)]
+              if found:report['outside_references'][str(p)]=found
+          for prefix in ('scripts','src/test'):
+              for p in Path(prefix).rglob('*'):
+                  if p.suffix not in ('.java','.py','.sh'):continue
+                  lines=p.read_text().splitlines()
+                  found=[f'{i+1}: {l.strip()}' for i,l in enumerate(lines) if re.search(r'(?i)(len\([^\n]+\)\s*[!=]=\s*[3478]|assertEquals\([3478],|three|four.jar|split_features|split_gui_windows|feature-distribution-v2|calculators.*charts.*status|repair-list|FEATURES|GROUPS|JARS)',l)]
+                  if found:report['packaging_assumptions'][str(p)]=found
+          for path in ('src/main/resources/logbook/gui/main_menu.fxml','src/main/java/logbook/internal/gui/FeatureUiBridgeV1.java','src/main/java/logbook/internal/gui/TreeTableTool.java'):
+              p=Path(path)
+              if p.exists():report['sources'][path]=p.read_text()
+          Path('.maintenance-evidence').mkdir(exist_ok=True)
+          Path('.maintenance-evidence/records-inventory.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print('RECORDS_INVENTORY_OK production_accessed=false source_modified=false')
+          PY
+      - name: Retain evidence without product changes or force push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/records-inventory.json
+          git commit -m 'Retain record dependency inventory; not a completion claim'
+          git push origin HEAD:refs/heads/maintenance/records-boundary-worker-20261027
