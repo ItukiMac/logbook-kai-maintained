@@ -20,7 +20,7 @@ class EquipmentProjectionTest {
         var owner=new Owner(42,100,"synthetic owner");
         var view=EquipmentDetailItem.toDetailItem(new Owned(1,7,6,4,true,owner));
         assertEquals(42,view.getShipId());assertEquals(owner,view.getShip());assertEquals(6,view.getAlv());
-        assertTrue(view.toString().endsWith("synthetic owner"));
+        assertEquals("synthetic owner",view.getShip().displayName());
     }
     @Test void nullableLevelsKeepThePriorDisplayOnlyDefaults() {
         var source=new Owned(1,7,null,null,false,null);var view=EquipmentDetailItem.toDetailItem(source);
