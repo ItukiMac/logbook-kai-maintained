@@ -44,17 +44,23 @@ jobs:
           ns={'m':'http://maven.apache.org/POM/4.0.0'};pom=E.parse(root/'effective-pom.xml').getroot()
           assert pom.findtext('m:properties/m:java.version',namespaces=ns)=='25'
           javafx={k:v for k,v in rows.items() if k.startswith('org.openjfx:')}
-          assert len(javafx)==7 and all(v=={'27.0.1'} for v in javafx.values()),javafx
+          # JavaFX27 also supplies the jdk.jsobject API; require the exact set,
+          # rather than silently accepting any count or dropping that dependency.
+          expected={'org.openjfx:javafx-'+name for name in ('base','controls','fxml','graphics','media','swing','web')}
+          expected.add('org.openjfx:jdk-jsobject')
+          assert set(javafx)==expected and all(v=={'27.0.1'} for v in javafx.values()),javafx
           assert rows['tools.jackson.core:jackson-databind']=={'3.2.4'}
           assert rows['com.fasterxml.jackson.core:jackson-databind']=={'2.22.4'}
           raw=Path('target/classes/logbook/internal/Launcher.class').read_bytes()
           assert raw[:4]==b'\xca\xfe\xba\xbe' and struct.unpack('>H',raw[6:8])[0]==69
           for name,count in [('logbook.internal.json.LegacyJsonCompatibilityTest',7),
-                             ('logbook.internal.kancolle.Jackson3JournalCompatibilityTest',3)]:
+                             ('logbook.internal.kancolle.Jackson3JournalCompatibilityTest',3),
+                             ('logbook.core.JsonGenerationPointerCompatibilityTest',4)]:
               suite=E.parse(Path('target/surefire-reports')/('TEST-'+name+'.xml')).getroot()
               assert int(suite.get('tests'))==count and all(int(suite.get(k,0))==0 for k in ('failures','errors','skipped'))
           (root/'summary.json').write_text(json.dumps({'checkout':os.environ['GITHUB_SHA'],
-              'jdk_baseline':25,'javafx':'27.0.1','jackson_host':'3.2.4','classfile_major':69,
+              'jdk_baseline':25,'javafx':'27.0.1','openjfx_components':sorted(javafx),
+              'jackson_host':'3.2.4','classfile_major':69,'json_compatibility_tests':14,
               'legacy_plugin_bridge_retained':True,'native_mint_tested':False,'production_applied':False},indent=2)+'\n')
           print('MODERN_RUNTIME_OK JDK25 JavaFX27 Jackson3 full_suite=true native_mint=false')
           PY
