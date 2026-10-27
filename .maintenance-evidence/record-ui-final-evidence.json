@@ -1,0 +1,501 @@
+{
+  "source_head": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+  "production_accessed": false,
+  "workflow_states": [
+    {
+      "id": 40496571248,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571170,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571438,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571218,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571202,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571188,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571240,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571325,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571270,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571266,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571146,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571196,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571131,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40496571123,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "3b0639a1f732b27abcffd5368ab123e0a33c4933",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "run": 40496571196,
+      "id": 12731041877,
+      "name": "r3-evidence-java21",
+      "digest": "sha256:ec9635812cab409f80ad045e184535d15c6013a3f909bef2a1fd0ae2bd14ee67",
+      "java": {
+        "tests": 770,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "record_suites": {
+        "logbook.internal.gui.RecordUiBoundaryTest": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.RecordUiContractTest": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "record_gui_reports": {
+        "r3-verification/record-ui-fixture-2md_0o53.json": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-2md_0o53",
+          "source_jar_sha256": "37d6693323599257ce22aacb7dfcd6c2f134a277b2ce9cd418f99a78c9d405b4",
+          "production_accessed": false,
+          "new_distribution_format": false,
+          "legacy_missing_experience_bug_fixed": false,
+          "shared_legacy_row_models_retained_in_core": [
+            "BattleLogCollect",
+            "BattleLogDetail"
+          ],
+          "result": "passed",
+          "windows": 3,
+          "battle_rows": 1,
+          "battle_exp": 60,
+          "mission_fuel": 75,
+          "development_rows": 2,
+          "nested_dialog": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "host_sha256": "c259ab14ef2fab2bdab975c3bed6d17624de3e57f1e349c815fd495991c9fde6",
+          "record_ui_sha256": "d4bb800b719820f76337f2cb9a88f0ed737a56ab6fe5023689211dddcdcb658f",
+          "retained_fixture": true
+        }
+      },
+      "summaries": {
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-l5ymht78",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-qmt0oerj.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "be6a414c8d93a45d26c06b740b52bfb321aeaac8",
+          "java_tests": {
+            "tests": 770,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_results": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "results": [
+            "test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history) ... ok",
+            "Ran 398 tests in 358.308s",
+            "OK (skipped=1)",
+            "RECORD_UI_ISOLATION_OK {\"fixture\": \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-2md_0o53\", \"source_jar_sha256\": \"37d6693323599257ce22aacb7dfcd6c2f134a277b2ce9cd418f99a78c9d405b4\", \"production_accessed\": false, \"new_distribution_format\": false, \"legacy_missing_experience_bug_fixed\": false, \"shared_legacy_row_models_retained_in_core\": [\"BattleLogCollect\", \"BattleLogDetail\"], \"result\": \"passed\", \"windows\": 3, \"battle_rows\": 1, \"battle_exp\": 60, \"mission_fuel\": 75, \"development_rows\": 2, \"nested_dialog\": true, \"settings_reread\": true, \"original_history_unchanged\": true, \"host_sha256\": \"c259ab14ef2fab2bdab975c3bed6d17624de3e57f1e349c815fd495991c9fde6\", \"record_ui_sha256\": \"d4bb800b719820f76337f2cb9a88f0ed737a56ab6fe5023689211dddcdcb658f\", \"retained_fixture\": true}",
+            "Ran 1 test in 16.228s",
+            "OK"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.132s",
+            "OK"
+          ]
+        }
+      ]
+    },
+    {
+      "run": 40496571196,
+      "id": 12730971848,
+      "name": "r3-evidence-java25",
+      "digest": "sha256:c3309482ced447b536ba8b19ae2c6ec7087645f70dd3c64ef0e18f32727e2eaa",
+      "java": {
+        "tests": 770,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "record_suites": {
+        "logbook.internal.gui.RecordUiContractTest": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.RecordUiBoundaryTest": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "record_gui_reports": {
+        "r3-verification/record-ui-fixture-uc218vx2.json": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-uc218vx2",
+          "source_jar_sha256": "b52e3e912f1403509d58b49793259f99d454f9a54ab46b6bd7fe4c9fe230ca94",
+          "production_accessed": false,
+          "new_distribution_format": false,
+          "legacy_missing_experience_bug_fixed": false,
+          "shared_legacy_row_models_retained_in_core": [
+            "BattleLogCollect",
+            "BattleLogDetail"
+          ],
+          "result": "passed",
+          "windows": 3,
+          "battle_rows": 1,
+          "battle_exp": 60,
+          "mission_fuel": 75,
+          "development_rows": 2,
+          "nested_dialog": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "host_sha256": "12b16a9eab4831b799101d17f5f9518ad650ba29c594be6cb60ca77b56df294a",
+          "record_ui_sha256": "62bbc3460efeda76cd087481d13c4c798cad58241454350c6599abf2c0f92f15",
+          "retained_fixture": true
+        }
+      },
+      "summaries": {
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-d3f2vhgd",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-hyb4laim.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "be6a414c8d93a45d26c06b740b52bfb321aeaac8",
+          "java_tests": {
+            "tests": 770,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_results": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "results": [
+            "test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history) ... ok",
+            "Ran 398 tests in 304.471s",
+            "OK (skipped=1)",
+            "RECORD_UI_ISOLATION_OK {\"fixture\": \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-uc218vx2\", \"source_jar_sha256\": \"b52e3e912f1403509d58b49793259f99d454f9a54ab46b6bd7fe4c9fe230ca94\", \"production_accessed\": false, \"new_distribution_format\": false, \"legacy_missing_experience_bug_fixed\": false, \"shared_legacy_row_models_retained_in_core\": [\"BattleLogCollect\", \"BattleLogDetail\"], \"result\": \"passed\", \"windows\": 3, \"battle_rows\": 1, \"battle_exp\": 60, \"mission_fuel\": 75, \"development_rows\": 2, \"nested_dialog\": true, \"settings_reread\": true, \"original_history_unchanged\": true, \"host_sha256\": \"12b16a9eab4831b799101d17f5f9518ad650ba29c594be6cb60ca77b56df294a\", \"record_ui_sha256\": \"62bbc3460efeda76cd087481d13c4c798cad58241454350c6599abf2c0f92f15\", \"retained_fixture\": true}",
+            "Ran 1 test in 13.203s",
+            "OK"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.096s",
+            "OK"
+          ]
+        }
+      ]
+    },
+    {
+      "run": 40496571131,
+      "id": 12732110328,
+      "name": "modern-runtime-evidence-java25",
+      "digest": "sha256:4c9811061b5aad95293488db04c76a24248c5f22543ba9d889c17792b8d5d1c5",
+      "java": {
+        "tests": 770,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "record_suites": {
+        "logbook.internal.gui.RecordUiBoundaryTest": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.RecordUiContractTest": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "record_gui_reports": {
+        "r3-verification/record-ui-fixture-ti8h9tnz.json": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-ti8h9tnz",
+          "source_jar_sha256": "e6863833087fba6b0eabc58bccc2b8817faa8d13ceada3d823d45a916362c71a",
+          "production_accessed": false,
+          "new_distribution_format": false,
+          "legacy_missing_experience_bug_fixed": false,
+          "shared_legacy_row_models_retained_in_core": [
+            "BattleLogCollect",
+            "BattleLogDetail"
+          ],
+          "result": "passed",
+          "windows": 3,
+          "battle_rows": 1,
+          "battle_exp": 60,
+          "mission_fuel": 75,
+          "development_rows": 2,
+          "nested_dialog": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "host_sha256": "659e80c1ca84d44053e7de0dba39616486b37c5450f8615c43ef4d7119ff712d",
+          "record_ui_sha256": "1218bc3afb2d39b25aa47ab547fefba6cbb5d88deef42f430abc8bdb2cf84004",
+          "retained_fixture": true
+        }
+      },
+      "summaries": {
+        "modern-runtime/summary.json": {
+          "checkout": "be6a414c8d93a45d26c06b740b52bfb321aeaac8",
+          "jdk_baseline": 25,
+          "javafx": "27.0.1",
+          "openjfx_components": [
+            "org.openjfx:javafx-base",
+            "org.openjfx:javafx-controls",
+            "org.openjfx:javafx-fxml",
+            "org.openjfx:javafx-graphics",
+            "org.openjfx:javafx-media",
+            "org.openjfx:javafx-swing",
+            "org.openjfx:javafx-web",
+            "org.openjfx:jdk-jsobject"
+          ],
+          "jackson_host": "3.2.4",
+          "classfile_major": 69,
+          "json_compatibility_tests": 14,
+          "legacy_plugin_bridge_retained": true,
+          "native_mint_tested": false,
+          "production_applied": false
+        },
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-jzurzwzr",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-94s9y4e5.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "be6a414c8d93a45d26c06b740b52bfb321aeaac8",
+          "java_tests": {
+            "tests": 770,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_results": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "results": [
+            "test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history) ... ok",
+            "Ran 398 tests in 370.216s",
+            "OK (skipped=1)",
+            "RECORD_UI_ISOLATION_OK {\"fixture\": \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-ti8h9tnz\", \"source_jar_sha256\": \"e6863833087fba6b0eabc58bccc2b8817faa8d13ceada3d823d45a916362c71a\", \"production_accessed\": false, \"new_distribution_format\": false, \"legacy_missing_experience_bug_fixed\": false, \"shared_legacy_row_models_retained_in_core\": [\"BattleLogCollect\", \"BattleLogDetail\"], \"result\": \"passed\", \"windows\": 3, \"battle_rows\": 1, \"battle_exp\": 60, \"mission_fuel\": 75, \"development_rows\": 2, \"nested_dialog\": true, \"settings_reread\": true, \"original_history_unchanged\": true, \"host_sha256\": \"659e80c1ca84d44053e7de0dba39616486b37c5450f8615c43ef4d7119ff712d\", \"record_ui_sha256\": \"1218bc3afb2d39b25aa47ab547fefba6cbb5d88deef42f430abc8bdb2cf84004\", \"retained_fixture\": true}",
+            "Ran 1 test in 16.668s",
+            "OK"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.136s",
+            "OK"
+          ]
+        }
+      ]
+    }
+  ],
+  "verified": true,
+  "pull_request": {
+    "number": 58,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "merge_commit_sha": "be6a414c8d93a45d26c06b740b52bfb321aeaac8"
+  }
+}
