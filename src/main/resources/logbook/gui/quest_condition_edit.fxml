@@ -104,6 +104,7 @@
          <content>
             <VBox spacing="5.0">
                <children>
+                  <Label text="1-6は「港到達」を選択できます。到達条件ではマス・勝利ランクは使いません。" wrapText="true" />
                   <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
                      <content>
                         <VBox fx:id="conditionsBox" spacing="5.0" />
