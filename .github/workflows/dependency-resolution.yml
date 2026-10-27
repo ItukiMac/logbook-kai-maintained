@@ -46,7 +46,11 @@ jobs:
                     'org.jspecify:jspecify':('1.0.1','test'),
                     'net.bytebuddy:byte-buddy':('1.18.16','test'),
                     'net.bytebuddy:byte-buddy-agent':('1.18.16','test'),
-                    'org.objenesis:objenesis':('3.6','test')}
+                    'org.objenesis:objenesis':('3.6','test'),
+                    'tools.jackson.core:jackson-databind':('3.2.4','compile'),
+                    'tools.jackson.core:jackson-core':('3.2.4','compile'),
+                    'com.fasterxml.jackson.core:jackson-databind':('2.22.4','runtime'),
+                    'com.fasterxml.jackson.core:jackson-core':('2.22.4','runtime')}
           for key,value in expected.items():
               assert rows.get(key)=={value},(key,rows.get(key),value)
           ns={'m':'http://maven.apache.org/POM/4.0.0'}
@@ -54,14 +58,14 @@ jobs:
           plugins={p.findtext('m:artifactId',namespaces=ns):p.findtext('m:version',namespaces=ns)
                    for p in pom.findall('m:build/m:plugins/m:plugin',ns)}
           assert plugins['maven-surefire-plugin']=='3.6.1'
-          assert all(version=='21.0.13' for key,values in rows.items() if key.startswith('org.openjfx:') for version,_ in values)
-          assert rows['com.fasterxml.jackson.core:jackson-databind']=={('2.22.4','compile')}
-          assert not any(key.startswith('tools.jackson.') for key in rows)
+          javafx={key:values for key,values in rows.items() if key.startswith('org.openjfx:')}
+          assert len(javafx)==7 and all(version=='21.0.13' for values in javafx.values() for version,_ in values)
+          assert pom.findtext('m:properties/m:java.version',namespaces=ns)=='21'
           report={'checkout':os.environ['GITHUB_SHA'],'resolved':{k:sorted(v) for k,v in rows.items()},
-                  'plugins':plugins,'changed_coordinates':7,'preserved_javafx21_jackson2':True,
-                  'runtime_test_scopes_preserved':True,'production_deployed':False}
+                  'plugins':plugins,'host_json':'Jackson3','legacy_plugin_json':'Jackson2 runtime only',
+                  'default_javafx21_retained':True,'production_deployed':False}
           (root/'summary.json').write_text(json.dumps(report,indent=2)+'\n')
-          print('DEPENDENCY_RESOLUTION_OK changed=7 scopes_preserved=true JavaFX21/Jackson2 retained')
+          print('DEPENDENCY_RESOLUTION_OK Jackson3_host=true Jackson2_plugin_runtime=true JavaFX21_default=true')
           PY
           git diff --exit-code
       - uses: actions/upload-artifact@v7.0.2
