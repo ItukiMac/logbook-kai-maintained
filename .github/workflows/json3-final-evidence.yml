@@ -1,0 +1,83 @@
+name: Final Jackson3 and JavaFX27 evidence (tooling only)
+on:
+  push:
+    branches: ['maintenance/json3-io-contract-worker-20261027']
+    paths: ['.github/workflows/json3-final-evidence.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Verify exact-source CI and independently inspect artifact records
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request,zipfile,io,hashlib,xml.etree.ElementTree as E,time,re
+          from pathlib import Path
+          head='a17b6b083f4f10c7362e5fd2e75e8dcf583a004d'
+          api='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          def get(path):
+              req=urllib.request.Request(api+path,headers={'Accept':'application/vnd.github+json'})
+              req.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(req,timeout=60) as response:
+                  data=response.read(20*1024*1024+1)
+              assert len(data)<=20*1024*1024
+              return data
+          for attempt in range(45):
+              runs=json.loads(get('/actions/runs?head_sha='+head+'&event=pull_request&per_page=100'))['workflow_runs']
+              assert runs and all(r['head_sha']==head for r in runs)
+              latest={}
+              for r in runs:
+                  if r['workflow_id'] not in latest:latest[r['workflow_id']]=r
+              runs=list(latest.values())
+              if all(r['status']=='completed' for r in runs):break
+              time.sleep(10)
+          states=[{k:r[k] for k in ('id','name','head_sha','status','conclusion')} for r in runs]
+          report={'source_head':head,'workflow_states':states,'artifacts':[],
+                  'all_workflows_success':len(runs)==17 and all(r['conclusion']=='success' for r in runs)}
+          proof={40488436449,40488436382,40488436271,40488436434}
+          for r in runs:
+              if r['id'] not in proof:continue
+              artifacts=json.loads(get('/actions/runs/'+str(r['id'])+'/artifacts'))['artifacts']
+              for a in artifacts:
+                  if a['size_in_bytes']>5*1024*1024:continue
+                  raw=get('/actions/artifacts/'+str(a['id'])+'/zip')
+                  digest='sha256:'+hashlib.sha256(raw).hexdigest();assert digest==a['digest']
+                  z=zipfile.ZipFile(io.BytesIO(raw));assert sum(x.file_size for x in z.infolist())<60*1024*1024
+                  assert z.testzip() is None
+                  item={'run':r['id'],'id':a['id'],'name':a['name'],'sha256':digest,
+                        'java':{},'new_test_suites':{},'reports':{},'python_suites':[],'failures':[]}
+                  for n in z.namelist():
+                      if n.endswith('.xml') and '/TEST-' in '/'+n:
+                          s=E.fromstring(z.read(n))
+                          for k in ('tests','failures','errors','skipped'):item['java'][k]=item['java'].get(k,0)+int(s.get(k,0))
+                          if any(x in s.get('name','') for x in ('LegacyJsonCompatibilityTest','Jackson3JournalCompatibilityTest','JsonGenerationPointerCompatibilityTest')):
+                              item['new_test_suites'][s.get('name')]={k:int(s.get(k,0)) for k in ('tests','failures','errors','skipped')}
+                          for t in s.findall('testcase'):
+                              for e in list(t.findall('failure'))+list(t.findall('error')):
+                                  item['failures'].append({'suite':s.get('name'),'case':t.get('name'),'message':e.get('message')})
+                      elif n.endswith('.json') and any(p in n for p in ('summary','source-provenance','parallel-integration','feature-version-')):
+                          if z.getinfo(n).file_size<30000:
+                              value=json.loads(z.read(n));item['reports'][n]=value
+                      elif n.endswith('.log') and any(p in n for p in ('python-scripts','python-tools','runtime-migration')):
+                          text=z.read(n).decode('utf8',errors='replace')
+                          item['python_suites'].append({'name':n,'results':re.findall(r'Ran \d+ tests[^\n]*\n\s*\n(?:OK[^\n]*|FAILED[^\n]*)',text),
+                              'markers':[l for l in text.splitlines() if any(p in l for p in ('RUNTIME_MIGRATION_TEST_SUMMARY','RUNTIME_MIGRATION_DECLARED_VERSIONS_OK','PARALLEL_BDE_INTEGRATION_OK'))]})
+                  report['artifacts'].append(item)
+          out=Path('.maintenance-evidence');out.mkdir(exist_ok=True)
+          (out/'json3-final-evidence.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print('FINAL_SOURCE',head,'ALL_WORKFLOWS_SUCCESS',report['all_workflows_success'])
+          print([(a['name'],a['java']) for a in report['artifacts']])
+          PY
+      - name: Retain audited proof on the tooling branch only
+        run: |
+          git add .maintenance-evidence/json3-final-evidence.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Retain final-head workflow, artifact hash, Java/Python and runtime migration evidence'
+          git push origin HEAD:refs/heads/maintenance/json3-io-contract-worker-20261027
