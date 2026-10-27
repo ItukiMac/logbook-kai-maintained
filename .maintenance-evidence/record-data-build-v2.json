@@ -1,0 +1,63 @@
+{
+  "base": "eb0bf6a0fa56d35877f332536551361a5de7b996",
+  "production_accessed": false,
+  "full_regression_verified": false,
+  "logs": {
+    "unit.log": {
+      "tail": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< logbook:logbook-kai >-------------------------\n[INFO] Building logbook-kai2 25.0.10\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Loaded 24269 auto-discovered prefixes for remote repository central (prefixes-central.txt)\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] \n[INFO] --- resources:3.5.0:resources (default-resources) @ logbook-kai ---\n[INFO] Copying 269 resources from src/main/resources to target/classes\n[INFO] \n[INFO] --- compiler:3.16.0:compile (default-compile) @ logbook-kai ---\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] Recompiling the module because of changed source code.\n[INFO] Compiling 373 source files with javac [debug release 21] to target/classes\n[WARNING] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/common/Messages.java:[97,22] java.security.AccessController in java.security has been deprecated and marked for removal\n[WARNING] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/constants/ExpTable.java:[229,23] deprecated item is not annotated with @Deprecated\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/core/SeasonalQuestRuleService.java: Some input files use or override a deprecated API.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/core/SeasonalQuestRuleService.java: Recompile with -Xlint:deprecation for details.\n[INFO] \n[INFO] --- resources:3.5.0:testResources (default-testResources) @ logbook-kai ---\n[INFO] Copying 29 resources from src/test/resources to target/test-classes\n[INFO] \n[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ logbook-kai ---\n[INFO] Recompiling the module because of changed dependency.\n[INFO] Compiling 125 source files with javac [debug release 21] to target/test-classes\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/DataGenerationRollbackTest.java: Some input files use or override a deprecated API.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/DataGenerationRollbackTest.java: Recompile with -Xlint:deprecation for details.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/internal/log/LogWriterTest.java: Some input files use unchecked or unsafe operations.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/internal/log/LogWriterTest.java: Recompile with -Xlint:unchecked for details.\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,22] reference to Period is ambiguous\n  both enum logbook.plugin.api.RecordDataV1.Period in logbook.plugin.api.RecordDataV1 and class java.time.Period in java.time match\n[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,13] reference to Period is ambiguous\n  both enum logbook.plugin.api.RecordDataV1.Period in logbook.plugin.api.RecordDataV1 and class java.time.Period in java.time match\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[ERROR] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  24.803 s\n[INFO] Finished at: 2026-10-27T22:49:03Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.16.0:testCompile (default-testCompile) on project logbook-kai: Compilation failure: Compilation failure: \n[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,22] reference to Period is ambiguous\n[ERROR]   both enum logbook.plugin.api.RecordDataV1.Period in logbook.plugin.api.RecordDataV1 and class java.time.Period in java.time match\n[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,13] reference to Period is ambiguous\n[ERROR]   both enum logbook.plugin.api.RecordDataV1.Period in logbook.plugin.api.RecordDataV1 and class java.time.Period in java.time match\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+      "errors": [
+        "[ERROR] COMPILATION ERROR : ",
+        "[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,22] reference to Period is ambiguous",
+        "[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,13] reference to Period is ambiguous",
+        "[ERROR] BUILD FAILURE",
+        "[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.16.0:testCompile (default-testCompile) on project logbook-kai: Compilation failure: Compilation failure: ",
+        "[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,22] reference to Period is ambiguous",
+        "[ERROR]   both enum logbook.plugin.api.RecordDataV1.Period in logbook.plugin.api.RecordDataV1 and class java.time.Period in java.time match",
+        "[ERROR] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/RecordDataContractTest.java:[117,13] reference to Period is ambiguous",
+        "[ERROR]   both enum logbook.plugin.api.RecordDataV1.Period in logbook.plugin.api.RecordDataV1 and class java.time.Period in java.time match",
+        "[ERROR] -> [Help 1]",
+        "[ERROR] ",
+        "[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.",
+        "[ERROR] Re-run Maven using the -X switch to enable full debug logging.",
+        "[ERROR] ",
+        "[ERROR] For more information about the errors and possible solutions, please read the following articles:",
+        "[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException"
+      ]
+    },
+    "apply.log": {
+      "tail": "RECORD_DATA_APPLIED 12 files; legacy APIs retained; original files not accessed\n",
+      "errors": []
+    },
+    "compact.log": {
+      "tail": "COMPACT_RECORD_VIEWS_READY old_public_rows_unchanged=true\n",
+      "errors": []
+    },
+    "tests-apply.log": {
+      "tail": "RECORD_DATA_REGRESSIONS_READY 24 Java methods + actual GUI proof; synthetic data only\n",
+      "errors": []
+    },
+    "diff-stat.txt": {
+      "tail": " scripts/java/RecordUiProbe.java                    |  42 +++-\n scripts/tests/test_record_ui_integration.py        |   7 +-\n .../logbook/internal/gui/BattleLogController.java  | 241 +++++++++++----------\n .../logbook/internal/gui/CreateItemController.java |  43 ++--\n .../logbook/internal/gui/MainMenuController.java   |   2 +-\n .../logbook/internal/gui/MissionLogController.java | 110 +++++-----\n .../java/logbook/internal/kancolle/BattleLogs.java |  46 +---\n 7 files changed, 249 insertions(+), 242 deletions(-)\n",
+      "errors": []
+    }
+  },
+  "suites": [],
+  "gui_reports": {},
+  "changed-paths.json": [
+    "src/main/java/logbook/plugin/api/RecordDataV1.java",
+    "src/main/java/logbook/core/RecordDataService.java",
+    "src/main/java/logbook/internal/kancolle/BattleLogs.java",
+    "src/main/java/logbook/internal/gui/MainMenuController.java",
+    "src/main/java/logbook/internal/gui/BattleRecordCollect.java",
+    "src/main/java/logbook/internal/gui/BattleRecordDetail.java",
+    "src/main/java/logbook/internal/gui/MissionRecordCollect.java",
+    "src/main/java/logbook/internal/gui/MissionRecordDetail.java",
+    "src/main/java/logbook/internal/gui/BattleLogController.java",
+    "src/main/java/logbook/internal/gui/MissionLogController.java",
+    "src/main/java/logbook/internal/gui/CreateItemController.java",
+    "scripts/tests/test_record_ui_integration.py",
+    "src/test/java/logbook/core/RecordDataContractTest.java",
+    "src/test/java/logbook/internal/gui/RecordDataViewTest.java",
+    "scripts/java/RecordUiProbe.java"
+  ]
+}
