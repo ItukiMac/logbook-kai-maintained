@@ -1,0 +1,1302 @@
+{
+  "source_head": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+  "workflow_states": [
+    {
+      "id": 40488436533,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436478,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436434,
+      "name": "Audited dependency resolution (no publish)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436460,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436474,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436407,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436341,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436454,
+      "name": "Live public JSON Release isolated Java integration",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436522,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436430,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436411,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436449,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436382,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436581,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436333,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436332,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40488436271,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "a17b6b083f4f10c7362e5fd2e75e8dcf583a004d",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "run": 40488436434,
+      "id": 12725669298,
+      "name": "dependency-resolution-java25",
+      "sha256": "sha256:61ed8020cc7abc52cd2e555003e3d85fa2e984c28b0bad90151d4543daf3c9c7",
+      "java": {},
+      "new_test_suites": {},
+      "reports": {
+        "summary.json": {
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "resolved": {
+            "org.openjfx:javafx-controls": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-graphics": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-base": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-fxml": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-media": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-web": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-swing": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "jakarta.json:jakarta.json-api": [
+              [
+                "2.1.3",
+                "compile"
+              ]
+            ],
+            "org.eclipse.parsson:parsson": [
+              [
+                "1.1.9",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-server": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-http": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-io": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.slf4j:slf4j-api": [
+              [
+                "2.0.20",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-servlet": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-nested": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-security": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-session": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.toolchain:jetty-servlet-api": [
+              [
+                "4.0.9",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-security": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-proxy": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-client": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-alpn-client": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.compression:jetty-compression-gzip": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.compression:jetty-compression-common": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-util": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.controlsfx:controlsfx": [
+              [
+                "11.2.6",
+                "compile"
+              ]
+            ],
+            "com.fasterxml.jackson.core:jackson-databind": [
+              [
+                "2.22.4",
+                "runtime"
+              ]
+            ],
+            "com.fasterxml.jackson.core:jackson-annotations": [
+              [
+                "2.22",
+                "compile"
+              ]
+            ],
+            "com.fasterxml.jackson.core:jackson-core": [
+              [
+                "2.22.4",
+                "runtime"
+              ]
+            ],
+            "tools.jackson.core:jackson-databind": [
+              [
+                "3.2.4",
+                "compile"
+              ]
+            ],
+            "tools.jackson.core:jackson-core": [
+              [
+                "3.2.4",
+                "compile"
+              ]
+            ],
+            "org.apache.logging.log4j:log4j-api": [
+              [
+                "2.26.1",
+                "compile"
+              ]
+            ],
+            "org.apache.logging.log4j:log4j-core": [
+              [
+                "2.26.1",
+                "compile"
+              ]
+            ],
+            "org.apache.logging.log4j:log4j-slf4j2-impl": [
+              [
+                "2.26.1",
+                "runtime"
+              ]
+            ],
+            "org.projectlombok:lombok": [
+              [
+                "1.18.48",
+                "provided"
+              ]
+            ],
+            "org.junit.platform:junit-platform-launcher": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.junit.platform:junit-platform-engine": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.apiguardian:apiguardian-api": [
+              [
+                "1.1.2",
+                "test"
+              ]
+            ],
+            "org.jspecify:jspecify": [
+              [
+                "1.0.1",
+                "test"
+              ]
+            ],
+            "org.junit.jupiter:junit-jupiter-api": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.opentest4j:opentest4j": [
+              [
+                "1.3.0",
+                "test"
+              ]
+            ],
+            "org.junit.platform:junit-platform-commons": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.junit.jupiter:junit-jupiter-engine": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.mockito:mockito-core": [
+              [
+                "5.24.0",
+                "test"
+              ]
+            ],
+            "net.bytebuddy:byte-buddy": [
+              [
+                "1.18.16",
+                "test"
+              ]
+            ],
+            "net.bytebuddy:byte-buddy-agent": [
+              [
+                "1.18.16",
+                "test"
+              ]
+            ],
+            "org.objenesis:objenesis": [
+              [
+                "3.6",
+                "test"
+              ]
+            ],
+            "org.jsoup:jsoup": [
+              [
+                "1.23.2",
+                "test"
+              ]
+            ]
+          },
+          "plugins": {
+            "maven-compiler-plugin": "3.16.0",
+            "maven-assembly-plugin": "3.8.0",
+            "maven-surefire-plugin": "3.6.1",
+            "maven-clean-plugin": "3.5.0",
+            "maven-resources-plugin": "3.5.0",
+            "maven-jar-plugin": "3.5.1",
+            "maven-install-plugin": "3.2.0",
+            "maven-deploy-plugin": "3.2.0",
+            "maven-site-plugin": "3.22.0"
+          },
+          "host_json": "Jackson3",
+          "legacy_plugin_json": "Jackson2 runtime only",
+          "default_javafx21_retained": true,
+          "production_deployed": false
+        }
+      },
+      "python_suites": [],
+      "failures": []
+    },
+    {
+      "run": 40488436434,
+      "id": 12725384623,
+      "name": "dependency-resolution-java21",
+      "sha256": "sha256:78523c93c4ebade110ef303a414f6c7a5c1f11b6e706b6906925f84cd97af29d",
+      "java": {},
+      "new_test_suites": {},
+      "reports": {
+        "summary.json": {
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "resolved": {
+            "org.openjfx:javafx-controls": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-graphics": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-base": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-fxml": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-media": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-web": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "org.openjfx:javafx-swing": [
+              [
+                "21.0.13",
+                "compile"
+              ]
+            ],
+            "jakarta.json:jakarta.json-api": [
+              [
+                "2.1.3",
+                "compile"
+              ]
+            ],
+            "org.eclipse.parsson:parsson": [
+              [
+                "1.1.9",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-server": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-http": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-io": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.slf4j:slf4j-api": [
+              [
+                "2.0.20",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-servlet": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-nested": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-security": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-session": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.toolchain:jetty-servlet-api": [
+              [
+                "4.0.9",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-security": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.ee8:jetty-ee8-proxy": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-client": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-alpn-client": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.compression:jetty-compression-gzip": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty.compression:jetty-compression-common": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.eclipse.jetty:jetty-util": [
+              [
+                "12.1.14",
+                "compile"
+              ]
+            ],
+            "org.controlsfx:controlsfx": [
+              [
+                "11.2.6",
+                "compile"
+              ]
+            ],
+            "com.fasterxml.jackson.core:jackson-databind": [
+              [
+                "2.22.4",
+                "runtime"
+              ]
+            ],
+            "com.fasterxml.jackson.core:jackson-annotations": [
+              [
+                "2.22",
+                "compile"
+              ]
+            ],
+            "com.fasterxml.jackson.core:jackson-core": [
+              [
+                "2.22.4",
+                "runtime"
+              ]
+            ],
+            "tools.jackson.core:jackson-databind": [
+              [
+                "3.2.4",
+                "compile"
+              ]
+            ],
+            "tools.jackson.core:jackson-core": [
+              [
+                "3.2.4",
+                "compile"
+              ]
+            ],
+            "org.apache.logging.log4j:log4j-api": [
+              [
+                "2.26.1",
+                "compile"
+              ]
+            ],
+            "org.apache.logging.log4j:log4j-core": [
+              [
+                "2.26.1",
+                "compile"
+              ]
+            ],
+            "org.apache.logging.log4j:log4j-slf4j2-impl": [
+              [
+                "2.26.1",
+                "runtime"
+              ]
+            ],
+            "org.projectlombok:lombok": [
+              [
+                "1.18.48",
+                "provided"
+              ]
+            ],
+            "org.junit.platform:junit-platform-launcher": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.junit.platform:junit-platform-engine": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.apiguardian:apiguardian-api": [
+              [
+                "1.1.2",
+                "test"
+              ]
+            ],
+            "org.jspecify:jspecify": [
+              [
+                "1.0.1",
+                "test"
+              ]
+            ],
+            "org.junit.jupiter:junit-jupiter-api": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.opentest4j:opentest4j": [
+              [
+                "1.3.0",
+                "test"
+              ]
+            ],
+            "org.junit.platform:junit-platform-commons": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.junit.jupiter:junit-jupiter-engine": [
+              [
+                "6.1.3",
+                "test"
+              ]
+            ],
+            "org.mockito:mockito-core": [
+              [
+                "5.24.0",
+                "test"
+              ]
+            ],
+            "net.bytebuddy:byte-buddy": [
+              [
+                "1.18.16",
+                "test"
+              ]
+            ],
+            "net.bytebuddy:byte-buddy-agent": [
+              [
+                "1.18.16",
+                "test"
+              ]
+            ],
+            "org.objenesis:objenesis": [
+              [
+                "3.6",
+                "test"
+              ]
+            ],
+            "org.jsoup:jsoup": [
+              [
+                "1.23.2",
+                "test"
+              ]
+            ]
+          },
+          "plugins": {
+            "maven-compiler-plugin": "3.16.0",
+            "maven-assembly-plugin": "3.8.0",
+            "maven-surefire-plugin": "3.6.1",
+            "maven-clean-plugin": "3.5.0",
+            "maven-resources-plugin": "3.5.0",
+            "maven-jar-plugin": "3.5.1",
+            "maven-install-plugin": "3.2.0",
+            "maven-deploy-plugin": "3.2.0",
+            "maven-site-plugin": "3.22.0"
+          },
+          "host_json": "Jackson3",
+          "legacy_plugin_json": "Jackson2 runtime only",
+          "default_javafx21_retained": true,
+          "production_deployed": false
+        }
+      },
+      "python_suites": [],
+      "failures": []
+    },
+    {
+      "run": 40488436449,
+      "id": 12728030038,
+      "name": "r3-evidence-java25",
+      "sha256": "sha256:a02421e84890f7e12b8b9715bfd822473894e7b2c5203d55c3d0b4df0f7a377b",
+      "java": {
+        "tests": 765,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_test_suites": {
+        "logbook.core.JsonGenerationPointerCompatibilityTest": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.json.LegacyJsonCompatibilityTest": {
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.kancolle.Jackson3JournalCompatibilityTest": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "reports": {
+        "r3-verification/feature-version-qdfttqm8.json": {
+          "fixture_root": "/tmp/logbook-feature-version-fixture-xou7jdhd",
+          "production_accessed": false,
+          "original_and_failed_outputs_retained": true,
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "result": "passed",
+          "initial_bundle": "940311450ce27ab96711403a2f5ad9858a2d3aada84745f6a6b350190a3c9a63",
+          "updated_bundle": "d711a8f9033286a25c02a051e0d7278d492f388eb66ccc51ce96061fb7de78c4",
+          "calculations": [
+            10,
+            15,
+            15,
+            10
+          ],
+          "launch_count": 4,
+          "refused_launch_count": 1,
+          "executable_metadata_mismatch_refused": true,
+          "incompatible_rejected_before_features": true,
+          "interrupted_stage_retained": true,
+          "failed_selector_retained": true,
+          "source_bytes_unchanged": true,
+          "historical_version_reuse_single_stage_refused": true,
+          "historical_version_reuse_whole_stage_refused": true,
+          "version_reuse_store_and_runtime_unchanged": true,
+          "reused_version_candidate_preflight_accepted": true,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-urnglulf.log"
+        },
+        "r3-verification/parallel-integration-51ib2eab.json": {
+          "fixture_root": "/tmp/logbook-parallel-integration-ocg8xosb",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-pu_cmew6.log"
+        },
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-ocg8xosb",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-pu_cmew6.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "java_tests": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_suites": [
+        {
+          "name": "r3-verification/python-scripts.log",
+          "results": [
+            "Ran 397 tests in 298.101s\n\nOK (skipped=1)"
+          ],
+          "markers": [
+            "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true"
+          ]
+        },
+        {
+          "name": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.099s\n\nOK"
+          ],
+          "markers": []
+        }
+      ],
+      "failures": []
+    },
+    {
+      "run": 40488436449,
+      "id": 12726327683,
+      "name": "r3-evidence-java21",
+      "sha256": "sha256:2d346568096d4f3de231e2c85ccf7ec3d76c3fa40e62beabea09af3f1e151653",
+      "java": {
+        "tests": 765,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_test_suites": {
+        "logbook.core.JsonGenerationPointerCompatibilityTest": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.json.LegacyJsonCompatibilityTest": {
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.kancolle.Jackson3JournalCompatibilityTest": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "reports": {
+        "r3-verification/feature-version-lap4qaph.json": {
+          "fixture_root": "/tmp/logbook-feature-version-fixture-0c31l_zs",
+          "production_accessed": false,
+          "original_and_failed_outputs_retained": true,
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "result": "passed",
+          "initial_bundle": "dd255b1c0398981b3026f33babf501dd31a064526ccec95fc0314a53c210b4c6",
+          "updated_bundle": "be2e1231386741273e16e3f43818b7640acef5c77ef94ab82cf1f5758dee9337",
+          "calculations": [
+            10,
+            15,
+            15,
+            10
+          ],
+          "launch_count": 4,
+          "refused_launch_count": 1,
+          "executable_metadata_mismatch_refused": true,
+          "incompatible_rejected_before_features": true,
+          "interrupted_stage_retained": true,
+          "failed_selector_retained": true,
+          "source_bytes_unchanged": true,
+          "historical_version_reuse_single_stage_refused": true,
+          "historical_version_reuse_whole_stage_refused": true,
+          "version_reuse_store_and_runtime_unchanged": true,
+          "reused_version_candidate_preflight_accepted": true,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-c22thee4.log"
+        },
+        "r3-verification/parallel-integration-7sdgm13j.json": {
+          "fixture_root": "/tmp/logbook-parallel-integration-xh6yne45",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-wyuftgxz.log"
+        },
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-xh6yne45",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-wyuftgxz.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "java_tests": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_suites": [
+        {
+          "name": "r3-verification/python-scripts.log",
+          "results": [
+            "Ran 397 tests in 346.129s\n\nOK (skipped=1)"
+          ],
+          "markers": [
+            "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true"
+          ]
+        },
+        {
+          "name": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.130s\n\nOK"
+          ],
+          "markers": []
+        }
+      ],
+      "failures": []
+    },
+    {
+      "run": 40488436382,
+      "id": 12727815345,
+      "name": "modern-runtime-evidence-java25",
+      "sha256": "sha256:6498985441a4f085db8062c91319593fb5534ac0fe2a0f7b7e68ddaa63fcb8e7",
+      "java": {
+        "tests": 765,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_test_suites": {
+        "logbook.core.JsonGenerationPointerCompatibilityTest": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.json.LegacyJsonCompatibilityTest": {
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.kancolle.Jackson3JournalCompatibilityTest": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "reports": {
+        "modern-runtime/summary.json": {
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "jdk_baseline": 25,
+          "javafx": "27.0.1",
+          "openjfx_components": [
+            "org.openjfx:javafx-base",
+            "org.openjfx:javafx-controls",
+            "org.openjfx:javafx-fxml",
+            "org.openjfx:javafx-graphics",
+            "org.openjfx:javafx-media",
+            "org.openjfx:javafx-swing",
+            "org.openjfx:javafx-web",
+            "org.openjfx:jdk-jsobject"
+          ],
+          "jackson_host": "3.2.4",
+          "classfile_major": 69,
+          "json_compatibility_tests": 14,
+          "legacy_plugin_bridge_retained": true,
+          "native_mint_tested": false,
+          "production_applied": false
+        },
+        "r3-verification/feature-version-x3u52t55.json": {
+          "fixture_root": "/tmp/logbook-feature-version-fixture-saxsbqhr",
+          "production_accessed": false,
+          "original_and_failed_outputs_retained": true,
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "result": "passed",
+          "initial_bundle": "97df5effc7a90e3f28a333f8a2779c19f2108a1602295c9fcf81281d514afdf9",
+          "updated_bundle": "67b88ca16ef9df0c04fea160d77dd67eb710d2a3c8367fea127a4ff86fed4287",
+          "calculations": [
+            10,
+            15,
+            15,
+            10
+          ],
+          "launch_count": 4,
+          "refused_launch_count": 1,
+          "executable_metadata_mismatch_refused": true,
+          "incompatible_rejected_before_features": true,
+          "interrupted_stage_retained": true,
+          "failed_selector_retained": true,
+          "source_bytes_unchanged": true,
+          "historical_version_reuse_single_stage_refused": true,
+          "historical_version_reuse_whole_stage_refused": true,
+          "version_reuse_store_and_runtime_unchanged": true,
+          "reused_version_candidate_preflight_accepted": true,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-i1m9el5h.log"
+        },
+        "r3-verification/parallel-integration-f0jzogm4.json": {
+          "fixture_root": "/tmp/logbook-parallel-integration-q20enn4u",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-4euupln8.log"
+        },
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-q20enn4u",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-4euupln8.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "3002d3255b00d2590843c5dd77c721925ca8615a",
+          "java_tests": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_suites": [
+        {
+          "name": "r3-verification/python-scripts.log",
+          "results": [
+            "Ran 397 tests in 316.188s\n\nOK (skipped=1)"
+          ],
+          "markers": [
+            "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true"
+          ]
+        },
+        {
+          "name": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.123s\n\nOK"
+          ],
+          "markers": []
+        }
+      ],
+      "failures": []
+    },
+    {
+      "run": 40488436271,
+      "id": 12727035553,
+      "name": "runtime-migration-java25",
+      "sha256": "sha256:fcbe435f4094215e95590e65482b63c8c77333da4de3eeb11c7d708627c39e8f",
+      "java": {},
+      "new_test_suites": {},
+      "reports": {
+        "fixtures/old/target/source-provenance.json": {
+          "source_commit": "a094771d73ce420f2bd2ddf237e0c69cf2005067",
+          "jar_sha256": "9d3b44fe132662f13be013a2d4e7169b7c67b884cfa91c7e65d437d0d4d4ef88",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        },
+        "fixtures/new/target/source-provenance.json": {
+          "source_commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+          "jar_sha256": "01172e8573305a3a4a4e78c78c5d931e521977207808612b045a7182cb8d5648",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        }
+      },
+      "python_suites": [
+        {
+          "name": "candidate/target/verification/runtime-migration.log",
+          "results": [
+            "Ran 5 tests in 234.071s\n\nOK"
+          ],
+          "markers": [
+            "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+            "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+          ]
+        }
+      ],
+      "failures": []
+    },
+    {
+      "run": 40488436271,
+      "id": 12726960758,
+      "name": "runtime-migration-java21",
+      "sha256": "sha256:3bffd444d2632d0299d8798cc5bd5161388ffaf237c3999c9aeac876ac9a92c7",
+      "java": {},
+      "new_test_suites": {},
+      "reports": {
+        "fixtures/old/target/source-provenance.json": {
+          "source_commit": "a094771d73ce420f2bd2ddf237e0c69cf2005067",
+          "jar_sha256": "337db848104945f6244cbb5c60c804ef7466388e490d27be9e18aa3c7c3653c1",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        },
+        "fixtures/new/target/source-provenance.json": {
+          "source_commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+          "jar_sha256": "f342aa3f1b908ee53ffaa5d7ba842b1146e738f9f438ed0b909464332ff40016",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        }
+      },
+      "python_suites": [
+        {
+          "name": "candidate/target/verification/runtime-migration.log",
+          "results": [
+            "Ran 5 tests in 228.413s\n\nOK"
+          ],
+          "markers": [
+            "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+            "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+          ]
+        }
+      ],
+      "failures": []
+    }
+  ],
+  "all_workflows_success": true
+}
