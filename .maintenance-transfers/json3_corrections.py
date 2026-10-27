@@ -14,3 +14,4 @@ def form(s):
  s=re.sub(r'mapper\.addMixIn\(([^;]+)\);',r'mapper = mapper.rebuild().addMixIn(\1).build();',s)
  return s
 edit('src/main/java/logbook/internal/gui/QuestConditionEditController.java',form)
+edit('src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java',lambda s:s.replace('catch (IOException e)', 'catch (tools.jackson.core.JacksonException e)'))
