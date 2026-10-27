@@ -1,0 +1,263 @@
+{
+  "base": "ccb680c356358f8dedc6c606b627b3da38da96b9",
+  "production_accessed": false,
+  "full_regression_verified": false,
+  "logs": {
+    "package.log": {
+      "tail": [
+        "[INFO] Scanning for projects...",
+        "[INFO] ",
+        "[INFO] ------------------------< logbook:logbook-kai >-------------------------",
+        "[INFO] Building logbook-kai2 25.0.10",
+        "[INFO]   from pom.xml",
+        "[INFO] --------------------------------[ jar ]---------------------------------",
+        "[INFO] Loaded 24269 auto-discovered prefixes for remote repository central (prefixes-central.txt)",
+        "[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)",
+        "[INFO] ",
+        "[INFO] --- resources:3.5.0:resources (default-resources) @ logbook-kai ---",
+        "[INFO] Copying 269 resources from src/main/resources to target/classes",
+        "[INFO] ",
+        "[INFO] --- compiler:3.16.0:compile (default-compile) @ logbook-kai ---",
+        "[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)",
+        "[INFO] Nothing to compile - all classes are up to date.",
+        "[INFO] ",
+        "[INFO] --- resources:3.5.0:testResources (default-testResources) @ logbook-kai ---",
+        "[INFO] Copying 29 resources from src/test/resources to target/test-classes",
+        "[INFO] ",
+        "[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ logbook-kai ---",
+        "[INFO] Nothing to compile - all classes are up to date.",
+        "[INFO] ",
+        "[INFO] --- surefire:3.6.1:test (default-test) @ logbook-kai ---",
+        "[INFO] Tests are skipped.",
+        "[INFO] ",
+        "[INFO] --- jar:3.5.1:jar (default-jar) @ logbook-kai ---",
+        "[INFO] Building jar: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai-25.0.10.jar",
+        "[INFO] ",
+        "[INFO] --- assembly:3.8.0:single (make-assembly) @ logbook-kai ---",
+        "[INFO] Building jar: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar",
+        "[WARNING] Configuration option 'appendAssemblyId' is set to false.",
+        "Instead of attaching the assembly file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar, it will become the file for main project artifact.",
+        "NOTE: If multiple descriptors or descriptor-formats are provided for this project, the value of this file will be non-deterministic!",
+        "[WARNING] Replacing pre-existing project main-artifact file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai-25.0.10.jar",
+        "with assembly file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar",
+        "[INFO] ",
+        "[INFO] --- assembly:3.8.0:single (create-release) @ logbook-kai ---",
+        "[INFO] Reading assembly descriptor: assembly.xml",
+        "[INFO] Building zip: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai_25.0.10.zip",
+        "[INFO] ------------------------------------------------------------------------",
+        "[INFO] BUILD SUCCESS",
+        "[INFO] ------------------------------------------------------------------------",
+        "[INFO] Total time:  14.236 s",
+        "[INFO] Finished at: 2026-10-27T23:46:11Z",
+        "[INFO] ------------------------------------------------------------------------"
+      ],
+      "errors": []
+    },
+    "source-commit.txt": {
+      "tail": [
+        "4292b28a29051de1c29a6a9309fca1b50f257cf5"
+      ],
+      "errors": []
+    },
+    "unit.log": {
+      "tail": [
+        "\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)",
+        "\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)",
+        "\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)",
+        "\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)",
+        "\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)",
+        "\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)",
+        "\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)",
+        "\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)",
+        "\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)",
+        "\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)",
+        "\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:36)",
+        "\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:52)",
+        "\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:58)",
+        "\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:256)",
+        "\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:228)",
+        "\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:189)",
+        "\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:109)",
+        "\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:66)",
+        "\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:168)",
+        "\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:65)",
+        "\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:137)",
+        "\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:126)",
+        "\tat org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:71)",
+        "\tat org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$2(InterceptingLauncher.java:66)",
+        "\tat org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)",
+        "\tat org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:65)",
+        "\tat org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:71)",
+        "\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)",
+        "\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)",
+        "\tat org.apache.maven.surefire.api.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:125)",
+        "\tat org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithCancellationToken(LauncherAdapter.java:68)",
+        "\tat org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:54)",
+        "\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:334)",
+        "\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:304)",
+        "\tat org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:251)",
+        "\tat org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:409)",
+        "\tat org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:190)",
+        "\tat org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:547)",
+        "\tat org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:535)",
+        "[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.656 s -- in logbook.internal.gui.EquipmentProjectionTest",
+        "[INFO] ",
+        "[INFO] Results:",
+        "[INFO] ",
+        "[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0",
+        "[INFO] ",
+        "[INFO] ------------------------------------------------------------------------",
+        "[INFO] BUILD SUCCESS",
+        "[INFO] ------------------------------------------------------------------------",
+        "[INFO] Total time:  21.599 s",
+        "[INFO] Finished at: 2026-10-27T23:45:56Z",
+        "[INFO] ------------------------------------------------------------------------"
+      ],
+      "errors": []
+    },
+    "record-profile.log": {
+      "tail": [
+        "test_a_rehashed_module_cannot_omit_a_required_record_class (test_record_distribution_profile.RecordDistributionProfileTest.test_a_rehashed_module_cannot_omit_a_required_record_class) ... ok",
+        "test_build_is_deterministic_and_keeps_original_source (test_record_distribution_profile.RecordDistributionProfileTest.test_build_is_deterministic_and_keeps_original_source) ... ok",
+        "test_core_fallback_cannot_hide_the_absence_of_a_feature_class (test_record_distribution_profile.RecordDistributionProfileTest.test_core_fallback_cannot_hide_the_absence_of_a_feature_class) ... ok",
+        "test_legacy_v2_without_the_data_api_keeps_its_previous_layout (test_record_distribution_profile.RecordDistributionProfileTest.test_legacy_v2_without_the_data_api_keeps_its_previous_layout) ... ok",
+        "test_missing_record_ui_is_rejected_before_creating_output (test_record_distribution_profile.RecordDistributionProfileTest.test_missing_record_ui_is_rejected_before_creating_output) ... ok",
+        "test_new_profile_moves_all_record_views_and_nested_dialog_to_charts (test_record_distribution_profile.RecordDistributionProfileTest.test_new_profile_moves_all_record_views_and_nested_dialog_to_charts) ... ok",
+        "test_profile_cannot_be_forged_on_an_old_host (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_forged_on_an_old_host) ... ok",
+        "test_profile_cannot_be_removed_to_bypass_new_ownership_checks (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_removed_to_bypass_new_ownership_checks) ... ok",
+        "test_unknown_profile_is_rejected (test_record_distribution_profile.RecordDistributionProfileTest.test_unknown_profile_is_rejected) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 9 tests in 0.198s",
+        "",
+        "OK"
+      ],
+      "errors": []
+    },
+    "tests.log": {
+      "tail": [
+        "EQUIPMENT_TESTS_PREPARED java=21 python_profile=9 fixtures_only=true"
+      ],
+      "errors": []
+    },
+    "profile.log": {
+      "tail": [
+        "test_a_rehashed_module_cannot_omit_a_required_equipment_class (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_a_rehashed_module_cannot_omit_a_required_equipment_class) ... ok",
+        "test_build_is_deterministic_and_keeps_original_source (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_build_is_deterministic_and_keeps_original_source) ... ok",
+        "test_core_fallback_cannot_hide_the_absence_of_a_feature_class (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_core_fallback_cannot_hide_the_absence_of_a_feature_class) ... ok",
+        "test_legacy_v2_without_the_data_api_keeps_its_previous_layout (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_legacy_v2_without_the_data_api_keeps_its_previous_layout) ... ok",
+        "test_missing_equipment_ui_is_rejected_before_creating_output (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_missing_equipment_ui_is_rejected_before_creating_output) ... ok",
+        "test_new_profile_moves_all_equipment_tabs_and_nested_cell_to_status (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_new_profile_moves_all_equipment_tabs_and_nested_cell_to_status) ... ok",
+        "test_profile_cannot_be_forged_on_an_old_host (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_profile_cannot_be_forged_on_an_old_host) ... ok",
+        "test_profile_cannot_be_removed_to_bypass_new_ownership_checks (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_profile_cannot_be_removed_to_bypass_new_ownership_checks) ... ok",
+        "test_unknown_profile_is_rejected (test_equipment_distribution_profile.EquipmentDistributionProfileTest.test_unknown_profile_is_rejected) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 9 tests in 0.131s",
+        "",
+        "OK"
+      ],
+      "errors": []
+    },
+    "ui.log": {
+      "tail": [
+        "EQUIPMENT_UI_PREPARED controllers=3 data_contract=true module=status legacy_v2_retained=true"
+      ],
+      "errors": []
+    },
+    "gui.log": {
+      "tail": [
+        "test_actual_product_equipment_tabs_keep_values_filters_exports_and_settings (test_equipment_ui_integration.EquipmentUiIntegrationTest.test_actual_product_equipment_tabs_keep_values_filters_exports_and_settings) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 1 test in 19.853s",
+        "",
+        "OK",
+        "EQUIPMENT_PRODUCT_GUI_OK {\"fixture\": \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/equipment-ui-fixture-em3njr34\", \"source_jar_sha256\": \"ada93b997061b72e019b804af0a83595f7f054898ad3bb0d413937f3389c7ab8\", \"production_accessed\": false, \"result\": \"passed\", \"shared_host_gui_helpers_retained\": true, \"atomic_writer_snapshot_claimed\": false, \"product_distribution\": true, \"equipment_ui_profile\": \"equipment-ui-in-status-v1\", \"equipment_module\": \"status\", \"tabs\": 2, \"summaries\": 2, \"owned_instances\": 6, \"normal_and_expansion_owner\": true, \"aircraft\": 3, \"grouped_aircraft\": 2, \"locked_export\": 3, \"settings_reread\": true, \"original_history_unchanged\": true, \"source_jar_unchanged\": true, \"host_sha256\": \"bcc9dce0c2e96cc79c888a54cf7e7165d63be8a38daf35b9a91a6860438db4c9\", \"status_sha256\": \"a9ec012a3b53d89ef79617a804cd2b3fadae524d41df1fae4401ebf171140bb5\"}"
+      ],
+      "errors": []
+    },
+    "data.log": {
+      "tail": [
+        "EQUIPMENT_DATA_PREPARED files=5 immutable_values=true write_api=false"
+      ],
+      "errors": []
+    },
+    "legacy-profile.log": {
+      "tail": [
+        "test_duplicate_archive_entry_is_rejected (test_feature_distribution.FeatureDistributionTest.test_duplicate_archive_entry_is_rejected) ... ok",
+        "test_missing_controller_rejected_before_output (test_feature_distribution.FeatureDistributionTest.test_missing_controller_rejected_before_output) ... ok",
+        "test_modified_component_and_manifest_inventory_are_rejected (test_feature_distribution.FeatureDistributionTest.test_modified_component_and_manifest_inventory_are_rejected) ... ok",
+        "test_physical_ownership_and_input_preservation (test_feature_distribution.FeatureDistributionTest.test_physical_ownership_and_input_preservation) ... ok",
+        "test_repeat_is_deterministic_and_never_replaces_original_output (test_feature_distribution.FeatureDistributionTest.test_repeat_is_deterministic_and_never_replaces_original_output) ... ok",
+        "test_service_contract_change_is_not_silently_dropped (test_feature_distribution.FeatureDistributionTest.test_service_contract_change_is_not_silently_dropped) ... ok",
+        "test_signed_and_traversal_archives_rejected (test_feature_distribution.FeatureDistributionTest.test_signed_and_traversal_archives_rejected) ... ok",
+        "test_symlink_source_and_bundle_parent_are_rejected (test_feature_distribution.FeatureDistributionTest.test_symlink_source_and_bundle_parent_are_rejected) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 8 tests in 0.114s",
+        "",
+        "OK"
+      ],
+      "errors": []
+    }
+  },
+  "suites": [
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "logbook.core.EquipmentDataContractTest",
+      "time": "0.24",
+      "tests": "15",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0",
+      "flakes": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "logbook.internal.gui.EquipmentProjectionTest",
+      "time": "0.656",
+      "tests": "6",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0",
+      "flakes": "0"
+    }
+  ],
+  "gui_reports": {
+    "equipment-ui-fixture-em3njr34.json": {
+      "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/equipment-ui-fixture-em3njr34",
+      "source_jar_sha256": "ada93b997061b72e019b804af0a83595f7f054898ad3bb0d413937f3389c7ab8",
+      "production_accessed": false,
+      "result": "passed",
+      "shared_host_gui_helpers_retained": true,
+      "atomic_writer_snapshot_claimed": false,
+      "product_distribution": true,
+      "equipment_ui_profile": "equipment-ui-in-status-v1",
+      "equipment_module": "status",
+      "tabs": 2,
+      "summaries": 2,
+      "owned_instances": 6,
+      "normal_and_expansion_owner": true,
+      "aircraft": 3,
+      "grouped_aircraft": 2,
+      "locked_export": 3,
+      "settings_reread": true,
+      "original_history_unchanged": true,
+      "source_jar_unchanged": true,
+      "host_sha256": "bcc9dce0c2e96cc79c888a54cf7e7165d63be8a38daf35b9a91a6860438db4c9",
+      "status_sha256": "a9ec012a3b53d89ef79617a804cd2b3fadae524d41df1fae4401ebf171140bb5"
+    }
+  }
+}
