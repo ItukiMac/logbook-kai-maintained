@@ -1,0 +1,29 @@
+name: R10 pinned source export (tooling only)
+on:
+  push:
+    branches: ['maintenance/r10-source-export-20261027']
+    paths: ['.github/workflows/r10-source-export.yml']
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 51702c5f1db806ccf62a011b7b2f27a478f557b1
+          persist-credentials: false
+      - run: |
+          set -eu
+          mkdir evidence
+          git archive --format=zip HEAD > evidence/source.zip
+          git ls-files -s > evidence/tracked-blobs.txt
+          git rev-parse HEAD > evidence/commit.txt
+          (cd evidence && sha256sum source.zip > SHA256SUMS)
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: r10-pinned-source
+          path: evidence/
+          retention-days: 7
+          if-no-files-found: error
