@@ -36,6 +36,9 @@ import lombok.Data;
 @Data
 public class QuestCollect {
 
+    /** A withheld seasonal rule must not be presented as a measured zero. */
+    private boolean seasonalEvidenceUnavailable;
+
     private Count total = new Count();
 
     /** A broken/missing-safety-boundary journal must not be presented as a successful count. */
@@ -87,6 +90,11 @@ public class QuestCollect {
     }
 
     public static QuestCollect collect(AppQuest quest, AppQuestCondition condition) {
+        if (!condition.isRuleUsableFor(quest)) {
+            QuestCollect unavailable = new QuestCollect();
+            unavailable.seasonalEvidenceUnavailable = true;
+            return unavailable;
+        }
         try (var scope = condition.getDefinitionSnapshot() == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(condition.getDefinitionSnapshot())) {
             return collectPinned(quest, condition);
         }
@@ -104,6 +112,7 @@ public class QuestCollect {
         List<SimpleMissionLog> logs = AppQuestDuration.get().getMissionCondition(quest)
                 .orElse(Collections.emptyList());
         collect.setMissions(logs.stream()
+                .filter(log -> condition.permitsSeasonalLog(log.getDateString()))
                 .filter(log -> {
                     if (condition.getStartDate() == null)
                         return true;
@@ -133,6 +142,7 @@ public class QuestCollect {
                 .orElse(Collections.emptyList());
         Collection<MapinfoMst> mapinfo = MapinfoMstCollection.get().getMapinfo().values();
         for (SimpleBattleLog log : logs) {
+            if (!condition.permitsSeasonalLog(log.getDateString())) continue;
             if (Thread.currentThread().isInterrupted()) {
                 return null;
             }
@@ -212,6 +222,8 @@ public class QuestCollect {
     private static void collectArrivals(AppQuest quest, AppQuestCondition condition, QuestCollect collect) {
         try {
             for (PortArrival arrival : AppQuestDuration.get().getArrivalCondition(quest)) {
+                if (!condition.permitsSeasonalLog(java.time.Instant.ofEpochMilli(arrival.startedAt()))
+                        || !condition.permitsSeasonalLog(java.time.Instant.ofEpochMilli(arrival.arrivedAt()))) continue;
                 if (Thread.currentThread().isInterrupted()) throw new java.io.IOException("Arrival query interrupted");
                 if (condition.getStartDate() != null && arrival.startDate().compareTo(condition.getStartDate()) < 0) continue;
                 FilterCondition filter = condition.getFilter();

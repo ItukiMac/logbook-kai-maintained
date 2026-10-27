@@ -1,0 +1,875 @@
+{
+  "format": "logbook-seasonal-source-checks-v1",
+  "checked_on": "2026-10-27",
+  "base_commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+  "method": "Manual semantic reading of the two user-designated sources. Definition hashes bind local product bytes, not provenance of an HTTP response. Automatic retrieval alone is not a semantic check.",
+  "scope": "Five explicitly identified historical editions; original files and prior 13-row observation register are retained. Selection still requires runtime observation and the conservative edition window.",
+  "initial_comparison_count": 148,
+  "full_condition_certified_count": 0,
+  "complete": false,
+  "live_game_verified": false,
+  "source_date_policy": "Published, modified and accessed dates are separate. Null means unavailable, not equal to the access date.",
+  "sources": [
+    {
+      "source_id": "wiki-period-limited2",
+      "url": "https://wikiwiki.jp/kancolle/任務/期間限定2",
+      "published_on": null,
+      "modified_on": null,
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "2025 Setsubun rows 2501B5/2501B6/2501B7; game-internal-ID comments 840/841/843; 2505B3 game-internal-ID 954; 2026 comparison rows with blank internal IDs",
+      "date_note": "Publication/update dates were not exposed in the retrieved Wiki body; crawl time is not an update date."
+    },
+    {
+      "source_id": "wiki-period-4",
+      "url": "https://wikiwiki.jp/kancolle/任務/4",
+      "published_on": null,
+      "modified_on": null,
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "2021 row 2103B1; preceding game-internal-ID comment 906; 2022 row 2203B1 reuses 906 with a different title and non-recurring period",
+      "date_note": "Publication/update dates were not exposed in the retrieved Wiki body; crawl time is not an update date."
+    },
+    {
+      "source_id": "z-2025-setsubun-840",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2025setsubun-sakusen/",
+      "published_on": "2025-01-28",
+      "modified_on": "2025-02-01",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Task requirements and weekly label",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2025-setsubun-841",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2025setsubun-nansei/",
+      "published_on": "2025-01-28",
+      "modified_on": "2025-02-13",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Task requirements and weekly label",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2025-setsubun-843",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2025setsubun-kakutyou/",
+      "published_on": "2025-01-29",
+      "modified_on": "2025-02-16",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Task requirements, explicit substitutes, and 7-5-3/T route",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2021-peach-906",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2021hisimoti-tinzyuhu/",
+      "published_on": "2021-03-01",
+      "modified_on": "2021-03-05",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Task requirements, weekly summary table, and 1-6 goal explanation",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2025-rainy-954",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2025tuyu-kaizyougoei/",
+      "published_on": "2025-05-30",
+      "modified_on": "2025-05-31",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Task requirements: destroyer flagship, two escorts, four S wins, and two port arrivals",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2026-setsubun-bean",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2026setsubun-sakusen/",
+      "published_on": "2026-01-28",
+      "modified_on": "2026-01-30",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Changed roster and maps; this page does not establish internal ID 840",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2026-setsubun-oni",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2026setsubun-nansei/",
+      "published_on": "2026-01-29",
+      "modified_on": "2026-01-30",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Changed roster and maps; this page does not establish internal ID 841",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2026-setsubun-hiiragi",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2026setsubun-kakutyou/",
+      "published_on": "2026-01-29",
+      "modified_on": "2026-01-31",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Flagship requirement, changed maps and added Shimane Maru; this page does not establish internal ID 843",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2026-peach",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2026momonosekku-2/",
+      "published_on": "2026-03-02",
+      "modified_on": "2026-03-04",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Full article body read successfully this time; explicitly identifies 1-6 port arrival",
+      "date_note": null
+    },
+    {
+      "source_id": "z-2026-rainy",
+      "url": "https://zekamashi.net/kancolle-kouryaku/2026tuyu-kaizyougoei/",
+      "published_on": "2026-05-30",
+      "modified_on": "2026-06-01",
+      "accessed_on": "2026-10-27",
+      "read_method": "manual reading of retrieved article/page body",
+      "locator": "Light carrier flagship, two destroyers, different maps/ranks and three port arrivals",
+      "date_note": null
+    }
+  ],
+  "editions": [
+    {
+      "edition_id": "2025-setsubun-840",
+      "quest_id": 840,
+      "edition_year": 2025,
+      "definition_path": "src/main/resources/logbook/seasonal/editions/2025-setsubun-840.json",
+      "definition_sha256": "2ae8c3bb0659a2969d643811dcae9b7e9be2afb54f8441508611e52d8e7999b1",
+      "legacy_definition_path": "src/main/resources/logbook/eventquest/840.json",
+      "legacy_definition_sha256": "4c01f50fc60e39488aebc9622e469b06af54b7b7d0a2737d855d3f4507cdbdeb",
+      "legacy_definition_preserved": true,
+      "expected_observation": {
+        "exactTitle": "【節分任務:豆】節分作戦二〇二五",
+        "exactDetail": "節分任務：旗艦及び二番艦に「鳳翔」「朝日」「明石」「迅鯨」「長鯨」または第七駆逐隊を配備、鎮守府正面海域、鎮守府海域南西諸島沖、製油所地帯沿岸に展開！節分反復哨戒を実施せよ！",
+        "category": 2,
+        "type": 2,
+        "origin": "Manual transcription of the public Wiki game-quest title and task text, cross-checked against the named guide; not a captured user API packet.",
+        "category_type_basis": "Sortie and weekly labels mapped to category=2/type=2 by QuestList/AppQuest and the existing get_member_questlist fixture.",
+        "runtime_api_observation_required": true,
+        "live_api_observation_captured": false
+      },
+      "internal_id_evidence": {
+        "verified": true,
+        "source_id": "wiki-period-limited2",
+        "locator": "2501B5; immediately preceding comment ゲーム内ID：840",
+        "not_inferred_from_title": true
+      },
+      "source_period": {
+        "start_date": "2025-01-28",
+        "end_date": "2025-02-28",
+        "precision": "date",
+        "source_ids": [
+          "wiki-period-limited2"
+        ],
+        "actual_start_instant": null,
+        "actual_end_instant": null
+      },
+      "conservative_selection_window": {
+        "from_inclusive": "2025-01-29T00:00:00+09:00",
+        "until_exclusive": "2025-02-28T00:00:00+09:00",
+        "policy": "Only the interior calendar days are admitted. Start and end dates are both excluded because exact service boundary instants were not established. These bounds are NOT claims of actual activation/deactivation times."
+      },
+      "selectable_candidate": true,
+      "core_conditions_verified": true,
+      "whole_rule_certified": false,
+      "verified_conditions": [
+        {
+          "condition_id": "fleet_positions",
+          "definition_pointer": "/filter/fleet",
+          "finding": "Both first and second positions independently require a ship from the named 2025 roster; an eligible pair in later slots is insufficient.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-840"
+          ]
+        },
+        {
+          "condition_id": "roster",
+          "definition_pointer": "/filter/fleet/conditions",
+          "finding": "2025 roster: 鳳翔, 朝日, 明石, 迅鯨, 長鯨, 朧, 漣, 曙, 潮. Do not add the 2026 大淀.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-840"
+          ]
+        },
+        {
+          "condition_id": "maps_ranks_counts",
+          "definition_pointer": "/conditions",
+          "finding": "Boss A or S on each of 1-1, 1-2 and 1-3 twice.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-840"
+          ]
+        },
+        {
+          "condition_id": "weekly_period",
+          "definition_pointer": "/resetType",
+          "finding": "Weekly in both named sources.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-840"
+          ]
+        }
+      ],
+      "differences_from_preserved_file": [
+        "Old condition counted two eligible ships anywhere and omitted the explicit sortie type."
+      ],
+      "unresolved_conditions": [
+        {
+          "condition_id": "real_api_identity",
+          "reason": "Fresh runtime quest metadata must match every expected identity field before selection; public transcription is not a captured current API observation."
+        },
+        {
+          "condition_id": "boundary_days",
+          "reason": "Exact activation/deactivation instants are unverified; entire first and last calendar days remain outside the conservative selection window."
+        },
+        {
+          "condition_id": "acceptance_and_prerequisites",
+          "reason": "This change does not certify prerequisite completeness, live acceptance/reset behavior, or historical observations that were never recorded."
+        },
+        {
+          "condition_id": "all_remodels_and_substitutions",
+          "reason": "Only the named source roster/classes and explicit substitutes were compared. Complete master/remodel coverage and every ship-class substitution are not certified."
+        }
+      ],
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2025-setsubun-840"
+      ],
+      "source_disagreements": []
+    },
+    {
+      "edition_id": "2025-setsubun-841",
+      "quest_id": 841,
+      "edition_year": 2025,
+      "definition_path": "src/main/resources/logbook/seasonal/editions/2025-setsubun-841.json",
+      "definition_sha256": "a6515347fe4b8af7f68a6d4e1618ee3249e08e864eeddd84376bde9a5d324524",
+      "legacy_definition_path": "src/main/resources/logbook/eventquest/841.json",
+      "legacy_definition_sha256": "d474c563d088cc0a39831e9b959a32f302bf11e8e0dfa514e35f31630512bbd6",
+      "legacy_definition_preserved": true,
+      "expected_observation": {
+        "exactTitle": "【節分任務:鬼】南西方面節分作戦二〇二五",
+        "exactDetail": "節分任務：旗艦及び二番艦に「Gloire」「Ranger」「Johnston」「神鷹」「大淀」「夕張」「早霜」「朝霜」「風雲」を配備、南西諸島防衛線、南西諸島近海、バシー海峡を反復哨戒せよ！",
+        "category": 2,
+        "type": 2,
+        "origin": "Manual transcription of the public Wiki game-quest title and task text, cross-checked against the named guide; not a captured user API packet.",
+        "category_type_basis": "Sortie and weekly labels mapped to category=2/type=2 by QuestList/AppQuest and the existing get_member_questlist fixture.",
+        "runtime_api_observation_required": true,
+        "live_api_observation_captured": false
+      },
+      "internal_id_evidence": {
+        "verified": true,
+        "source_id": "wiki-period-limited2",
+        "locator": "2501B6; immediately preceding comment ゲーム内ID：841",
+        "not_inferred_from_title": true
+      },
+      "source_period": {
+        "start_date": "2025-01-28",
+        "end_date": "2025-02-28",
+        "precision": "date",
+        "source_ids": [
+          "wiki-period-limited2"
+        ],
+        "actual_start_instant": null,
+        "actual_end_instant": null
+      },
+      "conservative_selection_window": {
+        "from_inclusive": "2025-01-29T00:00:00+09:00",
+        "until_exclusive": "2025-02-28T00:00:00+09:00",
+        "policy": "Only the interior calendar days are admitted. Start and end dates are both excluded because exact service boundary instants were not established. These bounds are NOT claims of actual activation/deactivation times."
+      },
+      "selectable_candidate": true,
+      "core_conditions_verified": true,
+      "whole_rule_certified": false,
+      "verified_conditions": [
+        {
+          "condition_id": "fleet_positions",
+          "definition_pointer": "/filter/fleet",
+          "finding": "Both first and second positions independently require a ship from the named 2025 roster.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-841"
+          ]
+        },
+        {
+          "condition_id": "roster",
+          "definition_pointer": "/filter/fleet/conditions",
+          "finding": "2025 roster: Gloire, Ranger, Johnston, 神鷹, 大淀, 夕張, 早霜, 朝霜, 風雲; no Jean Bart or Minneapolis.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-841"
+          ]
+        },
+        {
+          "condition_id": "maps_ranks_counts",
+          "definition_pointer": "/conditions",
+          "finding": "Boss A or S on each of 1-4, 2-1 and 2-2 twice.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-841"
+          ]
+        },
+        {
+          "condition_id": "weekly_period",
+          "definition_pointer": "/resetType",
+          "finding": "Weekly in both named sources.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-841"
+          ]
+        }
+      ],
+      "differences_from_preserved_file": [
+        "Old condition counted two eligible ships anywhere and omitted the explicit sortie type."
+      ],
+      "unresolved_conditions": [
+        {
+          "condition_id": "real_api_identity",
+          "reason": "Fresh runtime quest metadata must match every expected identity field before selection; public transcription is not a captured current API observation."
+        },
+        {
+          "condition_id": "boundary_days",
+          "reason": "Exact activation/deactivation instants are unverified; entire first and last calendar days remain outside the conservative selection window."
+        },
+        {
+          "condition_id": "acceptance_and_prerequisites",
+          "reason": "This change does not certify prerequisite completeness, live acceptance/reset behavior, or historical observations that were never recorded."
+        },
+        {
+          "condition_id": "all_remodels_and_substitutions",
+          "reason": "Only the named source roster/classes and explicit substitutes were compared. Complete master/remodel coverage and every ship-class substitution are not certified."
+        }
+      ],
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2025-setsubun-841"
+      ],
+      "source_disagreements": []
+    },
+    {
+      "edition_id": "2025-setsubun-843",
+      "quest_id": 843,
+      "edition_year": 2025,
+      "definition_path": "src/main/resources/logbook/seasonal/editions/2025-setsubun-843.json",
+      "definition_sha256": "ed41acac8c06a458f8de3c32c44051d34b32d7d98398194d292d038c1f629616",
+      "legacy_definition_path": "src/main/resources/logbook/eventquest/843.json",
+      "legacy_definition_sha256": "e7eb0e6ea319c6dae74c5ab8f94bf5dee2752a51c51cb75784ec4a0ffd0f5f26",
+      "legacy_definition_preserved": true,
+      "expected_observation": {
+        "exactTitle": "【節分任務:柊】節分拡張作戦二〇二五 五穀豊穣！",
+        "exactDetail": "節分拡張作戦：重巡洋艦2隻以上、その他に軽空母級1隻を含む精強重巡艦隊で東部オリョール海、ジャム島沖、南方海域前面、ジャワ島沖最深部に節分展開！敵主力艦隊を捕捉、これを撃滅せよ！",
+        "category": 2,
+        "type": 2,
+        "origin": "Manual transcription of the public Wiki game-quest title and task text, cross-checked against the named guide; not a captured user API packet.",
+        "category_type_basis": "Sortie and weekly labels mapped to category=2/type=2 by QuestList/AppQuest and the existing get_member_questlist fixture.",
+        "runtime_api_observation_required": true,
+        "live_api_observation_captured": false
+      },
+      "internal_id_evidence": {
+        "verified": true,
+        "source_id": "wiki-period-limited2",
+        "locator": "2501B7; immediately preceding comment ゲーム内ID：843",
+        "not_inferred_from_title": true
+      },
+      "source_period": {
+        "start_date": "2025-01-28",
+        "end_date": "2025-02-28",
+        "precision": "date",
+        "source_ids": [
+          "wiki-period-limited2"
+        ],
+        "actual_start_instant": null,
+        "actual_end_instant": null
+      },
+      "conservative_selection_window": {
+        "from_inclusive": "2025-01-29T00:00:00+09:00",
+        "until_exclusive": "2025-02-28T00:00:00+09:00",
+        "policy": "Only the interior calendar days are admitted. Start and end dates are both excluded because exact service boundary instants were not established. These bounds are NOT claims of actual activation/deactivation times."
+      },
+      "selectable_candidate": true,
+      "core_conditions_verified": true,
+      "whole_rule_certified": false,
+      "verified_conditions": [
+        {
+          "condition_id": "heavy_cruisers",
+          "definition_pointer": "/filter/fleet/conditions/0",
+          "finding": "At least two heavy cruisers; aviation cruisers cannot substitute. No 2026 heavy-cruiser-flagship requirement is added.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-843"
+          ]
+        },
+        {
+          "condition_id": "light_carrier_substitutions",
+          "definition_pointer": "/filter/fleet/conditions/1",
+          "finding": "At least one light carrier OR あきつ丸/山汐丸/熊野丸. These three alternatives are explicitly confirmed by both 2025 sources.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-843"
+          ]
+        },
+        {
+          "condition_id": "maps_ranks_counts",
+          "definition_pointer": "/conditions",
+          "finding": "S victory once each in 2-3, 4-1, 5-1 and 7-5-3.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-843"
+          ]
+        },
+        {
+          "condition_id": "final_boss",
+          "definition_pointer": "/conditions/3/cell",
+          "finding": "7-5-3 is T. Earlier boss cells must not satisfy the condition.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-843"
+          ]
+        },
+        {
+          "condition_id": "weekly_period",
+          "definition_pointer": "/resetType",
+          "finding": "Weekly, not the monthly value in the original file.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-setsubun-843"
+          ]
+        }
+      ],
+      "differences_from_preserved_file": [
+        "Original title says 精強即応 instead of 五穀豊穣.",
+        "Original period is monthly.",
+        "Original type is absent; final boss cell and named light-carrier substitutes are absent."
+      ],
+      "unresolved_conditions": [
+        {
+          "condition_id": "real_api_identity",
+          "reason": "Fresh runtime quest metadata must match every expected identity field before selection; public transcription is not a captured current API observation."
+        },
+        {
+          "condition_id": "boundary_days",
+          "reason": "Exact activation/deactivation instants are unverified; entire first and last calendar days remain outside the conservative selection window."
+        },
+        {
+          "condition_id": "acceptance_and_prerequisites",
+          "reason": "This change does not certify prerequisite completeness, live acceptance/reset behavior, or historical observations that were never recorded."
+        },
+        {
+          "condition_id": "all_remodels_and_substitutions",
+          "reason": "Only the named source roster/classes and explicit substitutes were compared. Complete master/remodel coverage and every ship-class substitution are not certified."
+        }
+      ],
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2025-setsubun-843"
+      ],
+      "source_disagreements": []
+    },
+    {
+      "edition_id": "2021-peach-906",
+      "quest_id": 906,
+      "edition_year": 2021,
+      "definition_path": "src/main/resources/logbook/seasonal/editions/2021-peach-906.json",
+      "definition_sha256": "83665199995dddb51a39497e33a6db9089382df165163eee39840f904b79d47e",
+      "legacy_definition_path": "src/main/resources/logbook/eventquest/906.json",
+      "legacy_definition_sha256": "435d811a352693e00bf37e52fc466ea17148908c470a267cb0076bc910c9db65",
+      "legacy_definition_preserved": true,
+      "expected_observation": {
+        "exactTitle": "【桃の節句】鎮守府近海、春の安全確保作戦",
+        "exactDetail": "【桃の節句作戦】駆逐艦または海防艦計3隻を含む艦隊で、鎮守府海域南西諸島沖、製油所地帯沿岸、鎮守府近海、鎮守府近海航路の安全確保と対潜掃蕩を図れ！",
+        "category": 2,
+        "type": 2,
+        "origin": "Manual transcription of the public Wiki game-quest title and task text, cross-checked against the named guide; not a captured user API packet.",
+        "category_type_basis": "Sortie and weekly labels mapped to category=2/type=2 by QuestList/AppQuest and the existing get_member_questlist fixture.",
+        "runtime_api_observation_required": true,
+        "live_api_observation_captured": false
+      },
+      "internal_id_evidence": {
+        "verified": true,
+        "source_id": "wiki-period-4",
+        "locator": "2103B1; immediately preceding comment ゲーム内ID：906",
+        "not_inferred_from_title": true
+      },
+      "source_period": {
+        "start_date": "2021-03-01",
+        "end_date": "2021-03-30",
+        "precision": "date",
+        "source_ids": [
+          "wiki-period-4"
+        ],
+        "actual_start_instant": null,
+        "actual_end_instant": null
+      },
+      "conservative_selection_window": {
+        "from_inclusive": "2021-03-02T00:00:00+09:00",
+        "until_exclusive": "2021-03-30T00:00:00+09:00",
+        "policy": "Only the interior calendar days are admitted. Start and end dates are both excluded because exact service boundary instants were not established. These bounds are NOT claims of actual activation/deactivation times."
+      },
+      "selectable_candidate": true,
+      "core_conditions_verified": true,
+      "whole_rule_certified": false,
+      "verified_conditions": [
+        {
+          "condition_id": "fleet_count",
+          "definition_pointer": "/filter/fleet",
+          "finding": "At least three ships total from destroyers/escort ships; no flagship restriction.",
+          "source_ids": [
+            "wiki-period-4",
+            "z-2021-peach-906"
+          ]
+        },
+        {
+          "condition_id": "maps_ranks_counts",
+          "definition_pointer": "/conditions",
+          "finding": "A or S victory once each at 1-2, 1-3 and 1-5 bosses.",
+          "source_ids": [
+            "wiki-period-4",
+            "z-2021-peach-906"
+          ]
+        },
+        {
+          "condition_id": "port_arrival",
+          "definition_pointer": "/conditions/3",
+          "finding": "1-6 port arrival once; preceding B/D battles are not arrival evidence.",
+          "source_ids": [
+            "wiki-period-4",
+            "z-2021-peach-906"
+          ]
+        },
+        {
+          "condition_id": "weekly_period",
+          "definition_pointer": "/resetType",
+          "finding": "The 2021 edition is weekly; 2022 uses the same internal ID with a different title and single period.",
+          "source_ids": [
+            "wiki-period-4",
+            "z-2021-peach-906"
+          ]
+        }
+      ],
+      "differences_from_preserved_file": [
+        "Original title matches 2021, but its single period does not match the 2021 weekly sources.",
+        "Original 1-6 B/D last-battle proxy does not prove port arrival."
+      ],
+      "unresolved_conditions": [
+        {
+          "condition_id": "real_api_identity",
+          "reason": "Fresh runtime quest metadata must match every expected identity field before selection; public transcription is not a captured current API observation."
+        },
+        {
+          "condition_id": "boundary_days",
+          "reason": "Exact activation/deactivation instants are unverified; entire first and last calendar days remain outside the conservative selection window."
+        },
+        {
+          "condition_id": "acceptance_and_prerequisites",
+          "reason": "This change does not certify prerequisite completeness, live acceptance/reset behavior, or historical observations that were never recorded."
+        },
+        {
+          "condition_id": "all_remodels_and_substitutions",
+          "reason": "Only the named source roster/classes and explicit substitutes were compared. Complete master/remodel coverage and every ship-class substitution are not certified."
+        }
+      ],
+      "source_ids": [
+        "wiki-period-4",
+        "z-2021-peach-906"
+      ],
+      "source_disagreements": []
+    },
+    {
+      "edition_id": "2025-rainy-954",
+      "quest_id": 954,
+      "edition_year": 2025,
+      "definition_path": "src/main/resources/logbook/seasonal/editions/2025-rainy-954.json",
+      "definition_sha256": "6314e1de2250f39d0534cb26163b2d5a044c38af4284f05992ffb4833d49c0a6",
+      "legacy_definition_path": "src/main/resources/logbook/eventquest/954.json",
+      "legacy_definition_sha256": "d2d422eb5b7d4cd0ab3adfa32859da1b1b28965b5116e01bbc54fc80a8e461ae",
+      "legacy_definition_preserved": true,
+      "expected_observation": {
+        "exactTitle": "【梅雨拡張任務】梅雨の海上護衛強化2025",
+        "exactDetail": "【梅雨限定任務】駆逐艦を旗艦、海防艦2隻以上を含む海上護衛隊で、南西諸島沖、製油所地帯沿岸、鎮守府近海、南西諸島防衛線に展開！さらに鎮守府近海航路の海上護衛作戦を反復実施せよ！",
+        "category": 2,
+        "type": 2,
+        "origin": "Manual transcription of the public Wiki game-quest title and task text, cross-checked against the named guide; not a captured user API packet.",
+        "category_type_basis": "Sortie and weekly labels mapped to category=2/type=2 by QuestList/AppQuest and the existing get_member_questlist fixture.",
+        "runtime_api_observation_required": true,
+        "live_api_observation_captured": false
+      },
+      "internal_id_evidence": {
+        "verified": true,
+        "source_id": "wiki-period-limited2",
+        "locator": "2505B3; immediately preceding comment ゲーム内ID：954",
+        "not_inferred_from_title": true
+      },
+      "source_period": {
+        "start_date": "2025-05-30",
+        "end_date": "2025-06-27",
+        "precision": "date",
+        "source_ids": [
+          "wiki-period-limited2"
+        ],
+        "actual_start_instant": null,
+        "actual_end_instant": null
+      },
+      "conservative_selection_window": {
+        "from_inclusive": "2025-05-31T00:00:00+09:00",
+        "until_exclusive": "2025-06-27T00:00:00+09:00",
+        "policy": "Only the interior calendar days are admitted. Start and end dates are both excluded because exact service boundary instants were not established. These bounds are NOT claims of actual activation/deactivation times."
+      },
+      "selectable_candidate": true,
+      "core_conditions_verified": true,
+      "whole_rule_certified": false,
+      "verified_conditions": [
+        {
+          "condition_id": "fleet_composition",
+          "definition_pointer": "/filter/fleet",
+          "finding": "Destroyer flagship and at least two escort ships; no 2026 light-carrier-flagship substitution.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-rainy-954"
+          ]
+        },
+        {
+          "condition_id": "maps_ranks_counts",
+          "definition_pointer": "/conditions",
+          "finding": "S victory once each at 1-2, 1-3, 1-4 and 1-5 bosses.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-rainy-954"
+          ]
+        },
+        {
+          "condition_id": "port_arrival",
+          "definition_pointer": "/conditions/4",
+          "finding": "1-6 port arrival twice, not three. B/D battle counts cannot stand in for arrival.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-rainy-954"
+          ]
+        },
+        {
+          "condition_id": "weekly_period",
+          "definition_pointer": "/resetType",
+          "finding": "Weekly in both named sources.",
+          "source_ids": [
+            "wiki-period-limited2",
+            "z-2025-rainy-954"
+          ]
+        }
+      ],
+      "differences_from_preserved_file": [
+        "Original comment says 2025 while its fleet, maps, A-rank acceptance and three-arrival target resemble 2026.",
+        "Original 1-6 B/D last-battle proxy does not prove port arrival."
+      ],
+      "unresolved_conditions": [
+        {
+          "condition_id": "real_api_identity",
+          "reason": "Fresh runtime quest metadata must match every expected identity field before selection; public transcription is not a captured current API observation."
+        },
+        {
+          "condition_id": "boundary_days",
+          "reason": "Exact activation/deactivation instants are unverified; entire first and last calendar days remain outside the conservative selection window."
+        },
+        {
+          "condition_id": "acceptance_and_prerequisites",
+          "reason": "This change does not certify prerequisite completeness, live acceptance/reset behavior, or historical observations that were never recorded."
+        },
+        {
+          "condition_id": "all_remodels_and_substitutions",
+          "reason": "Only the named source roster/classes and explicit substitutes were compared. Complete master/remodel coverage and every ship-class substitution are not certified."
+        }
+      ],
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2025-rainy-954"
+      ],
+      "source_disagreements": []
+    }
+  ],
+  "unresolved_newer_editions": [
+    {
+      "label": "2026 Setsubun bean",
+      "suggested_legacy_id": 840,
+      "internal_id": null,
+      "selectable": false,
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2026-setsubun-bean"
+      ],
+      "verified_differences": [
+        "大淀 joins the roster; maps change to 1-2/1-3/1-4; both named positions and weekly A-or-S twice remain."
+      ],
+      "unresolved": [
+        "The 2026 Wiki internal-ID field is blank; legacy ID 840 is not evidence of this mapping."
+      ]
+    },
+    {
+      "label": "2026 Setsubun oni",
+      "suggested_legacy_id": 841,
+      "internal_id": null,
+      "selectable": false,
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2026-setsubun-oni"
+      ],
+      "verified_differences": [
+        "Jean Bart and Minneapolis replace 大淀/朝霜; maps change to 2-1/2-2/2-3."
+      ],
+      "unresolved": [
+        "The 2026 Wiki internal-ID field is blank."
+      ]
+    },
+    {
+      "label": "2026 Setsubun hiiragi",
+      "suggested_legacy_id": 843,
+      "internal_id": null,
+      "selectable": false,
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2026-setsubun-hiiragi"
+      ],
+      "verified_differences": [
+        "Heavy-cruiser flagship required; maps are 4-1/4-2/4-3/7-5-3; the guide includes しまね丸 among light-carrier-class substitutes."
+      ],
+      "unresolved": [
+        "The 2026 Wiki internal-ID field is blank; this is not a 2025 correction."
+      ]
+    },
+    {
+      "label": "2026 peach festival",
+      "suggested_legacy_id": 906,
+      "internal_id": null,
+      "selectable": false,
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2026-peach"
+      ],
+      "verified_differences": [
+        "Full article body now retrieved and manually read; 1-6 port arrival once is explicit."
+      ],
+      "source_disagreements": [
+        "Wiki groups 1-6 under an A-victory sentence; the guide explicitly identifies port arrival. Do not interpret the Wiki aggregate wording as a battle-rank requirement for arrival."
+      ],
+      "unresolved": [
+        "The 2026 Wiki internal-ID field is blank."
+      ]
+    },
+    {
+      "label": "2026 rainy season",
+      "suggested_legacy_id": 954,
+      "internal_id": null,
+      "selectable": false,
+      "source_ids": [
+        "wiki-period-limited2",
+        "z-2026-rainy"
+      ],
+      "verified_differences": [
+        "Light carrier flagship, two destroyers, A-or-S once in 1-3/1-5/2-3/7-4, three 1-6 port arrivals."
+      ],
+      "unresolved": [
+        "The 2026 Wiki internal-ID field is blank."
+      ]
+    }
+  ],
+  "official_source_access": {
+    "accessed_on": "2026-10-27",
+    "profiles": [
+      {
+        "url": "https://x.com/KanColle_STAFF",
+        "result": "HTTP 403 on direct open",
+        "full_body_read": false
+      },
+      {
+        "url": "https://x.com/C2_STAFF",
+        "result": "HTTP 403 on direct open",
+        "full_body_read": false
+      }
+    ],
+    "notices": [
+      {
+        "url": "https://x.com/KanColle_STAFF/status/1893576877379592539",
+        "read_method": "official-post search excerpt; direct open returned no body",
+        "full_body_read": false,
+        "reported_fact": "2025 Setsubun ends at 2025-02-28 11:00 JST; conservative window still excludes the entire boundary day."
+      },
+      {
+        "url": "https://x.com/KanColle_STAFF/status/2020447149566156952",
+        "read_method": "official-post search excerpt and linked guide quotation",
+        "full_body_read": false,
+        "reported_fact": "2026 Setsubun ending maintenance starts 2026-02-13 11:00 JST."
+      },
+      {
+        "url": "https://x.com/KanColle_STAFF/status/2028416550982594627",
+        "read_method": "Wiki links to the start notice; direct open HTTP 403",
+        "full_body_read": false
+      },
+      {
+        "url": "https://x.com/KanColle_STAFF/status/2041483653646303311",
+        "read_method": "Wiki links to the end notice; direct open HTTP 403",
+        "full_body_read": false
+      },
+      {
+        "url": "https://x.com/KanColle_STAFF/status/2070094820656513484",
+        "read_method": "official-post search excerpt; direct open failed",
+        "full_body_read": false,
+        "reported_fact": "2026 rainy-season ending maintenance starts 2026-06-26 11:00 JST."
+      }
+    ],
+    "latest_official_timeline_certified": false
+  },
+  "regression_before": {
+    "test": "HistoricalSeasonalRuleTest",
+    "java": 21,
+    "target": "Original five eventquest definitions at base_commit",
+    "discovered": 14,
+    "successful": 5,
+    "failed": 9,
+    "errors": 0,
+    "skipped": 0,
+    "demonstrated": [
+      "eligible ships in the wrong positions accepted",
+      "earlier 7-5 boss accepted",
+      "confirmed 2025 light-carrier substitutes rejected",
+      "last battle accepted as 1-6 arrival",
+      "wrong 2025 rainy fleet/maps retained",
+      "sortie type omitted"
+    ]
+  },
+  "regression_after": {
+    "test": "HistoricalSeasonalRuleTest",
+    "target": "The five new historical edition files",
+    "status": "Targeted test passed locally; exact PR-head CI remains a separate gate.",
+    "java": 21,
+    "discovered": 14,
+    "successful": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "java_versions_passed": [
+      21,
+      25
+    ],
+    "related_existing_test": {
+      "test": "SeasonalSourceComparisonTest",
+      "java": 25,
+      "discovered": 20,
+      "successful": 20,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "source_integrity_tests": {
+      "test": "test_historical_seasonal_sources.py",
+      "discovered": 6,
+      "successful": 6,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "previous_observation_registry": {
+    "path": "docs/maintenance/seasonal-editions-20261026.json",
+    "sha256": "b35c25893972b1c07fd84ee4a2c7fefc82f3812aac888a21976bfcaaee188227",
+    "preserved": true
+  }
+}

@@ -17,7 +17,8 @@ class SeasonalEditionAuditTest(unittest.TestCase):
         self.assertEqual(7,result['counts']['historical_only'])
         self.assertEqual(6,result['counts']['same_year_lifecycle_unverified'])
         self.assertEqual(0,result['certified_active_rules'])
-        self.assertFalse(result['complete']);self.assertFalse(result['active_selection_supported'])
+        self.assertFalse(result['complete']);self.assertTrue(result['active_selection_supported'])
+        self.assertFalse(result['active_selection_evaluated'])
         self.assertTrue(all(r['active'] is None for r in result['entries']))
     def test_changed_hash_requires_recomparison_not_year_based_acceptance(self):
         registry=json.loads((ROOT/REGISTRY).read_text());registry['entries'][0]['definition_sha256']='0'*64
