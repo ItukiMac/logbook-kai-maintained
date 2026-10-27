@@ -1,0 +1,112 @@
+name: Equipment contract and product GUI verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/equipment-data-worker-20261028']
+    paths: ['.github/workflows/equipment-verification.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: ccb680c356358f8dedc6c606b627b3da38da96b9
+      TARGET: maintenance/equipment-data-api-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ccb680c356358f8dedc6c606b627b3da38da96b9
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Prepare exact changes, with no runtime data or existing-output replacement
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          python3 ../tooling/.maintenance-tools/apply_equipment_data.py > ../evidence/data.log 2>&1
+          python3 ../tooling/.maintenance-tools/apply_equipment_ui.py > ../evidence/ui.log 2>&1
+          python3 ../tooling/.maintenance-tools/add_equipment_tests.py > ../evidence/tests.log 2>&1
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          entries={'EquipmentInventoryProbe.java':'scripts/java/EquipmentInventoryProbe.java',
+                   'test_equipment_ui_integration.py':'scripts/tests/test_equipment_ui_integration.py'}
+          paths=json.loads(Path('../evidence/equipment-data-paths.json').read_text())
+          for source,target in entries.items():
+              p=Path(target);assert not p.exists();p.write_bytes(Path('../tooling/.maintenance-tools',source).read_bytes());paths.append(target)
+          Path('../evidence/equipment-data-paths.json').write_text(json.dumps(paths,indent=2))
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Require real contract tests and preserved packaging checks
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=EquipmentDataContractTest,EquipmentProjectionTest test > ../evidence/unit.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_equipment_distribution_profile.py -v > ../evidence/profile.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_feature_distribution.py -v > ../evidence/legacy-profile.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_record_distribution_profile.py -v > ../evidence/record-profile.log 2>&1
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Exercise both tabs from the product status JAR, including owner and export behavior
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_equipment_ui_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Commit only the tested product paths and non-force push the candidate branch
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          paths=json.loads(Path('../evidence/equipment-data-paths.json').read_text())
+          assert len(paths)==len(set(paths))
+          assert all(p.startswith(('src/main/java/','src/test/java/','scripts/')) for p in paths)
+          subprocess.run(['git','add','--',*paths],check=True)
+          assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())==set(paths)
+          assert not subprocess.check_output(['git','diff','--cached','--diff-filter=D','--name-only'],text=True).strip()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Separate equipment queries into immutable contracts and ship both inventory tabs in status module'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain precise results, including failed cases, separately from product source
+        if: always()
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,xml.etree.ElementTree as E
+          report={'base':'ccb680c356358f8dedc6c606b627b3da38da96b9','production_accessed':False,'full_regression_verified':False,'logs':{},'suites':[],'gui_reports':{}}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):
+                  lines=p.read_text(errors='replace').splitlines()
+                  report['logs'][p.name]={'tail':lines[-60:],'errors':[s for s in lines if '[ERROR]' in s][-30:]}
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*Equipment*.xml'):
+              report['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('equipment-ui-fixture-*.json'):
+              report['gui_reports'][p.name]=json.loads(p.read_text())
+          Path('.maintenance-evidence').mkdir(exist_ok=True)
+          Path('.maintenance-evidence/equipment-verified-v1.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/equipment-verified-v1.json
+          git commit -m 'Retain focused equipment product GUI and contract result; not a full CI completion claim'
+          git push origin HEAD:refs/heads/maintenance/equipment-data-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: equipment-contract-gui-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/equipment-ui-fixture-*
+          retention-days: 14
