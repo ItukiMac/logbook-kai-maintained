@@ -1,0 +1,80 @@
+name: Real isolated record GUI proof (tooling only)
+on:
+  push:
+    branches: ['maintenance/records-boundary-worker-20261027']
+    paths: ['.github/workflows/record-ui-isolation.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPECTED: 177460d4c678a1db122108303bd5b0edbf43cf54
+      TARGET: maintenance/record-ui-api-20261027
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 177460d4c678a1db122108303bd5b0edbf43cf54
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Add only new regression sources
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test ! -e scripts/java/RecordUiProbe.java
+          test ! -e scripts/tests/test_record_ui_integration.py
+          cp ../tooling/.maintenance-tools/RecordUiProbe.java scripts/java/RecordUiProbe.java
+          cp ../tooling/.maintenance-tools/test_record_ui_integration.py scripts/tests/test_record_ui_integration.py
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Execute actual separate-archive GUI tests, not source-only checks
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_record_ui_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Preserve passing test sources on the candidate branch without rewriting history
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$EXPECTED"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/java/RecordUiProbe.java scripts/tests/test_record_ui_integration.py
+          git commit -m 'Exercise three record windows from a separate archive with no host fallback and immutable history fixtures'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain exact GUI result and failure logs separately from product source
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          result={'source':'177460d4c678a1db122108303bd5b0edbf43cf54','production_accessed':False,'reports':{}}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):result[p.name]=p.read_text(errors='replace')[-24000:]
+          for p in Path('../candidate/target/r3-verification').glob('record-ui-*'):
+              if p.suffix=='.json':result['reports'][p.name]=json.loads(p.read_text())
+              elif p.suffix=='.log':result[p.name]=p.read_text(errors='replace')[-30000:]
+          Path('.maintenance-evidence/record-ui-integration.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/record-ui-integration.json
+          git commit -m 'Retain real record GUI integration outcome without claiming unrun checks'
+          git push origin HEAD:refs/heads/maintenance/records-boundary-worker-20261027
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: record-ui-isolation-evidence
+          path: |
+            evidence/
+            candidate/target/r3-verification/record-ui-*
+          retention-days: 14
