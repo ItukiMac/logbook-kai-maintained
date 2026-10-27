@@ -1,0 +1,30 @@
+package logbook.internal.gui;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+
+/** A small executable fixture: versions calculate and persist different values. */
+public final class FeatureVersionFixtureController extends WindowController {
+    @FXML private TextField fixtureInput;
+    @FXML private TextField fixtureRun;
+    @FXML private Label fixtureResult;
+
+    @FXML public void calculate() {
+        int input = Integer.parseInt(fixtureInput.getText());
+        fixtureResult.setText(Integer.toString(Math.multiplyExact(input, @MULTIPLIER@)));
+    }
+
+    @FXML public void save() throws IOException {
+        String run = fixtureRun.getText();
+        if (!run.matches("[A-Za-z0-9_-]{1,80}")) throw new IllegalArgumentException("Fixture run identifier");
+        Path directory = Path.of("feature-fixture-results");
+        Files.createDirectories(directory);
+        Files.writeString(directory.resolve(run + ".txt"), "@VERSION@\n" + fixtureResult.getText() + "\n",
+                StandardOpenOption.CREATE_NEW);
+    }
+}

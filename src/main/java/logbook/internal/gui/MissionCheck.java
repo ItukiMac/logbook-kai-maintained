@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -46,7 +48,7 @@ import logbook.internal.logger.LoggerHolder;
  * 遠征確認画面
  *
  */
-public class MissionCheck extends WindowController {
+public class MissionCheck extends FeatureUiV1.Window {
 
     @FXML
     private SegmentedButton fleet;

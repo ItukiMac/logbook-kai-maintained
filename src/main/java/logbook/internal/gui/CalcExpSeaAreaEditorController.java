@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.util.stream.Collectors;
 
 import javafx.beans.property.IntegerProperty;
@@ -25,7 +27,7 @@ import lombok.Setter;
  * 海域編集
  *
  */
-public class CalcExpSeaAreaEditorController extends WindowController {
+public class CalcExpSeaAreaEditorController extends FeatureUiV1.Window {
 
     @FXML
     private TableView<SeaAreaExpItem> table;

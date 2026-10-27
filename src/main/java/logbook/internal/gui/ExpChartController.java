@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -30,7 +32,7 @@ import logbook.internal.kancolle.BattleLogs.SimpleBattleLog;
  * 経験値チャート
  *
  */
-public class ExpChartController extends WindowController {
+public class ExpChartController extends FeatureUiV1.Window {
 
     @FXML
     private ChoiceBox<TypeOption> type;

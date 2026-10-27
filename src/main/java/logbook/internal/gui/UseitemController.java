@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,7 @@ import logbook.internal.logger.LoggerHolder;
  * アイテム一覧のコントローラー
  *
  */
-public class UseitemController extends WindowController {
+public class UseitemController extends FeatureUiV1.Window {
 
     /** 持ってないアイテムも出す */
     @FXML
@@ -61,21 +63,21 @@ public class UseitemController extends WindowController {
 
     @FXML
     void initialize() {
-        TableTool.setVisible(this.table, this.getClass().toString() + "#" + "table");
+        FeatureUiV1.Tables.setVisible(this.table, this.getClass().toString() + "#" + "table");
 
         // カラムとオブジェクトのバインド
-        this.row.setCellFactory(TableTool.getRowCountCellFactory());
+        this.row.setCellFactory(FeatureUiV1.Tables.getRowCountCellFactory());
         this.id.setCellValueFactory(new PropertyValueFactory<>("id"));
         this.name.setCellValueFactory(new PropertyValueFactory<>("name"));
         this.count.setCellValueFactory(new PropertyValueFactory<>("count"));
-        this.count.setCellFactory(TableTool.createIntegerFormattedCellFactory());
+        this.count.setCellFactory(FeatureUiV1.Tables.createIntegerFormattedCellFactory());
         this.description.setCellValueFactory(new PropertyValueFactory<>("description"));
 
         SortedList<UseitemItem> sortedList = new SortedList<>(this.items);
         this.table.setItems(sortedList);
         sortedList.comparatorProperty().bind(this.table.comparatorProperty());
         this.table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        this.table.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+        this.table.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
 
         this.update(null);
     }
@@ -104,7 +106,7 @@ public class UseitemController extends WindowController {
      */
     @FXML
     void copy() {
-        TableTool.selectionCopy(this.table);
+        FeatureUiV1.Tables.selectionCopy(this.table);
     }
 
     /**
@@ -112,7 +114,7 @@ public class UseitemController extends WindowController {
      */
     @FXML
     void selectAll() {
-        TableTool.selectAll(this.table);
+        FeatureUiV1.Tables.selectAll(this.table);
     }
 
     /**
@@ -121,7 +123,7 @@ public class UseitemController extends WindowController {
     @FXML
     void columnVisible() {
         try {
-            TableTool.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
+            FeatureUiV1.Tables.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
