@@ -87,7 +87,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                     <argLine>@{argLine} -javaagent:&quot;${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar&quot;</argLine>
@@ -99,6 +99,27 @@
             </plugin>
         </plugins>
     </build>
+    <!-- Pin indirect runtime/test dependencies after the 2026-10-27 Central audit.
+         Preserve their original scopes; these overrides do not add runtime jars. -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId><version>2.0.20</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jspecify</groupId><artifactId>jspecify</artifactId><version>1.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId><artifactId>byte-buddy</artifactId><version>1.18.16</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId><artifactId>byte-buddy-agent</artifactId><version>1.18.16</version>
+            </dependency>
+            <dependency>
+                <groupId>org.objenesis</groupId><artifactId>objenesis</artifactId><version>3.6</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <!-- https://gluonhq.com/products/javafx/ -->
         <!-- JavaFX compatibility baseline; native upgrades require GUI validation. -->
@@ -160,7 +181,7 @@
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>11.2.5</version>
+            <version>11.2.6</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -1,0 +1,73 @@
+name: Audited dependency resolution (no publish)
+on:
+  pull_request:
+    paths:
+      - 'pom.xml'
+      - '.github/workflows/dependency-resolution.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  resolve:
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '${{ matrix.java }}'
+          cache: maven
+      - name: Record actual Maven resolution, not just version declarations
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/dependency-verification
+          mvn --batch-mode --no-transfer-progress help:effective-pom -Doutput=target/dependency-verification/effective-pom.xml
+          mvn --batch-mode --no-transfer-progress dependency:tree -DoutputType=json -DoutputFile=target/dependency-verification/dependencies.json
+          python3 - <<'PY'
+          import json,os,xml.etree.ElementTree as E
+          from pathlib import Path
+          root=Path('target/dependency-verification'); rows={}
+          def walk(node):
+              for child in node.get('children',[]):
+                  key=child['groupId']+':'+child['artifactId']
+                  rows.setdefault(key,set()).add((child['version'],child.get('scope','')))
+                  walk(child)
+          walk(json.loads((root/'dependencies.json').read_text()))
+          expected={'org.controlsfx:controlsfx':('11.2.6','compile'),
+                    'org.slf4j:slf4j-api':('2.0.20','compile'),
+                    'org.jspecify:jspecify':('1.0.1','test'),
+                    'net.bytebuddy:byte-buddy':('1.18.16','test'),
+                    'net.bytebuddy:byte-buddy-agent':('1.18.16','test'),
+                    'org.objenesis:objenesis':('3.6','test')}
+          for key,value in expected.items():
+              assert rows.get(key)=={value},(key,rows.get(key),value)
+          ns={'m':'http://maven.apache.org/POM/4.0.0'}
+          pom=E.parse(root/'effective-pom.xml').getroot()
+          plugins={p.findtext('m:artifactId',namespaces=ns):p.findtext('m:version',namespaces=ns)
+                   for p in pom.findall('m:build/m:plugins/m:plugin',ns)}
+          assert plugins['maven-surefire-plugin']=='3.6.1'
+          assert all(version=='21.0.13' for key,values in rows.items() if key.startswith('org.openjfx:') for version,_ in values)
+          assert rows['com.fasterxml.jackson.core:jackson-databind']=={('2.22.4','compile')}
+          assert not any(key.startswith('tools.jackson.') for key in rows)
+          report={'checkout':os.environ['GITHUB_SHA'],'resolved':{k:sorted(v) for k,v in rows.items()},
+                  'plugins':plugins,'changed_coordinates':7,'preserved_javafx21_jackson2':True,
+                  'runtime_test_scopes_preserved':True,'production_deployed':False}
+          (root/'summary.json').write_text(json.dumps(report,indent=2)+'\n')
+          print('DEPENDENCY_RESOLUTION_OK changed=7 scopes_preserved=true JavaFX21/Jackson2 retained')
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: dependency-resolution-java${{ matrix.java }}
+          path: target/dependency-verification/
+          if-no-files-found: error
+          retention-days: 14
