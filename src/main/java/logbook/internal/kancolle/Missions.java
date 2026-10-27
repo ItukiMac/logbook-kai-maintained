@@ -57,6 +57,7 @@ public class Missions {
         }
     }
     private static Optional<MissionCondition> getPinnedMissionCondition(Integer missionId) throws IOException {
+        try {
         Mission mission = Missions.getMission(missionId);
 
         if (mission == null) {
@@ -83,6 +84,9 @@ public class Missions {
         }
 
         return Optional.ofNullable(condition);
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     /**

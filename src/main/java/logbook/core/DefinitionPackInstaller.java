@@ -42,6 +42,7 @@ final class DefinitionPackInstaller {
     }
 
     static String install(Path rootInput, Path zip, String expectedSha256) throws IOException {
+        try {
         if (expectedSha256 == null || !expectedSha256.matches("[0-9a-fA-F]{64}")) {
             throw new IOException("Missing authenticated SHA-256 expectation");
         }
@@ -156,6 +157,9 @@ final class DefinitionPackInstaller {
         } finally {
             removeTemporaryTree(temporary);
         }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
 
@@ -165,6 +169,7 @@ final class DefinitionPackInstaller {
      * any altered or symlinked file before changing the active pointer.
      */
     static String restoreGeneration(Path rootInput, String generation) throws IOException {
+        try {
         if (generation == null || !generation.matches("[0-9a-f]{64}")) {
             throw new IOException("Invalid data generation ID");
         }
@@ -205,6 +210,9 @@ final class DefinitionPackInstaller {
         }
         activatePointer(root, generation);
         return generation;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static void activatePointer(Path root, String generation) throws IOException {
@@ -224,6 +232,7 @@ final class DefinitionPackInstaller {
     }
 
     static Path activeDefinitionsRoot(Path rootInput) throws IOException {
+        try {
         Path root = rootInput.toAbsolutePath().normalize();
         requireRealDirectory(root);
         Path pointer = root.resolve("active.json");
@@ -249,9 +258,13 @@ final class DefinitionPackInstaller {
         requireRealDirectory(generation);
         requireRealDirectory(definitions);
         return definitions;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static Map<String, ExpectedFile> parseManifest(byte[] manifest) throws IOException {
+        try {
         JsonNode document = JSON.readTree(manifest);
         DefinitionPackCompatibility.requireManifest(document);
         JsonNode files = document.path("files");
@@ -272,6 +285,9 @@ final class DefinitionPackInstaller {
             }
         }
         return result;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static boolean validDefinitionPath(String name) {

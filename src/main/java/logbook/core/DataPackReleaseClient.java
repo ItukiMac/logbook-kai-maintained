@@ -40,6 +40,7 @@ public final class DataPackReleaseClient {
      * and plugins initialize to avoid mixing different definition generations.
      */
     public static boolean refreshConfiguredData() throws IOException {
+        try {
         if (!Boolean.getBoolean(AUTO_UPDATE_PROPERTY)) return false;
         String rootValue = System.getProperty(ExternalQuestDefinitions.ROOT_PROPERTY);
         if (rootValue == null || rootValue.isBlank()) {
@@ -48,6 +49,9 @@ public final class DataPackReleaseClient {
         Path root = Path.of(rootValue).toAbsolutePath().normalize();
         JsonNode index = JSON.readTree(readLimited(URI.create(INDEX_URL), 8L * 1024 * 1024));
         return applyRelease(index, root, DataPackReleaseClient::downloadLimited);
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     /**

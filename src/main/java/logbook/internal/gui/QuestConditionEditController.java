@@ -1019,6 +1019,7 @@ public class QuestConditionEditController extends WindowController {
     }
 
     java.nio.file.Path saveDocument() throws java.io.IOException {
+        try {
         if (this.loadFailed) throw new java.io.IOException("読込失敗のため保存を中止しました。");
         var currentForm = formMapper().valueToTree(this.readForm());
         var output = this.originalDocument == null ? currentForm
@@ -1035,6 +1036,9 @@ public class QuestConditionEditController extends WindowController {
         this.originalDocument = output.deepCopy();
         this.loadedForm = currentForm.deepCopy();
         return backup;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     @FXML

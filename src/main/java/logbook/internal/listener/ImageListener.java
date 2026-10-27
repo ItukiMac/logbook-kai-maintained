@@ -297,6 +297,7 @@ public class ImageListener implements ContentListenerSpi {
      * @throws IOException 入出力例外が発生した場合
      */
     private void sprite(Path storeDir, Path imageSrc, Path jsonSrc) throws IOException {
+        try {
         if (!Files.exists(imageSrc) || !Files.exists(jsonSrc)) {
             return;
         }
@@ -351,6 +352,9 @@ public class ImageListener implements ContentListenerSpi {
                 }
             };
             sprite.getFrames().forEach(action);
+        }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
     }
 

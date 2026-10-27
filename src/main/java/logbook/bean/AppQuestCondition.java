@@ -119,6 +119,7 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
     private static AppQuestCondition readRule(InputStream stream, int questNo, String origin,
             logbook.core.SeasonalQuestRuleService.Observation observation,
             logbook.core.SeasonalQuestRuleService rules) throws java.io.IOException {
+                try {
         byte[] original = stream.readNBytes(1_048_577);
         if (original.length > 1_048_576) throw new java.io.IOException("Quest definition size limit");
         var resolution = rules.resolve(questNo, origin, original, observation);
@@ -128,7 +129,10 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
         if (resolution.selection().status() != logbook.core.SeasonalQuestRuleService.Status.NOT_SEASONAL)
             result.seasonalSelection = resolution.selection();
         return result;
-    }
+                } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+                    throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+                }
+            }
 
     @com.fasterxml.jackson.annotation.JsonIgnore
     @lombok.ToString.Exclude

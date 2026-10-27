@@ -78,6 +78,7 @@ final class PortArrivalJournal {
      * interrupted write is never removed or replaced.
      */
     Entry append(Entry expectedLast, String kind, long observedAt, JsonNode payload, String reason) throws IOException {
+        try {
         validateText(kind, reason);
         if (observedAt <= 0) throw new IOException("Invalid tracking observation time");
         // valueToTree can produce a LongNode(0) that parses as IntNode(0). Normalize through
@@ -132,6 +133,9 @@ final class PortArrivalJournal {
                 throw new IOException("Tracking journal is already being written", e);
             }
         }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private List<Entry> readDay(Path day) throws IOException {
@@ -165,6 +169,7 @@ final class PortArrivalJournal {
     }
 
     private static Entry read(Path file) throws IOException {
+        try {
         regular(file);
         byte[] bytes;
         try (var input = Files.newInputStream(file, LinkOption.NOFOLLOW_LINKS)) {
@@ -190,6 +195,9 @@ final class PortArrivalJournal {
                 || !value.digest().matches("[0-9a-f]{64}") || !value.digest().equals(digest(value)))
             throw new IOException("Invalid or corrupted tracking checkpoint");
         return value;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static void validateText(String kind, String reason) throws IOException {
@@ -208,9 +216,13 @@ final class PortArrivalJournal {
 
     private static String digest(Entry value) throws IOException {
         try {
+        try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
                     .digest(JSON.writeValueAsBytes(document(value, false))));
         } catch (NoSuchAlgorithmException e) { throw new IOException("SHA-256 unavailable", e); }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static String date(long time) throws IOException {

@@ -24,6 +24,7 @@ final class GameDefinitionLoader {
     private GameDefinitionLoader() {}
 
     static GameDefinitionSnapshot load(Path input) throws IOException {
+        try {
         Path root = input.toAbsolutePath().normalize();
         Path definitions = DefinitionPackInstaller.activeDefinitionsRoot(root);
         if (definitions.equals(root)) throw new IOException("A staged manifest generation is required");
@@ -63,6 +64,9 @@ final class GameDefinitionLoader {
             loaded.put(resource, bytes);
         }
         return new GameDefinitionSnapshot(generation, loaded);
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
     private static byte[] readRegular(Path file, int limit) throws IOException {
         if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)
