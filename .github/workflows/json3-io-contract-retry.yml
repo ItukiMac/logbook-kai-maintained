@@ -1,0 +1,113 @@
+name: Jackson3 I/O correction and exact diagnostics (tooling only)
+on:
+  push:
+    branches: ['maintenance/json3-io-contract-worker-20261027']
+    paths: ['.github/workflows/json3-io-contract-retry.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE: a502cbe80132deeaf8bae8625d9d7514a55e175d
+      TARGET: maintenance/json3-modern-runtime-20261027
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+          persist-credentials: true
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: a502cbe80132deeaf8bae8625d9d7514a55e175d
+          path: candidate
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Apply the previously retained transformation with correct whitespace
+        working-directory: candidate
+        run: |
+          set -eu
+          mkdir -p ../evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import textwrap
+          workflow=Path('../tooling/.github/workflows/json3-io-contract-worker.yml').read_text()
+          code=workflow.split("python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0]
+          code=textwrap.dedent(code)
+          assert code.count('body=source[start:end-1]')==1
+          code=code.replace('body=source[start:end-1]','body=source[start:end-1].rstrip()')
+          code=code.replace("indent=re.search(r'(?m)^([ \\t]*)[^\\n]*$',source[:start]).group(1)","indent=re.match(r'[ \\t]*',source[source.rfind('\\n',0,match.start())+1:]).group(0)")
+          exec(compile(code,'retained-io-contract-transform','exec'))
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          mvn -B -ntp -DskipTests package > ../evidence/compile.log 2>&1
+      - name: Run unchanged unit suites
+        working-directory: candidate
+        shell: bash
+        run: |
+          set +e
+          mvn -B -ntp test > ../evidence/tests.log 2>&1
+          echo "$?" > ../evidence/test-exit-code.txt
+          exit 0
+      - name: Retain compiled source correction on PR branch
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git add src/main/java
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git diff --exit-code
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve checked IOException boundaries after Jackson3 migration'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git diff "$BASE" HEAD > ../evidence/source.patch
+      - name: Record exact test errors and corresponding source snippets
+        if: always()
+        working-directory: candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json,re
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
+          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          failures=[]
+          for s in suites:
+              for test in s.findall('testcase'):
+                  for error in list(test.findall('failure'))+list(test.findall('error')):
+                      trace=error.text or '';snippets={}
+                      for filename,line in re.findall(r'\((\w+\.java):(\d+)\)',trace):
+                          for path in list(Path('src/main/java').rglob(filename))+list(Path('src/test/java').rglob(filename)):
+                              lines=path.read_text().splitlines();n=int(line);snippets[str(path)+':'+line]='\n'.join(f'{i+1}: {lines[i]}' for i in range(max(0,n-7),min(len(lines),n+6)))
+                      failures.append({'class':s.get('name'),'test':test.get('name'),'message':error.get('message'),'trace':trace[:4000],'source':snippets})
+          p=Path('../evidence');report={'totals':totals,'failures':failures}
+          if (p/'source-commit.txt').exists():report['source_commit']=(p/'source-commit.txt').read_text().strip()
+          if (p/'compile.log').exists():report['compile_errors']=[line for line in (p/'compile.log').read_text().splitlines() if '[ERROR]' in line][-40:]
+          out=Path('../tooling/.maintenance-evidence');out.mkdir(exist_ok=True)
+          (out/'json3-io-result-v2.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps({'totals':totals,'failure_count':len(failures),'source_commit':report.get('source_commit')}))
+          PY
+      - name: Retain diagnostics only in the separate tooling branch
+        if: always()
+        working-directory: tooling
+        run: |
+          set -eu
+          git add .maintenance-evidence/json3-io-result-v2.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Retain source-specific JSON migration test results'
+          git push origin "HEAD:refs/heads/maintenance/json3-io-contract-worker-20261027"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: json3-io-contract-v2-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+          retention-days: 14
