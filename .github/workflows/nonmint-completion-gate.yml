@@ -1,0 +1,28 @@
+name: Non-Mint ledger validation (not a completion or release approval)
+on:
+  push:
+    paths:
+      - 'docs/maintenance/**'
+      - 'scripts/check_nonmint_gates.py'
+      - 'scripts/tests/test_nonmint_gates.py'
+      - '.github/workflows/nonmint-completion-gate.yml'
+  pull_request:
+    paths:
+      - 'docs/maintenance/**'
+      - 'scripts/check_nonmint_gates.py'
+      - 'scripts/tests/test_nonmint_gates.py'
+      - '.github/workflows/nonmint-completion-gate.yml'
+permissions:
+  contents: read
+jobs:
+  ledger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate ledger records and report unfinished scope
+        run: python3 scripts/check_nonmint_gates.py
+      - name: Regress valid completion and prevent unsupported closure
+        run: python3 -m unittest discover -s scripts/tests -p 'test_nonmint_gates.py' -v
