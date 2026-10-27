@@ -1,0 +1,302 @@
+{
+  "format": "logbook-rule-field-checks-v1",
+  "checked_on": "2026-10-27",
+  "base": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+  "evidence_kind": "Manual comparison of retrieved source statements plus real Java predicates on synthetic saved logs and public master fixtures. Not live-game certification.",
+  "complete": false,
+  "whole_rule_verified": 0,
+  "sources": {
+    "wiki_expedition_details": {
+      "url": "https://wikiwiki.jp/kancolle/遠征/詳細一覧表",
+      "locator": "A5",
+      "published_on": null,
+      "updated_on": null,
+      "viewed_on": "2026-10-27",
+      "date_note": "Null dates were not exposed in the retrieved page; viewing date is not publication/update date."
+    },
+    "wiki_expeditions": {
+      "url": "https://wikiwiki.jp/kancolle/遠征",
+      "locator": "Ship-type abbreviations; substitute success patterns",
+      "published_on": null,
+      "updated_on": null,
+      "viewed_on": "2026-10-27",
+      "date_note": "Null dates were not exposed in the retrieved page; viewing date is not publication/update date."
+    },
+    "zeka_expeditions": {
+      "url": "https://zekamashi.net/kancolle-kouryaku/ensei/",
+      "locator": "A5",
+      "published_on": "2021-07-23",
+      "updated_on": "2023-05-09",
+      "viewed_on": "2026-10-27",
+      "date_note": "Separate displayed article dates; section-specific revision time is not known."
+    },
+    "zeka_monthly_expeditions": {
+      "url": "https://zekamashi.net/kancolle-kouryaku/new-ensei/",
+      "locator": "A5; 43 escort carrier roster",
+      "published_on": "2026-09-30",
+      "updated_on": "2026-10-01",
+      "viewed_on": "2026-10-27",
+      "date_note": "Separate displayed article dates; section-specific revision time is not known."
+    },
+    "wiki_periodic_quests": {
+      "url": "https://wikiwiki.jp/kancolle/任務/出撃定期",
+      "locator": "Bd4/Bw2/Bm3",
+      "published_on": null,
+      "updated_on": null,
+      "viewed_on": "2026-10-27",
+      "date_note": "Null dates were not exposed in the retrieved page; viewing date is not publication/update date."
+    },
+    "zeka_257": {
+      "url": "https://zekamashi.net/kancolle-kouryaku/suiraisentai-nansei/",
+      "locator": "Mission requirements",
+      "published_on": "2021-05-06",
+      "updated_on": "2023-11-13",
+      "viewed_on": "2026-10-27",
+      "date_note": "Separate displayed article dates; section-specific revision time is not known."
+    },
+    "wiki_expedition_quests": {
+      "url": "https://wikiwiki.jp/kancolle/任務/遠征任務",
+      "locator": "Dy2/Dy3",
+      "published_on": null,
+      "updated_on": null,
+      "viewed_on": "2026-10-27",
+      "date_note": "Null dates were not exposed in the retrieved page; viewing date is not publication/update date."
+    },
+    "zeka_436": {
+      "url": "https://zekamashi.net/kancolle-kouryaku/rensyuu-keibi/",
+      "locator": "Mission requirements",
+      "published_on": "2020-03-28",
+      "updated_on": "2023-05-07",
+      "viewed_on": "2026-10-27",
+      "date_note": "Separate displayed article dates; section-specific revision time is not known."
+    },
+    "zeka_437": {
+      "url": "https://zekamashi.net/kancolle-kouryaku/ogasawaraoki-syoukai/",
+      "locator": "Mission requirements",
+      "published_on": "2020-05-21",
+      "updated_on": "2023-05-07",
+      "viewed_on": "2026-10-27",
+      "date_note": "Separate displayed article dates; section-specific revision time is not known."
+    },
+    "zeka_220": {
+      "url": "https://zekamashi.net/kancolle-kouryaku/igousakusen/",
+      "locator": "Mission requirements",
+      "published_on": "2018-10-29",
+      "updated_on": "2024-11-03",
+      "viewed_on": "2026-10-27",
+      "date_note": "Separate displayed article dates; section-specific revision time is not known."
+    },
+    "repo_master_fixture": {
+      "url": "https://github.com/ItukiMac/logbook-kai-maintained/blob/06be3c9dd4137efbffa5d4f91800881dbc07a5ff/src/test/resources/logbook/config/logbook.bean.ShipMstCollection.json",
+      "viewed_on": "2026-10-27",
+      "commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+      "kind": "Existing public repository fixture; not a fresh live-game master capture."
+    }
+  },
+  "changes": [
+    {
+      "path": "src/main/resources/logbook/mission/1/A5.json",
+      "before_sha256": "aed333992a44cf98d706c668651a5aad0a9f348536f969ba8761333968214f26",
+      "after_sha256": "8485ce17bad36564b85613c22251a2faecd87bf3ffc7fcdbd8e6925c639d1dd7",
+      "id": "A5",
+      "confirmed_fields": [
+        {
+          "field": "fleet_min_level_sum",
+          "value": 230,
+          "sources": [
+            "wiki_expedition_details",
+            "zeka_expeditions",
+            "zeka_monthly_expeditions"
+          ]
+        }
+      ],
+      "unresolved_fields": [
+        {
+          "field": "flagship_min_level",
+          "observations": [
+            {
+              "value": 45,
+              "source": "wiki_expedition_details"
+            },
+            {
+              "value": 50,
+              "source": "zeka_expeditions"
+            },
+            {
+              "value": 50,
+              "source": "zeka_monthly_expeditions"
+            }
+          ],
+          "status": "source_conflict",
+          "action": "Existing45 retained; no majority vote, no complete verification."
+        },
+        {
+          "field": "escort_carrier_1_escort_2_free_2_branch",
+          "source": "wiki_expedition_details",
+          "status": "single_explicit_source_not_independently_confirmed",
+          "action": "Existing branch structure retained; the explicit Wiki branch is not listed by the compared Zekamashi A5 table. Needs separate review."
+        },
+        {
+          "field": "all_success_great_success_and_live_game_conditions",
+          "status": "not_certified"
+        }
+      ],
+      "whole_rule_verified": false
+    },
+    {
+      "path": "src/main/java/logbook/bean/MissionCondition.java",
+      "before_sha256": "3bb07d4ca47fcb897ad55f86957c72453f778b9afb3edf0b1486fe1070a140a2",
+      "after_sha256": "60c093c7fc5d257c41ba3dabccf21891a76b96b55759b57f07d9c5580dde04c1",
+      "id": "escort-carrier-classification",
+      "confirmed_fields": [
+        {
+          "field": "escort_carrier_predicate",
+          "value": "Light carrier with a present positive native master ASW value; other types cannot substitute merely because an ASW array is present.",
+          "sources": [
+            "wiki_expeditions",
+            "zeka_monthly_expeditions"
+          ]
+        }
+      ],
+      "unresolved_fields": [
+        {
+          "field": "all_remodels_and_future_master_formats",
+          "status": "not_certified"
+        }
+      ],
+      "regression_scope": "The old classifier accepted synthetic noncarrier and empty-ASW master records. The existing public master fixture does not contain such noncarrier ASW arrays, so this is boundary hardening, not proof of an observed live-game false positive.",
+      "whole_rule_verified": false
+    }
+  ],
+  "not_changed": [
+    {
+      "ids": [
+        257
+      ],
+      "confirmed_fields": [
+        "CL flagship; CL1..3 and DD3..5; other types excluded;1-4 S once; retreat excluded"
+      ],
+      "unresolved_fields": [
+        "Exact total fleet size; complete live acceptance/retreat semantics"
+      ],
+      "sources": [
+        "wiki_periodic_quests",
+        "zeka_257"
+      ],
+      "decision": "Neither source explicitly states a total of6; no guessed total added. R10 DD maximum retained.",
+      "whole_rule_verified": false
+    },
+    {
+      "ids": [
+        436,
+        437
+      ],
+      "confirmed_fields": [
+        "Listed expedition names, one successful return per expedition, annual reset months3/5"
+      ],
+      "unresolved_fields": [
+        "Additional fleet-composition restriction in the quest prose; game acceptance/return boundary"
+      ],
+      "sources": [
+        "wiki_expedition_quests",
+        "zeka_436",
+        "zeka_437"
+      ],
+      "decision": "Zekamashi still marks the extra fleet restriction as a question; Wiki does not resolve it into an exact predicate. No inferred composition filter.",
+      "whole_rule_verified": false
+    },
+    {
+      "ids": [
+        211,
+        220
+      ],
+      "confirmed_fields": [
+        "Light/regular enemy carriers count at the existing3/20 thresholds",
+        "Armored Carrier Demon/Princess master IDs1544/1545 are already excluded: their recorded type is10 aviation battleship"
+      ],
+      "unresolved_fields": [
+        "European Armored Carrier Princess IDs2041..2046 are type18; the named Demon/Princess exception does not prove they should be excluded",
+        "All special boss classifications; Zekamashi explicitly leaves Carrier Demon/Princess unconfirmed"
+      ],
+      "sources": [
+        "wiki_periodic_quests",
+        "zeka_220",
+        "repo_master_fixture"
+      ],
+      "decision": "No blanket removal of type18. Tests use actual IDs/types through QuestCollect and PhaseState instead of guessing from names.",
+      "whole_rule_verified": false
+    }
+  ],
+  "master_remodel_checks": {
+    "source": "repo_master_fixture",
+    "eligibility_confirmed_by_fixture": [
+      883,
+      888,
+      560,
+      894,
+      899,
+      526,
+      529,
+      544,
+      396,
+      707,
+      925,
+      930
+    ],
+    "ineligibility_confirmed_by_fixture": [
+      185,
+      318,
+      555,
+      89,
+      285,
+      521,
+      522
+    ],
+    "all_remodels_verified": false,
+    "note": "Selected published master states only. Newer roster members such as Independence are not present in this older fixture; no hardcoded name allowlist was introduced."
+  },
+  "validation": {
+    "before_product_change": {
+      "runtime": "Java21",
+      "tests_discovered": 9,
+      "successful": 5,
+      "failures": 4,
+      "errors": 0,
+      "skipped": 0,
+      "log": "quest-condition-red-trusted.log"
+    },
+    "after_product_change": [
+      {
+        "runtime": "Java21",
+        "tests_discovered": 13,
+        "successful": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "scope": "New9 regression cases plus existing4 ReviewedMissionScalarTest cases",
+        "log": "quest-condition-green21.log"
+      },
+      {
+        "runtime": "Java25",
+        "tests_discovered": 13,
+        "successful": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "scope": "Same13 tests on Java25; production source compatibility remains21",
+        "log": "quest-condition-green25.log"
+      },
+      {
+        "runtime": "Python",
+        "tests_discovered": 23,
+        "successful": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "scope": "test_review_ledger.py6 plus test_r*_review_inventory.py17"
+      }
+    ],
+    "integration_limit": "These are isolated pre-PR local results. Final combined head CI, Mint and production status must be reported separately."
+  },
+  "safety": "No Mint, production files, private game history, release, tags, or deployment. Existing evidence and old resource identity retained."
+}

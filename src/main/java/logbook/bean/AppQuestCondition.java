@@ -64,60 +64,107 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
      * @return 任務条件設定
      */
     public static AppQuestCondition loadFromResource(int questNo) {
+        return loadObserved(questNo, null, logbook.core.SeasonalQuestRuleService.bundled());
+    }
+
+    /** Live observation is required for seasonal rules; ID-only callers remain unconfirmed. */
+    public static AppQuestCondition loadFromResource(QuestList.Quest quest) {
+        return loadFromResource(quest, logbook.core.SeasonalQuestRuleService.bundled());
+    }
+
+    public static AppQuestCondition loadFromResource(QuestList.Quest quest,
+            logbook.core.SeasonalQuestRuleService rules) {
+        if (quest == null || quest.getNo() == null) return null;
+        return loadObserved(quest.getNo(), logbook.core.SeasonalQuestRuleService.Observation.from(quest), rules);
+    }
+
+    private static AppQuestCondition loadObserved(int questNo,
+            logbook.core.SeasonalQuestRuleService.Observation observation,
+            logbook.core.SeasonalQuestRuleService rules) {
         try (var lease = LogBookCoreServices.pinDefinitions()) {
-            AppQuestCondition result = loadPinned(questNo);
+            AppQuestCondition result = loadPinned(questNo, observation, rules);
             if (result != null && logbook.core.GameDefinitionRuntime.active()) result.definitionSnapshot = lease.snapshot();
             return result;
         }
     }
 
-    private static AppQuestCondition loadPinned(int questNo) {
-        InputStream is = LogBookCoreServices.getQuestResourceAsStream(questNo, true);
-        if (is != null) {
-            try {
-                try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    mapper.enable(Feature.ALLOW_COMMENTS);
-                    return mapper.readValue(is, AppQuestCondition.class);
-                } finally {
-                    is.close();
-                }
-            } catch (Exception e) {
-                LoggerHolder.get().info("任務設定ファイルが読み込めませんでした。", e);
-                return null;
-            }
+    private static AppQuestCondition loadPinned(int questNo,
+            logbook.core.SeasonalQuestRuleService.Observation observation,
+            logbook.core.SeasonalQuestRuleService rules) {
+        try (InputStream stream = LogBookCoreServices.getQuestResourceAsStream(questNo, true)) {
+            if (stream != null) return readRule(stream, questNo, "quest", observation, rules);
+        } catch (Exception e) {
+            LoggerHolder.get().info("任務設定ファイルが読み込めませんでした。", e);
+            return null;
         }
-
-        // 期間限定任務条件を上書きするカスタム設定があるなら、カスタム設定を優先する
+        // Preserve the existing regular -> custom -> event precedence and the original files.
         try {
             java.nio.file.Path customPath = java.nio.file.Paths.get("./customquest/" + questNo + ".json");
             if (java.nio.file.Files.exists(customPath)) {
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(Feature.ALLOW_COMMENTS);
-                return mapper.readValue(customPath.toFile(), AppQuestCondition.class);
+                try (InputStream stream = java.nio.file.Files.newInputStream(customPath)) {
+                    return readRule(stream, questNo, "customquest", observation, rules);
+                }
             }
         } catch (Exception e) {
             LoggerHolder.get().info("カスタム任務設定ファイルが読み込めませんでした: " + questNo, e);
         }
-
-        // 期間限定任務
-        InputStream eventis = LogBookCoreServices.getQuestResourceAsStream(questNo, false);
-        if (eventis != null) {
-            try {
-                try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    mapper.enable(Feature.ALLOW_COMMENTS);
-                    return mapper.readValue(eventis, AppQuestCondition.class);
-                } finally {
-                    eventis.close();
-                }
-            } catch (Exception e) {
-                LoggerHolder.get().info("任務設定ファイルが読み込めませんでした。", e);
-                return null;
-            }
+        try (InputStream stream = LogBookCoreServices.getQuestResourceAsStream(questNo, false)) {
+            if (stream != null) return readRule(stream, questNo, "eventquest", observation, rules);
+        } catch (Exception e) {
+            LoggerHolder.get().info("任務設定ファイルが読み込めませんでした。", e);
         }
-
         return null;
+    }
+
+    private static AppQuestCondition readRule(InputStream stream, int questNo, String origin,
+            logbook.core.SeasonalQuestRuleService.Observation observation,
+            logbook.core.SeasonalQuestRuleService rules) throws java.io.IOException {
+        byte[] original = stream.readNBytes(1_048_577);
+        if (original.length > 1_048_576) throw new java.io.IOException("Quest definition size limit");
+        var resolution = rules.resolve(questNo, origin, original, observation);
+        byte[] chosen = resolution.definition();
+        ObjectMapper mapper = new ObjectMapper().enable(Feature.ALLOW_COMMENTS);
+        AppQuestCondition result = mapper.readValue(chosen == null ? original : chosen, AppQuestCondition.class);
+        if (resolution.selection().status() != logbook.core.SeasonalQuestRuleService.Status.NOT_SEASONAL)
+            result.seasonalSelection = resolution.selection();
+        return result;
+    }
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    private transient logbook.core.SeasonalQuestRuleService.Selection seasonalSelection;
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    public boolean isRuleUsable() {
+        if (seasonalSelection == null) return true;
+        return seasonalSelection.usable() && !seasonalGenerationChanged();
+    }
+
+    public boolean isRuleUsableFor(AppQuest quest) {
+        return seasonalSelection == null || isRuleUsable() && quest != null
+            && java.util.Objects.equals(quest.getNo(), seasonalSelection.questId())
+            && seasonalSelection.matches(logbook.core.SeasonalQuestRuleService.Observation.from(quest.getQuest()));
+    }
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    public String getRuleStatusMessage() {
+        if (seasonalSelection == null) return "";
+        return seasonalGenerationChanged()
+            ? logbook.core.SeasonalQuestRuleService.Status.DEFINITION_CHANGED.message() : seasonalSelection.message();
+    }
+
+    private boolean seasonalGenerationChanged() {
+        return definitionSnapshot != null && logbook.core.GameDefinitionRuntime.active()
+            && definitionSnapshot != LogBookCoreServices.gameDataView().snapshot();
+    }
+
+    public boolean permitsSeasonalLog(String jstDate) {
+        return seasonalSelection == null || isRuleUsable() && seasonalSelection.permitsLog(jstDate);
+    }
+
+    public boolean permitsSeasonalLog(java.time.Instant instant) {
+        return seasonalSelection == null || isRuleUsable() && seasonalSelection.permitsLog(instant);
     }
 
     // internal use only
@@ -133,9 +180,22 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
     @Override
     public boolean test(QuestCollect t) {
-        try (var lease = definitionSnapshot == null ? LogBookCoreServices.pinDefinitions() : LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
-            return testPinned(t);
+        if (!isRuleUsable() || t != null && t.isSeasonalEvidenceUnavailable()) {
+            return unconfirmed(!isRuleUsable() ? getRuleStatusMessage() : "未確定：集計する任務の観測が一致しません");
         }
+        try (var lease = definitionSnapshot == null ? LogBookCoreServices.pinDefinitions() : LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
+            boolean passed = testPinned(t);
+            return isRuleUsable() ? passed : unconfirmed(getRuleStatusMessage());
+        }
+    }
+
+    private boolean unconfirmed(String message) {
+        this.result = null;
+        for (Condition condition : this.conditions) {
+            condition.result = null;
+            condition.current = message;
+        }
+        return false;
     }
 
     private boolean testPinned(QuestCollect t) {
@@ -209,6 +269,26 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             // distinct from the null markers consumed internally by AND clauses.
             if (ships == null || ships.stream().anyMatch(java.util.Objects::isNull)) return false;
             return evaluate(new ArrayList<>(ships));
+        }
+
+        /**
+         * Evaluate a complete observed fleet without compacting proven retreat vacancies.
+         * Null is accepted only at the explicitly absent, one-based positions; every other
+         * missing member remains unknown evidence and fails closed. Ordinary test() keeps
+         * rejecting all null input entries.
+         */
+        public boolean testObservedSlots(List<ShipMst> ships, java.util.Set<Integer> absentSlots) {
+            if (ships == null || ships.isEmpty() || ships.size() > 7 || absentSlots == null
+                    || absentSlots.stream().anyMatch(slot -> slot == null || slot < 1 || slot > ships.size())) {
+                return false;
+            }
+            boolean hasSurvivor = false;
+            for (int slot = 0; slot < ships.size(); slot++) {
+                boolean absent = absentSlots.contains(slot + 1);
+                if (absent != (ships.get(slot) == null)) return false;
+                if (!absent) hasSurvivor = true;
+            }
+            return hasSurvivor && evaluate(new ArrayList<>(ships));
         }
 
         private boolean evaluate(List<ShipMst> ships) {

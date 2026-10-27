@@ -7,7 +7,7 @@ import unittest
 from zipfile import ZipFile, ZIP_DEFLATED
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from build_feature_distribution import build, GROUPS, SERVICE, owner
-from run_feature_distribution import verify
+from run_feature_distribution import verify, EXTRA_CLASSES
 
 class FeatureDistributionTest(unittest.TestCase):
     def setUp(self):
@@ -20,6 +20,8 @@ class FeatureDistributionTest(unittest.TestCase):
             for stem in ['logbook/features/'+provider]+['logbook/internal/gui/'+c for c in controllers]:
                 self.entries[stem+'.class']=b'fixture';self.entries[stem+'$1.class']=b'nested'
             for f in fxml:self.entries['logbook/gui/'+f+'.fxml']=b'<fixture/>'
+        for stems in EXTRA_CLASSES.values():
+            for stem in stems:self.entries[stem+'.class']=b'fixture helper'
     def write(self):
         with ZipFile(self.jar,'w',compression=ZIP_DEFLATED) as z:
             for n,b in self.entries.items():z.writestr(n,b)

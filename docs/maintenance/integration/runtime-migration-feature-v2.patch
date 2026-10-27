@@ -1,0 +1,146 @@
+diff --git a/scripts/tests/test_runtime_managed_import.py b/scripts/tests/test_runtime_managed_import.py
+index b347da04..7b249ede 100644
+--- a/scripts/tests/test_runtime_managed_import.py
++++ b/scripts/tests/test_runtime_managed_import.py
+@@ -11,6 +11,8 @@ from zipfile import ZipFile
+ 
+ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+ import feature_bundle_manager as manager
++import build_feature_distribution as feature_builder
++from run_feature_distribution import PROVIDERS, required_entries
+ import runtime_snapshot as snapshots
+ import runtime_managed_import as migration
+ 
+@@ -62,20 +64,25 @@ class RuntimeManagedImportTest(unittest.TestCase):
+                           json.dumps(self.config, ensure_ascii=False).encode())
+ 
+     def make_bundle(self, label):
++        # This is an inert archive fixture, not an executable historical release.
++        # Use the current packager so import/recovery exercises the same v2
++        # hashes, embedded contracts and required inventory as the E manager.
++        source = self.base / ('fixture-source-' + label + '.jar')
++        entries = {
++            'META-INF/MANIFEST.MF': b'Manifest-Version: 1.0\r\n\r\n',
++            'fixture.txt': ('synthetic generation ' + label).encode(),
++            'logbook/internal/updatecheck/ManagedBundleMode.class': b'unit-test-only',
++            feature_builder.SERVICE: ('\n'.join(PROVIDERS.values()) + '\n').encode(),
++        }
++        for module_id in PROVIDERS:
++            for name in required_entries(module_id):
++                entries[name] = ('inert fixture ' + label + ':' + name).encode()
++        with ZipFile(source, 'x') as archive:
++            for name, content in entries.items():
++                archive.writestr(name, content)
+         root = self.base / ('bundle-' + label)
+-        root.mkdir()
+-        (root / 'features').mkdir()
+-        for name in manager.JARS:
+-            with ZipFile(root / name, 'x') as archive:
+-                archive.writestr('fixture.txt', label + ':' + name)
+-                if name == manager.JARS[0]:
+-                    archive.writestr('logbook/internal/updatecheck/ManagedBundleMode.class', b'unit-test-only')
+-        (root / manager.FILES[-1]).write_text('# synthetic; never executed\n')
+-        report = {'format': 'logbook-feature-distribution-v1', 'source_revision': label * 40,
+-                  'files': {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+-                            for name in manager.FILES}}
+-        raw = json.dumps(report, sort_keys=True).encode()
+-        (root / 'distribution.json').write_bytes(raw)
++        feature_builder.build(source, root, label * 40)
++        raw = (root / 'distribution.json').read_bytes()
+         return root, hashlib.sha256(raw).hexdigest()
+ 
+     def add_arrival(self):
+diff --git a/scripts/tests/test_runtime_migration_java.py b/scripts/tests/test_runtime_migration_java.py
+index 718543ca..62833991 100644
+--- a/scripts/tests/test_runtime_migration_java.py
++++ b/scripts/tests/test_runtime_migration_java.py
+@@ -2,6 +2,9 @@
+ 
+ The two fixture generations share the current declared arrival/acceptance schema.
+ They are not a claim of arbitrary historical application-schema conversion.
++Managed store envelopes test preservation only. Historical Java readers/writers
++and Launcher still execute the unchanged original fat JARs; this suite does not
++certify those older providers for the v2 split launcher or bypass its preflight.
+ """
+ import hashlib
+ import json
+@@ -26,6 +29,41 @@ OLD_REVISION = 'a094771d73ce420f2bd2ddf237e0c69cf2005067'
+ NEW_REVISION = '06be3c9dd4137efbffa5d4f91800881dbc07a5ff'
+ 
+ 
++def stamp_synthetic_bundle(bundle, label):
++    """Mark NEW test output only, then re-pin every v2 contract affected by the core."""
++    from run_feature_distribution import FEATURE_METADATA, METADATA_KEYS, verify
++
++    report = json.loads((bundle / 'distribution.json').read_bytes())
++    marker = 'META-INF/runtime-migration-synthetic-generation.txt'
++
++    def rewrite(path, additions):
++        with ZipFile(path) as archive:
++            entries = {entry.filename: archive.read(entry) for entry in archive.infolist()}
++        entries.update(additions)
++        temporary = path.with_name(path.name + '.synthetic-new')
++        with ZipFile(temporary, 'x', ZIP_DEFLATED) as archive:
++            for name, content in sorted(entries.items()):
++                archive.writestr(name, content)
++        # Only generated TempDir fixtures are replaced. Input fat JARs and
++        # any staged/retained application versions are never passed here.
++        os.replace(temporary, path)
++
++    core_path = bundle / report['host']['path']
++    rewrite(core_path, {marker: label.encode()})
++    core_sha = digest(core_path.read_bytes())
++    report['host']['sha256'] = core_sha
++    report['files'][report['host']['path']] = core_sha
++    for module in report['modules']:
++        module['host_sha256'] = core_sha
++        metadata = {key: module[key] for key in METADATA_KEYS}
++        path = bundle / module['path']
++        rewrite(path, {marker: label.encode(), FEATURE_METADATA: encoded(metadata)})
++        module['sha256'] = digest(path.read_bytes())
++        report['files'][module['path']] = module['sha256']
++    (bundle / 'distribution.json').write_bytes(encoded(report))
++    verify(bundle)
++
++
+ @unittest.skipUnless(JAR.is_file() and shutil.which('java') and shutil.which('javac'),
+                     'Requires the current built JAR and Java 21+; required in migration CI')
+ class RuntimeMigrationJavaTest(unittest.TestCase):
+@@ -201,7 +239,8 @@ class RuntimeMigrationJavaTest(unittest.TestCase):
+         self.exercise_managed_pair(old_jar, new_jar, declared_versions=True)
+         print('RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=' + OLD_REVISION + ' new=' + NEW_REVISION
+               + ' schema_conversion=false old_reader_new_writer_old_reader=true'
+-              + ' real_launcher=' + str(bool(os.environ.get('DISPLAY'))).lower())
++              + ' real_launcher=' + str(bool(os.environ.get('DISPLAY'))).lower()
++              + ' split_bundle_launch_validated=false')
+ 
+     def exercise_managed_pair(self, old_jar, new_jar, *, declared_versions):
+         import feature_bundle_manager as manager
+@@ -215,13 +254,11 @@ class RuntimeMigrationJavaTest(unittest.TestCase):
+             bundle = self.base / ('bundle-' + label)
+             build(jar, bundle, revision if declared_versions else label.lower() * 40)
+             if not declared_versions:
+-                report = json.loads((bundle / 'distribution.json').read_text())
+-                for name in manager.JARS:
+-                    path = bundle / name
+-                    with ZipFile(path, 'a', ZIP_DEFLATED) as archive:
+-                        archive.writestr('META-INF/runtime-migration-synthetic-generation.txt', label)
+-                    report['files'][name] = digest(path.read_bytes())
+-                (bundle / 'distribution.json').write_bytes(encoded(report))
++                stamp_synthetic_bundle(bundle, label)
++            # These envelopes exercise byte-preserving managed import/restore.
++            # In the historical case, v2 metadata does not certify the old
++            # provider ABI: all real Java executions below use old_jar/new_jar
++            # unchanged. Managed v2 launch remains a separate E preflight gate.
+             identities[label] = digest((bundle / 'distribution.json').read_bytes())
+             bundles.append((bundle, identities[label]))
+         old_runtime = snapshot(runtime, self.base / 'old-runtime', stopped=True, limits=LIMITS)
+@@ -265,7 +302,7 @@ class RuntimeMigrationJavaTest(unittest.TestCase):
+             self.assertEqual(checksum, digest(path.read_bytes()))
+         print('RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true'
+               ' source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2'
+-              ' new_arrivals=4 new_accepted=1')
++              ' new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false')
+ 
+     @unittest.skipUnless(shutil.which('xvfb-run'), 'Real Launcher needs Xvfb; required in migration CI')
+     def test_actual_launcher_start_change_restore_with_external_write_monitor(self):

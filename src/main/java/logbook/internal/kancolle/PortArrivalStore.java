@@ -18,10 +18,75 @@ public final class PortArrivalStore {
     private static final ObjectMapper JSON = new ObjectMapper()
             .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    // New evidence must not turn absent/null/fractional values into known identities or vacancies.
+    // The legacy record reader remains unchanged for existing v1 files.
+    private static final ObjectMapper EVIDENCE_JSON = com.fasterxml.jackson.databind.json.JsonMapper.builder()
+            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+            .enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+            .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+            .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS).build();
     private final Path root;
     public PortArrivalStore(Path root) {
         this.root = Objects.requireNonNull(root).toAbsolutePath().normalize();
         if (root.toAbsolutePath().toString().contains("..")) throw new IllegalArgumentException("Unsafe journal root");
+    }
+    PortArrivalJournal journal() { return new PortArrivalJournal(root.resolve("tracking-v1")); }
+
+    /** New evidence is deliberately outside the YYYY-MM namespace read by v1 hosts. */
+    public void appendFleet(PortArrivalFleet fleet) throws IOException {
+        Objects.requireNonNull(fleet);
+        safe(root); Files.createDirectories(root); safe(root);
+        Path evidence = root.resolve("fleet-evidence-v1");
+        safe(evidence); Files.createDirectories(evidence); safe(evidence);
+        Path month = evidence.resolve(month(fleet.arrival().arrivedAt()));
+        safe(month); Files.createDirectories(month); safe(month);
+        Path target = month.resolve(fleet.arrival().sortieId() + ".json");
+        if (Files.exists(target, LinkOption.NOFOLLOW_LINKS)) {
+            if (!fleet.equals(readFleetFile(target))) throw new IOException("Conflicting arrival fleet evidence");
+            return;
+        }
+        byte[] data = JSON.writeValueAsBytes(fleet);
+        if (data.length > MAX_BYTES) throw new IOException("Arrival fleet evidence too large");
+        Path pending = month.resolve("." + fleet.arrival().sortieId() + "-" + UUID.randomUUID() + ".pending");
+        try (FileChannel file = FileChannel.open(pending, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE,
+                LinkOption.NOFOLLOW_LINKS)) {
+            ByteBuffer bytes = ByteBuffer.wrap(data);
+            while (bytes.hasRemaining()) file.write(bytes);
+            file.force(true);
+        }
+        if (!fleet.equals(readFleetFile(pending))) throw new IOException("Arrival fleet preparation verification failed");
+        try { Files.createLink(target, pending); }
+        catch (FileAlreadyExistsException e) {
+            if (!fleet.equals(readFleetFile(target))) throw new IOException("Conflicting arrival fleet publication", e);
+        }
+    }
+
+    public Optional<PortArrivalFleet> readFleet(PortArrival arrival) throws IOException {
+        Objects.requireNonNull(arrival);
+        Path target = root.resolve("fleet-evidence-v1").resolve(month(arrival.arrivedAt()))
+                .resolve(arrival.sortieId() + ".json");
+        safe(target);
+        if (!Files.exists(target, LinkOption.NOFOLLOW_LINKS)) return Optional.empty();
+        PortArrivalFleet fleet = readFleetFile(target);
+        if (!arrival.equals(fleet.arrival())) throw new IOException("Arrival fleet does not match credited arrival");
+        return Optional.of(fleet);
+    }
+
+    private static PortArrivalFleet readFleetFile(Path path) throws IOException {
+        safe(path);
+        if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)) throw new IOException("Not a regular arrival fleet record");
+        try (var input = Files.newInputStream(path, LinkOption.NOFOLLOW_LINKS)) {
+            byte[] bytes = input.readNBytes(MAX_BYTES + 1);
+            if (bytes.length > MAX_BYTES) throw new IOException("Oversized arrival fleet record");
+            try {
+                PortArrivalFleet value = EVIDENCE_JSON.readValue(bytes, PortArrivalFleet.class);
+                if (value == null) throw new IOException("Null arrival fleet record");
+                return value;
+            } catch (RuntimeException e) { throw new IOException("Invalid arrival fleet record", e); }
+        }
     }
     public void append(PortArrival record) throws IOException {
         Objects.requireNonNull(record);

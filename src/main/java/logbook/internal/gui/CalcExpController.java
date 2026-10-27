@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -47,7 +49,7 @@ import logbook.constants.Rank;
 import logbook.internal.kancolle.Ships;
 import logbook.internal.logger.LoggerHolder;
 
-public class CalcExpController extends WindowController {
+public class CalcExpController extends FeatureUiV1.Window {
 
     @FXML
     private SplitPane splitPane;
@@ -142,7 +144,7 @@ public class CalcExpController extends WindowController {
         // SplitPaneの分割サイズ
         Timeline x = new Timeline();
         x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-            Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
+            FeatureUiV1.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
         }));
         x.play();
         // Spinnerに最小値最大値現在値を設定
@@ -244,7 +246,7 @@ public class CalcExpController extends WindowController {
     @FXML
     void edit(ActionEvent event) {
         try {
-            InternalFXMLLoader.showWindow("logbook/gui/calc_exp_area.fxml", this.getWindow(), "海域編集", c -> {
+            FeatureUiV1.showWindow("logbook/gui/calc_exp_area.fxml", this.getWindow(), "海域編集", c -> {
                 ((CalcExpSeaAreaEditorController) c).setApply(this::seaAreaList);
             }, null);
         } catch (Exception ex) {
@@ -539,7 +541,7 @@ public class CalcExpController extends WindowController {
             super.updateItem(ship, empty);
 
             if (!empty) {
-                this.setGraphic(Tools.Controls.zoomImage(new ImageView(Ships.shipWithItemImage(ship))));
+                this.setGraphic(FeatureUiV1.Controls.zoomImage(new ImageView(Ships.shipWithItemImage(ship))));
                 this.setText(Ships.shipMst(ship)
                         .map(ShipMst::getName)
                         .orElse(""));

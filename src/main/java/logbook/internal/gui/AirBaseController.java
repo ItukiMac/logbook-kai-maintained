@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,7 +60,7 @@ import logbook.internal.logger.LoggerHolder;
  * 基地航空隊
  *
  */
-public class AirBaseController extends WindowController {
+public class AirBaseController extends FeatureUiV1.Window {
 
     @FXML
     private SplitPane splitPane;
@@ -138,11 +140,11 @@ public class AirBaseController extends WindowController {
     @FXML
     void initialize() {
         try {
-            TableTool.setVisible(this.planeTable, this.getClass() + "#" + "planeTable");
+            FeatureUiV1.Tables.setVisible(this.planeTable, this.getClass() + "#" + "planeTable");
             // SplitPaneの分割サイズ
             Timeline x = new Timeline();
             x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-                Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
+                FeatureUiV1.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
             }));
             x.play();
             this.areaTable.setShowRoot(false);
@@ -163,7 +165,7 @@ public class AirBaseController extends WindowController {
             this.planeTable.setItems(this.planes);
             sortedList2.comparatorProperty().bind(this.planeTable.comparatorProperty());
             this.planeTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.planeTable.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.planeTable.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
 
             this.areaTable.getSelectionModel()
                     .selectedItemProperty()
@@ -198,7 +200,7 @@ public class AirBaseController extends WindowController {
      */
     @FXML
     void copy() {
-        TableTool.selectionCopy(this.planeTable);
+        FeatureUiV1.Tables.selectionCopy(this.planeTable);
     }
 
     /**
@@ -206,7 +208,7 @@ public class AirBaseController extends WindowController {
      */
     @FXML
     void selectAll() {
-        TableTool.selectAll(this.planeTable);
+        FeatureUiV1.Tables.selectAll(this.planeTable);
     }
 
     /**
@@ -215,7 +217,7 @@ public class AirBaseController extends WindowController {
     @FXML
     void columnVisible() {
         try {
-            TableTool.showVisibleSetting(this.planeTable, this.getClass().toString() + "#" + "planeTable",
+            FeatureUiV1.Tables.showVisibleSetting(this.planeTable, this.getClass().toString() + "#" + "planeTable",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
