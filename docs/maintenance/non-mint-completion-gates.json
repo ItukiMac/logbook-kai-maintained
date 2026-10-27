@@ -1,0 +1,209 @@
+{
+  "schema": "logbook-mint-independent-gates-v1",
+  "as_of": "2026-10-27",
+  "basis": {
+    "repo": "ItukiMac/logbook-kai-maintained",
+    "merged_pr": 47,
+    "master": "a094771d73ce420f2bd2ddf237e0c69cf2005067",
+    "rules_first_pass": 148,
+    "rules_whole_verified": 0
+  },
+  "status_meanings": {
+    "development": "Mintなしで開発/隔離試験可能な残作業",
+    "blocked_evidence": "実機Mint不要だが外部出典の確証なしでは完了不能",
+    "native_mint_required": "Mint/実ユーザーデータでのみ確認",
+    "manual_approval_required": "公開と本番反映は別途の承認を要求"
+  },
+  "tasks": [
+    {
+      "id": "R11-01",
+      "key": "runtime-data-cross-schema-migration",
+      "status": "development",
+      "title": "実データの版差移行と逆変換",
+      "acceptance": "異なる定義/履歴スキーマの隔離コピー移行・往復試験",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-02",
+      "key": "external-path-rewrite",
+      "status": "development",
+      "title": "外部パスの収集/移行/再設定",
+      "acceptance": "対象外領域を明示承認でコピーしコピー側だけへ参照を書換え、元は不変",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-03",
+      "key": "seasonal-rule-lifecycle",
+      "status": "blocked_evidence",
+      "title": "季節任務の版・有効期間・ID確定",
+      "acceptance": "運営の公開根拠と版/期間/優先規則がそろった条件にのみ適用",
+      "evidence": "docs/maintenance/r9-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-04",
+      "key": "seasonal-840-841-843",
+      "status": "blocked_evidence",
+      "title": "節分3任務の不一致",
+      "acceptance": "位置指定/更新周期/7-5条件等を対象年度と出典付きで一致確認",
+      "evidence": "docs/maintenance/r9-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-05",
+      "key": "arrival-906-954",
+      "status": "blocked_evidence",
+      "title": "期間任務906/954の1-6判定",
+      "acceptance": "該当年/任務IDを確認し到達条件を模擬通信で再検証",
+      "evidence": "docs/maintenance/r9-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-06",
+      "key": "arrival-restart-recovery",
+      "status": "development",
+      "title": "1-6進行中アプリ再起動の取り扱い",
+      "acceptance": "再起動/通信欠落を誤計上しない状態回復・二重計上拒否",
+      "evidence": "docs/maintenance/r9-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-07",
+      "key": "retreat-survivor-evidence",
+      "status": "development",
+      "title": "退避後に残る艦の編成条件",
+      "acceptance": "退避API/艦隊スナップショットに根拠ある安全な再構成・不明は不加算",
+      "evidence": "docs/maintenance/r9-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-08",
+      "key": "expedition-A5-conflict",
+      "status": "blocked_evidence",
+      "title": "遠征A5 Lv45/50出典不一致",
+      "acceptance": "両出典差の原因と条件版を解決し境界値試験",
+      "evidence": "docs/maintenance/r3-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-09",
+      "key": "quest-436-437-uncertainty",
+      "status": "blocked_evidence",
+      "title": "436/437編成追加条件",
+      "acceptance": "疑問形の出典を確定情報として扱わず追加根拠から条件を導出",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-10",
+      "key": "fleet-classification-roster",
+      "status": "development",
+      "title": "敵空母分類・艦種/改装名簿",
+      "acceptance": "全対象データと例外を根拠付きで列挙し将来版も検出",
+      "evidence": "docs/maintenance/r8-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-11",
+      "key": "quest-acceptance-reset",
+      "status": "development",
+      "title": "受諾・前提・リセット整合",
+      "acceptance": "定義148件の仕様書/実コードの全条件比較と受諾期間の回帰試験",
+      "evidence": "docs/maintenance/r9-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-12",
+      "key": "editor-arrival-controls",
+      "status": "development",
+      "title": "任務編集画面の到達条件UI",
+      "acceptance": "GUIから追加/削除/読込保存して他条件を保持",
+      "evidence": "docs/maintenance/r9-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-13",
+      "key": "feature-independent-versions",
+      "status": "development",
+      "title": "残るP3分割と独立バージョン管理",
+      "acceptance": "本体/プラグイン別版数・API互換・混在拒否・復旧をテスト",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-14",
+      "key": "maintenance-paid-provider",
+      "status": "development",
+      "title": "無人保守実API・課金/予算確認",
+      "acceptance": "権限/実費/監査/中断とレビュー前公開禁止を実証",
+      "evidence": "docs/maintenance/remaining-work-r2.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-15",
+      "key": "mint-test-bundle",
+      "status": "development",
+      "title": "Mint用単一隔離検証セット",
+      "acceptance": "再現用入力/チェックリスト/ログ衛生/元保全をCIで検査",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": true,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-16",
+      "key": "native-mint-gui-ime",
+      "status": "native_mint_required",
+      "title": "GUIと日本語IME",
+      "acceptance": "Mint実機で表示/入力/フォーカスを確認",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": false,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-17",
+      "key": "native-game-chrome-klb-kqs",
+      "status": "native_mint_required",
+      "title": "実Chrome/艦これ通信/KLB/KQS",
+      "acceptance": "本番と隔離候補の実通信差分と長時間試験",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": false,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-18",
+      "key": "native-newdata-migration",
+      "status": "native_mint_required",
+      "title": "実データのコピー・実起動・戻し",
+      "acceptance": "実パス/容量/プラグイン/設定/履歴を本人の停止確認のもと隔離検証",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": false,
+      "verified_complete": false
+    },
+    {
+      "id": "R11-19",
+      "key": "publication",
+      "status": "manual_approval_required",
+      "title": "Release/タグ/本番切替",
+      "acceptance": "上記ゲートと別途承認後にのみ実施",
+      "evidence": "docs/maintenance/r10-progress.md",
+      "mint_independent": false,
+      "verified_complete": false
+    }
+  ]
+}
