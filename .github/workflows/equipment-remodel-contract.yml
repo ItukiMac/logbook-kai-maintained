@@ -1,0 +1,214 @@
+name: Equipment arsenal-key before-after verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/equipment-data-worker-20261028']
+    paths: ['.github/workflows/equipment-remodel-contract.yml']
+permissions:
+  contents: write
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 6ec1e244a0d4aa09f6d2aa44e84f6e72dc31344e
+      TARGET: maintenance/equipment-data-api-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 6ec1e244a0d4aa09f6d2aa44e84f6e72dc31344e
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Expose the actual legacy JSON reader and add unchanged before-after tests
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/main/java/logbook/internal/gui/ItemItemController.java')
+          raw=p.read_bytes();assert b'\r\n' in raw
+          s=raw.decode().replace('\r\n','\n')
+          old='''            try (JsonReader reader = Json
+                              .createReader(LogBookCoreServices.getResourceAsStream("logbook/kousyou/kousyou.json"))) {
+                          JsonArray array = reader.readArray();
+                          for (JsonValue val : array) {
+                              JsonObject obj = (JsonObject) val;
+                              String name = obj.getString("EquipmentDataV1.Owned", null);
+                              JsonArray days = obj.getJsonArray("AllAvailableDays");
+                              if (name != null && days != null) {
+                                  kousyouMap.put(name, JsonHelper.toStringList(days));
+                              }
+                          }
+                      } catch (Exception e) {'''
+          # Match existing block by anchored boundaries; retain the caller's map on partial read failure.
+          start=s.index('            try (JsonReader reader = Json\n')
+          end=s.index('            } catch (Exception e) {',start)
+          original=s[start:end]
+          assert original.count('obj.getString("EquipmentDataV1.Owned", null)')==1
+          s=s[:start]+'''            try {
+                          readRemodelDays(LogBookCoreServices.getResourceAsStream("logbook/kousyou/kousyou.json"), kousyouMap);
+          '''+s[end:]
+          helper='''    /** Read the unchanged arsenal wire schema; preserve entries read before a malformed later row. */
+              static void readRemodelDays(java.io.InputStream input, Map<String, Collection<String>> destination) {
+                  try (JsonReader reader = Json.createReader(input)) {
+                      for (JsonValue value : reader.readArray()) {
+                          JsonObject object = (JsonObject) value;
+                          String name = object.getString("EquipmentDataV1.Owned", null);
+                          JsonArray days = object.getJsonArray("AllAvailableDays");
+                          if (name != null && days != null) destination.put(name, JsonHelper.toStringList(days));
+                      }
+                  }
+              }
+
+          '''
+          # Normalize Python here-doc indentation to the repository's four-space Java style.
+          helper=helper.replace('\n              ', '\n    ').replace('\n                  ', '\n        ').replace('\n                      ', '\n            ').replace('\n                          ', '\n                ')
+          # Above replacements are prefix-sensitive; use explicit dedent for deterministic formatting instead.
+          helper='\n'.join([
+              '    /** Read the unchanged arsenal wire schema; retain entries before a malformed later row. */',
+              '    static void readRemodelDays(java.io.InputStream input, Map<String, Collection<String>> destination) {',
+              '        try (JsonReader reader = Json.createReader(input)) {',
+              '            for (JsonValue value : reader.readArray()) {',
+              '                JsonObject object = (JsonObject) value;',
+              '                String name = object.getString("EquipmentDataV1.Owned", null);',
+              '                JsonArray days = object.getJsonArray("AllAvailableDays");',
+              '                if (name != null && days != null) destination.put(name, JsonHelper.toStringList(days));',
+              '            }','        }','    }','',''])
+          anchor='    @FXML\n    void initialize() {'
+          assert s.count(anchor)==1;s=s.replace(anchor,helper+anchor)
+          s=s.replace('                          readRemodelDays(', '                readRemodelDays(')
+          s=s.replace('          \n            } catch (Exception e) {','            } catch (Exception e) {')
+          p.write_bytes(s.replace('\n','\r\n').encode())
+          test=Path('src/test/java/logbook/internal/gui/EquipmentRemodelSchemaTest.java');assert not test.exists()
+          test.write_text(r'''package logbook.internal.gui;
+
+          import static org.junit.jupiter.api.Assertions.*;
+          import java.io.ByteArrayInputStream;
+          import java.nio.charset.StandardCharsets;
+          import java.util.Collection;
+          import java.util.HashMap;
+          import java.util.List;
+          import java.util.Map;
+          import jakarta.json.JsonException;
+          import org.junit.jupiter.api.Test;
+
+          class EquipmentRemodelSchemaTest {
+              private static ByteArrayInputStream bytes(String source) {
+                  return new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8));
+              }
+              private static Map<String, Collection<String>> read(String source) {
+                  Map<String, Collection<String>> result = new HashMap<>();
+                  ItemItemController.readRemodelDays(bytes(source), result);
+                  return result;
+              }
+              @Test void originalSlotItemFieldRetainsAllAvailableDays() {
+                  assertEquals(Map.of("fixture", List.of("月", "金")), read(
+                      "[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"月\",\"金\"]}]"));
+              }
+              @Test void javaTypeNamesAreNotExternalDataFieldNames() {
+                  assertTrue(read("[{\"EquipmentDataV1.Owned\":\"fixture\",\"AllAvailableDays\":[\"月\"]}]").isEmpty());
+              }
+              @Test void laterDuplicateKeepsTheExistingLastEntryPolicy() {
+                  assertEquals(Map.of("fixture", List.of("木")), read(
+                      "[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"月\"]},"
+                      + "{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"木\"]}]"));
+              }
+              @Test void missingNameOrDaysDoesNotInventAvailability() {
+                  assertTrue(read("[{\"SlotItem\":\"fixture\"},{\"AllAvailableDays\":[\"月\"]},{}]").isEmpty());
+              }
+              @Test void resourceStreamIsClosed() {
+                  boolean[] closed = {false};
+                  var input = new ByteArrayInputStream("[]".getBytes(StandardCharsets.UTF_8)) {
+                      @Override public void close() { closed[0] = true; }
+                  };
+                  ItemItemController.readRemodelDays(input, new HashMap<>());
+                  assertTrue(closed[0]);
+              }
+              @Test void malformedJsonIsNotReportedAsAnEmptySuccessfulRead() {
+                  assertThrows(JsonException.class, () -> read("["));
+              }
+              @Test void entriesReadBeforeABadRowRemainAvailableToTheCaller() {
+                  Map<String, Collection<String>> result = new HashMap<>();
+                  assertThrows(ClassCastException.class, () -> ItemItemController.readRemodelDays(
+                      bytes("[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"火\"]},17]"),result));
+                  assertEquals(Map.of("fixture",List.of("火")),result);
+              }
+          }
+          '''.replace('\n          ', '\n'),encoding='utf8')
+          PY
+          set +e
+          mvn -B -ntp -Dtest=EquipmentRemodelSchemaTest test > ../evidence/before.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json
+          s=E.parse('target/surefire-reports/TEST-logbook.internal.gui.EquipmentRemodelSchemaTest.xml').getroot()
+          assert s.get('tests')=='7' and int(s.get('failures',0))==4 and s.get('errors')=='0',s.attrib
+          Path('../evidence/before.json').write_text(json.dumps({'tests':7,'failures':4,'errors':0,'expected_failure':True},indent=2))
+          p=Path('src/main/java/logbook/internal/gui/ItemItemController.java');raw=p.read_bytes()
+          old=b'object.getString("EquipmentDataV1.Owned", null)';assert raw.count(old)==1
+          p.write_bytes(raw.replace(old,b'object.getString("SlotItem", null)'))
+          PY
+      - name: Execute the same schema assertions after the exact key fix
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=EquipmentDataContractTest,EquipmentProjectionTest,EquipmentRemodelSchemaTest test > ../evidence/after.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Re-run actual product equipment UI, without removing existing checks
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_equipment_ui_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Require new schema tests in comprehensive CI and preserve exact verified changes
+        working-directory: candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/verify_r3.sh');s=p.read_text()
+          old="{'logbook.core.EquipmentDataContractTest','logbook.internal.gui.EquipmentProjectionTest'}"
+          assert s.count(old)==1;s=s.replace(old,"{'logbook.core.EquipmentDataContractTest','logbook.internal.gui.EquipmentProjectionTest','logbook.internal.gui.EquipmentRemodelSchemaTest'}")
+          assert s.count('len(equipment_suites)==2')==1;s=s.replace('len(equipment_suites)==2','len(equipment_suites)==3')
+          assert s.count('equipment_test_count>=21')==1;s=s.replace('equipment_test_count>=21','equipment_test_count>=28');p.write_text(s)
+          p=Path('docs/maintenance/equipment-data-and-packaging-20261028.md')
+          with p.open('a',encoding='utf8') as out:
+              out.write('\n## 統合前の差分レビューで修正した点\n\n型名置換が改修資料の外部JSONキー `SlotItem` に及んでいた箇所を検出し、元のキーへ戻した。\n実際に画面が使用する読取処理へ7件の回帰試験を追加し、修正前は4件失敗・エラー0、\n同じ試験が修正後は全件成功することを確認した。重複時の後勝ち、欠損項目、\n不正JSON、リソースclose、不正な後続行より前に読んだデータを保持する従来動作も検査する。\n改修可能な曜日や資料自体を変更したものではない。全体CIには追加計28件の実行を要求する。\n')
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main/java/logbook/internal/gui/ItemItemController.java src/test/java/logbook/internal/gui/EquipmentRemodelSchemaTest.java scripts/verify_r3.sh docs/maintenance/equipment-data-and-packaging-20261028.md
+          git commit -m 'Preserve arsenal SlotItem wire key with seven before-after schema regressions'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain exact schema repair outcome without replacing earlier evidence
+        if: always()
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,xml.etree.ElementTree as E
+          report={'base':'6ec1e244a0d4aa09f6d2aa44e84f6e72dc31344e','production_accessed':False,'logs':{},'suites':[],'gui':{}}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):report['logs'][p.name]=p.read_text(errors='replace')[-14000:]
+              elif p.suffix=='.json':report[p.name]=json.loads(p.read_text())
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*Equipment*.xml'):
+              report['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('equipment-ui-fixture-*.json'):
+              report['gui'][p.name]=json.loads(p.read_text())
+          Path('.maintenance-evidence/equipment-remodel-repair.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/equipment-remodel-repair.json
+          git commit -m 'Retain before-after arsenal schema and actual product GUI verification'
+          git push origin HEAD:refs/heads/maintenance/equipment-data-worker-20261028
