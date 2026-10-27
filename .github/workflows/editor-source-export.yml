@@ -1,0 +1,28 @@
+name: Pinned editor source export (tooling only)
+on:
+  push:
+    branches: ['maintenance/editor-source-export-20261027']
+    paths: ['.github/workflows/editor-source-export.yml']
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: a094771d73ce420f2bd2ddf237e0c69cf2005067
+          persist-credentials: false
+      - run: |
+          mkdir evidence
+          git archive --format=zip HEAD > evidence/source.zip
+          git ls-files -s > evidence/tracked-blobs.txt
+          git rev-parse HEAD > evidence/commit.txt
+          (cd evidence && sha256sum source.zip > SHA256SUMS)
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: editor-pinned-source
+          path: evidence/
+          retention-days: 7
+          if-no-files-found: error
