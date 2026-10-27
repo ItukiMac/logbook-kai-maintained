@@ -1,0 +1,119 @@
+name: Jackson3 standalone and editor boundary fixes (tooling only)
+on:
+  push:
+    branches: ['maintenance/json3-io-contract-worker-20261027']
+    paths: ['.github/workflows/json3-boundary-final.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE: 6fbbd3ecf772a6f6fef473fce7535e7eac1f04a7
+      TARGET: maintenance/json3-modern-runtime-20261027
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+          persist-credentials: true
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 6fbbd3ecf772a6f6fef473fce7535e7eac1f04a7
+          path: candidate
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Apply four targeted corrections
+        working-directory: candidate
+        run: |
+          set -eu
+          mkdir -p ../evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          def edit(name,changes):
+              p=Path(name);raw=p.read_bytes();eol='\r\n' if b'\r\n' in raw else '\n';s=raw.decode().replace('\r\n','\n')
+              for old,new in changes:
+                  assert s.count(old)==1,(name,old,s.count(old));s=s.replace(old,new)
+              p.write_bytes(s.replace('\n',eol).encode())
+          edit('src/main/java/logbook/core/FeatureRegistry.java',[
+              ('ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()',
+               '// Preflight is intentionally usable without application implementation classes.\n            ObjectMapper mapper = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults()'),
+              ('catch (IOException | URISyntaxException error) {',
+               'catch (IOException | URISyntaxException | tools.jackson.core.JacksonException error) {')])
+          methods='''    /** Stable editor parsing boundary independent of the JSON engine exception hierarchy. */
+              static JsonNode parse(byte[] input) throws IOException {
+                  try { return mapper().readTree(input); }
+                  catch (tools.jackson.core.JacksonException error) {
+                      throw new IOException("任務設定のJSONを読み込めません。元ファイルは変更しません。", error);
+                  }
+              }
+
+              static JsonNode parse(String input) throws IOException {
+                  return parse(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+              }
+
+          '''
+          import textwrap
+          methods=textwrap.dedent(methods)
+          edit('src/main/java/logbook/internal/gui/QuestEditorDocument.java',[
+              ('    static Set<Integer> deckIds(String text) {',methods+'    static Set<Integer> deckIds(String text) {')])
+          edit('src/main/java/logbook/internal/gui/QuestConditionEditController.java',[
+              ('this.originalDocument = mapper.readTree(this.loadedBytes);',
+               'this.originalDocument = QuestEditorDocument.parse(this.loadedBytes);')])
+          edit('src/test/java/logbook/internal/gui/QuestEditorDocumentTest.java',[
+              ('return QuestEditorDocument.mapper().readTree(text);','return QuestEditorDocument.parse(text);')])
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          mvn -B -ntp test > ../evidence/tests.log 2>&1
+      - name: Publish only the tested targeted source correction
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git add src/main/java src/test/java
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Keep standalone feature preflight independent and preserve editor IOException parsing contract'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain concise test and resolved dependency evidence
+        if: always()
+        working-directory: candidate
+        run: |
+          mvn -B -ntp dependency:tree -DoutputType=json -DoutputFile=../evidence/dependencies.json > ../evidence/dependencies.log 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
+          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          failures=[{'class':s.get('name'),'test':t.get('name'),'trace':e.text} for s in suites for t in s.findall('testcase') for e in list(t.findall('failure'))+list(t.findall('error'))]
+          p=Path('../evidence');report={'totals':totals,'failures':failures}
+          report['build_errors']=[l for l in (p/'tests.log').read_text().splitlines() if '[ERROR]' in l][-30:] if (p/'tests.log').exists() else []
+          if (p/'source-commit.txt').exists():report['source_commit']=(p/'source-commit.txt').read_text().strip()
+          if (p/'dependencies.json').exists():report['dependencies']=json.loads((p/'dependencies.json').read_text())
+          dest=Path('../tooling/.maintenance-evidence');dest.mkdir(exist_ok=True)
+          (dest/'json3-boundary-final.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print('RESULT',totals,'failures',len(failures))
+          PY
+      - name: Store diagnostics separately from product code
+        if: always()
+        working-directory: tooling
+        run: |
+          git add .maintenance-evidence/json3-boundary-final.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Retain exact standalone-preflight/editor regression evidence'
+          git push origin "HEAD:refs/heads/maintenance/json3-io-contract-worker-20261027"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: json3-boundary-final-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+          retention-days: 14
