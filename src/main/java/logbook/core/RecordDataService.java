@@ -47,6 +47,11 @@ public final class RecordDataService {
     public static List<MissionRow> missions() {
         return MissionLogs.readSimpleLog(log -> true).stream().map(RecordDataService::copyMission).toList();
     }
+    public static List<MissionRow> missionsSince(ZonedDateTime exclusive) {
+        Objects.requireNonNull(exclusive);
+        return MissionLogs.readSimpleLog(log -> log.getDate().isAfter(exclusive)).stream()
+                .map(RecordDataService::copyMission).toList();
+    }
     public static List<DevelopmentRow> developments() {
         Path path = Path.of(AppConfig.get().getReportPath()).resolve(new CreateitemLogFormat().fileName());
         if (!Files.exists(path)) return List.of();

@@ -26,6 +26,9 @@ class RecordDataContractTest {
     static BattleRow row(String rank, String area, String boss) { return RecordDataService.copyBattle(raw(rank,area,boss)); }
 
     @Test void versionIsExplicit() { assertEquals(1,RecordDataV1.version()); }
+    @Test void boundedQueryRejectsAnUndefinedCutoffBeforeReading() {
+        assertThrows(NullPointerException.class, () -> RecordDataV1.missionsSince(null));
+    }
     @Test void publicValuesAreFinalAndContainNoMutableBeansOrJavafx() {
         for (Class<?> type : List.of(BattleRow.class, MissionRow.class, DevelopmentRow.class, BattleTotals.class, RecordedInteger.class)) {
             assertTrue(type.isRecord()); assertTrue(Modifier.isFinal(type.getModifiers()));

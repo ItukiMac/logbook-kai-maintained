@@ -98,6 +98,14 @@ public final class RecordUiProbe {
             catch (UnsupportedOperationException expected) { }
         }
         require(RecordDataV1.missions().size()==2 && RecordDataV1.developments().size()==2, "Record service results changed");
+        var cutoff = java.time.ZonedDateTime.of(2026,10,27,12,0,0,0,java.time.ZoneId.of("Asia/Tokyo"));
+        require(RecordDataV1.missionsSince(cutoff.minusSeconds(1)).size()==2, "Before boundary lost rows");
+        require(RecordDataV1.missionsSince(cutoff).size()==1, "Exclusive query included equal instant");
+        require(RecordDataV1.missionsSince(cutoff.plusSeconds(1)).isEmpty(), "After boundary retained old rows");
+        for (var rows : java.util.List.of(RecordDataV1.missionsSince(cutoff), RecordDataV1.developments())) {
+            try { rows.clear(); throw new AssertionError("Mutable mission/development snapshot"); }
+            catch (UnsupportedOperationException expected) { }
+        }
         try (URLClassLoader featureLoader = new URLClassLoader(
                 new java.net.URL[] {Path.of(args[1]).toUri().toURL()}, RecordUiProbe.class.getClassLoader())) {
             FutureTask<Void> task = new FutureTask<>(() -> {

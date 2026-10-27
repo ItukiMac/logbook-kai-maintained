@@ -406,7 +406,7 @@ public class MissionLogController extends FeatureUiV1.Window {
         // ログ読み込み制限
         ZonedDateTime limit = now.minusMonths(2);
 
-        List<MissionRow> all = RecordDataV1.missions().stream().filter(log -> log.getDate().compareTo(limit) > 0).toList();
+        List<MissionRow> all = RecordDataV1.missionsSince(limit);
         for (Period unit : Period.values()) {
             this.logMap.put(unit, all.stream()
                     .filter(log -> unit.accept(log.getDate(), now))

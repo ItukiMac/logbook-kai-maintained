@@ -27,6 +27,10 @@ public final class RecordDataV1 {
     public static List<BattleRow> battles(PeriodKey period) { return RecordDataService.battles(Objects.requireNonNull(period)); }
     public static Map<PeriodKey, List<BattleRow>> recentBattles() { return RecordDataService.recentBattles(); }
     public static List<MissionRow> missions() { return RecordDataService.missions(); }
+    /** Apply an exclusive instant cutoff before materializing retained rows. */
+    public static List<MissionRow> missionsSince(ZonedDateTime exclusive) {
+        return RecordDataService.missionsSince(Objects.requireNonNull(exclusive));
+    }
     public static List<DevelopmentRow> developments() { return RecordDataService.developments(); }
     public static Optional<DevelopmentRow> parseDevelopment(String line) { return RecordDataService.parseDevelopment(line); }
     public static BattleTotals summarizeBattles(List<BattleRow> rows, String area, boolean bossOnly) {
