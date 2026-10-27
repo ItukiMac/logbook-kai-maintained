@@ -167,7 +167,8 @@ class FeatureVersionIntegrationTest(unittest.TestCase):
             report = build(original, pristine, revision)
             self.assertEqual('logbook-feature-distribution-v2', report['format'])
             variants = [('A', '1.0.0', 1, 2), ('B', '1.1.0', 1, 3),
-                        ('C', '2.0.0', 2, 5), ('D', '1.2.0', 1, 4)]
+                        ('C', '2.0.0', 2, 5), ('D', '1.2.0', 1, 4),
+                        ('F', '1.0.0', 1, 4)]
             ids = {label: self.variant(pristine, base / label, version, api, multiplier, logs)
                    for label, version, api, multiplier in variants}
             # A self-consistent JSON contract can still contradict its executable
@@ -178,6 +179,17 @@ class FeatureVersionIntegrationTest(unittest.TestCase):
             with ZipFile(base / 'A' / CALCULATORS) as a, ZipFile(base / 'B' / CALCULATORS) as b:
                 controller = 'logbook/internal/gui/FeatureVersionFixtureController.class'
                 self.assertNotEqual(a.read(controller), b.read(controller), 'A/B must have distinct executable code')
+            with ZipFile(base / 'A' / CALCULATORS) as a, ZipFile(base / 'F' / CALCULATORS) as f:
+                self.assertNotEqual(a.read(controller), f.read(controller),
+                                    'Reused version F must contain different executable code from A')
+            m.bundle(base / 'F', ids['F'])  # Valid alone, but conflicts with retained A.
+            f_preflight = base / 'reused-version-preflight'
+            f_preflight.mkdir(); (f_preflight / 'home').mkdir()
+            f_classpath = os.pathsep.join(str(base / 'F' / name) for name in m.JARS)
+            f_result = self.run_checked(['java', '-Dlogbook.runtime.managedBundle=true',
+                '-Duser.home=' + str(f_preflight / 'home'), '-cp', f_classpath,
+                'logbook.core.FeatureBundlePreflight'], cwd=f_preflight, logs=logs)
+            self.assertIn('FEATURE_BUNDLE_PREFLIGHT_OK', f_result.stdout.splitlines())
             store = base / 'store'
             m.initialize(store); m.stage(store, base / 'A', ids['A']); m.activate(store, ids['A'], None)
             runtime = store / 'runtime'
@@ -249,6 +261,26 @@ class FeatureVersionIntegrationTest(unittest.TestCase):
             self.assertEqual(before_runtime, inventory(runtime))
             self.launch(store, '02-B', '1.1.0', 15, number, logs)
 
+            # F declares A's old version but computes input * 4. Compare against
+            # retained A even while B is selected; neither staging path may admit
+            # a second executable identity for that same core/module/version.
+            before_store = inventory(store)
+            before_entries = sorted(p.relative_to(store).as_posix() for p in store.rglob('*'))
+            for operation in ('stage-feature', 'stage'):
+                with self.assertRaisesRegex(ValueError, 'new module version', msg=operation):
+                    if operation == 'stage-feature':
+                        m.stage_feature(store, base / 'F', ids['F'], 'calculators', bid)
+                    else:
+                        m.stage(store, base / 'F', ids['F'])
+                self.assertEqual(before_store, inventory(store),
+                                 'Refused version reuse must preserve all store/runtime bytes')
+                self.assertEqual(before_entries, sorted(
+                    p.relative_to(store).as_posix() for p in store.rglob('*')),
+                    'Refused version reuse must not create a pending/history entry')
+            logs.append('FEATURE_VERSION_REUSE_REFUSED same_core=true version=1.0.0 '
+                        'different_bytecode=true single_stage=true whole_stage=true '
+                        'store_and_runtime_unchanged=true')
+
             before_runtime = inventory(runtime)
             with patch.object(m.os, 'replace', side_effect=OSError('synthetic selector interruption')):
                 with self.assertRaises(OSError):
@@ -276,10 +308,15 @@ class FeatureVersionIntegrationTest(unittest.TestCase):
                             calculations=[10, 15, 15, 10], launch_count=4,
                             refused_launch_count=1, executable_metadata_mismatch_refused=True,
                             incompatible_rejected_before_features=True, interrupted_stage_retained=True,
-                            failed_selector_retained=True, source_bytes_unchanged=True)
+                            failed_selector_retained=True, source_bytes_unchanged=True,
+                            historical_version_reuse_single_stage_refused=True,
+                            historical_version_reuse_whole_stage_refused=True,
+                            version_reuse_store_and_runtime_unchanged=True,
+                            reused_version_candidate_preflight_accepted=True)
             print('FEATURE_SINGLE_UPDATE_ROLLBACK_OK versions=1.0.0->1.1.0->1.0.0 '
                   'calculation=10,15,15,10 actual_menu_and_save=true incompatible_refused=true '
-                  'partial_failure_retained=true original_and_runtime_retained=true')
+                  'partial_failure_retained=true original_and_runtime_retained=true '
+                  'historical_version_reuse_refused=true')
         except BaseException as failure:
             evidence.update(result='failed', failure=repr(failure))
             raise

@@ -71,6 +71,36 @@ manifestのClass-Pathは空や折返し、CR改行、Unicode空白を含め拒�
 現版からコピーする。合成した全依存関係を再検証し、新しいmanifest SHAを版のIDとする。
 同じmodule版番号なのにbytesが変わる候補は拒否する。
 
+### 追加統合レビュー：履歴をまたぐ版番号再利用
+
+PR #54の[統合レビュー](https://github.com/ItukiMac/logbook-kai-maintained/pull/54#pullrequestreview-5661867968)
+に対応し、現選択版だけでなく、同じstoreに保存された全世代を照合する。
+キーは `(core SHA256, module ID, module version)`、内容identityはmodule JARのSHA256。
+A=1.0.0→B=1.1.0の後に、内容の違うC=1.0.0を登録することは拒否する。
+一度もactivateしていない保存版も対象となる。真正なAへの再stage・rollback、
+module bytesが同じで配布のsource revisionだけ異なる場合、別core SHAでの同版は許可する。
+
+検査はstoreのロック下で、`stage`、`stage-feature`、`activate`、`launch` の
+既存版/no-opを返す前に実施する。単一更新で照合するのは実際の合成結果であり、
+取込まない候補moduleの変更は登録しない。全体stage→activate経由も迂回にならない。
+旧ツール等で既に矛盾した版が同居するstoreは、新ツールでの起動も拒否する。
+
+過去identityは `versions/<manifest SHA>/distribution.json` のSHAとschemaから読む。
+候補と選択対象JARは従来どおり実bytesを完全検査するが、旧JARの破損を真正旧版への
+rollback拒否理由にはしない。旧manifestが整合していれば過去のidentityは確認できる。
+manifestの欠損/破損、履歴の不明schema・参照版欠損・途切れたchain・selectorとの矛盾は
+そのまま保持して拒否し、履歴の自動再構築や版identityの再登録はしない。
+
+selector置換前に保存される失敗intentは、同sequenceに複数残っていても許可する。
+ただしbeforeに記録された実選択stateはsequenceごとに一意で、currentより先へ進めない。
+selectorだけを過去stateへ戻した不整合も拒否する。未完成の `pending-*` は未登録の
+失敗証跡として保持し、そこから版を自動登録しない。
+
+この検査は管理対象storeに保持された証拠を使う。manager自身に版削除機能はない。
+一度もactivateしていない版を外部操作で痕跡ごと削除された場合、その過去の存在を
+既存formatだけから証明するものではない。新しい永続indexやstore format移行は追加しない。
+Bとの結合・歴史版移行試験は統合担当の残件として維持する。
+
 元配布、現版、旧版を上書きしない。新しい `versions/<SHA>/` を準備するだけで、
 stage時点ではselectorもruntimeも変わらない。`composition` に元一式・候補一式のSHA、
 候補source revision、更新moduleを記録する。合成配布の `source_revision` はcoreの由来を示し、
@@ -125,6 +155,10 @@ Class-PathのCR/NBSPとMulti-Releaseの実JDK解釈も再現したうえで拒�
 - 実小機能A=1.0.0/入力×2、B=1.1.0/入力×3、C=API2、E=JSON API1/実provider API2を別コンパイル。
   実Launcherとメニューから画面を開き、計算・保存結果10→15→15→10を検査する。
   C/Eの拒否、コピー途中失敗、selector置換失敗、一式Aへの復帰、元/旧版/設定/履歴/plugin保持も検査する。
+- 追加レビューではF=1.0.0/入力×4を別コンパイルし、F単体の実JVM preflightが通ること、
+  B選択後にはFの単一stage/全体stageを拒否し、store全体のbytesとentry一覧が不変なことを検査する。
+  旧managerでこの実fixtureが拒否されないREDも再現した。版管理単体は18件追加して計30件、
+  既存manager試験16件と合わせ、履歴越し再利用・no-op経由・不明履歴・真正復帰を検査する。
 - 基地・アイテム実画面は分割JARだけで実行し、制空42/半径5/しきい値126、所持12、表示切替、
   設定2件の保存・再読込、合成履歴保持を検査する。
 - 従来の同一コード世代印A→B→A試験も保持し、追加されたhost SHA pinに合わせて合成fixtureを更新。
