@@ -22,6 +22,11 @@ def preflight(snapshot_root, manifest_hash, *, restored_copy=None, limits=Limits
         blockers.append('config_unreadable_or_review_missing')
         references = []
     else:
+        # Java Config.read() can load a .backup when the primary is missing.
+        # An absent primary therefore cannot be treated as an empty, safe
+        # path inventory. Do NOT silently inspect or rewrite the backup here.
+        if review.get('config_present') is not True:
+            blockers.append('primary_config_missing_fallback_unreviewed')
         references = review.get('references', [])
         if not isinstance(references, list):
             blockers.append('invalid_reference_inventory');references=[]

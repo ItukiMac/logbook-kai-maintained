@@ -43,6 +43,19 @@ class MigrationPreflightTest(unittest.TestCase):
         self.assertTrue(report['restore_copy_verified'])
         (self.clone/'data/sortie-arrivals-v1/observed.json').write_text('tampered')
         with self.assertRaises(ValueError):preflight(self.snapshot,sha,restored_copy=self.clone,limits=self.limits)
+    def test_backup_only_config_is_a_blocker_not_a_clean_path_inventory(self):
+        (self.live/'config/logbook.bean.AppConfig.json.backup').write_text(
+            '{"reportPath":"/old-machine/private-logs"}')
+        sha=snapshot(self.live,self.snapshot,stopped=True,limits=self.limits)['manifest_sha256']
+        report=preflight(self.snapshot,sha,limits=self.limits)
+        self.assertIn('primary_config_missing_fallback_unreviewed',report['blockers'])
+        self.assertFalse(report['ready_for_launch'])
+        self.assertFalse(report['ready_for_production'])
+    def test_no_config_files_at_all_does_not_mean_safe_to_launch(self):
+        sha=snapshot(self.live,self.snapshot,stopped=True,limits=self.limits)['manifest_sha256']
+        report=preflight(self.snapshot,sha,limits=self.limits)
+        self.assertIn('primary_config_missing_fallback_unreviewed',report['blockers'])
+
     def test_wrong_manifest_hash_is_rejected(self):
         sha=self.capture({})
         with self.assertRaises(ValueError):preflight(self.snapshot,'0'*64,limits=self.limits)
