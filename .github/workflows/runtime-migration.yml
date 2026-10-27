@@ -93,7 +93,7 @@ jobs:
           assert discovered >= 5 and result.testsRun == discovered
           assert result.wasSuccessful() and not result.skipped, summary
           PY
-          grep 'RUNTIME_MIGRATION_DECLARED_VERSIONS_OK' target/verification/runtime-migration.log
+          grep 'RUNTIME_MIGRATION_DECLARED_VERSIONS_OK.*real_launcher=true' target/verification/runtime-migration.log
           grep 'real_launcher=true' target/verification/runtime-migration.log
           git diff --exit-code
       - uses: actions/upload-artifact@v7.0.2

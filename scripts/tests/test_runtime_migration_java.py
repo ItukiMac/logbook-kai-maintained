@@ -200,7 +200,8 @@ class RuntimeMigrationJavaTest(unittest.TestCase):
                                 new.read('logbook/internal/gui/QuestConditionEditController.class'))
         self.exercise_managed_pair(old_jar, new_jar, declared_versions=True)
         print('RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=' + OLD_REVISION + ' new=' + NEW_REVISION
-              + ' schema_conversion=false old_reader_new_writer_old_reader=true')
+              + ' schema_conversion=false old_reader_new_writer_old_reader=true'
+              + ' real_launcher=' + str(bool(os.environ.get('DISPLAY'))).lower())
 
     def exercise_managed_pair(self, old_jar, new_jar, *, declared_versions):
         import feature_bundle_manager as manager
@@ -234,7 +235,10 @@ class RuntimeMigrationJavaTest(unittest.TestCase):
         self.assertEqual(0, verified.returncode, verified.stdout + verified.stderr)
         whole = snapshot(old_store, self.base / 'whole-A', stopped=True, limits=LIMITS)
         old_store_inventory = inventory(old_store, LIMITS)
-        self.approved_launch(output, 'mutate', jar=new_jar)
+        use_launcher = declared_versions and bool(os.environ.get('DISPLAY'))
+        launched = self.approved_launch(output, 'launcher' if use_launcher else 'mutate', jar=new_jar)
+        if use_launcher:
+            self.assertIn('MIGRATION_REAL_LAUNCHER_OK', launched['stdout'])
         new_runtime = snapshot(runtime, self.base / 'changed-runtime', stopped=True, limits=LIMITS)
         new_store = self.base / 'store-B'
         managed.import_snapshot(self.base / 'changed-runtime', new_store, new_runtime['manifest_sha256'],
