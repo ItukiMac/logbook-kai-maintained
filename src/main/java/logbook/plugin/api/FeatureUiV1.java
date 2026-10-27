@@ -40,9 +40,36 @@ public final class FeatureUiV1 {
         FeatureUiBridgeV1.showWindow(fxml, owner, title, controller, window);
     }
 
+    /**
+     * Prepare a custom-root component using its owner's loader, not the host's
+     * loader. The absolute resource must belong to the calling component.
+     * Call setRoot/setController before load, as with a standard FXMLLoader.
+     * Invoke on the JavaFX application thread.
+     */
+    public static javafx.fxml.FXMLLoader componentLoader(Class<?> owner, String resource) throws IOException {
+        return FeatureUiBridgeV1.componentLoader(owner, resource);
+    }
+
+    /** Apply the host font/size preferences without exposing its loader implementation. */
+    public static javafx.scene.Parent applyGlobalStyles(javafx.scene.Parent root) {
+        return FeatureUiBridgeV1.applyGlobalStyles(root);
+    }
+
+    /** Tree layout only: existing width/order/sort keys are preserved; visibility is not invented. */
+    public static final class Trees {
+        private Trees() { }
+        public static void restoreLayout(javafx.scene.control.TreeTableView<?> table, String key) {
+            FeatureUiBridgeV1.restoreTree(table, key);
+        }
+    }
+
     /** Table helpers keep the existing persisted keys and shortcuts. */
     public static final class Tables {
         private Tables() { }
+
+        public static String columnName(TableColumn<?, ?> column) {
+            return FeatureUiBridgeV1.columnName(column);
+        }
 
         public static void setVisible(TableView<?> table, String key) {
             FeatureUiBridgeV1.restoreTable(table, key);
@@ -75,6 +102,12 @@ public final class FeatureUiV1 {
 
     public static final class Controls {
         private Controls() { }
+
+        /** Same modal confirmation and cancellation behavior as the host. Call on the FX thread. */
+        public static java.util.Optional<javafx.scene.control.ButtonType> alert(
+                javafx.scene.control.Alert.AlertType type, String title, String message, Stage owner) {
+            return FeatureUiBridgeV1.alert(type, title, message, owner);
+        }
 
         public static void setSplitWidth(SplitPane pane, String key) {
             FeatureUiBridgeV1.restoreSplit(pane, key);

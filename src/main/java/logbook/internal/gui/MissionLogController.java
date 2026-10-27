@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZoneId;
@@ -48,7 +50,7 @@ import logbook.internal.logger.LoggerHolder;
  * 遠征ログ
  *
  */
-public class MissionLogController extends WindowController {
+public class MissionLogController extends FeatureUiV1.Window {
 
     @FXML
     private SplitPane splitPane1;
@@ -85,7 +87,7 @@ public class MissionLogController extends WindowController {
 
     /** 行番号 */
     @FXML
-    private TableColumn<BattleLogDetail, Integer> row;
+    private TableColumn<MissionLogDetail, Integer> row;
 
     /** 日付 */
     @FXML
@@ -161,14 +163,14 @@ public class MissionLogController extends WindowController {
 
     @FXML
     void initialize() {
-        TableTool.setVisible(this.detail, this.getClass() + "#" + "detail");
-        TableTool.setVisible(this.aggregate, this.getClass() + "#" + "aggregate");
+        FeatureUiV1.Tables.setVisible(this.detail, this.getClass() + "#" + "detail");
+        FeatureUiV1.Tables.setVisible(this.aggregate, this.getClass() + "#" + "aggregate");
         // SplitPaneの分割サイズ
         Timeline x = new Timeline();
         x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-            Tools.Controls.setSplitWidth(this.splitPane1, this.getClass() + "#" + "splitPane1");
-            Tools.Controls.setSplitWidth(this.splitPane2, this.getClass() + "#" + "splitPane2");
-            Tools.Controls.setSplitWidth(this.splitPane3, this.getClass() + "#" + "splitPane3");
+            FeatureUiV1.Controls.setSplitWidth(this.splitPane1, this.getClass() + "#" + "splitPane1");
+            FeatureUiV1.Controls.setSplitWidth(this.splitPane2, this.getClass() + "#" + "splitPane2");
+            FeatureUiV1.Controls.setSplitWidth(this.splitPane3, this.getClass() + "#" + "splitPane3");
         }));
         x.play();
 
@@ -185,9 +187,9 @@ public class MissionLogController extends WindowController {
         this.detail.setItems(sortedList);
         sortedList.comparatorProperty().bind(this.detail.comparatorProperty());
         this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        this.detail.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+        this.detail.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
 
-        this.row.setCellFactory(TableTool.getRowCountCellFactory());
+        this.row.setCellFactory(FeatureUiV1.Tables.getRowCountCellFactory());
         this.date.setCellValueFactory(new PropertyValueFactory<>("date"));
         this.name.setCellValueFactory(new PropertyValueFactory<>("name"));
         this.result.setCellValueFactory(new PropertyValueFactory<>("result"));
@@ -205,7 +207,7 @@ public class MissionLogController extends WindowController {
         this.aggregate.setItems(sortedList2);
         sortedList2.comparatorProperty().bind(this.aggregate.comparatorProperty());
         this.aggregate.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        this.aggregate.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+        this.aggregate.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
         this.resource.setCellValueFactory(new PropertyValueFactory<>("resource"));
         this.count.setCellValueFactory(new PropertyValueFactory<>("count"));
         this.average.setCellValueFactory(new PropertyValueFactory<>("average"));
@@ -214,7 +216,7 @@ public class MissionLogController extends WindowController {
         this.setCollect();
 
         this.collect.setSortPolicy((params) -> sortCollect(params.getSortOrder(), this.collect.getRoot().getChildren()));
-        TreeTableTool.setVisible(this.collect, this.getClass() + "#" + "collect");
+        FeatureUiV1.Trees.restoreLayout(this.collect, this.getClass() + "#" + "collect");
 
         // 選択された時のリスナーを設定
         this.collect.getSelectionModel()
@@ -256,18 +258,18 @@ public class MissionLogController extends WindowController {
     
     @FXML
     void copyDetail(ActionEvent event) {
-        TableTool.selectionCopy(this.detail);
+        FeatureUiV1.Tables.selectionCopy(this.detail);
     }
 
     @FXML
     void selectAllDetail(ActionEvent event) {
-        TableTool.selectAll(this.detail);
+        FeatureUiV1.Tables.selectAll(this.detail);
     }
 
     @FXML
     void columnVisibleDetail(ActionEvent event) {
         try {
-            TableTool.showVisibleSetting(this.detail, this.getClass() + "#" + "detail",
+            FeatureUiV1.Tables.showVisibleSetting(this.detail, this.getClass() + "#" + "detail",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
@@ -276,18 +278,18 @@ public class MissionLogController extends WindowController {
 
     @FXML
     void copyAggregate(ActionEvent event) {
-        TableTool.selectionCopy(this.aggregate);
+        FeatureUiV1.Tables.selectionCopy(this.aggregate);
     }
 
     @FXML
     void selectAllAggregate(ActionEvent event) {
-        TableTool.selectAll(this.aggregate);
+        FeatureUiV1.Tables.selectAll(this.aggregate);
     }
 
     @FXML
     void columnVisibleAggregate(ActionEvent event) {
         try {
-            TableTool.showVisibleSetting(this.aggregate, this.getClass() + "#" + "aggregate",
+            FeatureUiV1.Tables.showVisibleSetting(this.aggregate, this.getClass() + "#" + "aggregate",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);

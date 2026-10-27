@@ -27,6 +27,32 @@ public final class FeatureUiBridgeV1 {
                 controller == null ? null : value -> controller.accept((FeatureUiV1.Window) value), window);
     }
 
+    public static javafx.fxml.FXMLLoader componentLoader(Class<?> owner, String resource) throws IOException {
+        java.util.Objects.requireNonNull(owner, "component owner");
+        if (resource == null || !resource.startsWith("/"))
+            throw new IOException("An absolute component resource is required");
+        var url = owner.getResource(resource);
+        if (url == null) throw new IOException("Missing component resource: " + resource);
+        var loader = InternalFXMLLoader.load(url);
+        loader.setClassLoader(owner.getClassLoader());
+        return loader;
+    }
+
+    public static javafx.scene.Parent applyGlobalStyles(javafx.scene.Parent root) {
+        return InternalFXMLLoader.setGlobal(root);
+    }
+
+    public static void restoreTree(javafx.scene.control.TreeTableView<?> table, String key) {
+        TreeTableTool.setVisible(table, key);
+    }
+
+    public static String columnName(TableColumn<?, ?> column) { return Tools.Tables.getColumnName(column); }
+
+    public static java.util.Optional<javafx.scene.control.ButtonType> alert(
+            javafx.scene.control.Alert.AlertType type, String title, String message, Stage owner) {
+        return Tools.Controls.alert(type, title, message, owner);
+    }
+
     public static void restoreTable(TableView<?> table, String key) { TableTool.setVisible(table, key); }
     public static void selectionCopy(TableView<?> table) { TableTool.selectionCopy(table); }
     public static void selectAll(TableView<?> table) { TableTool.selectAll(table); }

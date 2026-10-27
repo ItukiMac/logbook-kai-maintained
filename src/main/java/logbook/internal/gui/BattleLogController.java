@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import logbook.bean.AppViewConfig;
 import logbook.bean.AppViewConfig.BattleLogConfig;
-import logbook.bean.BattleLog;
+import logbook.plugin.api.RecordViewsV1;
 import logbook.internal.Tuple;
 import logbook.internal.Tuple.Triplet;
 import logbook.internal.kancolle.BattleLogs;
@@ -71,7 +73,7 @@ import logbook.internal.util.ToStringConverter;
  * 戦闘ログのUIコントローラー
  *
  */
-public class BattleLogController extends WindowController {
+public class BattleLogController extends FeatureUiV1.Window {
 
     @FXML
     private SplitPane splitPane1;
@@ -258,13 +260,13 @@ public class BattleLogController extends WindowController {
     @FXML
     void initialize() {
         try {
-            TableTool.setVisible(this.detail, this.getClass().toString() + "#" + "detail");
-            TableTool.setVisible(this.aggregate, this.getClass().toString() + "#" + "aggregate");
+            FeatureUiV1.Tables.setVisible(this.detail, this.getClass().toString() + "#" + "detail");
+            FeatureUiV1.Tables.setVisible(this.aggregate, this.getClass().toString() + "#" + "aggregate");
             // SplitPaneの分割サイズ
             Timeline x = new Timeline();
             x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-                Tools.Controls.setSplitWidth(this.splitPane1, this.getClass() + "#" + "splitPane1");
-                Tools.Controls.setSplitWidth(this.splitPane2, this.getClass() + "#" + "splitPane2");
+                FeatureUiV1.Controls.setSplitWidth(this.splitPane1, this.getClass() + "#" + "splitPane1");
+                FeatureUiV1.Controls.setSplitWidth(this.splitPane2, this.getClass() + "#" + "splitPane2");
             }));
             x.play();
             // 統計
@@ -290,16 +292,10 @@ public class BattleLogController extends WindowController {
                 r.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2 && (!r.isEmpty())) {
                         BattleLogDetail d = r.getItem();
-                        BattleLog log = BattleLogs.read(d.getDate());
-                        if (log != null) {
-                            try {
-                                InternalFXMLLoader.showWindow("logbook/gui/battle_detail.fxml", this.getWindow(),
-                                        "戦闘ログ", c -> {
-                                            ((BattleDetail) c).setData(log);
-                                        }, null);
-                            } catch (Exception ex) {
-                                LoggerHolder.get().error("詳細の表示に失敗しました", ex);
-                            }
+                        try {
+                            RecordViewsV1.showBattleDetail(d.getDate(), this.getWindow(), "戦闘ログ");
+                        } catch (Exception ex) {
+                            LoggerHolder.get().error("詳細の表示に失敗しました", ex);
                         }
                     }
                 });
@@ -310,9 +306,9 @@ public class BattleLogController extends WindowController {
             this.detail.setItems(sortedDetails);
             sortedDetails.comparatorProperty().bind(this.detail.comparatorProperty());
             this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.detail.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.detail.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
 
-            this.row.setCellFactory(TableTool.getRowCountCellFactory());
+            this.row.setCellFactory(FeatureUiV1.Tables.getRowCountCellFactory());
             this.date.setCellValueFactory(new PropertyValueFactory<>("date"));
             this.area.setCellValueFactory(new PropertyValueFactory<>("area"));
             this.cell.setCellValueFactory(new PropertyValueFactory<>("cell"));
@@ -387,7 +383,7 @@ public class BattleLogController extends WindowController {
 
             // 集計
             this.aggregate.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.aggregate.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.aggregate.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
             // 種類
             this.type.setCellValueFactory(new PropertyValueFactory<>("name"));
             // 合計
@@ -405,7 +401,7 @@ public class BattleLogController extends WindowController {
 
             loadConfig();
 
-            TreeTableTool.setVisible(this.collect, this.getClass().toString() + "#" + "collect");
+            FeatureUiV1.Trees.restoreLayout(this.collect, this.getClass().toString() + "#" + "collect");
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
@@ -566,7 +562,7 @@ public class BattleLogController extends WindowController {
 
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.getDialogPane().getStylesheets().add("logbook/gui/application.css");
-        InternalFXMLLoader.setGlobal(alert.getDialogPane());
+        FeatureUiV1.applyGlobalStyles(alert.getDialogPane());
         alert.initOwner(this.getWindow());
         alert.setTitle("集計の追加");
         alert.setDialogPane(dialog);
@@ -588,7 +584,7 @@ public class BattleLogController extends WindowController {
     void removeUnitAction(ActionEvent event) {
         TreeItem<BattleLogCollect> item = this.collect.getSelectionModel().getSelectedItem();
         if (item != null && this.userUnit.contains(item.getValue().getCollectUnit()) && this.collect.getRoot().getChildren().contains(item)) {
-            Tools.Controls.alert(Alert.AlertType.CONFIRMATION, "削除", "集計("+item.getValue().getUnit()+")を削除してよろしいですか？", this.getWindow())
+            FeatureUiV1.Controls.alert(Alert.AlertType.CONFIRMATION, "削除", "集計("+item.getValue().getUnit()+")を削除してよろしいですか？", this.getWindow())
                     .filter(op -> op == ButtonType.OK)
                     .ifPresent(type -> {
                         this.collect.getRoot().getChildren().remove(item);
@@ -605,7 +601,7 @@ public class BattleLogController extends WindowController {
      */
     @FXML
     void copyDetail() {
-        TableTool.selectionCopy(this.detail);
+        FeatureUiV1.Tables.selectionCopy(this.detail);
     }
 
     /**
@@ -613,7 +609,7 @@ public class BattleLogController extends WindowController {
      */
     @FXML
     void selectAllDetail() {
-        TableTool.selectAll(this.detail);
+        FeatureUiV1.Tables.selectAll(this.detail);
     }
 
     /**
@@ -622,7 +618,7 @@ public class BattleLogController extends WindowController {
     @FXML
     void columnVisibleDetail() {
         try {
-            TableTool.showVisibleSetting(this.detail, this.getClass().toString() + "#" + "detail", this.getWindow());
+            FeatureUiV1.Tables.showVisibleSetting(this.detail, this.getClass().toString() + "#" + "detail", this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
@@ -633,7 +629,7 @@ public class BattleLogController extends WindowController {
      */
     @FXML
     void copyAggregate() {
-        TableTool.selectionCopy(this.aggregate);
+        FeatureUiV1.Tables.selectionCopy(this.aggregate);
     }
 
     /**
@@ -641,7 +637,7 @@ public class BattleLogController extends WindowController {
      */
     @FXML
     void selectAllAggregate() {
-        TableTool.selectAll(this.aggregate);
+        FeatureUiV1.Tables.selectAll(this.aggregate);
     }
 
     /**
@@ -650,7 +646,7 @@ public class BattleLogController extends WindowController {
     @FXML
     void columnVisibleAggregate() {
         try {
-            TableTool.showVisibleSetting(this.aggregate, this.getClass().toString() + "#" + "aggregate",
+            FeatureUiV1.Tables.showVisibleSetting(this.aggregate, this.getClass().toString() + "#" + "aggregate",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
@@ -799,7 +795,7 @@ public class BattleLogController extends WindowController {
     private <S, T> FilterColumn<S, T> addFilterColumn(TableView<S> table, TableColumn<S, T> column,
             ListChangeListener<Object> listener, Function<S, T> getter, Comparator<T> comparator) {
         VBox box = new VBox();
-        box.getChildren().add(new Label(Tools.Tables.getColumnName(column)));
+        box.getChildren().add(new Label(FeatureUiV1.Tables.columnName(column)));
         CheckComboBox<T> comboBox = new CheckComboBox<>();
         comboBox.setConverter(new ToStringConverter<>(v -> {
             String str = v.toString();
@@ -913,7 +909,7 @@ public class BattleLogController extends WindowController {
      * 列を集計対象に追加する
      */
     private void addAggregate(TableColumn<BattleLogDetail, ?> column, Function<BattleLogDetail, ?> getter) {
-        String name = Tools.Tables.getColumnName(column);
+        String name = FeatureUiV1.Tables.columnName(column);
         this.aggregateType.getItems().add(name);
         this.aggregateTypeMap.put(name, getter);
     }
@@ -967,7 +963,7 @@ public class BattleLogController extends WindowController {
 
         public UnitDialog() {
             try {
-                FXMLLoader loader = InternalFXMLLoader.load("logbook/gui/battlelog_dialog.fxml");
+                FXMLLoader loader = FeatureUiV1.componentLoader(getClass(), "/logbook/gui/battlelog_dialog.fxml");
                 loader.setRoot(this);
                 loader.setController(this);
                 loader.load();
