@@ -1,0 +1,47 @@
+{
+  "checked_at": "2026-10-27",
+  "base": "51702c5f1db806ccf62a011b7b2f27a478f557b1",
+  "changes": [
+    {
+      "id": 257,
+      "path": "src/main/resources/logbook/quest/257.json",
+      "before_sha256": "9238bac4d911220a3e8bf7dace91ce0089f13be6e6841f10c821858e75fa6150",
+      "after_sha256": "217bb4c2a60beb613397d9663dd54d6f6abfa5521163fa75635f359af48b170a",
+      "field": "filter.fleet.conditions: DD maximum",
+      "before": "not bounded",
+      "after": "count<=5",
+      "sources": [
+        {
+          "url": "https://wikiwiki.jp/kancolle/任務/出撃定期",
+          "displayed_modified": "2026-07-04",
+          "locator": "Bm3",
+          "observation": "CL1..3 including flagship, DD3..5; retreat disqualifies."
+        },
+        {
+          "url": "https://zekamashi.net/kancolle-kouryaku/suiraisentai-nansei/",
+          "displayed_modified": "2023-11-13",
+          "locator": "任務情報",
+          "observation": "CL flagship1..3; DD3..5;1-4S once; retreat disqualifies."
+        }
+      ],
+      "whole_rule_verified": false,
+      "unresolved": [
+        "Exact total fleet size; native retreat/acceptance and game-side behavior."
+      ]
+    }
+  ],
+  "not_changed": [
+    {
+      "ids": [
+        436,
+        437
+      ],
+      "reason": "Designated Zekamashi expedition articles still mark additional composition requirements as questions, not confirmed rules. No speculative predicate added.",
+      "sources": [
+        "https://zekamashi.net/kancolle-kouryaku/rensyuu-keibi/",
+        "https://zekamashi.net/kancolle-kouryaku/ogasawaraoki-syoukai/"
+      ]
+    }
+  ],
+  "evidence_kind": "Manual reading of retrieved pages; not signed raw capture or live-game certification."
+}

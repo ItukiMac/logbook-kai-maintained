@@ -35,6 +35,7 @@ assert totals['tests']>=187 and totals['failures']==totals['errors']==0 and tota
 assert all(int(s.get('skipped',0))==0 or s.get('name')=='logbook.core.PublicDataReleaseIntegrationTest' for s in suites)
 assert 'SPLIT_GUI_OK features=7 windows=8' in (p/'split-gui.log').read_text()
 assert 'ISOLATED_TYPED_VALIDATION_OK files=152' in (p/'stage-java.log').read_text()
+assert 'RUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2' in (p/'python-scripts.log').read_text()
 audit=json.loads((p/'json-audit.json').read_text());assert audit['complete'] and audit['counts']['validated']==152
 review=json.loads((p/'review-ledger.json').read_text());assert review['definitions']==148 and not review['complete'] and review['whole_rule_verified']==0
 assert review['field_comparisons']==76
