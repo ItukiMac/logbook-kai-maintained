@@ -1,0 +1,36 @@
+name: Integration source bundle (tooling only)
+on:
+  push:
+    branches: ['integration/source-bundle-20261027']
+    paths: ['.github/workflows/integration-source-bundle.yml']
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ef43b7de77552c87bf77126554e0cd8c2fac8190
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Export only selected source refs and their Git history
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir evidence
+          git branch integration-base ef43b7de77552c87bf77126554e0cd8c2fac8190
+          for number in 49 51 52 53 54; do
+            git fetch origin "refs/pull/$number/head:refs/heads/source-pr$number"
+          done
+          git for-each-ref --format='%(refname) %(objectname)' refs/heads/integration-base refs/heads/source-pr* > evidence/refs.txt
+          git bundle create evidence/sources.bundle refs/heads/integration-base refs/heads/source-pr49 refs/heads/source-pr51 refs/heads/source-pr52 refs/heads/source-pr53 refs/heads/source-pr54
+          git bundle verify evidence/sources.bundle
+          (cd evidence && sha256sum sources.bundle > SHA256SUMS)
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: integration-source-histories
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error
