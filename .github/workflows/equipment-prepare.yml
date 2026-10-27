@@ -1,0 +1,60 @@
+name: Equipment architecture preparation (tooling only)
+on:
+  push:
+    branches: ['maintenance/equipment-data-worker-20261028']
+    paths: ['.github/workflows/equipment-prepare.yml']
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ccb680c356358f8dedc6c606b627b3da38da96b9
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Apply reviewed changes to an isolated pinned checkout and compile
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = ccb680c356358f8dedc6c606b627b3da38da96b9
+          python3 ../tooling/.maintenance-tools/apply_equipment_data.py > ../evidence/data.log 2>&1
+          python3 ../tooling/.maintenance-tools/apply_equipment_ui.py > ../evidence/ui.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          mvn -B -ntp -DskipTests package > ../evidence/build.log 2>&1
+      - name: Preserve bounded outcome and inspect unchanged host image helpers
+        if: always()
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          result={'base':'ccb680c356358f8dedc6c606b627b3da38da96b9','production_accessed':False,'full_regression_verified':False,'logs':{},'host_methods':{}}
+          for p in Path('../evidence').glob('*.log'):
+              lines=p.read_text(errors='replace').splitlines()
+              result['logs'][p.name]={'tail':lines[-30:],'errors':[s for s in lines if '[ERROR]' in s]}
+          for name,terms in {'Ships.java':['shipWithItemImage','toName'],'Items.java':['itemImage']}.items():
+              p=Path('../candidate/src/main/java/logbook/internal/kancolle')/name
+              lines=p.read_text().splitlines();indices=set()
+              for i,line in enumerate(lines):
+                  if any(re.search(r'(public|private).*\b'+term+r'\(',line) for term in terms):indices.update(range(i,min(len(lines),i+65)))
+              result['host_methods'][name]='\n'.join(f'{i+1}: {lines[i]}' for i in sorted(indices))
+          Path('.maintenance-evidence').mkdir(exist_ok=True)
+          Path('.maintenance-evidence/equipment-prepare.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/equipment-prepare.json
+          git commit -m 'Retain equipment compile and host-boundary inspection evidence; no product push'
+          git push origin HEAD:refs/heads/maintenance/equipment-data-worker-20261028
