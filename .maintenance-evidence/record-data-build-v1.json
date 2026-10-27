@@ -1,0 +1,31 @@
+{
+  "base": "eb0bf6a0fa56d35877f332536551361a5de7b996",
+  "production_accessed": false,
+  "full_regression_verified": false,
+  "logs": {
+    "tests-apply.log": {
+      "tail": "Traceback (most recent call last):\n  File \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/../tooling/.maintenance-tools/add_record_tests.py\", line 12, in <module>\n    edit('src/main/java/logbook/internal/gui/MissionRecordCollect.java',lambda s:s.replace('CollectPeriod','CollectUnit'))\n  File \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/../tooling/.maintenance-tools/add_record_tests.py\", line 7, in edit\n    p=Path(path);old=p.read_text();value=fn(old);assert old!=value,path;p.write_text(value)\n                                                        ^^^^^^^^^^\nAssertionError: src/main/java/logbook/internal/gui/MissionRecordCollect.java\n",
+      "errors": []
+    },
+    "apply.log": {
+      "tail": "RECORD_DATA_APPLIED 12 files; legacy APIs retained; original files not accessed\n",
+      "errors": []
+    }
+  },
+  "suites": [],
+  "gui_reports": {},
+  "changed-paths.json": [
+    "src/main/java/logbook/plugin/api/RecordDataV1.java",
+    "src/main/java/logbook/core/RecordDataService.java",
+    "src/main/java/logbook/internal/kancolle/BattleLogs.java",
+    "src/main/java/logbook/internal/gui/MainMenuController.java",
+    "src/main/java/logbook/internal/gui/BattleRecordCollect.java",
+    "src/main/java/logbook/internal/gui/BattleRecordDetail.java",
+    "src/main/java/logbook/internal/gui/MissionRecordCollect.java",
+    "src/main/java/logbook/internal/gui/MissionRecordDetail.java",
+    "src/main/java/logbook/internal/gui/BattleLogController.java",
+    "src/main/java/logbook/internal/gui/MissionLogController.java",
+    "src/main/java/logbook/internal/gui/CreateItemController.java",
+    "scripts/tests/test_record_ui_integration.py"
+  ]
+}
