@@ -2,7 +2,7 @@ name: Isolated Jackson3 source migration (tooling only)
 on:
   push:
     branches: ['maintenance/modernization-inputs-20261027']
-    paths: ['.maintenance-transfers/modernize_json.py', '.github/workflows/modernize-json-worker.yml']
+    paths: ['.maintenance-transfers/*.py', '.github/workflows/modernize-json-worker.yml']
 permissions:
   contents: write
 concurrency:
@@ -39,6 +39,7 @@ jobs:
           test -z "$(git status --porcelain)"
           mkdir -p ../evidence
           python3 ../tooling/.maintenance-transfers/modernize_json.py . > ../evidence/migration.log
+          python3 ../tooling/.maintenance-transfers/json3_corrections.py .
           git add src/main/java src/test/java scripts/java/ArrivalArchiveProbe.java pom.xml
           git -c core.whitespace=cr-at-eol diff --cached --check
           git diff --cached > ../evidence/source.patch
