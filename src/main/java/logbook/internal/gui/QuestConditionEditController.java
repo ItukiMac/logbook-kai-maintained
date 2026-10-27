@@ -61,8 +61,8 @@ public class QuestConditionEditController extends WindowController {
     @FXML private TextField filterDeckIds;
     @FXML private CheckBox filterNoRetreat;
     @FXML private Label editNotice;
-    private com.fasterxml.jackson.databind.JsonNode originalDocument;
-    private com.fasterxml.jackson.databind.JsonNode loadedForm;
+    private tools.jackson.databind.JsonNode originalDocument;
+    private tools.jackson.databind.JsonNode loadedForm;
     private byte[] loadedBytes;
     private boolean loadFailed;
     private boolean arrivalAreaConflict;
@@ -195,10 +195,10 @@ public class QuestConditionEditController extends WindowController {
         try {
             this.loadedBytes = logbook.internal.util.QuestDocumentStore.read(file);
             if (this.loadedBytes == null) return;
-            com.fasterxml.jackson.databind.ObjectMapper mapper = QuestEditorDocument.mapper();
-            this.originalDocument = mapper.readTree(this.loadedBytes);
+            tools.jackson.databind.ObjectMapper mapper = QuestEditorDocument.mapper();
+            this.originalDocument = QuestEditorDocument.parse(this.loadedBytes);
             QuestEditorDocument.validate(this.originalDocument);
-            mapper.disable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            mapper = mapper.rebuild().disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).build();
 
             // Register MixIns to safely ignore unknown properties or handle specific fields
             // if necessary
@@ -1009,16 +1009,17 @@ public class QuestConditionEditController extends WindowController {
             return condition;
     }
 
-    private static com.fasterxml.jackson.databind.ObjectMapper formMapper() {
+    private static tools.jackson.databind.ObjectMapper formMapper() {
         var mapper = QuestEditorDocument.mapper();
-        mapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
-        mapper.addMixIn(logbook.bean.AppQuestCondition.FleetCondition.class, FleetConditionMixin.class);
-        mapper.addMixIn(logbook.bean.AppQuestCondition.Condition.class, ConditionMixin.class);
-        mapper.addMixIn(logbook.bean.AppQuestCondition.class, AppQuestConditionMixin.class);
+        mapper = mapper.rebuild().changeDefaultPropertyInclusion(value -> com.fasterxml.jackson.annotation.JsonInclude.Value.construct(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL, com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)).build();
+        mapper = mapper.rebuild().addMixIn(logbook.bean.AppQuestCondition.FleetCondition.class, FleetConditionMixin.class).build();
+        mapper = mapper.rebuild().addMixIn(logbook.bean.AppQuestCondition.Condition.class, ConditionMixin.class).build();
+        mapper = mapper.rebuild().addMixIn(logbook.bean.AppQuestCondition.class, AppQuestConditionMixin.class).build();
         return mapper;
     }
 
     java.nio.file.Path saveDocument() throws java.io.IOException {
+        try {
         if (this.loadFailed) throw new java.io.IOException("読込失敗のため保存を中止しました。");
         var currentForm = formMapper().valueToTree(this.readForm());
         var output = this.originalDocument == null ? currentForm
@@ -1035,6 +1036,9 @@ public class QuestConditionEditController extends WindowController {
         this.originalDocument = output.deepCopy();
         this.loadedForm = currentForm.deepCopy();
         return backup;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     @FXML

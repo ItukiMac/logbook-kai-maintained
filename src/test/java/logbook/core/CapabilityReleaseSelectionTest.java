@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 class CapabilityReleaseSelectionTest {
-    static final ObjectMapper JSON = new ObjectMapper();
+    static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     private Map<String,String> asset(String name) {
         return Map.of("name", name, "digest", "sha256:" + "a".repeat(64), "browser_download_url",
                 "https://github.com/ItukiMac/logbook-kai-maintained/releases/download/data-v2026.10.26/" + name);

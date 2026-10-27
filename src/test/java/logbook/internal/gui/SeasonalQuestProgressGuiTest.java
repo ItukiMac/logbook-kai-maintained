@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.function.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 @EnabledIfSystemProperty(named="logbook.gui.tests", matches="true")
 @Timeout(30)
 class SeasonalQuestProgressGuiTest {
-    static final ObjectMapper JSON = new ObjectMapper();
+    static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     static final byte[] RULE = "{\"type\":\"出撃\",\"resetType\":\"ウィークリー\",\"conditions\":[{\"rank\":[\"S\"],\"count\":1}]}".getBytes(StandardCharsets.UTF_8);
     @BeforeAll static void startFx() throws Exception {
         var ready = new CountDownLatch(1);

@@ -9,10 +9,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.*;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.*;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Immutable observation checkpoints, separate from credited arrivals. Each JST day is an
@@ -28,9 +28,7 @@ final class PortArrivalJournal {
     private static final int MAX_DAYS = 8_000;
     private static final Set<String> FIELDS = Set.of("format", "sequence", "previousDigest", "kind",
             "observedAt", "payload", "reason", "digest");
-    private static final ObjectMapper JSON = new ObjectMapper()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     private final Path root;
 
     record Entry(long sequence, String previousDigest, String kind, long observedAt,
@@ -80,6 +78,7 @@ final class PortArrivalJournal {
      * interrupted write is never removed or replaced.
      */
     Entry append(Entry expectedLast, String kind, long observedAt, JsonNode payload, String reason) throws IOException {
+        try {
         validateText(kind, reason);
         if (observedAt <= 0) throw new IOException("Invalid tracking observation time");
         // valueToTree can produce a LongNode(0) that parses as IntNode(0). Normalize through
@@ -134,6 +133,9 @@ final class PortArrivalJournal {
                 throw new IOException("Tracking journal is already being written", e);
             }
         }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private List<Entry> readDay(Path day) throws IOException {
@@ -167,6 +169,7 @@ final class PortArrivalJournal {
     }
 
     private static Entry read(Path file) throws IOException {
+        try {
         regular(file);
         byte[] bytes;
         try (var input = Files.newInputStream(file, LinkOption.NOFOLLOW_LINKS)) {
@@ -175,7 +178,7 @@ final class PortArrivalJournal {
         if (bytes.length > MAX_BYTES) throw new IOException("Tracking checkpoint exceeds size limit");
         JsonNode tree = JSON.readTree(bytes);
         if (tree == null || !tree.isObject()) throw new IOException("Invalid tracking checkpoint object");
-        Set<String> keys = new HashSet<>(); tree.fieldNames().forEachRemaining(keys::add);
+        Set<String> keys = new HashSet<>(); tree.propertyNames().iterator().forEachRemaining(keys::add);
         if (!keys.equals(FIELDS) || !tree.get("format").isTextual() || !FORMAT.equals(tree.get("format").textValue()))
             throw new IOException("Unknown tracking checkpoint format or fields");
         if (!tree.get("sequence").isIntegralNumber() || !tree.get("sequence").canConvertToLong()
@@ -192,6 +195,9 @@ final class PortArrivalJournal {
                 || !value.digest().matches("[0-9a-f]{64}") || !value.digest().equals(digest(value)))
             throw new IOException("Invalid or corrupted tracking checkpoint");
         return value;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static void validateText(String kind, String reason) throws IOException {
@@ -210,9 +216,13 @@ final class PortArrivalJournal {
 
     private static String digest(Entry value) throws IOException {
         try {
+        try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
                     .digest(JSON.writeValueAsBytes(document(value, false))));
         } catch (NoSuchAlgorithmException e) { throw new IOException("SHA-256 unavailable", e); }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static String date(long time) throws IOException {

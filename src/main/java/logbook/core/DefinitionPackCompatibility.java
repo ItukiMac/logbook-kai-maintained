@@ -3,7 +3,7 @@ package logbook.core;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 /** Versioned, fail-closed format gate. Old hosts reject V2 at their existing format check. */
 final class DefinitionPackCompatibility {

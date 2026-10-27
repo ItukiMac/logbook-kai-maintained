@@ -3,23 +3,33 @@ package logbook.internal.gui;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 /** Patch explicit form edits into the original tree; never serialize away hidden conditions. */
 final class QuestEditorDocument {
     private QuestEditorDocument() { }
 
     static ObjectMapper mapper() {
-        return new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS)
-                .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-                .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+        return logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     }
+
+/** Stable editor parsing boundary independent of the JSON engine exception hierarchy. */
+static JsonNode parse(byte[] input) throws IOException {
+    try { return mapper().readTree(input); }
+    catch (tools.jackson.core.JacksonException error) {
+        throw new IOException("任務設定のJSONを読み込めません。元ファイルは変更しません。", error);
+    }
+}
+
+static JsonNode parse(String input) throws IOException {
+    return parse(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+}
 
     static Set<Integer> deckIds(String text) {
         if (text == null || text.isBlank()) return null;
@@ -79,8 +89,8 @@ final class QuestEditorDocument {
         if (before.isObject() && after.isObject() && (original.isObject() || original.isMissingNode())) {
             ObjectNode output = original.isObject() ? ((ObjectNode) original).deepCopy() : JsonNodeFactory.instance.objectNode();
             Set<String> keys = new LinkedHashSet<>();
-            before.fieldNames().forEachRemaining(keys::add);
-            after.fieldNames().forEachRemaining(keys::add);
+            before.propertyNames().iterator().forEachRemaining(keys::add);
+            after.propertyNames().iterator().forEachRemaining(keys::add);
             for (String key : keys) {
                 JsonNode result = patch(original.path(key), before.path(key), after.path(key), path + "/" + key);
                 if (result.isMissingNode()) output.remove(key); else output.set(key, result);

@@ -13,8 +13,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 
 public class KousyouGenerator {
 
@@ -64,8 +64,7 @@ public class KousyouGenerator {
             }
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
 
         File file = new File("src/main/resources/logbook/kousyou/kousyou.json");
         // Ensure parent directory exists
@@ -80,7 +79,7 @@ public class KousyouGenerator {
 
     private static void verifyAgainstMaster(List<Map<String, Object>> result) throws IOException {
         File masterFile = new File("src/test/resources/logbook/config/logbook.bean.SlotitemMstCollection.json");
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
 
         @SuppressWarnings("unchecked")
         Map<String, Object> root = mapper.readValue(masterFile, Map.class);

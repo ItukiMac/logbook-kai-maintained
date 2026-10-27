@@ -9,8 +9,8 @@ import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuestCondition;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
  * The CI workflow generates the entire data ZIP from committed definitions.
  */
 class QuestDataDecoderCompatibilityTest {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER = logbook.internal.json.JsonMappers.builder().build();
 
     @Test
     void everyQuestDefinitionDecodesThroughProductionConditionModel() throws Exception {

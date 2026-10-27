@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.*;
 import java.util.stream.Stream;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.*;
 import org.junit.jupiter.api.*;
 
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.*;
 class NineteenthDestroyerQuestTest {
     private static AppQuestCondition.FleetCondition condition() throws Exception {
         try(var in=NineteenthDestroyerQuestTest.class.getResourceAsStream("/logbook/quest/904.json")) {
-            return new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS).readValue(in,AppQuestCondition.class).getFilter().getFleet();
+            return logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build().readValue(in,AppQuestCondition.class).getFilter().getFleet();
         }
     }
     private static ShipMst ship(String name) {

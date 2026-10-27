@@ -204,8 +204,8 @@ class FeatureEmbeddedDescriptorTest {
         var classpath = new ArrayList<String>();
         classpath.add(hostJar.toString());
         classpath.add(moduleJar.toString());
-        for (Class<?> dependency : List.of(com.fasterxml.jackson.databind.ObjectMapper.class,
-                com.fasterxml.jackson.core.JsonFactory.class, com.fasterxml.jackson.annotation.JsonProperty.class)) {
+        for (Class<?> dependency : List.of(tools.jackson.databind.ObjectMapper.class,
+                tools.jackson.core.json.JsonFactory.class, com.fasterxml.jackson.annotation.JsonProperty.class)) {
             classpath.add(Path.of(dependency.getProtectionDomain().getCodeSource().getLocation().toURI()).toString());
         }
         String executable = Path.of(System.getProperty("java.home"), "bin", "java").toString();

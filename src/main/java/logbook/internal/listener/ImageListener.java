@@ -31,8 +31,8 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
 
 import logbook.bean.AppConfig;
 import logbook.bean.ShipMst;
@@ -297,6 +297,7 @@ public class ImageListener implements ContentListenerSpi {
      * @throws IOException 入出力例外が発生した場合
      */
     private void sprite(Path storeDir, Path imageSrc, Path jsonSrc) throws IOException {
+        try {
         if (!Files.exists(imageSrc) || !Files.exists(jsonSrc)) {
             return;
         }
@@ -319,8 +320,7 @@ public class ImageListener implements ContentListenerSpi {
         }
         Spritesmith sprite;
         try (BufferedInputStream is = new BufferedInputStream(Files.newInputStream(jsonSrc))) {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
             sprite = mapper.readValue(is, Spritesmith.class);
         }
         try (BufferedInputStream is = new BufferedInputStream(Files.newInputStream(imageSrc))) {
@@ -352,6 +352,9 @@ public class ImageListener implements ContentListenerSpi {
                 }
             };
             sprite.getFrames().forEach(action);
+        }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
     }
 

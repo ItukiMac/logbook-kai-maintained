@@ -1,0 +1,79 @@
+name: Explicit JDK25 JavaFX27 runtime verification (no publish)
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'tools/**'
+      - 'pom.xml'
+      - '.github/workflows/modern-runtime.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  modern-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Require full real GUI, feature lifecycle, migration and JSON suites on the opt-in runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          export MAVEN_ARGS="${MAVEN_ARGS:-} -Pmodern-runtime"
+          bash scripts/verify_r3.sh
+          mkdir -p target/modern-runtime
+          mvn -B -ntp help:effective-pom -Doutput=target/modern-runtime/effective-pom.xml
+          mvn -B -ntp dependency:tree -DoutputType=json -DoutputFile=target/modern-runtime/dependencies.json
+          python3 - <<'PY'
+          import json,os,struct,xml.etree.ElementTree as E
+          from pathlib import Path
+          root=Path('target/modern-runtime');rows={}
+          def walk(node):
+              for child in node.get('children',[]):
+                  rows.setdefault(child['groupId']+':'+child['artifactId'],set()).add(child['version']);walk(child)
+          walk(json.loads((root/'dependencies.json').read_text()))
+          ns={'m':'http://maven.apache.org/POM/4.0.0'};pom=E.parse(root/'effective-pom.xml').getroot()
+          assert pom.findtext('m:properties/m:java.version',namespaces=ns)=='25'
+          javafx={k:v for k,v in rows.items() if k.startswith('org.openjfx:')}
+          # JavaFX27 also supplies the jdk.jsobject API; require the exact set,
+          # rather than silently accepting any count or dropping that dependency.
+          expected={'org.openjfx:javafx-'+name for name in ('base','controls','fxml','graphics','media','swing','web')}
+          expected.add('org.openjfx:jdk-jsobject')
+          assert set(javafx)==expected and all(v=={'27.0.1'} for v in javafx.values()),javafx
+          assert rows['tools.jackson.core:jackson-databind']=={'3.2.4'}
+          assert rows['com.fasterxml.jackson.core:jackson-databind']=={'2.22.4'}
+          raw=Path('target/classes/logbook/internal/Launcher.class').read_bytes()
+          assert raw[:4]==b'\xca\xfe\xba\xbe' and struct.unpack('>H',raw[6:8])[0]==69
+          for name,count in [('logbook.internal.json.LegacyJsonCompatibilityTest',7),
+                             ('logbook.internal.kancolle.Jackson3JournalCompatibilityTest',3),
+                             ('logbook.core.JsonGenerationPointerCompatibilityTest',4)]:
+              suite=E.parse(Path('target/surefire-reports')/('TEST-'+name+'.xml')).getroot()
+              assert int(suite.get('tests'))==count and all(int(suite.get(k,0))==0 for k in ('failures','errors','skipped'))
+          (root/'summary.json').write_text(json.dumps({'checkout':os.environ['GITHUB_SHA'],
+              'jdk_baseline':25,'javafx':'27.0.1','openjfx_components':sorted(javafx),
+              'jackson_host':'3.2.4','classfile_major':69,'json_compatibility_tests':14,
+              'legacy_plugin_bridge_retained':True,'native_mint_tested':False,'production_applied':False},indent=2)+'\n')
+          print('MODERN_RUNTIME_OK JDK25 JavaFX27 Jackson3 full_suite=true native_mint=false')
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: modern-runtime-evidence-java25
+          path: |
+            target/modern-runtime/
+            target/r3-verification/*.json
+            target/r3-verification/*.txt
+            target/r3-verification/*.log
+            target/surefire-reports/
+          retention-days: 14
+          if-no-files-found: error

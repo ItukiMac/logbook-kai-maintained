@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 class QuestEditorDocumentTest {
-    private static JsonNode json(String text) throws Exception { return QuestEditorDocument.mapper().readTree(text); }
+    private static JsonNode json(String text) throws Exception { return QuestEditorDocument.parse(text); }
 
     @Test void fleetNumbersHaveStrictRangeDuplicateAndEmptyValidation() {
         assertEquals(Set.of(1, 3), QuestEditorDocument.deckIds(" 1,3 "));

@@ -1,7 +1,7 @@
 package logbook.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,9 +29,7 @@ import java.util.zip.ZipFile;
  * archive SHA-256 MUST be independently obtained from the trusted publisher.
  */
 final class DefinitionPackInstaller {
-    private static final ObjectMapper JSON = new ObjectMapper()
-            .enable(com.fasterxml.jackson.core.JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(tools.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     private static final long MAX_ARCHIVE_BYTES = 128L * 1024 * 1024;
     private static final long MAX_UNCOMPRESSED_BYTES = 128L * 1024 * 1024;
     private static final int MAX_FILES = 2000;
@@ -44,6 +42,7 @@ final class DefinitionPackInstaller {
     }
 
     static String install(Path rootInput, Path zip, String expectedSha256) throws IOException {
+        try {
         if (expectedSha256 == null || !expectedSha256.matches("[0-9a-fA-F]{64}")) {
             throw new IOException("Missing authenticated SHA-256 expectation");
         }
@@ -125,7 +124,7 @@ final class DefinitionPackInstaller {
                     // Reject the entire generation before active.json changes.
                     try (InputStream jsonInput = Files.newInputStream(target)) {
                         DefinitionPackCompatibility.requireDefinition(name, JSON.readTree(jsonInput), requiredCapabilities);
-                    } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                    } catch (tools.jackson.core.JacksonException e) {
                         throw new IOException("Malformed definition JSON: " + name, e);
                     }
                 }
@@ -158,6 +157,9 @@ final class DefinitionPackInstaller {
         } finally {
             removeTemporaryTree(temporary);
         }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
 
@@ -167,6 +169,7 @@ final class DefinitionPackInstaller {
      * any altered or symlinked file before changing the active pointer.
      */
     static String restoreGeneration(Path rootInput, String generation) throws IOException {
+        try {
         if (generation == null || !generation.matches("[0-9a-f]{64}")) {
             throw new IOException("Invalid data generation ID");
         }
@@ -201,12 +204,15 @@ final class DefinitionPackInstaller {
             // A data file with an intact recorded hash can still be malformed.
             try (InputStream input = Files.newInputStream(target)) {
                 DefinitionPackCompatibility.requireDefinition(item.getKey(), JSON.readTree(input), requiredCapabilities);
-            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            } catch (tools.jackson.core.JacksonException e) {
                 throw new IOException("Malformed retained JSON: " + item.getKey(), e);
             }
         }
         activatePointer(root, generation);
         return generation;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static void activatePointer(Path root, String generation) throws IOException {
@@ -226,6 +232,7 @@ final class DefinitionPackInstaller {
     }
 
     static Path activeDefinitionsRoot(Path rootInput) throws IOException {
+        try {
         Path root = rootInput.toAbsolutePath().normalize();
         requireRealDirectory(root);
         Path pointer = root.resolve("active.json");
@@ -251,9 +258,13 @@ final class DefinitionPackInstaller {
         requireRealDirectory(generation);
         requireRealDirectory(definitions);
         return definitions;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static Map<String, ExpectedFile> parseManifest(byte[] manifest) throws IOException {
+        try {
         JsonNode document = JSON.readTree(manifest);
         DefinitionPackCompatibility.requireManifest(document);
         JsonNode files = document.path("files");
@@ -274,6 +285,9 @@ final class DefinitionPackInstaller {
             }
         }
         return result;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     private static boolean validDefinitionPath(String name) {

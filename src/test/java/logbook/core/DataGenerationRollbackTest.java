@@ -2,7 +2,7 @@ package logbook.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -114,7 +114,7 @@ class DataGenerationRollbackTest {
 
     private String activeType(Path store) throws Exception {
         Path root = DefinitionPackInstaller.activeDefinitionsRoot(store);
-        return new ObjectMapper().readTree(
+        return logbook.internal.json.JsonMappers.builder().build().readTree(
                 Files.readString(root.resolve("quest/1045.json"))).path("type").asText();
     }
 }

@@ -3,14 +3,14 @@ package logbook.internal.kancolle;
 import java.nio.file.*;
 import java.time.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.json.Json;
 import logbook.bean.MapStartNext;
 
 /** Synthetic B+D archive fixture. No Launcher/config/network in either mode. */
 public final class ArrivalArchiveProbe {
     private static final long T = 1746835260000L;
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     private static PortArrivalRuntime.Observation observation(PortArrivalTracker.Snapshot route, String... keys) {
         return new PortArrivalRuntime.Observation(route, keys[0], List.of(keys), route.observedAt(), true, List.of());
     }

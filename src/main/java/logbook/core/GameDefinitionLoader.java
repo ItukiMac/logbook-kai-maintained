@@ -12,20 +12,19 @@ import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import logbook.plugin.api.GameDefinitionSnapshot;
 
 /** Read-only full-manifest validation, pinned to a single active-generation lookup. */
 final class GameDefinitionLoader {
-    private static final ObjectMapper JSON = new ObjectMapper()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     private GameDefinitionLoader() {}
 
     static GameDefinitionSnapshot load(Path input) throws IOException {
+        try {
         Path root = input.toAbsolutePath().normalize();
         Path definitions = DefinitionPackInstaller.activeDefinitionsRoot(root);
         if (definitions.equals(root)) throw new IOException("A staged manifest generation is required");
@@ -65,6 +64,9 @@ final class GameDefinitionLoader {
             loaded.put(resource, bytes);
         }
         return new GameDefinitionSnapshot(generation, loaded);
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
     private static byte[] readRegular(Path file, int limit) throws IOException {
         if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)

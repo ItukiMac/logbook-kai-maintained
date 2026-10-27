@@ -1,7 +1,7 @@
 package logbook.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 public final class DataPackReleaseClient {
     public static final String AUTO_UPDATE_PROPERTY = "logbook.data.autoUpdate";
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     private static final String OWNER_REPO = "ItukiMac/logbook-kai-maintained";
     private static final String INDEX_URL = "https://api.github.com/repos/" + OWNER_REPO + "/releases?per_page=100";
     private static final String ASSET_NAME = "logbook-data-pack.zip";
@@ -40,6 +40,7 @@ public final class DataPackReleaseClient {
      * and plugins initialize to avoid mixing different definition generations.
      */
     public static boolean refreshConfiguredData() throws IOException {
+        try {
         if (!Boolean.getBoolean(AUTO_UPDATE_PROPERTY)) return false;
         String rootValue = System.getProperty(ExternalQuestDefinitions.ROOT_PROPERTY);
         if (rootValue == null || rootValue.isBlank()) {
@@ -48,6 +49,9 @@ public final class DataPackReleaseClient {
         Path root = Path.of(rootValue).toAbsolutePath().normalize();
         JsonNode index = JSON.readTree(readLimited(URI.create(INDEX_URL), 8L * 1024 * 1024));
         return applyRelease(index, root, DataPackReleaseClient::downloadLimited);
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     /**

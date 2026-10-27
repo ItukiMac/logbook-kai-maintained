@@ -3,8 +3,8 @@ package logbook.internal.kancolle;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.*;
 import logbook.internal.kancolle.BattleLogs.SimpleBattleLog;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 /** Actual aggregation entry point, with saved-log I/O substituted by isolated fixtures. */
 class QuestCollectRequirementsTest {
     private static AppQuestCondition condition(String filter) throws Exception {
-        return new ObjectMapper().readValue("{\"conditions\":[{\"boss\":true,\"area\":[\"2-4\"],\"rank\":[\"S\"],\"count\":2}],\"filter\":"+filter+"}",AppQuestCondition.class);
+        return logbook.internal.json.JsonMappers.builder().build().readValue("{\"conditions\":[{\"boss\":true,\"area\":[\"2-4\"],\"rank\":[\"S\"],\"count\":2}],\"filter\":"+filter+"}",AppQuestCondition.class);
     }
     private static BattleLog battle(Integer deck,Set<Integer> escape) {
         var b=new BattleLog(); var day=new SortieBattle(); day.setDockId(deck); b.setBattle(day); b.setEscape(escape); return b;
@@ -66,7 +66,7 @@ class QuestCollectRequirementsTest {
         assertEquals(0,run(c,List.of(battle(1,Set.of())),true).getTotal().getBoss().getS());
     }
     @Test void bundledZAndWaterTorpedoDefinitionsOptIntoTheRightGuardOnly() throws Exception {
-        var mapper=new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS);
+        var mapper=logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
         for(int no:List.of(854,872,257))try(var in=AppQuestCondition.class.getClassLoader().getResourceAsStream("logbook/quest/"+no+".json")){
             var c=mapper.readValue(in,AppQuestCondition.class);
             if(no==257){assertEquals(Boolean.TRUE,c.getFilter().getNoRetreat());assertNull(c.getFilter().getDeckIds());}

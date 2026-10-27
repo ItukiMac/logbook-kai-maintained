@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Instant;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 /** Actual API decoding is freshness evidence; saved or hand-built beans are not. */
 class SeasonalQuestObservationTest {
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
 
     private static JsonObject apiQuest() {
         return Json.createObjectBuilder()

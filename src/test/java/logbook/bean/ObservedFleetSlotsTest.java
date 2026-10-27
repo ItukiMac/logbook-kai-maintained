@@ -2,7 +2,7 @@ package logbook.bean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 /** Proven retreat vacancies retain their original positions and never stand for unknown ships. */
 class ObservedFleetSlotsTest {
     private static FleetCondition rule(String json) throws Exception {
-        return new ObjectMapper().readValue(json, FleetCondition.class);
+        return logbook.internal.json.JsonMappers.builder().build().readValue(json, FleetCondition.class);
     }
 
     private static ShipMst ship(String name) {

@@ -6,7 +6,7 @@ class ArrivalEditorPreservationTest {
         var json=QuestEditorDocument.mapper();
         var original=json.readTree("{\"conditions\":[{\"area\":[\"1-6\"],\"arrival\":true,\"count\":1}]}");
         var before=json.readTree("{\"conditions\":[{\"area\":[\"1-6\"],\"count\":1}]}");
-        var after=before.deepCopy();((com.fasterxml.jackson.databind.node.ObjectNode)after.path("conditions").get(0)).put("count",2);
+        var after=before.deepCopy();((tools.jackson.databind.node.ObjectNode)after.path("conditions").get(0)).put("count",2);
         var edited=QuestEditorDocument.merge(original,before,after);
         QuestEditorDocument.validate(edited);
         assertTrue(edited.path("conditions").get(0).path("arrival").asBoolean());

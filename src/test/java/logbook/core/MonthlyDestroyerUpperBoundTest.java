@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonParser;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
 import logbook.bean.AppQuestCondition;
 import logbook.bean.ShipMst;
 import logbook.bean.Stype;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class MonthlyDestroyerUpperBoundTest {
     private static AppQuestCondition condition() throws Exception {
         try (var stream = MonthlyDestroyerUpperBoundTest.class.getResourceAsStream("/logbook/quest/257.json")) {
-            return new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS).readValue(stream, AppQuestCondition.class);
+            return logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build().readValue(stream, AppQuestCondition.class);
         }
     }
     private static ShipMst ship(String type) {

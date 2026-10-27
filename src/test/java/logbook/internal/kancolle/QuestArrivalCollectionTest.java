@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 import java.time.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import logbook.bean.*;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ class QuestArrivalCollectionTest {
         var byId=new ConcurrentHashMap<Integer,List<AppQuestDuration.Duration>>();byId.put(905,new ArrayList<>(List.of(interval)));value.getMap().put(EXPIRY,byId);return value;
     }
     private static AppQuestCondition condition() throws Exception {
-        return new ObjectMapper().readValue("""
+        return logbook.internal.json.JsonMappers.builder().build().readValue("""
           {"filter":{"deckIds":[1],"noRetreat":true,"fleet":{"name":["flag"],"order":1}},
            "conditions":[{"area":["1-6"],"arrival":true,"count":1}]}
           """,AppQuestCondition.class);

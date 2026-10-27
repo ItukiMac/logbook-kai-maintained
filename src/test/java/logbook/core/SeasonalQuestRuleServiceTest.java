@@ -5,13 +5,13 @@ import static logbook.core.SeasonalQuestRuleService.Status.*;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import logbook.core.SeasonalQuestRuleService.Observation;
 import org.junit.jupiter.api.Test;
 
 class SeasonalQuestRuleServiceTest {
-    static final ObjectMapper JSON = new ObjectMapper();
+    static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
     static final Instant FROM = Instant.parse("2025-01-28T15:00:00Z");
     static final Instant UNTIL = Instant.parse("2025-02-27T15:00:00Z");
     static final Instant NOW = FROM.plusSeconds(3_600);

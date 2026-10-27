@@ -8,20 +8,18 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.YearMonth;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.*;
 
 /** Append-only, bounded new journal; never traverses or rewrites the existing battle log. */
 public final class PortArrivalStore {
     private static final int MAX_BYTES = 16 * 1024;
     private static final int MAX_RECORDS = 20_000;
-    private static final ObjectMapper JSON = new ObjectMapper()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     // New evidence must not turn absent/null/fractional values into known identities or vacancies.
     // The legacy record reader remains unchanged for existing v1 files.
-    private static final ObjectMapper EVIDENCE_JSON = com.fasterxml.jackson.databind.json.JsonMapper.builder()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
+    private static final ObjectMapper EVIDENCE_JSON = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults()
+            .enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
             .enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
             .enable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES)
@@ -37,6 +35,7 @@ public final class PortArrivalStore {
 
     /** New evidence is deliberately outside the YYYY-MM namespace read by v1 hosts. */
     public void appendFleet(PortArrivalFleet fleet) throws IOException {
+        try {
         Objects.requireNonNull(fleet);
         safe(root); Files.createDirectories(root); safe(root);
         Path evidence = root.resolve("fleet-evidence-v1");
@@ -62,6 +61,9 @@ public final class PortArrivalStore {
         catch (FileAlreadyExistsException e) {
             if (!fleet.equals(readFleetFile(target))) throw new IOException("Conflicting arrival fleet publication", e);
         }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
 
     public Optional<PortArrivalFleet> readFleet(PortArrival arrival) throws IOException {
@@ -76,6 +78,7 @@ public final class PortArrivalStore {
     }
 
     private static PortArrivalFleet readFleetFile(Path path) throws IOException {
+        try {
         safe(path);
         if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)) throw new IOException("Not a regular arrival fleet record");
         try (var input = Files.newInputStream(path, LinkOption.NOFOLLOW_LINKS)) {
@@ -87,8 +90,12 @@ public final class PortArrivalStore {
                 return value;
             } catch (RuntimeException e) { throw new IOException("Invalid arrival fleet record", e); }
         }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
     }
     public void append(PortArrival record) throws IOException {
+        try {
         Objects.requireNonNull(record);
         safe(root); Files.createDirectories(root); safe(root);
         Path month = root.resolve(YearMonth.from(Instant.ofEpochMilli(record.arrivedAt())
@@ -114,6 +121,9 @@ public final class PortArrivalStore {
         try { Files.createLink(target, pending); }
         catch (FileAlreadyExistsException e) {
             if (!record.equals(read(target))) throw new IOException("Conflicting arrival publication", e);
+        }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
     }
     public List<PortArrival> readRange(long fromInclusive, long toExclusive) throws IOException {
@@ -149,6 +159,7 @@ public final class PortArrivalStore {
         return YearMonth.from(Instant.ofEpochMilli(epoch).atZone(ZoneId.of("Asia/Tokyo"))).toString();
     }
     private static PortArrival read(Path path) throws IOException {
+        try {
         safe(path);
         if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)) throw new IOException("Not a regular arrival record");
         try (var input = Files.newInputStream(path, LinkOption.NOFOLLOW_LINKS)) {
@@ -160,6 +171,9 @@ public final class PortArrivalStore {
                 return value;
             }
             catch (RuntimeException e) { throw new IOException("Invalid arrival record", e); }
+        }
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
     }
     private static void safe(Path path) throws IOException {
