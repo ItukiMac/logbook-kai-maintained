@@ -1,0 +1,69 @@
+name: Summarize exact Jackson3 CI evidence (tooling only)
+on:
+  push:
+    branches: ['maintenance/json3-io-contract-worker-20261027']
+    paths: ['.github/workflows/json3-evidence-summary.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Inspect only declared public CI artifacts without extracting executable files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import os,json,urllib.request,zipfile,io,hashlib,xml.etree.ElementTree as E,re
+          from pathlib import Path
+          repo='ItukiMac/logbook-kai-maintained'
+          head='78e34ddc09bccf399f7a1018524e3bee95766ad0'
+          runs=[40486902659,40486902690,40486902699]
+          base='https://api.github.com/repos/'+repo
+          def get(path):
+              request=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(request,timeout=60) as response:return response.read(25*1024*1024+1)
+          result={'source_head':head,'runs':[]}
+          for run_id in runs:
+              run=json.loads(get('/actions/runs/'+str(run_id)))
+              assert run['head_sha']==head
+              out={'id':run_id,'status':run['status'],'conclusion':run['conclusion'],'artifacts':[]}
+              for a in json.loads(get('/actions/runs/'+str(run_id)+'/artifacts'))['artifacts']:
+                  if a['size_in_bytes']>5*1024*1024:continue
+                  raw=get('/actions/artifacts/'+str(a['id'])+'/zip')
+                  actual='sha256:'+hashlib.sha256(raw).hexdigest();assert actual==a['digest']
+                  z=zipfile.ZipFile(io.BytesIO(raw));assert sum(f.file_size for f in z.infolist())<50*1024*1024
+                  assert z.testzip() is None
+                  item={'id':a['id'],'name':a['name'],'digest':actual,'totals':{},'failures':[],'reports':{},'log_results':{}}
+                  for n in z.namelist():
+                      if n.endswith('.xml') and '/TEST-' in '/'+n:
+                          s=E.fromstring(z.read(n))
+                          for k in ('tests','failures','errors','skipped'):item['totals'][k]=item['totals'].get(k,0)+int(s.get(k,0))
+                          for t in s.findall('testcase'):
+                              for e in list(t.findall('failure'))+list(t.findall('error')):
+                                  item['failures'].append({'suite':s.get('name'),'case':t.get('name'),'message':e.get('message'),'trace':(e.text or '')[:3000]})
+                      elif n.endswith('.json') and ('summary' in n or 'parallel-integration' in n or 'feature-version-' in n):
+                          if z.getinfo(n).file_size<30000:
+                              try:item['reports'][n]=json.loads(z.read(n))
+                              except ValueError:pass
+                      elif n.endswith('.log') and any(p in n for p in ('python-scripts','python-tools','maven-verify')):
+                          text=z.read(n).decode('utf8',errors='replace')
+                          lines=text.splitlines()
+                          selected=[l for l in lines if 'Ran ' in l or 'FAILED' in l or 'ERROR:' in l or 'FAIL:' in l or 'Exception' in l or 'AssertionError' in l or '_OK' in l]
+                          item['log_results'][n]={'matches':selected[-70:],'tail':'\n'.join(lines[-110:])[-18000:]}
+                  out['artifacts'].append(item)
+              result['runs'].append(out)
+          Path('.maintenance-evidence/json3-full-run-summary.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          print([(r['id'],r['conclusion'],[(a['name'],a['totals']) for a in r['artifacts']]) for r in result['runs']])
+          PY
+      - name: Preserve the report only in the tooling branch
+        run: |
+          git add .maintenance-evidence/json3-full-run-summary.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Record hashed current source integration evidence and remaining failures'
+          git push origin HEAD:refs/heads/maintenance/json3-io-contract-worker-20261027
