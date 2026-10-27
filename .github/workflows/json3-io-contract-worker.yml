@@ -1,0 +1,142 @@
+name: Jackson3 checked I/O contract correction (tooling only)
+on:
+  push:
+    branches: ['maintenance/json3-io-contract-worker-20261027']
+    paths: ['.github/workflows/json3-io-contract-worker.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE: a502cbe80132deeaf8bae8625d9d7514a55e175d
+      TARGET: maintenance/json3-modern-runtime-20261027
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+          persist-credentials: true
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: a502cbe80132deeaf8bae8625d9d7514a55e175d
+          path: candidate
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Restore checked exception contracts without changing test expectations
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p ../evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          changes=[]
+          # Mask only comments/string literals to identify method braces. Original
+          # source bytes are edited; this never scans or changes runtime records.
+          token=re.compile(r'"""[\s\S]*?"""|"(?:\\.|[^"\\])*"|\x27(?:\\.|[^\x27\\])*\x27|//[^\n]*|/\*[\s\S]*?\*/')
+          for path in Path('src/main/java').rglob('*.java'):
+              raw=path.read_bytes();text=raw.decode();ending='\r\n' if b'\r\n' in raw else '\n'
+              source=text.replace('\r\n','\n')
+              if 'tools.jackson.' not in source:continue
+              masked=token.sub(lambda m:''.join('\n' if c=='\n' else ' ' for c in m[0]),source)
+              edits=[]
+              for match in re.finditer(r'\bthrows\s+[^;{}]*\bIOException\b[^;{}]*\{',masked):
+                  start=match.end();level=1;end=start
+                  while level and end<len(masked):
+                      level += (masked[end]=='{')-(masked[end]=='}');end+=1
+                  assert level==0
+                  body=source[start:end-1]
+                  if not re.search(r'\.(?:readValue|readTree|readValues|writeValue|writeValueAsBytes|writeValueAsString)\s*\(',body):continue
+                  assert 'jsonCompatibilityFailure' not in body
+                  indent=re.search(r'(?m)^([ \t]*)[^\n]*$',source[:start]).group(1)
+                  replacement='\n'+indent+'    try {'+body+'\n'+indent+'    } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {\n'+indent+'        throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);\n'+indent+'    }\n'+indent
+                  edits.append((start,end-1,replacement))
+                  changes.append({'path':str(path),'line':source[:match.start()].count('\n')+1,'reason':'retain declared checked I/O boundary for Jackson3 parser errors'})
+              for start,end,replacement in reversed(edits):source=source[:start]+replacement+source[end:]
+              if edits:path.write_bytes(source.replace('\n',ending).encode())
+          assert changes,'No checked JSON boundaries found'
+          Path('../evidence/changes.json').write_text(json.dumps(changes,indent=2)+'\n')
+          print(json.dumps(changes,indent=2))
+          PY
+          git diff --stat
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Compile before any source branch update
+        working-directory: candidate
+        run: mvn -B -ntp -DskipTests package > ../evidence/compile.log 2>&1
+      - name: Run unchanged tests and collect machine-readable failures
+        id: tests
+        working-directory: candidate
+        shell: bash
+        run: |
+          set +e
+          mvn -B -ntp test > ../evidence/tests.log 2>&1
+          result=$?
+          echo "$result" > ../evidence/test-exit-code.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json,re
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
+          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          failures=[]
+          for s in suites:
+              for test in s.findall('testcase'):
+                  for error in list(test.findall('failure'))+list(test.findall('error')):
+                      trace=error.text or '';snippets={}
+                      for filename,line in re.findall(r'\((\w+\.java):(\d+)\)',trace):
+                          for path in list(Path('src/main/java').rglob(filename))+list(Path('src/test/java').rglob(filename)):
+                              lines=path.read_text().splitlines();n=int(line);snippets[str(path)+':'+line]='\n'.join(f'{i+1}: {lines[i]}' for i in range(max(0,n-8),min(len(lines),n+7)))
+                      failures.append({'class':s.get('name'),'test':test.get('name'),'message':error.get('message'),'trace':trace[:6000],'source':snippets})
+          report={'base':'a502cbe80132deeaf8bae8625d9d7514a55e175d','totals':totals,'failures':failures}
+          Path('../evidence/diagnostics.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+          exit 0
+      - name: Preserve compiled correction on PR branch without force or publication
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git add src/main/java
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve IOException contracts at host JSON read/write boundaries after Jackson3 migration'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git diff "$BASE" HEAD > ../evidence/source.patch
+      - name: Retain compact public-source diagnostics in tooling branch only
+        if: always()
+        working-directory: tooling
+        run: |
+          set -eu
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('../evidence');report={}
+          for name in ('changes.json','diagnostics.json'):
+              if (p/name).exists():report[name]=json.loads((p/name).read_text())
+          if (p/'source-commit.txt').exists():report['source_commit']=(p/'source-commit.txt').read_text().strip()
+          if (p/'compile.log').exists():report['compile_errors']=[l for l in (p/'compile.log').read_text().splitlines() if '[ERROR]' in l][-50:]
+          Path('.maintenance-evidence/json3-io-result.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git add .maintenance-evidence/json3-io-result.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Retain exact Jackson3 I/O test diagnostics, not a completion claim'
+          git push origin "HEAD:refs/heads/maintenance/json3-io-contract-worker-20261027"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: json3-io-contract-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+          retention-days: 14
