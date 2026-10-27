@@ -1,0 +1,353 @@
+{
+  "base": "7004a3e5937b47328f5c6bfc80b1f663a6a5c1f5",
+  "sources": {
+    "src/main/java/logbook/internal/gui/BattleLogController.java": "29: import javafx.collections.transformation.SortedList;\n30: import javafx.event.ActionEvent;\n31: import javafx.fxml.FXML;\n32: import javafx.fxml.FXMLLoader;\n33: import javafx.scene.chart.PieChart;\n34: import javafx.scene.control.Alert;\n35: import javafx.scene.control.Button;\n36: import javafx.scene.control.ButtonType;\n37: import javafx.scene.control.ChoiceBox;\n38: import javafx.scene.control.DateCell;\n39: import javafx.scene.control.DatePicker;\n40: import javafx.scene.control.DialogPane;\n55: import javafx.scene.layout.VBox;\n56: import javafx.util.Callback;\n57: import javafx.util.Duration;\n58: import logbook.bean.AppViewConfig;\n59: import logbook.bean.AppViewConfig.BattleLogConfig;\n60: import logbook.bean.BattleLog;\n61: import logbook.internal.Tuple;\n62: import logbook.internal.Tuple.Triplet;\n63: import logbook.internal.kancolle.BattleLogs;\n64: import logbook.internal.kancolle.BattleLogs.IUnit;\n65: import logbook.internal.kancolle.BattleLogs.SimpleBattleLog;\n66: import logbook.internal.kancolle.BattleLogs.Unit;\n67: import logbook.internal.logger.LoggerHolder;\n68: import logbook.internal.util.ToStringConverter;\n69: \n70: /**\n71:  * 戦闘ログのUIコントローラー\n72:  *\n73:  */\n74: public class BattleLogController extends WindowController {\n75: \n76:     @FXML\n77:     private SplitPane splitPane1;\n78: \n79:     @FXML\n80:     private SplitPane splitPane2;\n81: \n82:     /** 統計 */\n258:     @FXML\n259:     void initialize() {\n260:         try {\n261:             TableTool.setVisible(this.detail, this.getClass().toString() + \"#\" + \"detail\");\n262:             TableTool.setVisible(this.aggregate, this.getClass().toString() + \"#\" + \"aggregate\");\n263:             // SplitPaneの分割サイズ\n264:             Timeline x = new Timeline();\n265:             x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {\n266:                 Tools.Controls.setSplitWidth(this.splitPane1, this.getClass() + \"#\" + \"splitPane1\");\n267:                 Tools.Controls.setSplitWidth(this.splitPane2, this.getClass() + \"#\" + \"splitPane2\");\n268:             }));\n269:             x.play();\n270:             // 統計\n271:             this.collect.setShowRoot(false);\n272: \n273:             this.unit.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"unit\"));\n274:             this.start.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"start\"));\n275:             this.win.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"win\"));\n293:                         BattleLog log = BattleLogs.read(d.getDate());\n294:                         if (log != null) {\n295:                             try {\n296:                                 InternalFXMLLoader.showWindow(\"logbook/gui/battle_detail.fxml\", this.getWindow(),\n297:                                         \"戦闘ログ\", c -> {\n298:                                             ((BattleDetail) c).setData(log);\n299:                                         }, null);\n300:                             } catch (Exception ex) {\n301:                                 LoggerHolder.get().error(\"詳細の表示に失敗しました\", ex);\n302:                             }\n303:                         }\n304:                     }\n305:                 });\n306:                 return r;\n310:             this.detail.setItems(sortedDetails);\n311:             sortedDetails.comparatorProperty().bind(this.detail.comparatorProperty());\n312:             this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);\n313:             this.detail.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);\n314: \n315:             this.row.setCellFactory(TableTool.getRowCountCellFactory());\n316:             this.date.setCellValueFactory(new PropertyValueFactory<>(\"date\"));\n317:             this.area.setCellValueFactory(new PropertyValueFactory<>(\"area\"));\n318:             this.cell.setCellValueFactory(new PropertyValueFactory<>(\"cell\"));\n319:             this.boss.setCellValueFactory(new PropertyValueFactory<>(\"boss\"));\n320:             this.rank.setCellValueFactory(new PropertyValueFactory<>(\"rank\"));\n321:             this.intercept.setCellValueFactory(new PropertyValueFactory<>(\"intercept\"));\n322:             this.fformation.setCellValueFactory(new PropertyValueFactory<>(\"fformation\"));\n323:             this.eformation.setCellValueFactory(new PropertyValueFactory<>(\"eformation\"));\n387: \n388:             // 集計\n389:             this.aggregate.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);\n390:             this.aggregate.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);\n391:             // 種類\n392:             this.type.setCellValueFactory(new PropertyValueFactory<>(\"name\"));\n393:             // 合計\n394:             this.count.setCellValueFactory(new PropertyValueFactory<>(\"count\"));\n395:             // 割合\n396:             this.ratio.setCellValueFactory(new PropertyValueFactory<>(\"ratio\"));\n397:             // 集計初期化\n398:             this.initializeAggregate();\n405: \n406:             loadConfig();\n407: \n408:             TreeTableTool.setVisible(this.collect, this.getClass().toString() + \"#\" + \"collect\");\n409:         } catch (Exception e) {\n410:             LoggerHolder.get().error(\"FXMLの初期化に失敗しました\", e);\n411:         }\n412:     }\n413: \n414:     /**\n415:      * ログをセット\n416:      */\n532:      * ビューの状態を保存\n533:      */\n534:     private void saveConfig() {\n535:         BattleLogConfig config = AppViewConfig.get().getBattleLogConfig();\n536:         if (config == null) {\n537:             config = new BattleLogConfig();\n538:             AppViewConfig.get().setBattleLogConfig(config);\n539:         }\n540:         config.setCustomUnits(this.userUnit.stream()\n541:                 .map(u -> new BattleLogConfig.CustomUnit(u.getFrom().toLocalDate().toEpochDay(),\n542:                         u.getTo().toLocalDate().toEpochDay()))\n543:                 .collect(Collectors.toList()));\n544:     }\n545: \n546:     /**\n547:      * ビューの状態を復元\n548:      */\n549:     private void loadConfig() {\n550:         Optional.ofNullable(AppViewConfig.get().getBattleLogConfig()).ifPresent(config -> {\n551:             Optional.ofNullable(config.getCustomUnits()).ifPresent(units -> units.stream().forEach(u -> {\n552:                 BattleLogs.CustomUnit unit = new BattleLogs.CustomUnit(LocalDate.ofEpochDay(u.getFrom()), LocalDate.ofEpochDay(u.getTo()));\n553:                 this.logMap.put(unit, BattleLogs.readSimpleLog(unit));\n554:                 this.addTree(unit);\n555:                 this.userUnit.add(unit);\n556:             }));\n557:         });\n558:     }\n566: \n567:         Alert alert = new Alert(Alert.AlertType.NONE);\n568:         alert.getDialogPane().getStylesheets().add(\"logbook/gui/application.css\");\n569:         InternalFXMLLoader.setGlobal(alert.getDialogPane());\n570:         alert.initOwner(this.getWindow());\n571:         alert.setTitle(\"集計の追加\");\n572:         alert.setDialogPane(dialog);\n573:         alert.showAndWait().filter(ButtonType.APPLY::equals).ifPresent(b -> {\n574:             BattleLogs.CustomUnit unit = dialog.getUnit();\n575:             if (unit != null) {\n576:                 this.logMap.put(unit, BattleLogs.readSimpleLog(unit));\n577:                 this.addTree(unit);\n588:     void removeUnitAction(ActionEvent event) {\n589:         TreeItem<BattleLogCollect> item = this.collect.getSelectionModel().getSelectedItem();\n590:         if (item != null && this.userUnit.contains(item.getValue().getCollectUnit()) && this.collect.getRoot().getChildren().contains(item)) {\n591:             Tools.Controls.alert(Alert.AlertType.CONFIRMATION, \"削除\", \"集計(\"+item.getValue().getUnit()+\")を削除してよろしいですか？\", this.getWindow())\n592:                     .filter(op -> op == ButtonType.OK)\n593:                     .ifPresent(type -> {\n594:                         this.collect.getRoot().getChildren().remove(item);\n595:                         IUnit unit = item.getValue().getCollectUnit();\n596:                         this.userUnit.remove(unit);\n597:                         this.logMap.remove(unit);\n598:                         saveConfig();\n599:                     });\n605:      */\n606:     @FXML\n607:     void copyDetail() {\n608:         TableTool.selectionCopy(this.detail);\n609:     }\n610: \n611:     /**\n612:      * すべてを選択\n613:      */\n614:     @FXML\n615:     void selectAllDetail() {\n616:         TableTool.selectAll(this.detail);\n617:     }\n618: \n619:     /**\n620:      * テーブル列の表示・非表示の設定\n621:      */\n622:     @FXML\n623:     void columnVisibleDetail() {\n624:         try {\n625:             TableTool.showVisibleSetting(this.detail, this.getClass().toString() + \"#\" + \"detail\", this.getWindow());\n626:         } catch (Exception e) {\n627:             LoggerHolder.get().error(\"FXMLの初期化に失敗しました\", e);\n628:         }\n629:     }\n630: \n631:     /**\n632:      * クリップボードにコピー\n633:      */\n634:     @FXML\n635:     void copyAggregate() {\n636:         TableTool.selectionCopy(this.aggregate);\n637:     }\n638: \n639:     /**\n640:      * すべてを選択\n641:      */\n642:     @FXML\n643:     void selectAllAggregate() {\n644:         TableTool.selectAll(this.aggregate);\n645:     }\n646: \n647:     /**\n648:      * テーブル列の表示・非表示の設定\n649:      */\n650:     @FXML\n651:     void columnVisibleAggregate() {\n652:         try {\n653:             TableTool.showVisibleSetting(this.aggregate, this.getClass().toString() + \"#\" + \"aggregate\",\n654:                     this.getWindow());\n655:         } catch (Exception e) {\n656:             LoggerHolder.get().error(\"FXMLの初期化に失敗しました\", e);\n657:         }\n658:     }\n659: \n660:     /**\n661:      * 右ペインに詳細表示するリスナー\n799:     private <S, T> FilterColumn<S, T> addFilterColumn(TableView<S> table, TableColumn<S, T> column,\n800:             ListChangeListener<Object> listener, Function<S, T> getter, Comparator<T> comparator) {\n801:         VBox box = new VBox();\n802:         box.getChildren().add(new Label(Tools.Tables.getColumnName(column)));\n803:         CheckComboBox<T> comboBox = new CheckComboBox<>();\n804:         comboBox.setConverter(new ToStringConverter<>(v -> {\n805:             String str = v.toString();\n806:             if (str.isEmpty())\n807:                 return \"(空白)\";\n808:             return str;\n809:         }));\n810: \n913:      * 列を集計対象に追加する\n914:      */\n915:     private void addAggregate(TableColumn<BattleLogDetail, ?> column, Function<BattleLogDetail, ?> getter) {\n916:         String name = Tools.Tables.getColumnName(column);\n917:         this.aggregateType.getItems().add(name);\n918:         this.aggregateTypeMap.put(name, getter);\n919:     }\n920: \n921:     /**\n922:      * 集計する\n923:      */\n924:     private void aggregate() {\n967: \n968:         public UnitDialog() {\n969:             try {\n970:                 FXMLLoader loader = InternalFXMLLoader.load(\"logbook/gui/battlelog_dialog.fxml\");\n971:                 loader.setRoot(this);\n972:                 loader.setController(this);\n973:                 loader.load();\n974:             } catch (IOException e) {\n975:                 LoggerHolder.get().error(\"FXMLのロードに失敗しました\", e);\n976:             }\n977:         }\n978: ",
+    "src/main/java/logbook/internal/gui/BattleLogCollect.java": "4: import javafx.beans.property.SimpleIntegerProperty;\n5: import javafx.beans.property.SimpleStringProperty;\n6: import javafx.beans.property.StringProperty;\n7: import logbook.internal.kancolle.BattleLogs.IUnit;\n8: \n9: /**\n10:  * 集計行\n11:  *\n12:  */\n13: public class BattleLogCollect {\n14: \n15:     /** 集計  */\n16:     private final StringProperty unit = new SimpleStringProperty();\n17: \n18:     /** 出撃 （ボスカウントを\"-\"にするため String のままにする） */\n19:     private final SimpleStringProperty start = new SimpleStringProperty();\n20: \n21:     /** 勝利  */",
+    "src/main/java/logbook/internal/gui/BattleLogDetail.java": "7: import javafx.beans.property.SimpleIntegerProperty;\n8: import javafx.beans.property.SimpleStringProperty;\n9: import javafx.beans.property.StringProperty;\n10: import logbook.internal.kancolle.BattleLogs.SimpleBattleLog;\n11: import logbook.internal.util.DateUtil;\n12: \n13: /**\n14:  * 戦闘ログの詳細行\n15:  *\n16:  */\n17: public class BattleLogDetail {\n18: \n19:     /** 日付 */\n20:     private StringProperty date;\n21:     /** 海域 */\n22:     private StringProperty area;\n23:     /** 海域短縮名 */\n24:     private StringProperty areaShortName;\n25:     /** マス */",
+    "src/main/java/logbook/internal/gui/BattleLogDetailAggregate.java": "12: /**\n13:  * ログの集計\n14:  */\n15: public class BattleLogDetailAggregate {\n16: \n17:     /** 種類 */\n18:     private StringProperty name = new SimpleStringProperty();\n19: \n20:     /** 合計 */\n21:     private LongProperty count = new SimpleLongProperty();\n22: \n23:     /** 割合 */",
+    "src/main/java/logbook/internal/gui/MissionLogController.java": "35: import javafx.scene.control.cell.PropertyValueFactory;\n36: import javafx.scene.control.cell.TreeItemPropertyValueFactory;\n37: import javafx.util.Duration;\n38: import logbook.bean.Mission;\n39: import logbook.bean.MissionCollection;\n40: import logbook.internal.Tuple;\n41: import logbook.internal.Tuple.Pair;\n42: import logbook.internal.kancolle.MissionLogs;\n43: import logbook.internal.kancolle.BattleLogs.Unit;\n44: import logbook.internal.kancolle.MissionLogs.SimpleMissionLog;\n45: import logbook.internal.logger.LoggerHolder;\n46: \n47: /**\n48:  * 遠征ログ\n49:  *\n50:  */\n51: public class MissionLogController extends WindowController {\n52: \n53:     @FXML\n54:     private SplitPane splitPane1;\n55: \n56:     @FXML\n57:     private SplitPane splitPane2;\n58: \n59:     @FXML\n161: \n162:     @FXML\n163:     void initialize() {\n164:         TableTool.setVisible(this.detail, this.getClass() + \"#\" + \"detail\");\n165:         TableTool.setVisible(this.aggregate, this.getClass() + \"#\" + \"aggregate\");\n166:         // SplitPaneの分割サイズ\n167:         Timeline x = new Timeline();\n168:         x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {\n169:             Tools.Controls.setSplitWidth(this.splitPane1, this.getClass() + \"#\" + \"splitPane1\");\n170:             Tools.Controls.setSplitWidth(this.splitPane2, this.getClass() + \"#\" + \"splitPane2\");\n171:             Tools.Controls.setSplitWidth(this.splitPane3, this.getClass() + \"#\" + \"splitPane3\");\n172:         }));\n173:         x.play();\n174: \n175:         // 集計\n176:         this.collect.setShowRoot(false);\n177:         this.collect.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);\n178:         this.unit.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"unit\"));\n179:         this.successGood.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"successGood\"));\n185:         this.detail.setItems(sortedList);\n186:         sortedList.comparatorProperty().bind(this.detail.comparatorProperty());\n187:         this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);\n188:         this.detail.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);\n189: \n190:         this.row.setCellFactory(TableTool.getRowCountCellFactory());\n191:         this.date.setCellValueFactory(new PropertyValueFactory<>(\"date\"));\n192:         this.name.setCellValueFactory(new PropertyValueFactory<>(\"name\"));\n193:         this.result.setCellValueFactory(new PropertyValueFactory<>(\"result\"));\n194:         this.fuel.setCellValueFactory(new PropertyValueFactory<>(\"fuel\"));\n195:         this.ammo.setCellValueFactory(new PropertyValueFactory<>(\"ammo\"));\n196:         this.metal.setCellValueFactory(new PropertyValueFactory<>(\"metal\"));\n197:         this.bauxite.setCellValueFactory(new PropertyValueFactory<>(\"bauxite\"));\n198:         this.item1name.setCellValueFactory(new PropertyValueFactory<>(\"item1name\"));\n205:         this.aggregate.setItems(sortedList2);\n206:         sortedList2.comparatorProperty().bind(this.aggregate.comparatorProperty());\n207:         this.aggregate.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);\n208:         this.aggregate.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);\n209:         this.resource.setCellValueFactory(new PropertyValueFactory<>(\"resource\"));\n210:         this.count.setCellValueFactory(new PropertyValueFactory<>(\"count\"));\n211:         this.average.setCellValueFactory(new PropertyValueFactory<>(\"average\"));\n212: \n213:         this.readLog();\n214:         this.setCollect();\n215: \n216:         this.collect.setSortPolicy((params) -> sortCollect(params.getSortOrder(), this.collect.getRoot().getChildren()));\n217:         TreeTableTool.setVisible(this.collect, this.getClass() + \"#\" + \"collect\");\n218: \n219:         // 選択された時のリスナーを設定\n220:         this.collect.getSelectionModel()\n221:                 .selectedItemProperty()\n222:                 .addListener(this::detail);\n223:         this.aggregate.getSelectionModel()\n224:                 .selectedItemProperty()\n225:                 .addListener(this::chart);\n256:     \n257:     @FXML\n258:     void copyDetail(ActionEvent event) {\n259:         TableTool.selectionCopy(this.detail);\n260:     }\n261: \n262:     @FXML\n263:     void selectAllDetail(ActionEvent event) {\n264:         TableTool.selectAll(this.detail);\n265:     }\n266: \n267:     @FXML\n268:     void columnVisibleDetail(ActionEvent event) {\n269:         try {\n270:             TableTool.showVisibleSetting(this.detail, this.getClass() + \"#\" + \"detail\",\n271:                     this.getWindow());\n272:         } catch (Exception e) {\n273:             LoggerHolder.get().error(\"FXMLの初期化に失敗しました\", e);\n274:         }\n275:     }\n276: \n277:     @FXML\n278:     void copyAggregate(ActionEvent event) {\n279:         TableTool.selectionCopy(this.aggregate);\n280:     }\n281: \n282:     @FXML\n283:     void selectAllAggregate(ActionEvent event) {\n284:         TableTool.selectAll(this.aggregate);\n285:     }\n286: \n287:     @FXML\n288:     void columnVisibleAggregate(ActionEvent event) {\n289:         try {\n290:             TableTool.showVisibleSetting(this.aggregate, this.getClass() + \"#\" + \"aggregate\",\n291:                     this.getWindow());\n292:         } catch (Exception e) {\n293:             LoggerHolder.get().error(\"FXMLの初期化に失敗しました\", e);\n294:         }\n295:     }\n296: \n297:     /**\n298:      * 右ペインに詳細表示するリスナー\n397:     /**\n398:      * ログを読み込む\n399:      */\n400:     private void readLog() {\n401:         // 今日\n402:         ZonedDateTime now = ZonedDateTime.now(ZoneId.of(\"GMT+04:00\"))\n403:                 .truncatedTo(ChronoUnit.DAYS);\n404:         // ログ読み込み制限\n405:         ZonedDateTime limit = now.minusMonths(2);\n406: \n407:         List<SimpleMissionLog> all = MissionLogs.readSimpleLog(log -> log.getDate().compareTo(limit) > 0);\n408:         for (Unit unit : Unit.values()) {",
+    "src/main/java/logbook/internal/gui/MissionLogCollect.java": "4: import javafx.beans.property.SimpleIntegerProperty;\n5: import javafx.beans.property.SimpleStringProperty;\n6: import javafx.beans.property.StringProperty;\n7: import logbook.internal.kancolle.BattleLogs.Unit;\n8: import lombok.Getter;\n9: import lombok.Setter;\n10: \n11: /**\n12:  * 集計行\n13:  *\n14:  */\n15: public class MissionLogCollect {\n16: \n17:     /** 集計  */\n18:     private StringProperty unit;\n19: \n20:     /** 大成功 */\n21:     private IntegerProperty successGood;\n22: \n23:     /** 成功 */",
+    "src/main/java/logbook/internal/gui/MissionLogDetail.java": "7: import javafx.beans.property.SimpleIntegerProperty;\n8: import javafx.beans.property.SimpleStringProperty;\n9: import javafx.beans.property.StringProperty;\n10: import logbook.internal.kancolle.MissionLogs.SimpleMissionLog;\n11: import logbook.internal.util.DateUtil;\n12: \n13: /**\n14:  * 遠征ログの詳細行\n15:  *\n16:  */\n17: public class MissionLogDetail {\n18: \n19:     /** 日付 */\n20:     private StringProperty date = new SimpleStringProperty();\n21: \n22:     /** 遠征名 */\n23:     private StringProperty name = new SimpleStringProperty();\n24: \n25:     /** 結果 */",
+    "src/main/java/logbook/internal/gui/MissionAggregate.java": "13:  * 右下ペインの集計行\n14:  *\n15:  */\n16: public class MissionAggregate {\n17: \n18:     /** 資材 */\n19:     private StringProperty resource;\n20: \n21:     /** 個数 */\n22:     private IntegerProperty count;\n23: \n24:     /** 平均 */",
+    "src/main/java/logbook/internal/gui/CreateItemController.java": "54: import javafx.scene.control.cell.TreeItemPropertyValueFactory;\n55: import javafx.scene.image.ImageView;\n56: import javafx.util.Duration;\n57: import logbook.bean.AppConfig;\n58: import logbook.bean.AppViewConfig;\n59: import logbook.bean.AppViewConfig.CreateItemLogConfig;\n60: import logbook.bean.SlotitemEquiptype;\n61: import logbook.bean.SlotitemEquiptypeCollection;\n62: import logbook.bean.SlotitemMst;\n63: import logbook.bean.SlotitemMstCollection;\n64: import logbook.internal.Tuple;\n65: import logbook.internal.kancolle.Items;\n66: import logbook.internal.log.CreateitemLogFormat;\n67: import logbook.internal.log.LogWriter;\n68: import logbook.internal.logger.LoggerHolder;\n69: import lombok.EqualsAndHashCode;\n70: import lombok.val;\n71: \n72: /**\n73:  * 開発ログ\n74:  *\n75:  */\n76: public class CreateItemController extends WindowController {\n77: \n78:     @FXML\n79:     private SplitPane splitPane;\n80: \n81:     /** 集計 */\n82:     @FXML\n83:     private TreeTableView<CreateItemCollect> collect;\n84: \n141:     @FXML\n142:     void initialize() {\n143:         try {\n144:             TableTool.setVisible(this.detail, this.getClass() + \"#\" + \"detail\");\n145:             // SplitPaneの分割サイズ\n146:             Timeline x = new Timeline();\n147:             x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {\n148:                 Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + \"#\" + \"splitPane\");\n149:             }));\n150:             x.play();\n151:             this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);\n152:             this.detail.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);\n153:             SortedList<CreateItem> sorted = new SortedList<CreateItem>(this.detailItems);\n154:             this.detail.setItems(sorted);\n155:             sorted.comparatorProperty().bind(this.detail.comparatorProperty());\n156: \n157:             Map<String, SlotitemMst> unitToType3 = this.unitToType3();\n158:             this.unit.setCellFactory(p -> new ItemIconCell(unitToType3));\n159:             this.unit.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"unit\"));\n160:             this.count.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"count\"));\n161:             this.ratio.setCellValueFactory(new TreeItemPropertyValueFactory<>(\"ratio\"));\n162: \n163:             this.row.setCellFactory(TableTool.getRowCountCellFactory());\n164:             this.date.setCellValueFactory(new PropertyValueFactory<>(\"date\"));\n165:             this.item.setCellValueFactory(new PropertyValueFactory<>(\"item\"));\n166:             this.type.setCellValueFactory(new PropertyValueFactory<>(\"type\"));\n167:             this.recipe.setCellValueFactory(new PropertyValueFactory<>(\"recipe\"));\n168:             this.secretary.setCellValueFactory(new PropertyValueFactory<>(\"secretary\"));\n169: \n170:             this.collect.setSortPolicy((param) -> {\n171:                 Optional.ofNullable(this.collect.getRoot()).map(TreeItem::getChildren).ifPresent(items -> sortItems(param.getSortOrder(), items));\n178:                     .addListener(this::changeType);\n179:             this.setCollect(this.buttonItemRecipe);\n180:             loadConfig();\n181:             TreeTableTool.setVisible(this.collect, this.getClass() + \"#\" + \"collect\");\n182:         } catch (Exception e) {\n183:             LoggerHolder.get().error(\"FXMLの初期化に失敗しました\", e);\n184:         }\n185:     }\n186:     \n187:     private void sortItems(List<TreeTableColumn<CreateItemCollect, ?>> sortOrder, List<TreeItem<CreateItemCollect>> items) {\n188:         items.sort((o1, o2) -> {\n189:             CreateItemCollect c1 = o1.getValue();\n219: \n220:     @FXML\n221:     void copyDetail(ActionEvent event) {\n222:         TableTool.selectionCopy(this.detail);\n223:     }\n224: \n225:     @FXML\n226:     void selectAllDetail(ActionEvent event) {\n227:         TableTool.selectAll(this.detail);\n228:     }\n229: \n230:     @FXML\n231:     void columnVisibleDetail(ActionEvent event) {\n232:         try {\n233:             TableTool.showVisibleSetting(this.detail, this.getClass() + \"#\" + \"detail\",\n234:                     this.getWindow());\n235:         } catch (Exception e) {\n236:             LoggerHolder.get().error(\"FXMLの初期化に失敗しました\", e);\n237:         }\n238:     }\n239: \n240:     /**\n241:      * 集計単位からアイコンを引くためのMap\n266:      */\n267:     private void setCollect(Toggle button) {\n268:         this.detailList.clear();\n269:         Path logFile = Paths.get(AppConfig.get().getReportPath(), new CreateitemLogFormat().fileName());\n270:         try {\n271:             List<CreateItem> logs;\n272:             Map<String, Integer> map = SlotitemEquiptypeCollection.get().getEquiptypeMap().values().stream()\n273:                 .collect(Collectors.toMap(SlotitemEquiptype::getName, SlotitemEquiptype::getId)); \n274:             try (Stream<String> lines = Files.lines(logFile, LogWriter.DEFAULT_CHARSET)) {\n275:                 logs = lines.skip(1)\n276:                         .map(CreateItem::parse)\n277:                         .filter(Objects::nonNull)\n441:     }\n442: \n443:     private void loadConfig() {\n444:         Optional.ofNullable(AppViewConfig.get().getCreateItemLogConfig())\n445:             .ifPresent(config -> {\n446:                 if (config.getIndex() == 1) {\n447:                     this.group.selectToggle(this.buttonRecipeItem);\n448:                 }\n449:             });\n450:     }\n451: \n452:     private void saveConfig() {\n453:         CreateItemLogConfig config = AppViewConfig.get().getCreateItemLogConfig();\n454:         if (config == null) {\n455:             config = new CreateItemLogConfig();\n456:         }\n457:         config.setIndex(this.group.getSelectedToggle() == this.buttonItemRecipe ? 0 : 1);\n458:         AppViewConfig.get().setCreateItemLogConfig(config);\n459:     }\n460: \n461:     /**\n462:      * 装備アイコンセル\n463:      */\n464:     private static class ItemIconCell extends TreeTableCell<CreateItemCollect, String> {\n465: \n466:         private Map<String, SlotitemMst> unitToType3;",
+    "src/main/java/logbook/internal/gui/TreeTableTool.java": "package logbook.internal.gui;\n\nimport javafx.scene.control.TreeTableView;\n\npublic class TreeTableTool {\n    /**\n     * テーブル列の表示・非表示の設定を行う\n     * @param table テーブル\n     * @param key テーブルのキー名\n     */\n    static void setVisible(TreeTableView<?> table, String key) {\n        //Tools.Trees.setVisible(table, key);   // not yet implemented\n        Tools.Trees.setWidth(table, key);\n        Tools.Trees.setSortOrder(table, key);\n        Tools.Trees.setColumnOrder(table, key);\n    }\n}\n",
+    "src/main/java/logbook/internal/gui/FeatureUiBridgeV1.java": "package logbook.internal.gui;\n\nimport java.io.IOException;\nimport java.text.NumberFormat;\nimport java.util.function.Consumer;\nimport javafx.scene.control.SplitPane;\nimport javafx.scene.control.TableCell;\nimport javafx.scene.control.TableColumn;\nimport javafx.scene.control.TableView;\nimport javafx.scene.image.ImageView;\nimport javafx.scene.input.KeyEvent;\nimport javafx.stage.Stage;\nimport javafx.util.Callback;\nimport logbook.plugin.api.FeatureUiV1;\n\n/** Host implementation of the public FeatureUiV1 contract; stays in the core JAR. */\npublic final class FeatureUiBridgeV1 {\n    private FeatureUiBridgeV1() { }\n\n    public static void bindWindow(FeatureUiV1.Window controller, Stage stage) {\n        ((WindowController) controller).initWindow(stage);\n    }\n\n    public static void showWindow(String fxml, Stage owner, String title,\n            Consumer<FeatureUiV1.Window> controller, Consumer<Stage> window) throws IOException {\n        InternalFXMLLoader.showWindow(fxml, owner, title,\n                controller == null ? null : value -> controller.accept((FeatureUiV1.Window) value), window);\n    }\n\n    public static void restoreTable(TableView<?> table, String key) { TableTool.setVisible(table, key); }\n    public static void selectionCopy(TableView<?> table) { TableTool.selectionCopy(table); }\n    public static void selectAll(TableView<?> table) { TableTool.selectAll(table); }\n    public static void tableKeyPressed(KeyEvent event) { TableTool.defaultOnKeyPressedHandler(event); }\n\n    public static void showVisibleSetting(TableView<?> table, String key, Stage owner) throws IOException {\n        TableTool.showVisibleSetting(table, key, owner);\n    }\n\n    public static <T> Callback<TableColumn<T, Integer>, TableCell<T, Integer>> rowCountCellFactory() {\n        return TableTool.getRowCountCellFactory();\n    }\n\n    /** Generic on purpose: the host never needs a feature's UseitemItem row class. */\n    public static <T> Callback<TableColumn<T, Integer>, TableCell<T, Integer>> integerCellFactory() {\n        NumberFormat format = NumberFormat.getIntegerInstance();\n        return column -> new TableCell<>() {\n            @Override protected void updateItem(Integer item, boolean empty) {\n                super.updateItem(item, empty);\n                setText(empty || item == null ? null : format.format(item));\n            }\n        };\n    }\n\n    public static void restoreSplit(SplitPane pane, String key) { Tools.Controls.setSplitWidth(pane, key); }\n    public static ImageView zoomImage(ImageView view) { return Tools.Controls.zoomImage(view); }\n}\n",
+    "src/main/resources/logbook/gui/main_menu.fxml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<?import javafx.scene.control.Menu?>\n<?import javafx.scene.control.MenuBar?>\n<?import javafx.scene.control.MenuItem?>\n<?import javafx.scene.control.SeparatorMenuItem?>\n<?import javafx.scene.input.KeyCodeCombination?>\n\n<MenuBar styleClass=\"mainMenu\" xmlns=\"http://javafx.com/javafx/8.0.162\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"logbook.internal.gui.MainMenuController\">\n   <menus>\n      <Menu fx:id=\"command\" mnemonicParsing=\"false\" text=\"コマンド\">\n         <items>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#capture\" text=\"キャプチャ\" />\n            <SeparatorMenuItem mnemonicParsing=\"false\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#battleStatus\" text=\"現在の戦闘\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#practiceStatus\" text=\"現在の演習\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#battlelog\" text=\"戦闘ログ\">\n                   <accelerator>\n                      <KeyCodeCombination alt=\"UP\" code=\"A\" control=\"DOWN\" meta=\"UP\" shift=\"UP\" shortcut=\"UP\" />\n                   </accelerator></MenuItem>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#missionlog\" text=\"遠征ログ\">\n                     <accelerator>\n                        <KeyCodeCombination alt=\"UP\" code=\"M\" control=\"DOWN\" meta=\"UP\" shift=\"UP\" shortcut=\"UP\" />\n                     </accelerator></MenuItem>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#createitemlog\" text=\"開発ログ\" />\n            <SeparatorMenuItem mnemonicParsing=\"false\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#airBase\" text=\"基地航空隊\">\n                   <accelerator>\n                      <KeyCodeCombination alt=\"UP\" code=\"B\" control=\"DOWN\" meta=\"UP\" shift=\"UP\" shortcut=\"UP\" />\n                   </accelerator>\n            </MenuItem>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#items\" text=\"所有装備一覧\">\n                   <accelerator>\n                      <KeyCodeCombination alt=\"UP\" code=\"I\" control=\"DOWN\" meta=\"UP\" shift=\"UP\" shortcut=\"UP\" />\n                   </accelerator></MenuItem>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#ships\" text=\"所有艦娘一覧\">\n                   <accelerator>\n                      <KeyCodeCombination alt=\"UP\" code=\"S\" control=\"DOWN\" meta=\"UP\" shift=\"UP\" shortcut=\"UP\" />\n                   </accelerator></MenuItem>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#useitems\" text=\"アイテム一覧\" />\n            <SeparatorMenuItem mnemonicParsing=\"false\" />\n         </items>\n      </Menu>\n\n      <Menu fx:id=\"calc\" mnemonicParsing=\"false\" text=\"計算機\">\n         <items>\n         </items>\n      </Menu>\n      <Menu fx:id=\"ext\" mnemonicParsing=\"false\" text=\"その他\">\n         <items>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#deck\" text=\"編成記録\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#questConditionEdit\" text=\"戦闘任務条件編集\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#arsenalQuestConditionEdit\" text=\"工廠任務受領設定\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#seaAreaEdit\" text=\"作戦札編集\" />\n            <SeparatorMenuItem mnemonicParsing=\"false\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#config\" text=\"設定\">\n                   <accelerator>\n                      <KeyCodeCombination alt=\"UP\" code=\"COMMA\" control=\"UP\" meta=\"UP\" shift=\"UP\" shortcut=\"DOWN\" />\n                   </accelerator></MenuItem>\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#updateCheck\" text=\"更新を確認\" />\n            <MenuItem mnemonicParsing=\"false\" onAction=\"#version\" text=\"バージョン情報\" />\n         </items>\n      </Menu>\n   </menus>\n</MenuBar>\n"
+  },
+  "outside_references": {
+    "src/main/java/logbook/internal/gui/MainMenuController.java": [
+      "148: log = BattleLogs.read(BattleLogDetail.toBattleLogDetail(battleLog).getDate());"
+    ],
+    "src/main/java/logbook/internal/kancolle/BattleLogs.java": [
+      "50: import logbook.internal.gui.BattleLogCollect;",
+      "429: public static BattleLogCollect collect(List<SimpleBattleLog> logs, String areaShortName, boolean bossOnly) {",
+      "462: BattleLogCollect value = new BattleLogCollect();"
+    ],
+    "src/main/resources/logbook/gui/battlelog.fxml": [
+      "24: <VBox maxHeight=\"-Infinity\" maxWidth=\"-Infinity\" minHeight=\"-Infinity\" minWidth=\"-Infinity\" prefHeight=\"600.0\" prefWidth=\"1200.0\" xmlns=\"http://javafx.com/javafx/8.0.232-ea\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"logbook.internal.gui.BattleLogController\">"
+    ],
+    "src/main/resources/logbook/gui/missionlog.fxml": [
+      "14: <VBox maxHeight=\"-Infinity\" maxWidth=\"-Infinity\" minHeight=\"-Infinity\" minWidth=\"-Infinity\" prefHeight=\"400.0\" prefWidth=\"800.0\" stylesheets=\"@application.css\" xmlns=\"http://javafx.com/javafx/8.0.131\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"logbook.internal.gui.MissionLogController\">"
+    ],
+    "src/main/resources/logbook/gui/createitemlog.fxml": [
+      "16: <VBox maxHeight=\"-Infinity\" maxWidth=\"-Infinity\" minHeight=\"-Infinity\" minWidth=\"-Infinity\" prefHeight=\"600.0\" prefWidth=\"1000.0\" stylesheets=\"@application.css\" xmlns=\"http://javafx.com/javafx/8.0.162\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"logbook.internal.gui.CreateItemController\">"
+    ]
+  },
+  "packaging_assumptions": {
+    "scripts/run_feature_distribution.py": [
+      "4: The three module JARs use a shared application class loader. Host API 1 and an",
+      "16: FORMAT = 'logbook-feature-distribution-v2'",
+      "22: FEATURES = {",
+      "25: 'status': ('repair-list',),",
+      "27: PROVIDERS = {'calculators': 'logbook.features.CalculatorFeatures',",
+      "28: 'charts': 'logbook.features.ChartFeatures',",
+      "29: 'status': 'logbook.features.StatusFeatures'}",
+      "32: GROUPS = {",
+      "33: 'calculators': ('CalculatorFeatures',",
+      "37: 'charts': ('ChartFeatures', ('ResourceChartController', 'ExpChartController', 'ResourceTable'),",
+      "39: 'status': ('StatusFeatures', ('RequireNdockController', 'RequireNdock',",
+      "46: 'provider', 'features'}",
+      "53: FILES = ('logbook-core.jar', 'features/logbook-feature-calculators.jar',",
+      "54: 'features/logbook-feature-charts.jar', 'features/logbook-feature-status.jar',",
+      "56: JARS = tuple(name for name in FILES if name.endswith('.jar'))",
+      "60: provider, controllers, resources = GROUPS[module_id]",
+      "61: stems = ['logbook/features/' + provider]",
+      "120: if host['path'] != JARS[0] or host['sha256'] != files[JARS[0]]:",
+      "123: if not isinstance(modules, list) or len(modules) != len(FEATURES):",
+      "125: catalog, all_features, all_providers = {}, set(), set()",
+      "130: if not isinstance(name, str) or name not in FEATURES or name in catalog:",
+      "138: path = 'features/logbook-feature-' + name + '.jar'",
+      "145: features = module['features']",
+      "146: if (not isinstance(features, list) or any(not isinstance(f, str) or",
+      "147: IDENTIFIER.fullmatch(f) is None for f in features)",
+      "148: or len(features) != len(set(features))",
+      "149: or set(features) != set(FEATURES[name])",
+      "150: or all_features.intersection(features)):",
+      "152: all_features.update(features)",
+      "155: if set(catalog) != set(FEATURES):",
+      "215: def verify_jars(root, report, catalog):",
+      "217: for path in JARS:",
+      "235: if path != JARS[0] and name.startswith('META-INF/versions/'):",
+      "236: raise ValueError('Multi-release feature JARs are not supported')",
+      "257: if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':",
+      "258: raise ValueError('Multi-release feature JARs are not supported')",
+      "259: if path == JARS[0]:",
+      "309: verify_jars(root, report, catalog)"
+    ],
+    "scripts/feature_bundle_manager.py": [
+      "2: \"\"\"Opt-in POSIX split-bundle store: retain all versions; change one selector, not JARs.",
+      "25: JARS = tuple(n for n in FILES if n.endswith('.jar'))",
+      "151: for name in JARS:",
+      "196: Candidate/selected JARs still undergo full bundle validation. Incomplete",
+      "271: (pending / 'features').mkdir()",
+      "279: sync_dir(pending / 'features')",
+      "343: (pending / 'features').mkdir()",
+      "356: sync_dir(pending / 'features')",
+      "402: with ZipFile(version / JARS[0]) as jar:",
+      "413: '-cp', os.pathsep.join(str(version / n) for n in JARS)]"
+    ],
+    "scripts/runtime_managed_import.py": [
+      "350: require(set(before) == {'.', 'features', 'distribution.json', *manager.FILES},"
+    ],
+    "scripts/runtime_migration.py": [
+      "260: groups = []",
+      "262: if any(source.is_relative_to(Path(group['source'])) for group in groups):",
+      "265: groups.append(dict(source=str(source), target=external_prefix + '/' + str(len(groups)), entries=entries))",
+      "268: for group in groups:",
+      "278: group = next(g for g in groups if source.is_relative_to(Path(g['source'])))",
+      "304: source_entries=records, external_inputs=groups, references=references,"
+    ],
+    "scripts/verify_r3.sh": [
+      "19: CP=\"$EVIDENCE/split/logbook-core.jar:$EVIDENCE/split/features/logbook-feature-calculators.jar:$EVIDENCE/split/features/logbook-feature-charts.jar:$EVIDENCE/split/features/logbook-feature-status.jar\"",
+      "36: assert 'SPLIT_GUI_OK features=7 windows=8' in (p/'split-gui.log').read_text()",
+      "47: assert len(required)==1 and int(required[0].get('tests',0))==8 and int(required[0].get('skipped',0))==0",
+      "49: 'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,"
+    ],
+    "scripts/build_feature_distribution.py": [
+      "2: \"\"\"Build a NEW, experimental core + three feature-JAR directory. Never install/update.",
+      "4: The legacy fat JAR is not changed. Features share the application's class loader;",
+      "15: from run_feature_distribution import (FORMAT, HOST_API, HOST_VERSION, FEATURES,",
+      "17: GROUPS, EXTRA_CLASSES, required_entries)",
+      "36: for group, (provider, controllers, resources) in GROUPS.items():",
+      "37: stems = ['logbook/features/' + provider]",
+      "89: expected = {'logbook.features.' + values[0] for values in GROUPS.values()}",
+      "92: for group in GROUPS:",
+      "98: groups = {g: {} for g in GROUPS}",
+      "103: groups[group][name] = data",
+      "106: # The managed launcher supplies an explicit four-JAR class path. Retain all",
+      "107: # other legacy attributes but never let Class-Path silently add other JARs.",
+      "114: (output / 'features').mkdir()",
+      "119: for group, values in groups.items():",
+      "120: provider = GROUPS[group][0]",
+      "123: values[SERVICE] = ('logbook.features.' + provider + '\\n').encode()",
+      "126: 'provider': PROVIDERS[group], 'features': list(FEATURES[group])}",
+      "131: name = 'features/logbook-feature-' + group + '.jar'",
+      "146: 'extracted': {g: sorted(n for n in entries if owner(n) == g) for g in GROUPS}}"
+    ],
+    "scripts/java/SupportFeatureProbe.java": [
+      "27: /** Actual base/support windows, using split JARs and a synthetic disposable runtime. */"
+    ],
+    "scripts/java/FeatureDistributionProbe.java": [
+      "25: * Run with ONLY split JARs plus the probe directory on the application classpath.",
+      "53: var features = new ArrayList<FeatureModule.Feature>();",
+      "54: for (var group : FeatureModule.Group.values()) features.addAll(registry.group(group));",
+      "55: check(features.size() == 7, \"Seven actual features must be discovered\");",
+      "61: for (var feature : features) load(feature.fxml(), failures);",
+      "64: System.out.println(\"SPLIT_GUI_OK features=7 windows=8 source=feature-jars only\");"
+    ],
+    "scripts/tests/test_managed_launcher_integration.py": [
+      "44: for name in m.JARS:",
+      "54: report['host']['sha256'] = report['files'][m.JARS[0]]",
+      "101: self.assertEqual('MAIN_WINDOW_PROXY_AND_7_FEATURES_OK\\n',",
+      "115: print('MANAGED_LAUNCH_UPDATE_ROLLBACK_OK A->B->A; main window+localhost proxy+7 features; retained runtime; evidence='+logname)"
+    ],
+    "scripts/tests/test_r9_arrival_inventory.py": [
+      "11: def test_three_hash_bound_recurring_changes_and_retained_prior_identity(self):"
+    ],
+    "scripts/tests/test_feature_version_rejections.py": [
+      "3: Every mutation is confined to fresh synthetic JARs in a TemporaryDirectory.",
+      "33: builder.SERVICE: ('\\n'.join('logbook.features.' + values[0]",
+      "34: for values in builder.GROUPS.values()) + '\\n').encode(),",
+      "36: for module_id in distribution.GROUPS:",
+      "131: for features in [['experience', 'experience', 'probability', 'last-dance'],",
+      "133: ['experience', 'mission-check', 'probability', 'repair-list']]:",
+      "134: with self.subTest(features=features):",
+      "136: report['modules'][0]['features'] = features",
+      "143: report['modules'][0]['features'][0] = invalid",
+      "205: for source, target in [('calculators', 'charts'), ('charts', 'status'), ('status', 'calculators')]:",
+      "216: for path in ['../feature.jar', '/tmp/feature.jar', 'features/../features/logbook-feature-calculators.jar',",
+      "217: 'features/logbook-feature-charts.jar', 'features\\\\logbook-feature-calculators.jar']:",
+      "308: for name in distribution.GROUPS:",
+      "318: self.change_module_entry(distribution.SERVICE, b'logbook.features.ChartFeatures\\n')",
+      "329: self.change_core_entry(distribution.SERVICE, b'logbook.features.CalculatorFeatures\\n')",
+      "347: def test_class_owned_by_two_jars_is_rejected(self):",
+      "375: def test_fxml_owned_by_two_jars_is_rejected(self):"
+    ],
+    "scripts/tests/test_feature_version_integration.py": [
+      "31: CALCULATORS = 'features/logbook-feature-calculators.jar'",
+      "79: classpath = os.pathsep.join(str(pristine / name) for name in m.JARS)",
+      "168: self.assertEqual('logbook-feature-distribution-v2', report['format'])",
+      "188: f_classpath = os.pathsep.join(str(base / 'F' / name) for name in m.JARS)",
+      "207: cp = os.pathsep.join(str(base / 'C' / name) for name in m.JARS)",
+      "211: self.assertIn('INCOMPATIBLE_REGISTRY_REJECTED_BEFORE_FEATURES', result.stdout + result.stderr)",
+      "212: self.assertFalse((reject / 'incompatible-features-entered.txt').exists())",
+      "310: incompatible_rejected_before_features=True, interrupted_stage_retained=True,"
+    ],
+    "scripts/tests/test_feature_bundle_manager.py": [
+      "13: SERVICE, FEATURES, PROVIDERS, required_entries)",
+      "25: root = self.base / label;root.mkdir();(root / 'features').mkdir()",
+      "26: with ZipFile(root / m.JARS[0], 'x') as jar:",
+      "31: host_hash = hashlib.sha256((root / m.JARS[0]).read_bytes()).hexdigest()",
+      "33: for module_id, features in FEATURES.items():",
+      "34: name = 'features/logbook-feature-' + module_id + '.jar'",
+      "37: 'provider': PROVIDERS[module_id], 'features': list(features)}",
+      "49: 'host': {'api': 1, 'version': '1.0.0', 'path': m.JARS[0], 'sha256': host_hash},",
+      "105: (self.b/m.JARS[-1]).write_bytes((self.a/m.JARS[-1]).read_bytes())",
+      "111: (self.store/'versions'/self.bid/m.JARS[0]).write_bytes(b'broken fixture')"
+    ],
+    "scripts/tests/test_r7_review_inventory.py": [
+      "46: def test_changes_only_three_product_definitions_and_corrected_flagship_assessment(self):"
+    ],
+    "scripts/tests/test_audit_game_json.py": [
+      "42: three = audit(self.root, self.paths, two)",
+      "43: self.assertFalse(three['complete'])",
+      "44: self.assertEqual(1, three['counts']['errors'])"
+    ],
+    "scripts/tests/test_feature_support_integration.py": [
+      "21: class FeatureSupportIntegrationTest(unittest.TestCase):"
+    ],
+    "scripts/tests/test_runtime_migration_java.py": [
+      "6: and Launcher still execute the unchanged original fat JARs; this suite does not",
+      "47: # Only generated TempDir fixtures are replaced. Input fat JARs and",
+      "158: # JARs. An intact fat JAR is not a valid managed distribution. Keep",
+      "162: from feature_bundle_manager import JARS",
+      "166: jars = [distribution / name for name in JARS]",
+      "167: command[command.index('-cp') + 1] = os.pathsep.join(map(str, [*jars, self.classes]))",
+      "169: preflight[preflight.index('-cp') + 1] = os.pathsep.join(map(str, jars))",
+      "176: for path in [*jars, distribution / 'distribution.json']:",
+      "178: print('MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true')",
+      "272: original_jars = {path: digest(path.read_bytes()) for path in (old_jar, new_jar)}",
+      "324: for path, checksum in original_jars.items():"
+    ],
+    "scripts/tests/test_r5_review_inventory.py": [
+      "33: def test_three_rebound_records_retain_prior_hashes_and_unfinished_scope(self):"
+    ],
+    "scripts/tests/test_feature_versions.py": [
+      "1: \"\"\"Version contracts and copy-only single-module updates, using synthetic JARs.\"\"\"",
+      "30: builder.SERVICE: ('\\n'.join('logbook.features.' + p[0]",
+      "31: for p in builder.GROUPS.values()) + '\\n').encode(),",
+      "33: for provider, controllers, resources in builder.GROUPS.values():",
+      "34: for stem in ['logbook/features/' + provider] + [",
+      "122: self.assertEqual('logbook-feature-distribution-v2', self.report['format'])",
+      "124: self.assertEqual({'calculators', 'charts', 'status'},",
+      "126: self.assertEqual(7, sum(len(m['features']) for m in self.report['modules']))",
+      "161: origin = candidate if name == 'features/logbook-feature-calculators.jar' else self.a",
+      "189: def test_all_three_modules_keep_unselected_candidate_changes_out(self):",
+      "196: for module_id in ('calculators', 'charts', 'status'):",
+      "201: selected_path = 'features/logbook-feature-' + module_id + '.jar'",
+      "289: chart_path = 'features/logbook-feature-charts.jar'",
+      "381: self.assertEqual((self.a / 'features/logbook-feature-calculators.jar').read_bytes(),",
+      "383: 'features/logbook-feature-calculators.jar').read_bytes())"
+    ],
+    "scripts/tests/test_feature_distribution.py": [
+      "9: from build_feature_distribution import build, GROUPS, SERVICE, owner",
+      "18: SERVICE:('\\n'.join('logbook.features.'+v[0] for v in GROUPS.values())+'\\n').encode()}",
+      "19: for provider, controllers, fxml in GROUPS.values():",
+      "20: for stem in ['logbook/features/'+provider]+['logbook/internal/gui/'+c for c in controllers]:",
+      "35: for g in GROUPS:",
+      "36: with ZipFile(self.out/f'features/logbook-feature-{g}.jar') as z:",
+      "63: self.build();p=self.out/'features/logbook-feature-charts.jar';p.write_bytes(b'bad')"
+    ],
+    "scripts/tests/fixtures/feature_version/FeatureVersionRegistryProbe.java": [
+      "12: Path entered = Path.of(\"incompatible-features-entered.txt\");",
+      "20: System.out.println(\"INCOMPATIBLE_REGISTRY_REJECTED_BEFORE_FEATURES \" + expected.getMessage());"
+    ],
+    "src/test/java/logbook/core/SeasonalSourceComparisonTest.java": [
+      "106: @Test void thirtySecondDestroyerSquadronNeedsThreeDistinctEligibleSlots() throws Exception {"
+    ],
+    "src/test/java/logbook/core/PeriodicQuestContractTest.java": [
+      "142: @Test void fifthSquadronRequiresThreeDistinctNamedShips() throws Exception {",
+      "146: @Test void torpedoSquadronRequiresFlagshipLightCruiserAndAtLeastThreeDestroyers() throws Exception {",
+      "181: @Test void thirtyFirstDestroyerNeedsNaganamiKaiNiAndOneOfThreeOthers() throws Exception {"
+    ],
+    "src/test/java/logbook/core/FeatureVersionContractTest.java": [
+      "9: import logbook.features.CalculatorFeatures;",
+      "10: import logbook.features.ChartFeatures;",
+      "11: import logbook.features.StatusFeatures;",
+      "31: @Override public List<Feature> features() {",
+      "43: var catalog = registry(new CalculatorFeatures(), new ChartFeatures(), new StatusFeatures());",
+      "44: assertEquals(List.of(\"calculators\", \"charts\", \"status\"),",
+      "59: @Test void unknownHostApiFailsBeforePublishingAnyFeatures() {",
+      "80: @Test void missingDependencyFailsBeforePublishingFeatures() {",
+      "113: @Test void circularDependenciesAreRejectedWithoutExecutingFeatures() {",
+      "119: List.of(new Dependency(\"three\", \"1.0.0\", \"2.0.0\")), accessed),",
+      "120: module(\"three\", \"1.0.0\", 1,",
+      "136: assertEquals(3, catalog.descriptors().size());"
+    ],
+    "src/test/java/logbook/core/QuestFleetBoundaryRegressionTest.java": [
+      "89: @Test void alliedZeroOneTwoAndThreeThreshold() throws Exception {"
+    ],
+    "src/test/java/logbook/core/FeatureEmbeddedDescriptorTest.java": [
+      "32: \"provider\":\"fixture.VersionedModule\",\"features\":[\"fixture.window\"]}",
+      "49: public List<Feature> features() {",
+      "253: @Override public List<Feature> features() { return List.of(); }"
+    ],
+    "src/test/java/logbook/core/PortArrivalDefinitionTest.java": [
+      "36: @Test void threeRecurringDefinitionsUseObservedArrivalWithUnchangedTargets() throws Exception {"
+    ],
+    "src/test/java/logbook/core/MonthlyDestroyerUpperBoundTest.java": [
+      "43: @Test void threeCruiserThreeDestroyerBoundaryRemainsValid() throws Exception {"
+    ],
+    "src/test/java/logbook/core/HistoricalSeasonalRuleTest.java": [
+      "142: @Test void peach2021NeedsThreeDestroyersOrEscortShipsAndNoFlagshipRestriction() throws Exception {"
+    ],
+    "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java": [
+      "26: java.util.List<Feature> features();",
+      "37: public java.util.List<Feature> features() {"
+    ],
+    "src/test/java/logbook/core/FeatureRegistryTest.java": [
+      "10: assertEquals(4,registry.group(FeatureModule.Group.CALCULATOR).size());",
+      "16: @Test void duplicateAndMissingFeaturesAreRejectedBeforeMenuChanges(){",
+      "22: @Test void managedBundleRejectsUnversionedModuleBeforeItCanPublishFeatures(){",
+      "34: assertFalse(accessed.get(), \"incompatible modules must fail before features() is called\");"
+    ],
+    "src/test/java/logbook/internal/gui/GuiResourceIntegrityTest.java": [
+      "31: f.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);"
+    ],
+    "src/test/java/logbook/internal/gui/FeatureMenuGuiTest.java": [
+      "13: @Test void actualMainMenuContainsAllModularFeaturesOnceAndPreservesShortcuts()throws Exception{",
+      "17: assertEquals(7,items.size());assertEquals(7,items.stream().map(MenuItem::getId).distinct().count());",
+      "18: Menu calc=(Menu)loader.getNamespace().get(\"calc\");assertEquals(4,calc.getItems().stream().filter(i->i.getId()!=null&&i.getId().startsWith(\"logbook.feature.\")).count());"
+    ],
+    "src/test/java/logbook/internal/gui/QuestEditorDocumentTest.java": [
+      "65: assertEquals(4, result.path(\"filter\").path(\"unknown\").asInt());"
+    ],
+    "src/test/java/logbook/internal/gui/ArrivalConditionEditorGuiTest.java": [
+      "93: assertEquals(3, condition.path(\"count\").asInt());",
+      "95: assertEquals(7, doc.path(\"filter\").path(\"futureFilter\").asInt());"
+    ],
+    "src/test/java/logbook/internal/kancolle/PortArrivalFleetStoreTest.java": [
+      "55: assertEquals(4, before.size());",
+      "164: assertEquals(3, evidence.members().size()); assertThrows(UnsupportedOperationException.class, () -> evidence.members().clear());"
+    ],
+    "src/test/java/logbook/internal/proxy/CaptureCapacityTest.java": [
+      "28: assertEquals(4, budget.usedBytes());",
+      "30: first.close(); assertEquals(4, budget.usedBytes());",
+      "43: assertEquals(4, budget.usedBytes()); first.clear();"
+    ],
+    "src/test/java/logbook/internal/proxy/ByteArrayInputStream2Test.java": [
+      "36: assertEquals(3, in.available());",
+      "53: assertEquals(3, in.read(output, 1, 3));"
+    ],
+    "src/test/java/logbook/internal/proxy/RequestContentListenerTest.java": [
+      "35: assertEquals(4, buffer.limit());"
+    ],
+    "src/test/java/logbook/internal/updatecheck/VersionTest.java": [
+      "15: assertEquals(3, v.getMajor());",
+      "16: assertEquals(4, v.getMinor());",
+      "41: assertEquals(7, v.getRevision());"
+    ],
+    "src/test/java/logbook/internal/logger/ManagedLauncherSmokeHook.java": [
+      "37: var features = LogBookCoreServices.getServiceProviders(FeatureModule.class)",
+      "38: .flatMap(module -> module.features().stream()).toList();",
+      "39: if (features.size() != 7) throw new AssertionError(\"Feature count: \" + features.size());",
+      "40: for (var feature : features) {",
+      "42: if (!source.contains(\"/features/logbook-feature-\")) throw new AssertionError(source);",
+      "47: String[] jars = System.getProperty(\"java.class.path\").split(java.io.File.pathSeparator);",
+      "48: if (jars.length != 4) throw new AssertionError(\"Expected exactly four bundle JARs\");",
+      "49: for (String jarPath : jars) {",
+      "60: Files.writeString(Path.of(\"managed-smoke-ready.txt\"), \"MAIN_WINDOW_PROXY_AND_7_FEATURES_OK\\n\");"
+    ],
+    "src/test/java/logbook/internal/logger/FeatureVersionSmokeHook.java": [
+      "159: check(descriptors.size() == 3, \"Expected all three declared modules\");",
+      "162: int features = 0;",
+      "163: for (FeatureModule.Group group : FeatureModule.Group.values()) features += registry.group(group).size();",
+      "164: check(features == 7, \"Original seven menu features must remain available\");",
+      "165: String[] jars = System.getProperty(\"java.class.path\").split(java.util.regex.Pattern.quote(File.pathSeparator));",
+      "166: check(jars.length == 4, \"Launcher classpath must contain only the four selected bundle JARs\");",
+      "169: for (String jarPath : jars) {",
+      "204: check(fxml.contains(\"/features/logbook-feature-calculators.jar!\"), \"FXML did not load from the selected feature JAR\");",
+      "208: .endsWith(\"/features/logbook-feature-calculators.jar\"),"
+    ]
+  }
+}
