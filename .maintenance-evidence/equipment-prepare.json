@@ -1,0 +1,58 @@
+{
+  "base": "ccb680c356358f8dedc6c606b627b3da38da96b9",
+  "production_accessed": false,
+  "full_regression_verified": false,
+  "logs": {
+    "build.log": {
+      "tail": [
+        "[INFO] Recompiling the module because of changed dependency.",
+        "[INFO] Compiling 125 source files with javac [debug release 21] to target/test-classes",
+        "[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/DataGenerationRollbackTest.java: Some input files use or override a deprecated API.",
+        "[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/DataGenerationRollbackTest.java: Recompile with -Xlint:deprecation for details.",
+        "[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/internal/log/LogWriterTest.java: Some input files use unchecked or unsafe operations.",
+        "[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/internal/log/LogWriterTest.java: Recompile with -Xlint:unchecked for details.",
+        "[INFO] ",
+        "[INFO] --- surefire:3.6.1:test (default-test) @ logbook-kai ---",
+        "[INFO] Tests are skipped.",
+        "[INFO] ",
+        "[INFO] --- jar:3.5.1:jar (default-jar) @ logbook-kai ---",
+        "[INFO] Building jar: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai-25.0.10.jar",
+        "[INFO] ",
+        "[INFO] --- assembly:3.8.0:single (make-assembly) @ logbook-kai ---",
+        "[INFO] Building jar: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar",
+        "[WARNING] Configuration option 'appendAssemblyId' is set to false.",
+        "Instead of attaching the assembly file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar, it will become the file for main project artifact.",
+        "NOTE: If multiple descriptors or descriptor-formats are provided for this project, the value of this file will be non-deterministic!",
+        "[WARNING] Replacing pre-existing project main-artifact file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai-25.0.10.jar",
+        "with assembly file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar",
+        "[INFO] ",
+        "[INFO] --- assembly:3.8.0:single (create-release) @ logbook-kai ---",
+        "[INFO] Reading assembly descriptor: assembly.xml",
+        "[INFO] Building zip: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai_25.0.10.zip",
+        "[INFO] ------------------------------------------------------------------------",
+        "[INFO] BUILD SUCCESS",
+        "[INFO] ------------------------------------------------------------------------",
+        "[INFO] Total time:  25.978 s",
+        "[INFO] Finished at: 2026-10-27T23:41:04Z",
+        "[INFO] ------------------------------------------------------------------------"
+      ],
+      "errors": []
+    },
+    "ui.log": {
+      "tail": [
+        "EQUIPMENT_UI_PREPARED controllers=3 data_contract=true module=status legacy_v2_retained=true"
+      ],
+      "errors": []
+    },
+    "data.log": {
+      "tail": [
+        "EQUIPMENT_DATA_PREPARED files=5 immutable_values=true write_api=false"
+      ],
+      "errors": []
+    }
+  },
+  "host_methods": {
+    "Ships.java": "491:     public static Image shipWithItemImage(Chara chara) throws IllegalStateException {\n492:         return shipWithItemImage(chara, SlotItemCollection.get().getSlotitemMap(), AppCondition.get().getEscape());\n493:     }\n494: \n495:     /**\n496:      * キャラクターの画像を取得します(装備画像付き)\n497:      *\n498:      * @param chara   キャラクター\n499:      * @param itemMap 装備Map\n500:      * @param escape  退避艦ID\n501:      * @return 艦娘の画像\n502:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n503:      */\n504:     public static Image shipWithItemImage(Chara chara,\n505:             Map<Integer, SlotItem> itemMap, Set<Integer> escape) throws IllegalStateException {\n506:         return ShipImage.get(chara, true, true, itemMap, escape);\n507:     }\n508: \n509:     /**\n510:      * キャラクターの画像を取得します(装備画像付き、状態バナー無し)\n511:      *\n512:      * @param chara キャラクター\n513:      * @return 艦娘の画像\n514:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n515:      */\n516:     public static Image shipWithItemWithoutStateBannerImage(Chara chara) throws IllegalStateException {\n517:         return shipWithItemWithoutStateBannerImage(chara,\n518:                 SlotItemCollection.get().getSlotitemMap(), AppCondition.get().getEscape());\n519:     }\n520: \n521:     /**\n522:      * キャラクターの画像を取得します(装備画像付き、状態バナー無し)\n523:      *\n524:      * @param chara   キャラクター\n525:      * @param itemMap 装備Map\n526:      * @param escape  退避艦ID\n527:      * @return 艦娘の画像\n528:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n529:      */\n530:     public static Image shipWithItemWithoutStateBannerImage(Chara chara,\n531:             Map<Integer, SlotItem> itemMap, Set<Integer> escape) throws IllegalStateException {\n532:         return ShipImage.get(chara, true, false, itemMap, escape);\n533:     }\n534: \n535:     /**\n536:      * キャラクターの画像を取得します(装飾無し、バックグラウンドでのロード)\n537:      *\n538:      * @param chara キャラクター\n539:      * @return 艦娘の画像\n540:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n541:      */\n542:     public static Image getBackgroundLoading(Chara chara) throws IllegalStateException {\n543:         Image img = ShipImage.getBackgroundLoading(chara);\n544:         if (img != null) {\n545:             return img;\n546:         }\n547:         Canvas canvas = new Canvas(160, 40);\n548:         SnapshotParameters sp = new SnapshotParameters();\n549:         sp.setFill(Color.TRANSPARENT);\n550:         return canvas.snapshot(sp, null);\n551:     }\n552: \n553:     /**\n554:      * 艦娘の補給ゲージを取得します\n555:      *\n556:      * @param ship 艦娘\n557:      * @return 補給ゲージ\n558:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n559:      */\n560:     public static Image supplyGaugeImage(Ship ship) throws IllegalStateException {\n561:         return ShipImage.getSupplyGauge(ship);\n562:     }\n563: \n564:     /**\n565:      * キャラクターに対応する艦船を取得します\n566:      *\n567:      * @param chara キャラクター\n568:      * @return 艦船\n1093:     public static String toName(Chara chara) {\n1094:         if (chara == null) {\n1095:             return \"\";\n1096:         }\n1097:         if (chara.isShip() || chara.isFriend()) {\n1098:             // 艦娘\n1099:             return Messages.getString(\"ship.name\", shipMst(chara)\n1100:                     .map(ShipMst::getName)\n1101:                     .orElse(\"\"), chara.getLv());\n1102:         } else {\n1103:             // 敵艦\n1104:             return Messages.getString(\"ship.name\", shipMst(chara)\n1105:                     .map(mst -> {\n1106:                         String yomi = mst.getYomi();\n1107:                         if (yomi == null || \"-\".equals(yomi) || yomi.isEmpty() || chara.isPractice()) {\n1108:                             return mst.getName();\n1109:                         } else {\n1110:                             return mst.getName() + yomi;\n1111:                         }\n1112:                     })\n1113:                     .orElse(\"\"), chara.getLv());\n1114:         }\n1115:     }\n1116: \n1117:     /**\n1118:      * 速力のテキスト表記\n1119:      *\n1120:      * @param soku soku\n1121:      * @return 速力\n1122:      */\n1123:     public static String sokuText(Integer soku) {\n1124:         if (soku == null)\n1125:             return \"\";\n1126:         switch (soku) {\n1127:             case 0:\n1128:                 return \"基地\";\n1129:             case 5:\n1130:                 return \"低速\";\n1131:             case 10:\n1132:                 return \"高速\";\n1133:             case 15:\n1134:                 return \"高速+\";\n1135:             case 20:\n1136:                 return \"最速\";\n1137:         }\n1138:         return \"\";\n1139:     }\n1140: \n1141:     /**\n1142:      * 射程のテキスト表記\n1143:      *\n1144:      * @param leng leng\n1145:      * @return\n1146:      */\n1147:     public static String lengText(Integer leng) {\n1148:         if (leng == null)\n1149:             return \"\";\n1150:         switch (leng) {\n1151:             case 1:\n1152:                 return \"短\";\n1153:             case 2:\n1154:                 return \"中\";\n1155:             case 3:\n1156:                 return \"長\";\n1157:             case 4:",
+    "Items.java": "117:     public static Image itemImage(SlotItem item) throws IllegalStateException {\n118:         return itemImage(slotitemMst(item).orElse(null));\n119:     }\n120: \n121:     /**\n122:      * 装備の画像を取得します\n123:      *\n124:      * @param item 装備定義\n125:      * @return 装備の画像(36x36)\n126:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n127:      */\n128:     public static Image itemImage(SlotitemMst item) throws IllegalStateException {\n129:         if (item != null) {\n130:             int type3 = item.getType().get(3);\n131:             return itemIcon(type3, false);\n132:         }\n133:         return defaultItemIcon();\n134:     }\n135: \n136:     /**\n137:      * 装備の画像を取得します\n138:      *\n139:      * @param type3 装備定義\n140:      * @return 装備の画像(36x36)\n141:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n142:      */\n143:     public static Image itemImageByType(int type3) throws IllegalStateException {\n144:         return itemIcon(type3, false);\n145:     }\n146: \n147:     /**\n148:      * 装備に対応する装備定義を取得します\n149:      *\n150:      * @param item 装備\n151:      * @return 装備定義\n152:      */\n153:     public static Optional<SlotitemMst> slotitemMst(SlotItem item) {\n154:         SlotitemMst mst = null;\n155:         if (item != null) {\n156:             mst = SlotitemMstCollection.get()\n157:                     .getSlotitemMap()\n158:                     .get(item.getSlotitemId());\n159:         }\n160:         return Optional.ofNullable(mst);\n161:     }\n162: \n163:     /**\n164:      * 装備リソースファイルのディレクトリを取得します。\n165:      * @return 装備リソースファイルのディレクトリ\n166:      */\n167:     static Path getItemResourcePathDir() {\n168:         return Paths.get(AppConfig.get().getResourcesDir(), \"icons\");\n169:     }\n170: \n171:     /**\n172:      * 装備アイコンを返します\n173:      *\n174:      * @param type 装備\n175:      * @param slot スロット背景\n176:      * @return 装備アイコン\n177:      * @throws IllegalStateException このメソッドがJavaFXアプリケーション・スレッド以外のスレッドで呼び出された場合\n178:      */\n179:     private static Image itemIcon(int type, boolean slot) {\n180:         Image image = optimizeItemIcon(type);\n181:         if (slot) {\n182:             return CACHE.get(\"slotItemIcon#\" + type, key -> {\n183:                 double width = image.getWidth();\n184:                 double height = image.getHeight();\n185:                 Canvas canvas = new Canvas(width, height);\n186:                 GraphicsContext gc = canvas.getGraphicsContext2D();\n187:                 gc.setFill(Color.rgb(44, 58, 59));\n188:                 gc.fillOval(2, 2, width - 2, height - 2);\n189:                 gc.drawImage(image, 0, 0);\n190:                 SnapshotParameters sp = new SnapshotParameters();\n191:                 sp.setFill(Color.TRANSPARENT);\n192:                 return canvas.snapshot(sp, null);"
+  }
+}
