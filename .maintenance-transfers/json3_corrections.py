@@ -15,4 +15,13 @@ def form(s):
  return s
 edit('src/main/java/logbook/internal/gui/QuestConditionEditController.java',form)
 edit('src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java',lambda s:s.replace('catch (IOException e)', 'catch (tools.jackson.core.JacksonException e)'))
-edit('src/test/java/logbook/map/MappingGenerator.java',lambda s:s.replace('JsonParseException', 'JacksonException'))
+def mapping(s):
+ s=s.replace('JsonParseException','JacksonException')
+ old='Map<String, Map<String, List<String>>> json = mapper.readValue(new URL(SOURCE_URL), Map.class);'
+ assert s.count(old)==1
+ return s.replace(old,'Map<String, Map<String, List<String>>> json;\n        try (var input = new URL(SOURCE_URL).openStream()) {\n            json = mapper.readValue(input, Map.class);\n        }')
+edit('src/test/java/logbook/map/MappingGenerator.java',mapping)
+for name,directory in [('LegacyJsonCompatibilityTest.java','json'),('Jackson3JournalCompatibilityTest.java','kancolle')]:
+ source=Path(__file__).parent/name;target=root/'src/test/java/logbook/internal'/directory/name
+ assert not target.exists()
+ target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(source.read_bytes())
