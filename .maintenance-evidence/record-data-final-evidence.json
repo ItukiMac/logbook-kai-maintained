@@ -1,0 +1,754 @@
+{
+  "source_head": "95238e688eed94274776673f96077c62ffc8c67e",
+  "production_accessed": false,
+  "workflows": [
+    {
+      "id": 40599886894,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886863,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886811,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886840,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886841,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886866,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886829,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886816,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886849,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886854,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886892,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886919,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886821,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886860,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 40599886815,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "95238e688eed94274776673f96077c62ffc8c67e",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "run": 40599886815,
+      "id": 12778431893,
+      "name": "r3-evidence-java25",
+      "digest": "sha256:e151c31dd930f6cdcfd93ab857727d79fee1b5edcc49d224bc6444fadacbb671",
+      "java": {
+        "tests": 795,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "data_suites": {
+        "logbook.core.RecordDataContractTest": {
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.RecordDataViewTest": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "gui_reports": {
+        "r3-verification/record-ui-fixture-b_6v_qq0.json": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-b_6v_qq0",
+          "source_jar_sha256": "fb49f45ab11d4c4625a80b4b95fe0be7891adc4f62bf3d5e653f9882f73afd26",
+          "production_accessed": false,
+          "new_distribution_format": false,
+          "legacy_missing_experience_bug_fixed": true,
+          "shared_legacy_row_models_retained_in_core": [
+            "BattleLogCollect",
+            "BattleLogDetail",
+            "MissionLogCollect",
+            "MissionLogDetail"
+          ],
+          "result": "passed",
+          "product_distribution": true,
+          "record_ui_profile": "record-ui-in-charts-v1",
+          "record_module": "charts",
+          "original_distribution_source_unchanged": true,
+          "windows": 3,
+          "battle_rows": 3,
+          "battle_exp": 60,
+          "mission_fuel": 75,
+          "development_rows": 2,
+          "nested_dialog": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "host_sha256": "a3ab5ca0c400980a7b4e93a3d807305769f2767173593360ddd2fc003eb9bcfc",
+          "record_ui_sha256": "5f8cce309e7b0969ab00f7cf5b6f76887aa4eac5c60c228398953740b2d0282f",
+          "retained_fixture": true
+        }
+      },
+      "summaries": {
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-xb2j8yjd",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-mbuvz_zy.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "48a43410f81f508c26c6bc690c4c8652b76fd6f3",
+          "java_tests": {
+            "tests": 795,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "record_ui_packaging": {
+            "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-b_6v_qq0",
+            "source_jar_sha256": "fb49f45ab11d4c4625a80b4b95fe0be7891adc4f62bf3d5e653f9882f73afd26",
+            "production_accessed": false,
+            "new_distribution_format": false,
+            "legacy_missing_experience_bug_fixed": true,
+            "shared_legacy_row_models_retained_in_core": [
+              "BattleLogCollect",
+              "BattleLogDetail",
+              "MissionLogCollect",
+              "MissionLogDetail"
+            ],
+            "result": "passed",
+            "product_distribution": true,
+            "record_ui_profile": "record-ui-in-charts-v1",
+            "record_module": "charts",
+            "original_distribution_source_unchanged": true,
+            "windows": 3,
+            "battle_rows": 3,
+            "battle_exp": 60,
+            "mission_fuel": 75,
+            "development_rows": 2,
+            "nested_dialog": true,
+            "settings_reread": true,
+            "original_history_unchanged": true,
+            "host_sha256": "a3ab5ca0c400980a7b4e93a3d807305769f2767173593360ddd2fc003eb9bcfc",
+            "record_ui_sha256": "5f8cce309e7b0969ab00f7cf5b6f76887aa4eac5c60c228398953740b2d0282f",
+            "retained_fixture": true
+          },
+          "record_data_contract_tests": 25,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_results": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "results": [
+            "test_a_rehashed_module_cannot_omit_a_required_record_class (test_record_distribution_profile.RecordDistributionProfileTest.test_a_rehashed_module_cannot_omit_a_required_record_class) ... ok",
+            "test_build_is_deterministic_and_keeps_original_source (test_record_distribution_profile.RecordDistributionProfileTest.test_build_is_deterministic_and_keeps_original_source) ... ok",
+            "test_core_fallback_cannot_hide_the_absence_of_a_feature_class (test_record_distribution_profile.RecordDistributionProfileTest.test_core_fallback_cannot_hide_the_absence_of_a_feature_class) ... ok",
+            "test_legacy_v2_without_the_data_api_keeps_its_previous_layout (test_record_distribution_profile.RecordDistributionProfileTest.test_legacy_v2_without_the_data_api_keeps_its_previous_layout) ... ok",
+            "test_missing_record_ui_is_rejected_before_creating_output (test_record_distribution_profile.RecordDistributionProfileTest.test_missing_record_ui_is_rejected_before_creating_output) ... ok",
+            "test_new_profile_moves_all_record_views_and_nested_dialog_to_charts (test_record_distribution_profile.RecordDistributionProfileTest.test_new_profile_moves_all_record_views_and_nested_dialog_to_charts) ... ok",
+            "test_profile_cannot_be_forged_on_an_old_host (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_forged_on_an_old_host) ... ok",
+            "test_profile_cannot_be_removed_to_bypass_new_ownership_checks (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_removed_to_bypass_new_ownership_checks) ... ok",
+            "test_unknown_profile_is_rejected (test_record_distribution_profile.RecordDistributionProfileTest.test_unknown_profile_is_rejected) ... ok",
+            "test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history) ... ok",
+            "Ran 407 tests in 318.729s",
+            "OK (skipped=1)",
+            "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true",
+            "RECORD_UI_ISOLATION_OK {\"fixture\": \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-b_6v_qq0\", \"source_jar_sha256\": \"fb49f45ab11d4c4625a80b4b95fe0be7891adc4f62bf3d5e653f9882f73afd26\", \"production_accessed\": false, \"new_distribution_format\": false, \"legacy_missing_experience_bug_fixed\": true, \"shared_legacy_row_models_retained_in_core\": [\"BattleLogCollect\", \"BattleLogDetail\", \"MissionLogCollect\", \"MissionLogDetail\"], \"result\": \"passed\", \"product_distribution\": true, \"record_ui_profile\": \"record-ui-in-charts-v1\", \"record_module\": \"charts\", \"original_distribution_source_unchanged\": true, \"windows\": 3, \"battle_rows\": 3, \"battle_exp\": 60, \"mission_fuel\": 75, \"development_rows\": 2, \"nested_dialog\": true, \"settings_reread\": true, \"original_history_unchanged\": true, \"host_sha256\": \"a3ab5ca0c400980a7b4e93a3d807305769f2767173593360ddd2fc003eb9bcfc\", \"record_ui_sha256\": \"5f8cce309e7b0969ab00f7cf5b6f76887aa4eac5c60c228398953740b2d0282f\", \"retained_fixture\": true}",
+            "Ran 1 test in 13.460s",
+            "OK"
+          ],
+          "ran_counts": [
+            407,
+            1
+          ],
+          "failure_summary": false
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.099s",
+            "OK"
+          ],
+          "ran_counts": [
+            25
+          ],
+          "failure_summary": false
+        }
+      ],
+      "text_evidence": {}
+    },
+    {
+      "run": 40599886815,
+      "id": 12778386998,
+      "name": "r3-evidence-java21",
+      "digest": "sha256:e05f34a6873f3f850f792cf29548a640780d875d98116dc63969839c20d1d809",
+      "java": {
+        "tests": 795,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "data_suites": {
+        "logbook.core.RecordDataContractTest": {
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.RecordDataViewTest": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "gui_reports": {
+        "r3-verification/record-ui-fixture-81z_enpp.json": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-81z_enpp",
+          "source_jar_sha256": "d5c2643990c0a3f9a23dba3e004aeac59158bae1c611ef6a026e84ee6d3e2338",
+          "production_accessed": false,
+          "new_distribution_format": false,
+          "legacy_missing_experience_bug_fixed": true,
+          "shared_legacy_row_models_retained_in_core": [
+            "BattleLogCollect",
+            "BattleLogDetail",
+            "MissionLogCollect",
+            "MissionLogDetail"
+          ],
+          "result": "passed",
+          "product_distribution": true,
+          "record_ui_profile": "record-ui-in-charts-v1",
+          "record_module": "charts",
+          "original_distribution_source_unchanged": true,
+          "windows": 3,
+          "battle_rows": 3,
+          "battle_exp": 60,
+          "mission_fuel": 75,
+          "development_rows": 2,
+          "nested_dialog": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "host_sha256": "4858bc83b7e5e8156b15043d3675b2524af9ea7246b8f3779527e20f093c4ab6",
+          "record_ui_sha256": "c5713a5a191622c351b6e74e2ac074f351489fab07a71b5d67c0bafb181a5b13",
+          "retained_fixture": true
+        }
+      },
+      "summaries": {
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-q6ezngpy",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-2kd79bd3.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "48a43410f81f508c26c6bc690c4c8652b76fd6f3",
+          "java_tests": {
+            "tests": 795,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "record_ui_packaging": {
+            "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-81z_enpp",
+            "source_jar_sha256": "d5c2643990c0a3f9a23dba3e004aeac59158bae1c611ef6a026e84ee6d3e2338",
+            "production_accessed": false,
+            "new_distribution_format": false,
+            "legacy_missing_experience_bug_fixed": true,
+            "shared_legacy_row_models_retained_in_core": [
+              "BattleLogCollect",
+              "BattleLogDetail",
+              "MissionLogCollect",
+              "MissionLogDetail"
+            ],
+            "result": "passed",
+            "product_distribution": true,
+            "record_ui_profile": "record-ui-in-charts-v1",
+            "record_module": "charts",
+            "original_distribution_source_unchanged": true,
+            "windows": 3,
+            "battle_rows": 3,
+            "battle_exp": 60,
+            "mission_fuel": 75,
+            "development_rows": 2,
+            "nested_dialog": true,
+            "settings_reread": true,
+            "original_history_unchanged": true,
+            "host_sha256": "4858bc83b7e5e8156b15043d3675b2524af9ea7246b8f3779527e20f093c4ab6",
+            "record_ui_sha256": "c5713a5a191622c351b6e74e2ac074f351489fab07a71b5d67c0bafb181a5b13",
+            "retained_fixture": true
+          },
+          "record_data_contract_tests": 25,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_results": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "results": [
+            "test_a_rehashed_module_cannot_omit_a_required_record_class (test_record_distribution_profile.RecordDistributionProfileTest.test_a_rehashed_module_cannot_omit_a_required_record_class) ... ok",
+            "test_build_is_deterministic_and_keeps_original_source (test_record_distribution_profile.RecordDistributionProfileTest.test_build_is_deterministic_and_keeps_original_source) ... ok",
+            "test_core_fallback_cannot_hide_the_absence_of_a_feature_class (test_record_distribution_profile.RecordDistributionProfileTest.test_core_fallback_cannot_hide_the_absence_of_a_feature_class) ... ok",
+            "test_legacy_v2_without_the_data_api_keeps_its_previous_layout (test_record_distribution_profile.RecordDistributionProfileTest.test_legacy_v2_without_the_data_api_keeps_its_previous_layout) ... ok",
+            "test_missing_record_ui_is_rejected_before_creating_output (test_record_distribution_profile.RecordDistributionProfileTest.test_missing_record_ui_is_rejected_before_creating_output) ... ok",
+            "test_new_profile_moves_all_record_views_and_nested_dialog_to_charts (test_record_distribution_profile.RecordDistributionProfileTest.test_new_profile_moves_all_record_views_and_nested_dialog_to_charts) ... ok",
+            "test_profile_cannot_be_forged_on_an_old_host (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_forged_on_an_old_host) ... ok",
+            "test_profile_cannot_be_removed_to_bypass_new_ownership_checks (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_removed_to_bypass_new_ownership_checks) ... ok",
+            "test_unknown_profile_is_rejected (test_record_distribution_profile.RecordDistributionProfileTest.test_unknown_profile_is_rejected) ... ok",
+            "test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history) ... ok",
+            "Ran 407 tests in 514.166s",
+            "OK (skipped=1)",
+            "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true",
+            "RECORD_UI_ISOLATION_OK {\"fixture\": \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-81z_enpp\", \"source_jar_sha256\": \"d5c2643990c0a3f9a23dba3e004aeac59158bae1c611ef6a026e84ee6d3e2338\", \"production_accessed\": false, \"new_distribution_format\": false, \"legacy_missing_experience_bug_fixed\": true, \"shared_legacy_row_models_retained_in_core\": [\"BattleLogCollect\", \"BattleLogDetail\", \"MissionLogCollect\", \"MissionLogDetail\"], \"result\": \"passed\", \"product_distribution\": true, \"record_ui_profile\": \"record-ui-in-charts-v1\", \"record_module\": \"charts\", \"original_distribution_source_unchanged\": true, \"windows\": 3, \"battle_rows\": 3, \"battle_exp\": 60, \"mission_fuel\": 75, \"development_rows\": 2, \"nested_dialog\": true, \"settings_reread\": true, \"original_history_unchanged\": true, \"host_sha256\": \"4858bc83b7e5e8156b15043d3675b2524af9ea7246b8f3779527e20f093c4ab6\", \"record_ui_sha256\": \"c5713a5a191622c351b6e74e2ac074f351489fab07a71b5d67c0bafb181a5b13\", \"retained_fixture\": true}",
+            "Ran 1 test in 21.550s",
+            "OK"
+          ],
+          "ran_counts": [
+            407,
+            1
+          ],
+          "failure_summary": false
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.182s",
+            "OK"
+          ],
+          "ran_counts": [
+            25
+          ],
+          "failure_summary": false
+        }
+      ],
+      "text_evidence": {}
+    },
+    {
+      "run": 40599886821,
+      "id": 12779016240,
+      "name": "modern-runtime-evidence-java25",
+      "digest": "sha256:37738e08b2051c4534e1771db7e52a9544ae9f57f281c378304ad8ea40025fbf",
+      "java": {
+        "tests": 795,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "data_suites": {
+        "logbook.core.RecordDataContractTest": {
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.RecordDataViewTest": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "gui_reports": {
+        "r3-verification/record-ui-fixture-95vn5jzw.json": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-95vn5jzw",
+          "source_jar_sha256": "54c7c1343b0c82c0de45530b300ec9c729047e7b004687fc54f2ee61b31601f8",
+          "production_accessed": false,
+          "new_distribution_format": false,
+          "legacy_missing_experience_bug_fixed": true,
+          "shared_legacy_row_models_retained_in_core": [
+            "BattleLogCollect",
+            "BattleLogDetail",
+            "MissionLogCollect",
+            "MissionLogDetail"
+          ],
+          "result": "passed",
+          "product_distribution": true,
+          "record_ui_profile": "record-ui-in-charts-v1",
+          "record_module": "charts",
+          "original_distribution_source_unchanged": true,
+          "windows": 3,
+          "battle_rows": 3,
+          "battle_exp": 60,
+          "mission_fuel": 75,
+          "development_rows": 2,
+          "nested_dialog": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "host_sha256": "e6b3167e59fd1cd01a9af1ae4eb3bc94c64a14d003ead2d33342ef9a4e0f9f6f",
+          "record_ui_sha256": "553201417974189311179edbcecef11a48a229000c673fce45299ea12a4afbef",
+          "retained_fixture": true
+        }
+      },
+      "summaries": {
+        "modern-runtime/summary.json": {
+          "checkout": "48a43410f81f508c26c6bc690c4c8652b76fd6f3",
+          "jdk_baseline": 25,
+          "javafx": "27.0.1",
+          "openjfx_components": [
+            "org.openjfx:javafx-base",
+            "org.openjfx:javafx-controls",
+            "org.openjfx:javafx-fxml",
+            "org.openjfx:javafx-graphics",
+            "org.openjfx:javafx-media",
+            "org.openjfx:javafx-swing",
+            "org.openjfx:javafx-web",
+            "org.openjfx:jdk-jsobject"
+          ],
+          "jackson_host": "3.2.4",
+          "classfile_major": 69,
+          "json_compatibility_tests": 14,
+          "legacy_plugin_bridge_retained": true,
+          "native_mint_tested": false,
+          "production_applied": false
+        },
+        "r3-verification/summary.json": {
+          "parallel_integration": {
+            "fixture_root": "/tmp/logbook-parallel-integration-gdrb2cas",
+            "production_accessed": false,
+            "result": "passed",
+            "calculations": [
+              10,
+              15,
+              10
+            ],
+            "actual_launcher_runs": 3,
+            "tracking_checkpoints": 4,
+            "arrival_records": 1,
+            "retired_original_slot": 2,
+            "original_unchanged": true,
+            "whole_store_restored_to_new_copy": true,
+            "pending_stage_preserved": true,
+            "live_mint_tested": false,
+            "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-jdarjegv.log"
+          },
+          "seasonal_retreat_integration_tests": 8,
+          "checkout": "48a43410f81f508c26c6bc690c4c8652b76fd6f3",
+          "java_tests": {
+            "tests": 795,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "split_features": 7,
+          "split_gui_windows": 8,
+          "isolated_typed_definitions": 152,
+          "record_ui_packaging": {
+            "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-95vn5jzw",
+            "source_jar_sha256": "54c7c1343b0c82c0de45530b300ec9c729047e7b004687fc54f2ee61b31601f8",
+            "production_accessed": false,
+            "new_distribution_format": false,
+            "legacy_missing_experience_bug_fixed": true,
+            "shared_legacy_row_models_retained_in_core": [
+              "BattleLogCollect",
+              "BattleLogDetail",
+              "MissionLogCollect",
+              "MissionLogDetail"
+            ],
+            "result": "passed",
+            "product_distribution": true,
+            "record_ui_profile": "record-ui-in-charts-v1",
+            "record_module": "charts",
+            "original_distribution_source_unchanged": true,
+            "windows": 3,
+            "battle_rows": 3,
+            "battle_exp": 60,
+            "mission_fuel": 75,
+            "development_rows": 2,
+            "nested_dialog": true,
+            "settings_reread": true,
+            "original_history_unchanged": true,
+            "host_sha256": "e6b3167e59fd1cd01a9af1ae4eb3bc94c64a14d003ead2d33342ef9a4e0f9f6f",
+            "record_ui_sha256": "553201417974189311179edbcecef11a48a229000c673fce45299ea12a4afbef",
+            "retained_fixture": true
+          },
+          "record_data_contract_tests": 25,
+          "review_ledger": {
+            "format": "logbook-review-ledger-v1",
+            "counts": {
+              "unreviewed": 82,
+              "partially_reviewed": 65,
+              "source_conflict": 1
+            },
+            "definitions": 148,
+            "field_comparisons": 77,
+            "orphaned_review_records": [],
+            "whole_rule_verified": 0,
+            "whole_rule_pending": 148,
+            "complete": false,
+            "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+            "freshness": "Retrieval time is not the source publication/update date."
+          },
+          "production_deployed": false
+        }
+      },
+      "python_results": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "results": [
+            "test_a_rehashed_module_cannot_omit_a_required_record_class (test_record_distribution_profile.RecordDistributionProfileTest.test_a_rehashed_module_cannot_omit_a_required_record_class) ... ok",
+            "test_build_is_deterministic_and_keeps_original_source (test_record_distribution_profile.RecordDistributionProfileTest.test_build_is_deterministic_and_keeps_original_source) ... ok",
+            "test_core_fallback_cannot_hide_the_absence_of_a_feature_class (test_record_distribution_profile.RecordDistributionProfileTest.test_core_fallback_cannot_hide_the_absence_of_a_feature_class) ... ok",
+            "test_legacy_v2_without_the_data_api_keeps_its_previous_layout (test_record_distribution_profile.RecordDistributionProfileTest.test_legacy_v2_without_the_data_api_keeps_its_previous_layout) ... ok",
+            "test_missing_record_ui_is_rejected_before_creating_output (test_record_distribution_profile.RecordDistributionProfileTest.test_missing_record_ui_is_rejected_before_creating_output) ... ok",
+            "test_new_profile_moves_all_record_views_and_nested_dialog_to_charts (test_record_distribution_profile.RecordDistributionProfileTest.test_new_profile_moves_all_record_views_and_nested_dialog_to_charts) ... ok",
+            "test_profile_cannot_be_forged_on_an_old_host (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_forged_on_an_old_host) ... ok",
+            "test_profile_cannot_be_removed_to_bypass_new_ownership_checks (test_record_distribution_profile.RecordDistributionProfileTest.test_profile_cannot_be_removed_to_bypass_new_ownership_checks) ... ok",
+            "test_unknown_profile_is_rejected (test_record_distribution_profile.RecordDistributionProfileTest.test_unknown_profile_is_rejected) ... ok",
+            "test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history) ... ok",
+            "Ran 407 tests in 278.932s",
+            "OK (skipped=1)",
+            "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true",
+            "RECORD_UI_ISOLATION_OK {\"fixture\": \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-95vn5jzw\", \"source_jar_sha256\": \"54c7c1343b0c82c0de45530b300ec9c729047e7b004687fc54f2ee61b31601f8\", \"production_accessed\": false, \"new_distribution_format\": false, \"legacy_missing_experience_bug_fixed\": true, \"shared_legacy_row_models_retained_in_core\": [\"BattleLogCollect\", \"BattleLogDetail\", \"MissionLogCollect\", \"MissionLogDetail\"], \"result\": \"passed\", \"product_distribution\": true, \"record_ui_profile\": \"record-ui-in-charts-v1\", \"record_module\": \"charts\", \"original_distribution_source_unchanged\": true, \"windows\": 3, \"battle_rows\": 3, \"battle_exp\": 60, \"mission_fuel\": 75, \"development_rows\": 2, \"nested_dialog\": true, \"settings_reread\": true, \"original_history_unchanged\": true, \"host_sha256\": \"e6b3167e59fd1cd01a9af1ae4eb3bc94c64a14d003ead2d33342ef9a4e0f9f6f\", \"record_ui_sha256\": \"553201417974189311179edbcecef11a48a229000c673fce45299ea12a4afbef\", \"retained_fixture\": true}",
+            "Ran 1 test in 11.657s",
+            "OK"
+          ],
+          "ran_counts": [
+            407,
+            1
+          ],
+          "failure_summary": false
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "results": [
+            "Ran 25 tests in 0.083s",
+            "OK"
+          ],
+          "ran_counts": [
+            25
+          ],
+          "failure_summary": false
+        }
+      ],
+      "text_evidence": {}
+    },
+    {
+      "run": 40599886919,
+      "id": 12779125917,
+      "name": "runtime-migration-java25",
+      "digest": "sha256:6e81460a01e4ec17af256bfa0f32a044a9bdc4a5a280728abb2d3f1fe1975c4a",
+      "java": {},
+      "data_suites": {},
+      "gui_reports": {},
+      "summaries": {
+        "fixtures/old/target/source-provenance.json": {
+          "source_commit": "a094771d73ce420f2bd2ddf237e0c69cf2005067",
+          "jar_sha256": "9d3b44fe132662f13be013a2d4e7169b7c67b884cfa91c7e65d437d0d4d4ef88",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        },
+        "fixtures/new/target/source-provenance.json": {
+          "source_commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+          "jar_sha256": "01172e8573305a3a4a4e78c78c5d931e521977207808612b045a7182cb8d5648",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        }
+      },
+      "python_results": [
+        {
+          "path": "candidate/target/verification/runtime-migration.log",
+          "results": [
+            "Ran 5 tests in 216.628s",
+            "OK"
+          ],
+          "ran_counts": [
+            5
+          ],
+          "failure_summary": false
+        }
+      ],
+      "text_evidence": {
+        "candidate/target/verification/runtime-migration.log": "test_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor) ... ok\ntest_backup_only_config_is_rewritten_and_restored_with_real_java (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_backup_only_config_is_rewritten_and_restored_with_real_java) ... ok\ntest_declared_historical_application_versions_restore_real_old_state (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_declared_historical_application_versions_restore_real_old_state) ... ok\ntest_real_java_copy_rewrite_approved_mutation_and_old_state_restore (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_real_java_copy_rewrite_approved_mutation_and_old_state_restore) ... ok\ntest_real_java_schema_import_generations_and_whole_managed_store_restore (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_real_java_schema_import_generations_and_whole_managed_store_restore) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 216.628s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false\nRUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false\nRUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}\n"
+      }
+    },
+    {
+      "run": 40599886919,
+      "id": 12778211353,
+      "name": "runtime-migration-java21",
+      "digest": "sha256:e912c8a841d8d692e15ae897c721b3781374019771d4bc0b072ef7cc61a42fef",
+      "java": {},
+      "data_suites": {},
+      "gui_reports": {},
+      "summaries": {
+        "fixtures/old/target/source-provenance.json": {
+          "source_commit": "a094771d73ce420f2bd2ddf237e0c69cf2005067",
+          "jar_sha256": "337db848104945f6244cbb5c60c804ef7466388e490d27be9e18aa3c7c3653c1",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        },
+        "fixtures/new/target/source-provenance.json": {
+          "source_commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+          "jar_sha256": "f342aa3f1b908ee53ffaa5d7ba842b1146e738f9f438ed0b909464332ff40016",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        }
+      },
+      "python_results": [
+        {
+          "path": "candidate/target/verification/runtime-migration.log",
+          "results": [
+            "Ran 5 tests in 183.540s",
+            "OK"
+          ],
+          "ran_counts": [
+            5
+          ],
+          "failure_summary": false
+        }
+      ],
+      "text_evidence": {
+        "candidate/target/verification/runtime-migration.log": "test_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor) ... ok\ntest_backup_only_config_is_rewritten_and_restored_with_real_java (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_backup_only_config_is_rewritten_and_restored_with_real_java) ... ok\ntest_declared_historical_application_versions_restore_real_old_state (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_declared_historical_application_versions_restore_real_old_state) ... ok\ntest_real_java_copy_rewrite_approved_mutation_and_old_state_restore (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_real_java_copy_rewrite_approved_mutation_and_old_state_restore) ... ok\ntest_real_java_schema_import_generations_and_whole_managed_store_restore (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_real_java_schema_import_generations_and_whole_managed_store_restore) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 183.540s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false\nRUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false\nRUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}\n"
+      }
+    }
+  ],
+  "verified": true,
+  "pull_request": {
+    "number": 59,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "merge_commit_sha": "48a43410f81f508c26c6bc690c4c8652b76fd6f3"
+  }
+}
