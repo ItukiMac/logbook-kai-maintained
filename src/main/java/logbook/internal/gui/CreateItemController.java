@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -73,7 +75,7 @@ import lombok.val;
  * 開発ログ
  *
  */
-public class CreateItemController extends WindowController {
+public class CreateItemController extends FeatureUiV1.Window {
 
     @FXML
     private SplitPane splitPane;
@@ -112,7 +114,7 @@ public class CreateItemController extends WindowController {
 
     /** 行番号 */
     @FXML
-    private TableColumn<BattleLogDetail, Integer> row;
+    private TableColumn<CreateItemController.CreateItem, Integer> row;
 
     /** 日付 */
     @FXML
@@ -141,15 +143,15 @@ public class CreateItemController extends WindowController {
     @FXML
     void initialize() {
         try {
-            TableTool.setVisible(this.detail, this.getClass() + "#" + "detail");
+            FeatureUiV1.Tables.setVisible(this.detail, this.getClass() + "#" + "detail");
             // SplitPaneの分割サイズ
             Timeline x = new Timeline();
             x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-                Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
+                FeatureUiV1.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
             }));
             x.play();
             this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.detail.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.detail.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
             SortedList<CreateItem> sorted = new SortedList<CreateItem>(this.detailItems);
             this.detail.setItems(sorted);
             sorted.comparatorProperty().bind(this.detail.comparatorProperty());
@@ -160,7 +162,7 @@ public class CreateItemController extends WindowController {
             this.count.setCellValueFactory(new TreeItemPropertyValueFactory<>("count"));
             this.ratio.setCellValueFactory(new TreeItemPropertyValueFactory<>("ratio"));
 
-            this.row.setCellFactory(TableTool.getRowCountCellFactory());
+            this.row.setCellFactory(FeatureUiV1.Tables.getRowCountCellFactory());
             this.date.setCellValueFactory(new PropertyValueFactory<>("date"));
             this.item.setCellValueFactory(new PropertyValueFactory<>("item"));
             this.type.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -178,7 +180,7 @@ public class CreateItemController extends WindowController {
                     .addListener(this::changeType);
             this.setCollect(this.buttonItemRecipe);
             loadConfig();
-            TreeTableTool.setVisible(this.collect, this.getClass() + "#" + "collect");
+            FeatureUiV1.Trees.restoreLayout(this.collect, this.getClass() + "#" + "collect");
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
@@ -219,18 +221,18 @@ public class CreateItemController extends WindowController {
 
     @FXML
     void copyDetail(ActionEvent event) {
-        TableTool.selectionCopy(this.detail);
+        FeatureUiV1.Tables.selectionCopy(this.detail);
     }
 
     @FXML
     void selectAllDetail(ActionEvent event) {
-        TableTool.selectAll(this.detail);
+        FeatureUiV1.Tables.selectAll(this.detail);
     }
 
     @FXML
     void columnVisibleDetail(ActionEvent event) {
         try {
-            TableTool.showVisibleSetting(this.detail, this.getClass() + "#" + "detail",
+            FeatureUiV1.Tables.showVisibleSetting(this.detail, this.getClass() + "#" + "detail",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
