@@ -1,0 +1,108 @@
+{
+  "base": "eb0bf6a0fa56d35877f332536551361a5de7b996",
+  "production_accessed": false,
+  "full_regression_verified": false,
+  "logs": {
+    "package.log": {
+      "tail": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< logbook:logbook-kai >-------------------------\n[INFO] Building logbook-kai2 25.0.10\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Loaded 24269 auto-discovered prefixes for remote repository central (prefixes-central.txt)\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] \n[INFO] --- resources:3.5.0:resources (default-resources) @ logbook-kai ---\n[INFO] Copying 269 resources from src/main/resources to target/classes\n[INFO] \n[INFO] --- compiler:3.16.0:compile (default-compile) @ logbook-kai ---\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] Nothing to compile - all classes are up to date.\n[INFO] \n[INFO] --- resources:3.5.0:testResources (default-testResources) @ logbook-kai ---\n[INFO] Copying 29 resources from src/test/resources to target/test-classes\n[INFO] \n[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ logbook-kai ---\n[INFO] Nothing to compile - all classes are up to date.\n[INFO] \n[INFO] --- surefire:3.6.1:test (default-test) @ logbook-kai ---\n[INFO] Tests are skipped.\n[INFO] \n[INFO] --- jar:3.5.1:jar (default-jar) @ logbook-kai ---\n[INFO] Building jar: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai-25.0.10.jar\n[INFO] \n[INFO] --- assembly:3.8.0:single (make-assembly) @ logbook-kai ---\n[INFO] Building jar: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar\n[WARNING] Configuration option 'appendAssemblyId' is set to false.\nInstead of attaching the assembly file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar, it will become the file for main project artifact.\nNOTE: If multiple descriptors or descriptor-formats are provided for this project, the value of this file will be non-deterministic!\n[WARNING] Replacing pre-existing project main-artifact file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai-25.0.10.jar\nwith assembly file: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai.jar\n[INFO] \n[INFO] --- assembly:3.8.0:single (create-release) @ logbook-kai ---\n[INFO] Reading assembly descriptor: assembly.xml\n[INFO] Building zip: /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/logbook-kai_25.0.10.zip\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  16.084 s\n[INFO] Finished at: 2026-10-27T22:50:54Z\n[INFO] ------------------------------------------------------------------------\n",
+      "errors": []
+    },
+    "tests-apply.log": {
+      "tail": "RECORD_DATA_REGRESSIONS_READY 24 Java methods + actual GUI proof; synthetic data only\n",
+      "errors": []
+    },
+    "compact.log": {
+      "tail": "COMPACT_RECORD_VIEWS_READY old_public_rows_unchanged=true\n",
+      "errors": []
+    },
+    "unit.log": {
+      "tail": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< logbook:logbook-kai >-------------------------\n[INFO] Building logbook-kai2 25.0.10\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Loaded 24269 auto-discovered prefixes for remote repository central (prefixes-central.txt)\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] \n[INFO] --- resources:3.5.0:resources (default-resources) @ logbook-kai ---\n[INFO] Copying 269 resources from src/main/resources to target/classes\n[INFO] \n[INFO] --- compiler:3.16.0:compile (default-compile) @ logbook-kai ---\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] Recompiling the module because of changed source code.\n[INFO] Compiling 373 source files with javac [debug release 21] to target/classes\n[WARNING] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/common/Messages.java:[97,22] java.security.AccessController in java.security has been deprecated and marked for removal\n[WARNING] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/constants/ExpTable.java:[229,23] deprecated item is not annotated with @Deprecated\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/core/SeasonalQuestRuleService.java: Some input files use or override a deprecated API.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/main/java/logbook/core/SeasonalQuestRuleService.java: Recompile with -Xlint:deprecation for details.\n[INFO] \n[INFO] --- resources:3.5.0:testResources (default-testResources) @ logbook-kai ---\n[INFO] Copying 29 resources from src/test/resources to target/test-classes\n[INFO] \n[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ logbook-kai ---\n[INFO] Recompiling the module because of changed dependency.\n[INFO] Compiling 125 source files with javac [debug release 21] to target/test-classes\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/DataGenerationRollbackTest.java: Some input files use or override a deprecated API.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/core/DataGenerationRollbackTest.java: Recompile with -Xlint:deprecation for details.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/internal/log/LogWriterTest.java: Some input files use unchecked or unsafe operations.\n[INFO] /home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/src/test/java/logbook/internal/log/LogWriterTest.java: Recompile with -Xlint:unchecked for details.\n[INFO] \n[INFO] --- surefire:3.6.1:test (default-test) @ logbook-kai ---\n[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider\n[INFO] \n[INFO] -------------------------------------------------------\n[INFO]  T E S T S\n[INFO] -------------------------------------------------------\n[INFO] Running logbook.core.RecordDataContractTest\n[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.336 s -- in logbook.core.RecordDataContractTest\n[INFO] Running logbook.internal.gui.RecordUiContractTest\n[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.159 s -- in logbook.internal.gui.RecordUiContractTest\n[INFO] Running logbook.internal.gui.RecordUiBoundaryTest\n[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in logbook.internal.gui.RecordUiBoundaryTest\n[INFO] Running logbook.internal.gui.RecordDataViewTest\n[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in logbook.internal.gui.RecordDataViewTest\n[INFO] \n[INFO] Results:\n[INFO] \n[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0\n[INFO] \n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  25.520 s\n[INFO] Finished at: 2026-10-27T22:50:37Z\n[INFO] ------------------------------------------------------------------------\n",
+      "errors": []
+    },
+    "apply.log": {
+      "tail": "RECORD_DATA_APPLIED 12 files; legacy APIs retained; original files not accessed\n",
+      "errors": []
+    },
+    "gui.log": {
+      "tail": "test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history) ... FAIL\n\n======================================================================\nFAIL: test_records_use_public_gui_boundary_with_unchanged_synthetic_history (test_record_ui_integration.RecordUiIntegrationTest.test_records_use_public_gui_boundary_with_unchanged_synthetic_history)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_record_ui_integration.py\", line 76, in test_records_use_public_gui_boundary_with_unchanged_synthetic_history\n    self.assertEqual(0, compiled.returncode, logs[-1][-16000:])\nAssertionError: 0 != 1 : Note: Annotation processing is enabled because one or more processors were found\n  on the class path. A future release of javac may disable annotation processing\n  unless at least one processor is specified by name (-processor), or a search\n  path is specified (--processor-path, --processor-module-path), or annotation\n  processing is enabled explicitly (-proc:only, -proc:full).\n  Use -Xlint:-options to suppress this message.\n  Use -proc:none to disable annotation processing.\n/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/java/RecordUiProbe.java:220: error: incompatible types: TableColumn<Object,Number> cannot be converted to TableColumn<CAP#1,?>\n                detail.scrollToColumn(exp);root.applyCss();root.layout();\n                                      ^\n  where CAP#1 is a fresh type-variable:\n    CAP#1 extends Object from capture of ?\nNote: Some messages have been simplified; recompile with -Xdiags:verbose to get full output\n1 error\n\n\n----------------------------------------------------------------------\nRan 1 test in 9.171s\n\nFAILED (failures=1)\n",
+      "errors": []
+    }
+  },
+  "suites": [
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "logbook.internal.gui.RecordDataViewTest",
+      "time": "0.019",
+      "tests": "5",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0",
+      "flakes": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "logbook.internal.gui.RecordUiBoundaryTest",
+      "time": "0.021",
+      "tests": "1",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0",
+      "flakes": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "logbook.core.RecordDataContractTest",
+      "time": "0.336",
+      "tests": "19",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0",
+      "flakes": "0"
+    },
+    {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+      "version": "3.0.2",
+      "name": "logbook.internal.gui.RecordUiContractTest",
+      "time": "0.159",
+      "tests": "4",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0",
+      "flakes": "0"
+    }
+  ],
+  "gui_reports": {
+    "record-ui-fixture-wxcm2yt1.json": {
+      "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/target/record-ui-fixture-wxcm2yt1",
+      "source_jar_sha256": "cb01fea404369fed266defa2f7ace9616dab13f974f6bb9d362975f188af5750",
+      "production_accessed": false,
+      "new_distribution_format": false,
+      "legacy_missing_experience_bug_fixed": true,
+      "shared_legacy_row_models_retained_in_core": [
+        "BattleLogCollect",
+        "BattleLogDetail"
+      ],
+      "result": "not_completed"
+    }
+  },
+  "changed-paths.json": [
+    "src/main/java/logbook/plugin/api/RecordDataV1.java",
+    "src/main/java/logbook/core/RecordDataService.java",
+    "src/main/java/logbook/internal/kancolle/BattleLogs.java",
+    "src/main/java/logbook/internal/gui/MainMenuController.java",
+    "src/main/java/logbook/internal/gui/BattleRecordCollect.java",
+    "src/main/java/logbook/internal/gui/BattleRecordDetail.java",
+    "src/main/java/logbook/internal/gui/MissionRecordCollect.java",
+    "src/main/java/logbook/internal/gui/MissionRecordDetail.java",
+    "src/main/java/logbook/internal/gui/BattleLogController.java",
+    "src/main/java/logbook/internal/gui/MissionLogController.java",
+    "src/main/java/logbook/internal/gui/CreateItemController.java",
+    "scripts/tests/test_record_ui_integration.py",
+    "src/test/java/logbook/core/RecordDataContractTest.java",
+    "src/test/java/logbook/internal/gui/RecordDataViewTest.java",
+    "scripts/java/RecordUiProbe.java"
+  ]
+}
