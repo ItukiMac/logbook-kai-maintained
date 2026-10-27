@@ -38,10 +38,12 @@ public final class LegacyDefinitionPackProbe {
             if (!Files.exists(legacyRoot.resolve("generations").resolve(old.sha()))) throw new AssertionError("Legacy generation lost");
             String index = "[{\"tag_name\":\"data-v2026.10.26.99\",\"assets\":[{\"name\":\"logbook-data-pack-v2.zip\",\"digest\":\"sha256:" + next.sha()
                     + "\",\"browser_download_url\":\"https://github.com/ItukiMac/logbook-kai-maintained/releases/download/data-v2026.10.26.99/logbook-data-pack-v2.zip\"}]}]";
-            Class<?> oldMapper = Class.forName("tools.jackson.databind.ObjectMapper", true, loader);
+            // This pinned historical JAR predates Jackson3. Do not substitute the
+            // current mapper or add its classes to the deliberately isolated loader.
+            Class<?> oldMapper = Class.forName("com.fasterxml.jackson.databind.ObjectMapper", true, loader);
             Object oldTree = oldMapper.getMethod("readTree", String.class).invoke(oldMapper.getConstructor().newInstance(), index);
             Class<?> oldClient = Class.forName("logbook.core.DataPackReleaseClient", true, loader);
-            var select = oldClient.getDeclaredMethod("selectRelease", Class.forName("tools.jackson.databind.JsonNode", true, loader));
+            var select = oldClient.getDeclaredMethod("selectRelease", Class.forName("com.fasterxml.jackson.databind.JsonNode", true, loader));
             select.setAccessible(true);
             if (!((java.util.Optional<?>) select.invoke(null, oldTree)).isEmpty()) throw new AssertionError("Legacy host selected the V2-only asset");
             if (DataPackReleaseClient.selectRelease(logbook.internal.json.JsonMappers.builder().build().readTree(index)).isEmpty())
