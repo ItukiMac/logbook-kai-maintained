@@ -1,0 +1,127 @@
+name: Final record-data evidence audit (tooling only)
+on:
+  push:
+    branches: ['maintenance/record-data-worker-20261028']
+    paths: ['.github/workflows/record-data-final-evidence.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Read exact-head CI and bounded artifacts without executing artifact code
+        shell: bash
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import hashlib,io,json,os,re,time,urllib.request,zipfile
+          import xml.etree.ElementTree as E
+          from pathlib import Path
+          head='95238e688eed94274776673f96077c62ffc8c67e'
+          base='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          output=Path('.maintenance-evidence/record-data-final-evidence.json')
+          report={'source_head':head,'production_accessed':False,'workflows':[], 'artifacts':[], 'verified':False}
+          def save(): output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          def get(path):
+              request=urllib.request.Request(base+path,headers={'Accept':'application/vnd.github+json'})
+              request.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(request,timeout=60) as response: data=response.read(16*1024*1024+1)
+              assert len(data)<=16*1024*1024,'Response exceeds audit limit'
+              return data
+          expected={40599886821,40599886894,40599886854,40599886919,40599886840,
+                    40599886815,40599886892,40599886829,40599886816,40599886841,
+                    40599886849,40599886863,40599886860,40599886811,40599886866}
+          full_runs={40599886815,40599886821}
+          migration_run=40599886919
+          required_full={'r3-evidence-java21','r3-evidence-java25','modern-runtime-evidence-java25'}
+          try:
+              for attempt in range(36):
+                  runs=json.loads(get('/actions/runs?head_sha='+head+'&event=pull_request&per_page=100'))['workflow_runs']
+                  assert expected.issubset({r['id'] for r in runs}),'Missing expected run'
+                  report['workflows']=[{k:r[k] for k in ('id','name','head_sha','status','conclusion')} for r in runs]
+                  save()
+                  if all(r['status']=='completed' for r in runs): break
+                  time.sleep(20)
+              assert all(r['head_sha']==head and r['status']=='completed' and r['conclusion']=='success' for r in runs),report['workflows']
+              seen=set()
+              for run_id in (*sorted(full_runs),migration_run):
+                  artifacts=json.loads(get('/actions/runs/'+str(run_id)+'/artifacts'))['artifacts']
+                  for artifact in artifacts:
+                      if run_id in full_runs and artifact['name'] not in required_full: continue
+                      assert artifact['size_in_bytes']<=16*1024*1024
+                      data=get('/actions/artifacts/'+str(artifact['id'])+'/zip')
+                      digest='sha256:'+hashlib.sha256(data).hexdigest()
+                      assert digest==artifact['digest'],'Artifact digest mismatch'
+                      archive=zipfile.ZipFile(io.BytesIO(data))
+                      assert sum(i.file_size for i in archive.infolist())<=80*1024*1024
+                      assert archive.testzip() is None
+                      item={'run':run_id,'id':artifact['id'],'name':artifact['name'],'digest':digest,
+                            'java':{},'data_suites':{},'gui_reports':{},'summaries':{},'python_results':[],'text_evidence':{}}
+                      for name in archive.namelist():
+                          if name.endswith('.xml') and '/TEST-' in '/'+name:
+                              suite=E.fromstring(archive.read(name));counts={k:int(suite.get(k,0)) for k in ('tests','failures','errors','skipped')}
+                              for key,value in counts.items():item['java'][key]=item['java'].get(key,0)+value
+                              if suite.get('name') in ('logbook.core.RecordDataContractTest','logbook.internal.gui.RecordDataViewTest'):
+                                  item['data_suites'][suite.get('name')]=counts
+                          elif name.endswith('.json') and 'record-ui-fixture-' in name:
+                              item['gui_reports'][name]=json.loads(archive.read(name))
+                          elif name.endswith('.json') and archive.getinfo(name).file_size<60000 and (
+                                  name.endswith('summary.json') or run_id==migration_run):
+                              item['summaries'][name]=json.loads(archive.read(name))
+                          elif name.endswith('.log') and (name.endswith(('python-scripts.log','python-tools.log')) or run_id==migration_run):
+                              text=archive.read(name).decode('utf8',errors='replace');lines=text.splitlines()
+                              values=[line for line in lines if line.startswith(('Ran ','OK','FAILED','RECORD_UI_ISOLATION_OK','PARALLEL_BDE_INTEGRATION_OK'))
+                                      or 'test_records_use_public_gui_boundary' in line or 'test_record_distribution_profile.' in line]
+                              item['python_results'].append({'path':name,'results':values,
+                                  'ran_counts':[int(value) for value in re.findall(r'^Ran (\d+) tests? in ',text,re.M)],
+                                  'failure_summary':bool(re.search(r'^FAILED \(',text,re.M))})
+                              if run_id==migration_run:item['text_evidence'][name]=text[-18000:]
+                      if run_id in full_runs:
+                          assert len(item['data_suites'])==2,item['data_suites']
+                          assert sum(s['tests'] for s in item['data_suites'].values())==25
+                          assert all(s[k]==0 for s in item['data_suites'].values() for k in ('failures','errors','skipped'))
+                          assert item['java']['failures']==item['java']['errors']==0 and item['java']['skipped']==1
+                          assert len(item['gui_reports'])==1
+                          proof=next(iter(item['gui_reports'].values()))
+                          assert proof['result']=='passed' and proof['product_distribution'] and proof['record_module']=='charts'
+                          assert proof['record_ui_profile']=='record-ui-in-charts-v1' and proof['windows']==3 and proof['battle_rows']==3
+                          assert proof['battle_exp']==60 and proof['mission_fuel']==75 and proof['development_rows']==2
+                          assert proof['original_history_unchanged'] and proof['settings_reread'] and proof['legacy_missing_experience_bug_fixed']
+                          assert not proof['production_accessed']
+                          integration=[s for s in item['summaries'].values() if 'record_ui_packaging' in s]
+                          assert len(integration)==1
+                          integration=integration[0]
+                          assert integration['record_data_contract_tests']==25 and integration['seasonal_retreat_integration_tests']==8
+                          assert integration['parallel_integration']['calculations']==[10,15,10]
+                          assert integration['parallel_integration']['tracking_checkpoints']==4 and integration['parallel_integration']['original_unchanged']
+                          assert integration['isolated_typed_definitions']==152 and not integration['production_deployed']
+                          assert len(item['python_results'])==2 and not any(p['failure_summary'] for p in item['python_results'])
+                          seen.add(artifact['name'])
+                      else:
+                          assert item['python_results'],'Migration artifact did not contain its test log'
+                          assert any(5 in p['ran_counts'] for p in item['python_results']),item['python_results']
+                          assert not any(p['failure_summary'] for p in item['python_results'])
+                      report['artifacts'].append(item);save()
+              assert seen==required_full,seen
+              assert len([a for a in report['artifacts'] if a['run']==migration_run])==2,'Expected both JDK migration reports'
+              pr=json.loads(get('/pulls/59'));assert pr['head']['sha']==head
+              report['pull_request']={k:pr[k] for k in ('number','state','draft','merged','merge_commit_sha')}
+              report['verified']=True;save()
+              print('RECORD_DATA_FINAL_EVIDENCE_OK',json.dumps({'head':head,'workflows':len(runs),'artifacts':len(report['artifacts']),'native_mint_tested':False,'merged':pr['merged']}))
+          except Exception as error:
+              report['error']=type(error).__name__+': '+str(error);save();raise
+          PY
+      - name: Retain final verification data only, including failures
+        if: always()
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/record-data-final-evidence.json
+          git commit -m 'Retain independent final PR59 source, CI and artifact verification'
+          git push origin HEAD:refs/heads/maintenance/record-data-worker-20261028
