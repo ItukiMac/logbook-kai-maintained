@@ -40,26 +40,38 @@ jobs:
           mkdir -p ../evidence
           python3 ../tooling/.maintenance-transfers/modernize_json.py . > ../evidence/migration.log
           python3 ../tooling/.maintenance-transfers/json3_corrections.py .
-          git add src/main/java src/test/java scripts/java/ArrivalArchiveProbe.java pom.xml
-          git -c core.whitespace=cr-at-eol diff --cached --check
-          git diff --cached > ../evidence/source.patch
-          git write-tree > ../evidence/source-tree.txt
-      - name: Compile main and test code without changing an installed runtime
+      - name: Compile main and test code with bounded checked-catch adaptation
         working-directory: candidate
-        run: |
-          set -o pipefail
-          mvn -B -ntp -DskipTests package 2>&1 | tee ../evidence/compile.log
-      - name: Publish compiled source only to the dedicated candidate branch
+        run: python3 ../tooling/.maintenance-transfers/compile_json.py .
+      - name: Commit compiled source only to the dedicated candidate branch
         working-directory: candidate
         run: |
           set -eu
           test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git add src/main/java src/test/java scripts/java/ArrivalArchiveProbe.java pom.xml
+          git -c core.whitespace=cr-at-eol diff --cached --check
           git diff --exit-code
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'Migrate host JSON code to immutable Jackson3 while retaining old plugin runtime API'
           git push origin "HEAD:refs/heads/$TARGET"
           git rev-parse HEAD > ../evidence/source-commit.txt
+      - name: Retain every resulting source byte and compact failure diagnostics
+        if: always()
+        working-directory: candidate
+        run: |
+          git add src/main/java src/test/java scripts/java/ArrivalArchiveProbe.java pom.xml
+          git diff "$BASE" -- > ../evidence/source.patch
+          git write-tree > ../evidence/source-tree.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,subprocess
+          p=Path('../evidence')
+          errors=[line for f in sorted(p.glob('compile-*.log')) for line in f.read_text().splitlines() if '[ERROR]' in line]
+          summary={'errors':errors[-100:],'compiler_corrections':json.loads((p/'compiler-corrections.json').read_text()) if (p/'compiler-corrections.json').exists() else [],'candidate_commit':(p/'source-commit.txt').read_text().strip() if (p/'source-commit.txt').exists() else None}
+          (p/'diagnostics.json').write_text(json.dumps(summary,indent=2)+'\n')
+          print(json.dumps(summary,indent=2))
+          PY
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
