@@ -246,6 +246,18 @@ public class ItemItemController extends FeatureUiV1.Window {
     /** フィルターの更新停止 */
     private boolean disableFilterUpdate;
 
+    /** Read the unchanged arsenal wire schema; retain entries before a malformed later row. */
+    static void readRemodelDays(java.io.InputStream input, Map<String, Collection<String>> destination) {
+        try (JsonReader reader = Json.createReader(input)) {
+            for (JsonValue value : reader.readArray()) {
+                JsonObject object = (JsonObject) value;
+                String name = object.getString("SlotItem", null);
+                JsonArray days = object.getJsonArray("AllAvailableDays");
+                if (name != null && days != null) destination.put(name, JsonHelper.toStringList(days));
+            }
+        }
+    }
+
     @FXML
     void initialize() {
         try {
@@ -314,17 +326,8 @@ public class ItemItemController extends FeatureUiV1.Window {
             this.detailTable.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
             // 行を作る
             Map<String, Collection<String>> kousyouMap = new HashMap<>();
-            try (JsonReader reader = Json
-                    .createReader(LogBookCoreServices.getResourceAsStream("logbook/kousyou/kousyou.json"))) {
-                JsonArray array = reader.readArray();
-                for (JsonValue val : array) {
-                    JsonObject obj = (JsonObject) val;
-                    String name = obj.getString("EquipmentDataV1.Owned", null);
-                    JsonArray days = obj.getJsonArray("AllAvailableDays");
-                    if (name != null && days != null) {
-                        kousyouMap.put(name, JsonHelper.toStringList(days));
-                    }
-                }
+            try {
+                readRemodelDays(LogBookCoreServices.getResourceAsStream("logbook/kousyou/kousyou.json"), kousyouMap);
             } catch (Exception e) {
                 LoggerHolder.get().error("kousyou.jsonの読み込みに失敗しました", e);
             }

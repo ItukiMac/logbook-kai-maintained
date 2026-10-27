@@ -68,10 +68,10 @@ assert equipment['normal_and_expansion_owner'] and equipment['locked_export']==3
 assert equipment['settings_reread'] and equipment['original_history_unchanged'] and equipment['source_jar_unchanged']
 assert not equipment['production_accessed']
 assert json.loads((p/'feature-manifest.json').read_text())['equipment_ui_profile']=='equipment-ui-in-status-v1'
-equipment_suites=[s for s in suites if s.get('name') in {'logbook.core.EquipmentDataContractTest','logbook.internal.gui.EquipmentProjectionTest'}]
-assert len(equipment_suites)==2 and all(int(s.get('skipped',0))==0 for s in equipment_suites)
+equipment_suites=[s for s in suites if s.get('name') in {'logbook.core.EquipmentDataContractTest','logbook.internal.gui.EquipmentProjectionTest','logbook.internal.gui.EquipmentRemodelSchemaTest'}]
+assert len(equipment_suites)==3 and all(int(s.get('skipped',0))==0 for s in equipment_suites)
 equipment_test_count=sum(int(s.get('tests',0)) for s in equipment_suites)
-assert equipment_test_count>=21
+assert equipment_test_count>=28
 report={'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
