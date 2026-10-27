@@ -1,0 +1,28 @@
+name: Non-Mint completion evidence gate (read-only)
+on:
+  push:
+    paths:
+      - 'docs/maintenance/non-mint-completion-gates.json'
+      - 'scripts/check_nonmint_gates.py'
+      - 'scripts/tests/test_nonmint_gates.py'
+      - '.github/workflows/nonmint-completion-gate.yml'
+  pull_request:
+    paths:
+      - 'docs/maintenance/non-mint-completion-gates.json'
+      - 'scripts/check_nonmint_gates.py'
+      - 'scripts/tests/test_nonmint_gates.py'
+      - '.github/workflows/nonmint-completion-gate.yml'
+permissions:
+  contents: read
+jobs:
+  ledger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Fail closed on incomplete or misclassified work
+        run: python3 scripts/check_nonmint_gates.py
+      - name: Completion gate regression suite
+        run: python3 -m unittest discover -s scripts/tests -p 'test_nonmint_gates.py' -v
