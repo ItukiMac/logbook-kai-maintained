@@ -90,6 +90,21 @@ class RuntimeSnapshotTest(unittest.TestCase):
                 snapshot(source, output, stopped=True, limits=self.limits)
         self.assertFalse(self.output.exists())
 
+    def test_double_root_alias_cannot_hide_a_snapshot_output_inside_source(self):
+        before = inventory(self.source, self.limits)
+        alias = Path('/' + str(self.source))
+        self.assertEqual('//', alias.anchor)
+        with self.assertRaises(ValueError):
+            snapshot(self.source, alias/'nested-copy', stopped=True, limits=self.limits)
+        self.assertEqual(before, inventory(self.source, self.limits))
+        self.assertFalse((self.source/'nested-copy').exists())
+
+    def test_double_root_source_alias_is_rejected_before_output_creation(self):
+        alias = Path('/' + str(self.source))
+        with self.assertRaises(ValueError):
+            snapshot(alias, self.output, stopped=True, limits=self.limits)
+        self.assertFalse(self.output.exists())
+
     def test_source_symlink_and_dangling_link_are_rejected(self):
         link = self.source/'alias'
         for target in (self.base/'missing', self.source/'auto.sh'):
@@ -285,6 +300,119 @@ class RuntimeSnapshotTest(unittest.TestCase):
         self.assertEqual(before,inventory(self.source,self.limits))
         p=subprocess.run([sys.executable,str(script),'snapshot','--source',str(self.source),'--out',str(self.output)],capture_output=True,text=True,timeout=10)
         self.assertEqual(1,p.returncode);self.assertFalse(self.output.exists())
+
+    def test_backup_only_path_review_reports_the_effective_external_paths(self):
+        primary = self.source/'config/logbook.bean.AppConfig.json'
+        primary.rename(primary.with_suffix('.json.backup'))
+        self.write('config/logbook.bean.AppConfig.json.backup',
+                   b'{"reportPath":"/old/private-logs"}')
+        before = inventory(self.source, self.limits)
+        report = path_review(self.source)
+        self.assertFalse(report['config_present'])
+        self.assertTrue(report['config_fallback'])
+        self.assertEqual('config/logbook.bean.AppConfig.json.backup', report['config_source'])
+        self.assertEqual('outside_root_not_copied', report['references'][0]['status'])
+        self.assertEqual(before, inventory(self.source, self.limits))
+
+    def test_empty_primary_uses_backup_without_changing_either_file(self):
+        self.write('config/logbook.bean.AppConfig.json', b'')
+        self.write('config/logbook.bean.AppConfig.json.backup', b'{"reportPath":"battlelog"}')
+        before = inventory(self.source, self.limits)
+        data, report = module.read_app_config(self.source)
+        self.assertEqual({'reportPath':'battlelog'}, data)
+        self.assertTrue(report['config_fallback'])
+        self.assertEqual(before, inventory(self.source, self.limits))
+
+    def test_malformed_primary_retains_error_and_reports_backup_paths(self):
+        self.write('config/logbook.bean.AppConfig.json', b'{broken')
+        self.write('config/logbook.bean.AppConfig.json.backup', b'{"pluginsDir":"/private/plugins"}')
+        report = path_review(self.source)
+        self.assertTrue(report['config_fallback'])
+        self.assertEqual('invalid_json', report['config_candidates'][0]['status'])
+        self.assertEqual('outside_root_not_copied', report['references'][0]['status'])
+        self.assertFalse(report['launch_safe'])
+
+    def test_primary_and_backup_are_both_inventoried_for_possible_typed_fallback(self):
+        self.write('config/logbook.bean.AppConfig.json.backup', b'{"reportPath":"/old/backed-up-logs"}')
+        report = path_review(self.source)
+        self.assertEqual('config/logbook.bean.AppConfig.json', report['config_source'])
+        self.assertFalse(report['config_fallback'])
+        self.assertTrue(report['typed_config_validation_required'])
+        self.assertEqual('/old/backed-up-logs', report['backup_references'][0]['value'])
+        self.assertEqual('outside_root_not_copied', report['backup_references'][0]['status'])
+
+    def test_invalid_and_parent_traversal_path_values_are_not_cleared(self):
+        self.write('config/logbook.bean.AppConfig.json', module.encoded({
+            'reportPath':'bad\x00path', 'pluginsDir':[], 'battleLogDir':'safe/../battlelog'}))
+        report = path_review(self.source)
+        states = {r['field']:r['status'] for r in report['references']}
+        self.assertEqual('invalid_path_value', states['reportPath'])
+        self.assertEqual('invalid_path_value', states['pluginsDir'])
+        self.assertEqual('parent_traversal_needs_review', states['battleLogDir'])
+
+    def test_in_root_symbolic_target_is_reported_without_following_it(self):
+        external = self.base/'external'; external.mkdir()
+        (external/'retained').write_bytes(b'external sentinel')
+        (self.source/'linked').symlink_to(external, target_is_directory=True)
+        self.write('config/logbook.bean.AppConfig.json', b'{"reportPath":"linked/retained"}')
+        report = path_review(self.source)
+        self.assertEqual('symbolic_reference_unreviewed', report['references'][0]['status'])
+
+    def test_review_never_reads_or_stats_external_reference_targets(self):
+        external = self.base/'not-selected'
+        self.write('config/logbook.bean.AppConfig.json', module.encoded({'reportPath':str(external)}))
+        original_lstat = Path.lstat
+        original_stat = Path.stat
+        def guard(method):
+            def call(path, *args, **kwargs):
+                if path == external or external in path.parents:
+                    raise AssertionError('External path was inspected')
+                return method(path, *args, **kwargs)
+            return call
+        with patch.object(Path, 'lstat', guard(original_lstat)), patch.object(Path, 'stat', guard(original_stat)):
+            report = path_review(self.source)
+        self.assertEqual('outside_root_not_copied', report['references'][0]['status'])
+
+    def test_symbolic_configuration_is_not_read_as_a_regular_config(self):
+        external = self.base/'external-config.json'
+        external.write_bytes(b'{"reportPath":"/private"}')
+        primary = self.source/'config/logbook.bean.AppConfig.json'
+        primary.rename(primary.with_name('retained-AppConfig.json'))
+        primary.symlink_to(external)
+        report = path_review(self.source)
+        self.assertTrue(report['config_unreadable'])
+        self.assertEqual('symbolic_config_unreviewed', report['config_candidates'][0]['status'])
+        self.assertEqual([], report['references'])
+
+    def test_unknown_plugin_and_start_script_paths_are_explicitly_unreviewed(self):
+        report = path_review(self.source)
+        self.assertEqual(['plugin_configuration', 'startup_scripts'], report['unreviewed_scopes'])
+        self.assertFalse(report['third_party_paths_audited'])
+        self.assertFalse(report['launch_safe'])
+
+    def test_symbolic_config_parent_does_not_read_or_stat_the_external_config(self):
+        external = self.base/'external-config'; external.mkdir()
+        (external/'logbook.bean.AppConfig.json').write_bytes(b'{"reportPath":"/private"}')
+        (self.source/'config').rename(self.source/'retained-config')
+        (self.source/'config').symlink_to(external, target_is_directory=True)
+        original_lstat = Path.lstat
+        def guarded(path, *args, **kwargs):
+            if path.name.startswith('logbook.bean.AppConfig'):
+                raise AssertionError('Config leaf must not be inspected through symbolic parent')
+            return original_lstat(path, *args, **kwargs)
+        with patch.object(Path, 'lstat', guarded):
+            report = path_review(self.source)
+        self.assertTrue(report['config_unreadable'])
+
+    def test_primary_json_null_uses_java_defaults_without_selecting_backup(self):
+        self.write('config/logbook.bean.AppConfig.json', b'null')
+        self.write('config/logbook.bean.AppConfig.json.backup', b'{"reportPath":"/backup"}')
+        data, report = module.read_app_config(self.source)
+        self.assertIsNone(data)
+        self.assertEqual('config/logbook.bean.AppConfig.json', report['config_source'])
+        self.assertFalse(report['config_fallback'])
+        self.assertTrue(report['config_unreadable'])
+        self.assertEqual(list(module.PATH_FIELDS), report['defaulted_fields'])
 
 
 if __name__=='__main__':unittest.main()
