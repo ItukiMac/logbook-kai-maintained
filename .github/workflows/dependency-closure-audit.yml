@@ -1,0 +1,103 @@
+name: Pinned dependency closure audit (read-only)
+on:
+  push:
+    branches: ['maintenance/dependency-audit-20261027']
+    paths: ['.github/workflows/dependency-closure-audit.yml']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 7bb834402d017bb61ffeca6fa7ad133793f1c26a
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Record effective build and resolved dependencies without updating source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/metadata
+          git rev-parse HEAD > evidence/source-commit.txt
+          git archive --format=zip HEAD > evidence/source.zip
+          mvn --batch-mode --no-transfer-progress help:effective-pom -Doutput=evidence/effective-pom.xml > evidence/effective-pom.log 2>&1
+          mvn --batch-mode --no-transfer-progress dependency:tree -DoutputType=json -DoutputFile=evidence/dependencies.json > evidence/dependency-tree.log 2>&1
+          git diff --exit-code
+      - name: Compare numeric stable releases and retain exact upstream responses
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from concurrent.futures import ThreadPoolExecutor
+          from datetime import datetime, timezone
+          import hashlib,json,re,subprocess,urllib.request,xml.etree.ElementTree as E
+          from pathlib import Path
+          ns={'m':'http://maven.apache.org/POM/4.0.0'}
+          original=E.parse('pom.xml').getroot(); effective=E.parse('evidence/effective-pom.xml').getroot()
+          props={x.tag.split('}')[-1]:x.text for x in original.find('m:properties',ns)}
+          items={}
+          def add(group,artifact,version,kind,scope=''):
+              if not all(isinstance(x,str) and x for x in (group,artifact,version)): raise ValueError('Unresolved dependency')
+              for key,val in props.items(): version=version.replace('${'+key+'}',val or '')
+              if '${' in version: raise ValueError('Unresolved version '+version)
+              row=items.setdefault((group,artifact,version),{'group':group,'artifact':artifact,'current':version,'uses':[]})
+              use={'kind':kind,'scope':scope}
+              if use not in row['uses']: row['uses'].append(use)
+          for dep in original.findall('m:dependencies/m:dependency',ns):
+              val=lambda name:dep.findtext('m:'+name,default='',namespaces=ns)
+              add(val('groupId'),val('artifactId'),val('version'),'direct',val('scope') or 'compile')
+          for plug in effective.findall('m:build/m:plugins/m:plugin',ns):
+              val=lambda name:plug.findtext('m:'+name,default='',namespaces=ns)
+              add(val('groupId') or 'org.apache.maven.plugins',val('artifactId'),val('version'),'build-plugin')
+          for path in original.findall('.//m:annotationProcessorPaths/m:path',ns):
+              add(path.findtext('m:groupId',namespaces=ns),path.findtext('m:artifactId',namespaces=ns),path.findtext('m:version',namespaces=ns),'annotation-processor')
+          tree=json.loads(Path('evidence/dependencies.json').read_text())
+          def walk(node):
+              for child in node.get('children',[]):
+                  add(child['groupId'],child['artifactId'],child['version'],'resolved',child.get('scope',''));walk(child)
+          walk(tree)
+          for group,artifact in [('tools.jackson.core','jackson-databind'),('tools.jackson.core','jackson-core')]:
+              items[(group,artifact,'not-adopted')]={'group':group,'artifact':artifact,'current':'not-adopted','uses':[{'kind':'alternative-major','scope':'not adopted'}]}
+          pattern=re.compile(r'([0-9]+(?:\.[0-9]+)*)(?:[.-](?:Final|GA|RELEASE))?$',re.I)
+          def numeric(value):
+              match=pattern.fullmatch(value)
+              return tuple(int(n) for n in match.group(1).split('.')) if match else None
+          def fetch(row):
+              group,artifact=row['group'],row['artifact'];url='https://repo.maven.apache.org/maven2/'+group.replace('.','/')+'/'+artifact+'/maven-metadata.xml'
+              result=dict(row,metadata_url=url,checked_at=datetime.now(timezone.utc).isoformat())
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'logbook-maintenance-read-only-audit/1'})
+                  with urllib.request.urlopen(req,timeout=30) as response: data=response.read(4*1024*1024+1)
+                  if len(data)>4*1024*1024 or b'<!DOCTYPE' in data.upper(): raise ValueError('Unsafe metadata')
+                  doc=E.fromstring(data)
+                  if doc.findtext('groupId')!=group or doc.findtext('artifactId')!=artifact: raise ValueError('Coordinate mismatch')
+                  name=group+'__'+artifact+'.xml';Path('evidence/metadata',name).write_bytes(data)
+                  versions=[e.text for e in doc.findall('versioning/versions/version') if e.text]
+                  stable=sorted((v for v in versions if numeric(v)),key=numeric)
+                  current=numeric(row['current']);same=[v for v in stable if current and numeric(v)[0]==current[0]]
+                  greater=[v for v in stable if current and numeric(v)>current]
+                  result.update(status='checked',raw_sha256=hashlib.sha256(data).hexdigest(),raw_file='metadata/'+name,metadata_updated=doc.findtext('versioning/lastUpdated'),declared_release=doc.findtext('versioning/release'),latest_numeric_stable=stable[-1] if stable else None,latest_same_major=same[-1] if same else None,current_in_metadata=row['current'] in versions,newer_numeric_stable=greater)
+              except Exception as error: result.update(status='unverified',error=type(error).__name__+': '+str(error))
+              return result
+          with ThreadPoolExecutor(max_workers=6) as pool: rows=list(pool.map(fetch,items.values()))
+          report={'schema':'logbook-dependency-audit-v1','source_revision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'checked_at':datetime.now(timezone.utc).isoformat(),'policy':'Numeric GA versions only; prereleases excluded. Version order is not runtime compatibility or security certification. Alternative Jackson3 coordinates listed explicitly. No automatic source or version updates.','rows':sorted(rows,key=lambda r:(r['group'],r['artifact'],r['current']))}
+          Path('evidence/dependency-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          for r in report['rows']: print(r['group']+':'+r['artifact'],r['current'],'->',r.get('latest_numeric_stable'),r['status'])
+          print('AUDIT_COUNTS',len(rows),'unverified',sum(r['status']!='checked' for r in rows))
+          assert all(r['status']=='checked' for r in rows),'Do not claim completeness for failed upstream reads'
+          PY
+          (cd evidence && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: pinned-dependency-audit
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 14
