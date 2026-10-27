@@ -14,7 +14,8 @@ import re
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 from run_feature_distribution import (FORMAT, HOST_API, HOST_VERSION, FEATURES,
                                      PROVIDERS, FEATURE_METADATA, HOST_METADATA, verify,
-                                     GROUPS, EXTRA_CLASSES, required_entries)
+                                     GROUPS, EXTRA_CLASSES, required_entries, RECORD_UI_API, RECORD_UI_PROFILE,
+                                     record_ui_entry, record_ui_required_entries)
 
 SERVICE = 'META-INF/services/logbook.plugin.api.FeatureModule'
 STAMP = (2020, 1, 1, 0, 0, 0)
@@ -32,7 +33,9 @@ def new_directory(path: Path) -> None:
     path.mkdir(parents=False, exist_ok=False)
 
 
-def owner(name: str) -> str | None:
+def owner(name: str, record_ui: bool = False) -> str | None:
+    if record_ui and record_ui_entry(name):
+        return 'charts'
     for group, (provider, controllers, resources) in GROUPS.items():
         stems = ['logbook/features/' + provider]
         stems += ['logbook/internal/gui/' + c for c in controllers]
@@ -89,6 +92,11 @@ def build(source: Path, output: Path, revision: str) -> dict:
     expected = {'logbook.features.' + values[0] for values in GROUPS.values()}
     if providers != expected:
         raise ValueError('Feature service list changed; update the extraction contract')
+    record_ui = RECORD_UI_API in entries
+    if record_ui:
+        missing = record_ui_required_entries() - entries.keys()
+        if missing:
+            raise ValueError('Missing record UI input: ' + sorted(missing)[0])
     for group in GROUPS:
         for required in required_entries(group):
             if required not in entries:
@@ -98,7 +106,7 @@ def build(source: Path, output: Path, revision: str) -> dict:
     groups = {g: {} for g in GROUPS}
     core = {}
     for name, data in entries.items():
-        group = owner(name)
+        group = owner(name, record_ui)
         if group:
             groups[group][name] = data
         elif name != SERVICE:
@@ -143,7 +151,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
                          'path': 'logbook-core.jar', 'sha256': host_hash},
                 'modules': modules,
                 'files': {n: sha((output / n).read_bytes()) for n in files},
-                'extracted': {g: sorted(n for n in entries if owner(n) == g) for g in GROUPS}}
+                'extracted': {g: sorted(n for n in entries if owner(n, record_ui) == g) for g in GROUPS}}
+    if record_ui:
+        manifest['record_ui_profile'] = RECORD_UI_PROFILE
     # Written last. A failed/interrupted build has no valid distribution manifest.
     if source.read_bytes() != original:
         raise ValueError('Input changed during packaging')

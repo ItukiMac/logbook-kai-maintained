@@ -45,8 +45,22 @@ assert len(combined)==1 and combined[0]['result']=='passed' and combined[0]['ori
 assert combined[0]['calculations']==[10,15,10] and combined[0]['tracking_checkpoints']==4
 required=[r for r in suites if r.get('name','').endswith('.SeasonalRetreatIntegrationTest')]
 assert len(required)==1 and int(required[0].get('tests',0))==8 and int(required[0].get('skipped',0))==0
+# Neither a skipped GUI probe nor a hand-repacked test-only archive closes this gate.
+record_reports=[json.loads(f.read_text()) for f in p.glob('record-ui-fixture-*.json')]
+assert len(record_reports)==1 and record_reports[0]['result']=='passed'
+records=record_reports[0]
+assert records['product_distribution'] and records['record_ui_profile']=='record-ui-in-charts-v1'
+assert records['record_module']=='charts' and records['windows']==3 and records['battle_rows']==3
+assert records['original_history_unchanged'] and records['settings_reread'] and records['legacy_missing_experience_bug_fixed']
+assert not records['production_accessed']
+assert json.loads((p/'feature-manifest.json').read_text())['record_ui_profile']=='record-ui-in-charts-v1'
+record_suites=[s for s in suites if s.get('name') in {'logbook.core.RecordDataContractTest','logbook.internal.gui.RecordDataViewTest'}]
+assert len(record_suites)==2 and all(int(s.get('skipped',0))==0 for s in record_suites)
+record_test_count=sum(int(s.get('tests',0)) for s in record_suites)
+assert record_test_count>=24
 report={'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
+        'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'review_ledger':{k:v for k,v in review.items() if k!='entries'},'production_deployed':False}
 (p/'summary.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(report,ensure_ascii=False))

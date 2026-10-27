@@ -62,10 +62,10 @@ import logbook.bean.AppViewConfig.BattleLogConfig;
 import logbook.plugin.api.RecordViewsV1;
 import logbook.internal.Tuple;
 import logbook.internal.Tuple.Triplet;
-import logbook.internal.kancolle.BattleLogs;
-import logbook.internal.kancolle.BattleLogs.IUnit;
-import logbook.internal.kancolle.BattleLogs.SimpleBattleLog;
-import logbook.internal.kancolle.BattleLogs.Unit;
+import logbook.plugin.api.RecordDataV1;
+import logbook.plugin.api.RecordDataV1.PeriodKey;
+import logbook.plugin.api.RecordDataV1.BattleRow;
+import logbook.plugin.api.RecordDataV1.Period;
 import logbook.internal.logger.LoggerHolder;
 import logbook.internal.util.ToStringConverter;
 
@@ -83,7 +83,7 @@ public class BattleLogController extends FeatureUiV1.Window {
 
     /** 統計 */
     @FXML
-    private TreeTableView<BattleLogCollect> collect;
+    private TreeTableView<BattleRecordCollect> collect;
 
     /** 集計の削除 */
     @FXML
@@ -95,35 +95,35 @@ public class BattleLogController extends FeatureUiV1.Window {
 
     /** 集計 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> unit;
+    private TreeTableColumn<BattleRecordCollect, String> unit;
 
     /** 出撃 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> start;
+    private TreeTableColumn<BattleRecordCollect, String> start;
 
     /** 勝利 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> win;
+    private TreeTableColumn<BattleRecordCollect, String> win;
 
     /** S勝利 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> s;
+    private TreeTableColumn<BattleRecordCollect, String> s;
 
     /** A勝利 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> a;
+    private TreeTableColumn<BattleRecordCollect, String> a;
 
     /** B勝利 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> b;
+    private TreeTableColumn<BattleRecordCollect, String> b;
 
     /** C敗北 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> c;
+    private TreeTableColumn<BattleRecordCollect, String> c;
 
     /** D敗北 */
     @FXML
-    private TreeTableColumn<BattleLogCollect, String> d;
+    private TreeTableColumn<BattleRecordCollect, String> d;
 
     /** フィルタ */
     @FXML
@@ -131,79 +131,79 @@ public class BattleLogController extends FeatureUiV1.Window {
 
     /** 詳細 */
     @FXML
-    private TableView<BattleLogDetail> detail;
+    private TableView<BattleRecordDetail> detail;
 
     /** 行番号 */
     @FXML
-    private TableColumn<BattleLogDetail, Integer> row;
+    private TableColumn<BattleRecordDetail, Integer> row;
 
     /** 日付 */
     @FXML
-    private TableColumn<BattleLogDetail, String> date;
+    private TableColumn<BattleRecordDetail, String> date;
 
     /** 海域 */
     @FXML
-    private TableColumn<BattleLogDetail, String> area;
+    private TableColumn<BattleRecordDetail, String> area;
 
     /** マス */
     @FXML
-    private TableColumn<BattleLogDetail, String> cell;
+    private TableColumn<BattleRecordDetail, String> cell;
 
     /** ボス */
     @FXML
-    private TableColumn<BattleLogDetail, String> boss;
+    private TableColumn<BattleRecordDetail, String> boss;
 
     /** 評価 */
     @FXML
-    private TableColumn<BattleLogDetail, String> rank;
+    private TableColumn<BattleRecordDetail, String> rank;
 
     /** 艦隊行動 */
     @FXML
-    private TableColumn<BattleLogDetail, String> intercept;
+    private TableColumn<BattleRecordDetail, String> intercept;
 
     /** 味方陣形 */
     @FXML
-    private TableColumn<BattleLogDetail, String> fformation;
+    private TableColumn<BattleRecordDetail, String> fformation;
 
     /** 敵陣形 */
     @FXML
-    private TableColumn<BattleLogDetail, String> eformation;
+    private TableColumn<BattleRecordDetail, String> eformation;
 
     /** 制空権 */
     @FXML
-    private TableColumn<BattleLogDetail, String> dispseiku;
+    private TableColumn<BattleRecordDetail, String> dispseiku;
 
     /** 味方触接 */
     @FXML
-    private TableColumn<BattleLogDetail, String> ftouch;
+    private TableColumn<BattleRecordDetail, String> ftouch;
 
     /** 敵触接 */
     @FXML
-    private TableColumn<BattleLogDetail, String> etouch;
+    private TableColumn<BattleRecordDetail, String> etouch;
 
     /** 敵艦隊 */
     @FXML
-    private TableColumn<BattleLogDetail, String> efleet;
+    private TableColumn<BattleRecordDetail, String> efleet;
 
     /** ドロップ艦種 */
     @FXML
-    private TableColumn<BattleLogDetail, String> dropType;
+    private TableColumn<BattleRecordDetail, String> dropType;
 
     /** ドロップ艦娘 */
     @FXML
-    private TableColumn<BattleLogDetail, String> dropShip;
+    private TableColumn<BattleRecordDetail, String> dropShip;
 
     /** ドロップアイテム */
     @FXML
-    private TableColumn<BattleLogDetail, String> dropItem;
+    private TableColumn<BattleRecordDetail, String> dropItem;
 
     /** 艦娘経験値 */
     @FXML
-    private TableColumn<BattleLogDetail, Integer> shipExp;
+    private TableColumn<BattleRecordDetail, Integer> shipExp;
 
     /** 提督経験値 */
     @FXML
-    private TableColumn<BattleLogDetail, Integer> exp;
+    private TableColumn<BattleRecordDetail, Integer> exp;
 
     /** 種類 */
     @FXML
@@ -230,19 +230,19 @@ public class BattleLogController extends FeatureUiV1.Window {
     private PieChart chart;
 
     /** ユーザー追加単位 */
-    private List<BattleLogs.CustomUnit> userUnit = new ArrayList<>();
+    private List<RecordDataV1.DateRange> userUnit = new ArrayList<>();
 
     /** 戦闘ログ */
-    private Map<IUnit, List<SimpleBattleLog>> logMap;
+    private Map<PeriodKey, List<BattleRow>> logMap;
 
     /** 詳細(フィルタ前) */
-    private ObservableList<BattleLogDetail> detailsSource = FXCollections.observableArrayList();
+    private ObservableList<BattleRecordDetail> detailsSource = FXCollections.observableArrayList();
 
     /** 詳細(フィルタ済み) */
-    private FilteredList<BattleLogDetail> filteredDetails = new FilteredList<>(this.detailsSource);
+    private FilteredList<BattleRecordDetail> filteredDetails = new FilteredList<>(this.detailsSource);
 
     /** 集計用Map */
-    private Map<String, Function<BattleLogDetail, ?>> aggregateTypeMap = new HashMap<>();
+    private Map<String, Function<BattleRecordDetail, ?>> aggregateTypeMap = new HashMap<>();
 
     /** 海域短縮名のパターン（1-2など） */
     private static final Pattern AREA_SHORTNAME_PATTERN = Pattern.compile("^([0-9]+)-([0-9]+)$");
@@ -288,10 +288,10 @@ public class BattleLogController extends FeatureUiV1.Window {
 
             // 詳細
             this.detail.setRowFactory(tv -> {
-                TableRow<BattleLogDetail> r = new TableRow<>();
+                TableRow<BattleRecordDetail> r = new TableRow<>();
                 r.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2 && (!r.isEmpty())) {
-                        BattleLogDetail d = r.getItem();
+                        BattleRecordDetail d = r.getItem();
                         try {
                             RecordViewsV1.showBattleDetail(d.getDate(), this.getWindow(), "戦闘ログ");
                         } catch (Exception ex) {
@@ -302,7 +302,7 @@ public class BattleLogController extends FeatureUiV1.Window {
                 return r;
             });
 
-            SortedList<BattleLogDetail> sortedDetails = new SortedList<>(this.filteredDetails);
+            SortedList<BattleRecordDetail> sortedDetails = new SortedList<>(this.filteredDetails);
             this.detail.setItems(sortedDetails);
             sortedDetails.comparatorProperty().bind(this.detail.comparatorProperty());
             this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -326,25 +326,27 @@ public class BattleLogController extends FeatureUiV1.Window {
             this.dropItem.setCellValueFactory(new PropertyValueFactory<>("dropItem"));
             this.shipExp.setCellValueFactory(new PropertyValueFactory<>("shipExp"));
             this.exp.setCellValueFactory(new PropertyValueFactory<>("exp"));
+            this.shipExp.setCellFactory(column -> new RecordedExperienceCell(true));
+            this.exp.setCellFactory(column -> new RecordedExperienceCell(false));
 
             // 統計
             // ルート要素(非表示)
-            TreeItem<BattleLogCollect> root = new TreeItem<BattleLogCollect>(new BattleLogCollect());
+            TreeItem<BattleRecordCollect> root = new TreeItem<BattleRecordCollect>(new BattleRecordCollect());
             this.collect.setRoot(root);
             this.collect.setSortPolicy((param) -> {
                 // 最上位（root直下=集計単位）はいじらない
                 root.getChildren().forEach(agg -> {
                     // 各集計単位でソートする
                     agg.getChildren().sort((o1, o2) -> {
-                        BattleLogCollect b1 = o1.getValue();
-                        BattleLogCollect b2 = o2.getValue();
+                        BattleRecordCollect b1 = o1.getValue();
+                        BattleRecordCollect b2 = o2.getValue();
                         if (b1 == null) {
                             return b2 == null ? 0 : 1;
                         } else if (b2 == null) {
                             return -1;
                         }
                         // 上位の sort order から順にチェック
-                        for (TreeTableColumn<BattleLogCollect, ?> column : param.getSortOrder()) {
+                        for (TreeTableColumn<BattleRecordCollect, ?> column : param.getSortOrder()) {
                             int alpha = column.getSortType() == SortType.DESCENDING ? -1 : 1;
                             int diff = 0;
                             if (column == this.unit) {
@@ -412,12 +414,12 @@ public class BattleLogController extends FeatureUiV1.Window {
      */
     private void setCollect() {
         // 集計単位がキーのマップ
-        this.logMap = BattleLogs.readSimpleLog();
-        for (IUnit unit : Unit.values()) {
+        this.logMap = new java.util.LinkedHashMap<>(RecordDataV1.recentBattles());
+        for (PeriodKey unit : Period.values()) {
             this.addTree(unit);
         }
-        for (IUnit unit : this.userUnit) {
-            this.logMap.put(unit, BattleLogs.readSimpleLog(unit));
+        for (PeriodKey unit : this.userUnit) {
+            this.logMap.put(unit, RecordDataV1.battles(unit));
             this.addTree(unit);
         }
     }
@@ -444,24 +446,24 @@ public class BattleLogController extends FeatureUiV1.Window {
      * 
      * @param unit 集計単位
      */
-    private void addTree(IUnit unit) {
-        List<SimpleBattleLog> list = this.logMap.get(unit);
+    private void addTree(PeriodKey unit) {
+        List<BattleRow> list = this.logMap.get(unit);
 
         // 単位のルート
-        BattleLogCollect unitRootValue = BattleLogs.collect(list, null, false);
+        BattleRecordCollect unitRootValue = BattleRecordCollect.fromTotals(RecordDataV1.summarizeBattles(list, null, false));
         unitRootValue.setUnit(unit.getName());
         unitRootValue.setCollectUnit(unit);
 
-        TreeItem<BattleLogCollect> unitRoot = new TreeItem<BattleLogCollect>(unitRootValue);
+        TreeItem<BattleRecordCollect> unitRoot = new TreeItem<BattleRecordCollect>(unitRootValue);
         unitRoot.setExpanded(true);
 
         // ボス
-        BattleLogCollect bossValue = BattleLogs.collect(list, null, true);
+        BattleRecordCollect bossValue = BattleRecordCollect.fromTotals(RecordDataV1.summarizeBattles(list, null, true));
         bossValue.setUnit("ボス");
         bossValue.setCollectUnit(unit);
         bossValue.setBoss(true);
 
-        TreeItem<BattleLogCollect> boss = new TreeItem<BattleLogCollect>(bossValue);
+        TreeItem<BattleRecordCollect> boss = new TreeItem<BattleRecordCollect>(bossValue);
         unitRoot.getChildren().add(boss);
 
         // 海域の名前
@@ -481,29 +483,29 @@ public class BattleLogController extends FeatureUiV1.Window {
             }
 
             // 海域毎の集計
-            BattleLogCollect areaValue = BattleLogs.collect(list, name.get2(), false);
+            BattleRecordCollect areaValue = BattleRecordCollect.fromTotals(RecordDataV1.summarizeBattles(list, name.get2(), false));
             areaValue.setUnit(text);
             areaValue.setCollectUnit(unit);
             areaValue.setArea(area);
             areaValue.setAreaShortName(name.get2());
             areaValue.setAreaSortOrder(name.get3());
 
-            TreeItem<BattleLogCollect> areaRoot = new TreeItem<BattleLogCollect>(areaValue);
+            TreeItem<BattleRecordCollect> areaRoot = new TreeItem<BattleRecordCollect>(areaValue);
 
             // 海域ボス
-            BattleLogCollect areaBossValue = BattleLogs.collect(list, name.get2(), true);
+            BattleRecordCollect areaBossValue = BattleRecordCollect.fromTotals(RecordDataV1.summarizeBattles(list, name.get2(), true));
             areaBossValue.setUnit("ボス");
             areaBossValue.setCollectUnit(unit);
             areaBossValue.setArea(area);
             areaBossValue.setAreaShortName(name.get2());
             areaBossValue.setBoss(true);
 
-            TreeItem<BattleLogCollect> areaBoss = new TreeItem<BattleLogCollect>(areaBossValue);
+            TreeItem<BattleRecordCollect> areaBoss = new TreeItem<BattleRecordCollect>(areaBossValue);
             areaRoot.getChildren().add(areaBoss);
 
             unitRoot.getChildren().add(areaRoot);
         }
-        if (unit instanceof Unit) {
+        if (unit instanceof Period) {
             this.collect.getRoot().getChildren().add(unitRoot);
         } else {
             this.collect.getRoot().getChildren().add(0, unitRoot);
@@ -545,8 +547,8 @@ public class BattleLogController extends FeatureUiV1.Window {
     private void loadConfig() {
         Optional.ofNullable(AppViewConfig.get().getBattleLogConfig()).ifPresent(config -> {
             Optional.ofNullable(config.getCustomUnits()).ifPresent(units -> units.stream().forEach(u -> {
-                BattleLogs.CustomUnit unit = new BattleLogs.CustomUnit(LocalDate.ofEpochDay(u.getFrom()), LocalDate.ofEpochDay(u.getTo()));
-                this.logMap.put(unit, BattleLogs.readSimpleLog(unit));
+                RecordDataV1.DateRange unit = new RecordDataV1.DateRange(LocalDate.ofEpochDay(u.getFrom()), LocalDate.ofEpochDay(u.getTo()));
+                this.logMap.put(unit, RecordDataV1.battles(unit));
                 this.addTree(unit);
                 this.userUnit.add(unit);
             }));
@@ -567,9 +569,9 @@ public class BattleLogController extends FeatureUiV1.Window {
         alert.setTitle("集計の追加");
         alert.setDialogPane(dialog);
         alert.showAndWait().filter(ButtonType.APPLY::equals).ifPresent(b -> {
-            BattleLogs.CustomUnit unit = dialog.getUnit();
+            RecordDataV1.DateRange unit = dialog.getUnit();
             if (unit != null) {
-                this.logMap.put(unit, BattleLogs.readSimpleLog(unit));
+                this.logMap.put(unit, RecordDataV1.battles(unit));
                 this.addTree(unit);
                 this.userUnit.add(unit);
                 saveConfig();
@@ -582,13 +584,13 @@ public class BattleLogController extends FeatureUiV1.Window {
      */
     @FXML
     void removeUnitAction(ActionEvent event) {
-        TreeItem<BattleLogCollect> item = this.collect.getSelectionModel().getSelectedItem();
+        TreeItem<BattleRecordCollect> item = this.collect.getSelectionModel().getSelectedItem();
         if (item != null && this.userUnit.contains(item.getValue().getCollectUnit()) && this.collect.getRoot().getChildren().contains(item)) {
             FeatureUiV1.Controls.alert(Alert.AlertType.CONFIRMATION, "削除", "集計("+item.getValue().getUnit()+")を削除してよろしいですか？", this.getWindow())
                     .filter(op -> op == ButtonType.OK)
                     .ifPresent(type -> {
                         this.collect.getRoot().getChildren().remove(item);
-                        IUnit unit = item.getValue().getCollectUnit();
+                        PeriodKey unit = item.getValue().getCollectUnit();
                         this.userUnit.remove(unit);
                         this.logMap.remove(unit);
                         saveConfig();
@@ -660,26 +662,26 @@ public class BattleLogController extends FeatureUiV1.Window {
      * @param oldValue   古い値
      * @param value      新しい値
      */
-    private void detail(ObservableValue<? extends TreeItem<BattleLogCollect>> observable,
-            TreeItem<BattleLogCollect> oldValue, TreeItem<BattleLogCollect> value) {
+    private void detail(ObservableValue<? extends TreeItem<BattleRecordCollect>> observable,
+            TreeItem<BattleRecordCollect> oldValue, TreeItem<BattleRecordCollect> value) {
         this.detailsSource.clear();
         if (value != null) {
-            BattleLogCollect collect = value.getValue();
+            BattleRecordCollect collect = value.getValue();
             String areaShortName = collect.getAreaShortName();
             boolean boss = collect.isBoss();
 
-            Predicate<BattleLogDetail> anyFilter = e -> true;
+            Predicate<BattleRecordDetail> anyFilter = e -> true;
             // 海域フィルタ
-            Predicate<BattleLogDetail> areaFilter = areaShortName != null ? e -> areaShortName.equals(e.getAreaShortName()) : anyFilter;
+            Predicate<BattleRecordDetail> areaFilter = areaShortName != null ? e -> areaShortName.equals(e.getAreaShortName()) : anyFilter;
             // ボスフィルタ
-            Predicate<BattleLogDetail> bossFilter = boss ? e -> e.getBoss().indexOf("ボス") != -1 : anyFilter;
+            Predicate<BattleRecordDetail> bossFilter = boss ? e -> e.getBoss().indexOf("ボス") != -1 : anyFilter;
 
-            List<BattleLogDetail> values = this.logMap.get(collect.getCollectUnit())
+            List<BattleRecordDetail> values = this.logMap.get(collect.getCollectUnit())
                     .stream()
-                    .map(BattleLogDetail::toBattleLogDetail)
+                    .map(BattleRecordDetail::toBattleRecordDetail)
                     .filter(areaFilter)
                     .filter(bossFilter)
-                    .sorted(Comparator.comparing(BattleLogDetail::getDate).reversed())
+                    .sorted(Comparator.comparing(BattleRecordDetail::getDate).reversed())
                     .collect(Collectors.toList());
             this.detailsSource.addAll(values);
             boolean userUnitRootSelected = this.userUnit.contains(collect.getCollectUnit()) && this.collect.getRoot().getChildren().contains(value);
@@ -695,10 +697,10 @@ public class BattleLogController extends FeatureUiV1.Window {
     private void initializeFilterPane() {
         this.filterPane.getChildren().clear();
         this.filteredDetails.setPredicate(null);
-        List<Predicate<BattleLogDetail>> filterBase = new ArrayList<>();
+        List<Predicate<BattleRecordDetail>> filterBase = new ArrayList<>();
         ListChangeListener<Object> listener = c -> {
-            Predicate<BattleLogDetail> predicate = null;
-            for (Predicate<BattleLogDetail> filter : filterBase) {
+            Predicate<BattleRecordDetail> predicate = null;
+            for (Predicate<BattleRecordDetail> filter : filterBase) {
                 if (predicate == null) {
                     predicate = filter;
                 } else {
@@ -716,39 +718,39 @@ public class BattleLogController extends FeatureUiV1.Window {
                 },
                 AREA_COMPARATOR).predicate);
 
-        filterBase.add(this.addFilterColumn(this.detail, this.cell, listener, BattleLogDetail::getCell).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.boss, listener, BattleLogDetail::getBoss).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.cell, listener, BattleRecordDetail::getCell).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.boss, listener, BattleRecordDetail::getBoss).predicate);
 
         // ランク: S, A, B, C, D, E
-        filterBase.add(this.addFilterColumn(this.detail, this.rank, listener, BattleLogDetail::getRank, RANK_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.rank, listener, BattleRecordDetail::getRank, RANK_COMPARATOR).predicate);
 
         // 艦隊行動
-        filterBase.add(this.addFilterColumn(this.detail, this.intercept, listener, BattleLogDetail::getIntercept, INTERCEPT_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.intercept, listener, BattleRecordDetail::getIntercept, INTERCEPT_COMPARATOR).predicate);
 
         // 味方陣形
-        filterBase.add(this.addFilterColumn(this.detail, this.fformation, listener, BattleLogDetail::getFformation, FORMATION_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.fformation, listener, BattleRecordDetail::getFformation, FORMATION_COMPARATOR).predicate);
 
         // 敵陣形
-        filterBase.add(this.addFilterColumn(this.detail, this.eformation, listener, BattleLogDetail::getEformation, FORMATION_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.eformation, listener, BattleRecordDetail::getEformation, FORMATION_COMPARATOR).predicate);
 
         // 制空権
-        filterBase.add(this.addFilterColumn(this.detail, this.dispseiku, listener, BattleLogDetail::getDispseiku, DISPSEIKU_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.dispseiku, listener, BattleRecordDetail::getDispseiku, DISPSEIKU_COMPARATOR).predicate);
 
-        filterBase.add(this.addFilterColumn(this.detail, this.ftouch, listener, BattleLogDetail::getFtouch).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.etouch, listener, BattleLogDetail::getEtouch).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.efleet, listener, BattleLogDetail::getEfleet).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.ftouch, listener, BattleRecordDetail::getFtouch).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.etouch, listener, BattleRecordDetail::getEtouch).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.efleet, listener, BattleRecordDetail::getEfleet).predicate);
 
         // ドロップ艦種
-        FilterColumn<BattleLogDetail, String> dropTypeFilter = this.addFilterColumn(this.detail, this.dropType, listener, BattleLogDetail::getDropType);
+        FilterColumn<BattleRecordDetail, String> dropTypeFilter = this.addFilterColumn(this.detail, this.dropType, listener, BattleRecordDetail::getDropType);
         filterBase.add(dropTypeFilter.predicate);
 
         // ドロップ艦娘
-        FilterColumn<BattleLogDetail, String> dropShipFilter = this.addFilterColumn(this.detail, this.dropShip, listener, BattleLogDetail::getDropShip);
+        FilterColumn<BattleRecordDetail, String> dropShipFilter = this.addFilterColumn(this.detail, this.dropShip, listener, BattleRecordDetail::getDropShip);
         filterBase.add(dropShipFilter.predicate);
 
-        filterBase.add(this.addFilterColumn(this.detail, this.dropItem, listener, BattleLogDetail::getDropItem).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.shipExp, listener, BattleLogDetail::getShipExp).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.exp, listener, BattleLogDetail::getExp).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.dropItem, listener, BattleRecordDetail::getDropItem).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.shipExp, listener, BattleRecordDetail::getShipExp).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.exp, listener, BattleRecordDetail::getExp).predicate);
 
         // ドロップ艦種が変更されたらドロップ艦娘の選択肢を更新する
         dropTypeFilter.comboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) c -> {
@@ -760,13 +762,13 @@ public class BattleLogController extends FeatureUiV1.Window {
 
             shipItems.clear();
 
-            Stream<BattleLogDetail> stream = this.detail.getItems().stream();
+            Stream<BattleRecordDetail> stream = this.detail.getItems().stream();
             if (!selectedTypes.isEmpty()) {
                 stream = stream.filter(d -> selectedTypes.contains(d.getDropType()));
             }
 
             shipItems.addAll(stream
-                    .map(BattleLogDetail::getDropShip)
+                    .map(BattleRecordDetail::getDropShip)
                     .filter(Objects::nonNull)
                     .distinct()
                     .sorted()
@@ -881,21 +883,21 @@ public class BattleLogController extends FeatureUiV1.Window {
      */
     private void initializeAggregate() {
         this.addAggregate(this.area, (detail) -> detail.getAreaShortName() + " " + detail.getArea());
-        this.addAggregate(this.cell, BattleLogDetail::getCell);
-        this.addAggregate(this.boss, BattleLogDetail::getBoss);
-        this.addAggregate(this.rank, BattleLogDetail::getRank);
-        this.addAggregate(this.intercept, BattleLogDetail::getIntercept);
-        this.addAggregate(this.fformation, BattleLogDetail::getFformation);
-        this.addAggregate(this.eformation, BattleLogDetail::getEformation);
-        this.addAggregate(this.dispseiku, BattleLogDetail::getDispseiku);
-        this.addAggregate(this.ftouch, BattleLogDetail::getFtouch);
-        this.addAggregate(this.etouch, BattleLogDetail::getEtouch);
-        this.addAggregate(this.efleet, BattleLogDetail::getEfleet);
-        this.addAggregate(this.dropType, BattleLogDetail::getDropType);
-        this.addAggregate(this.dropShip, BattleLogDetail::getDropShip);
-        this.addAggregate(this.dropItem, BattleLogDetail::getDropItem);
-        this.addAggregate(this.shipExp, BattleLogDetail::getShipExp);
-        this.addAggregate(this.exp, BattleLogDetail::getExp);
+        this.addAggregate(this.cell, BattleRecordDetail::getCell);
+        this.addAggregate(this.boss, BattleRecordDetail::getBoss);
+        this.addAggregate(this.rank, BattleRecordDetail::getRank);
+        this.addAggregate(this.intercept, BattleRecordDetail::getIntercept);
+        this.addAggregate(this.fformation, BattleRecordDetail::getFformation);
+        this.addAggregate(this.eformation, BattleRecordDetail::getEformation);
+        this.addAggregate(this.dispseiku, BattleRecordDetail::getDispseiku);
+        this.addAggregate(this.ftouch, BattleRecordDetail::getFtouch);
+        this.addAggregate(this.etouch, BattleRecordDetail::getEtouch);
+        this.addAggregate(this.efleet, BattleRecordDetail::getEfleet);
+        this.addAggregate(this.dropType, BattleRecordDetail::getDropType);
+        this.addAggregate(this.dropShip, BattleRecordDetail::getDropShip);
+        this.addAggregate(this.dropItem, BattleRecordDetail::getDropItem);
+        this.addAggregate(this.shipExp, row -> row.getShipExpValue().display());
+        this.addAggregate(this.exp, row -> row.getExpValue().display());
 
         // 列の選択が変更されたときに集計する
         this.aggregateType.getSelectionModel()
@@ -908,7 +910,7 @@ public class BattleLogController extends FeatureUiV1.Window {
     /**
      * 列を集計対象に追加する
      */
-    private void addAggregate(TableColumn<BattleLogDetail, ?> column, Function<BattleLogDetail, ?> getter) {
+    private void addAggregate(TableColumn<BattleRecordDetail, ?> column, Function<BattleRecordDetail, ?> getter) {
         String name = FeatureUiV1.Tables.columnName(column);
         this.aggregateType.getItems().add(name);
         this.aggregateTypeMap.put(name, getter);
@@ -923,7 +925,7 @@ public class BattleLogController extends FeatureUiV1.Window {
         ObservableList<BattleLogDetailAggregate> items = FXCollections.observableArrayList();
         ObservableList<PieChart.Data> value = FXCollections.observableArrayList();
         if (name != null) {
-            Function<BattleLogDetail, ?> getter = this.aggregateTypeMap.get(name);
+            Function<BattleRecordDetail, ?> getter = this.aggregateTypeMap.get(name);
             Map<String, Long> result = this.filteredDetails.stream()
                     .map(getter)
                     .map(String::valueOf)
@@ -1000,17 +1002,28 @@ public class BattleLogController extends FeatureUiV1.Window {
             this.from.setDayCellFactory(callback);
         }
 
-        public BattleLogs.CustomUnit getUnit() {
+        public RecordDataV1.DateRange getUnit() {
             LocalDate from = this.from.getValue();
             LocalDate to = this.to.getValue();
             if (from != null && to != null) {
                 if (from.compareTo(to) <= 0) {
-                    return new BattleLogs.CustomUnit(from, to);
+                    return new RecordDataV1.DateRange(from, to);
                 } else {
-                    return new BattleLogs.CustomUnit(to, from);
+                    return new RecordDataV1.DateRange(to, from);
                 }
             }
             return null;
+        }
+    }
+    /** Render unknown experience without changing the persisted record or inventing zero. */
+    private static final class RecordedExperienceCell extends javafx.scene.control.TableCell<BattleRecordDetail, Integer> {
+        private final boolean ship;
+        private RecordedExperienceCell(boolean ship) { this.ship = ship; }
+        @Override protected void updateItem(Integer value, boolean empty) {
+            super.updateItem(value, empty);
+            BattleRecordDetail row = getTableRow() == null ? null : getTableRow().getItem();
+            if (empty || row == null) { setText(null); return; }
+            setText((ship ? row.getShipExpValue() : row.getExpValue()).display());
         }
     }
 }

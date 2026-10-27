@@ -41,9 +41,9 @@ import logbook.bean.Mission;
 import logbook.bean.MissionCollection;
 import logbook.internal.Tuple;
 import logbook.internal.Tuple.Pair;
-import logbook.internal.kancolle.MissionLogs;
-import logbook.internal.kancolle.BattleLogs.Unit;
-import logbook.internal.kancolle.MissionLogs.SimpleMissionLog;
+import logbook.plugin.api.RecordDataV1;
+import logbook.plugin.api.RecordDataV1.Period;
+import logbook.plugin.api.RecordDataV1.MissionRow;
 import logbook.internal.logger.LoggerHolder;
 
 /**
@@ -63,75 +63,75 @@ public class MissionLogController extends FeatureUiV1.Window {
 
     /** 統計 */
     @FXML
-    private TreeTableView<MissionLogCollect> collect;
+    private TreeTableView<MissionRecordCollect> collect;
 
     /** 集計 */
     @FXML
-    private TreeTableColumn<MissionLogCollect, String> unit;
+    private TreeTableColumn<MissionRecordCollect, String> unit;
 
     /** 大成功 */
     @FXML
-    private TreeTableColumn<MissionLogCollect, Integer> successGood;
+    private TreeTableColumn<MissionRecordCollect, Integer> successGood;
 
     /** 成功 */
     @FXML
-    private TreeTableColumn<MissionLogCollect, Integer> success;
+    private TreeTableColumn<MissionRecordCollect, Integer> success;
 
     /** 失敗 */
     @FXML
-    private TreeTableColumn<MissionLogCollect, Integer> fail;
+    private TreeTableColumn<MissionRecordCollect, Integer> fail;
 
     /** 詳細 */
     @FXML
-    private TableView<MissionLogDetail> detail;
+    private TableView<MissionRecordDetail> detail;
 
     /** 行番号 */
     @FXML
-    private TableColumn<MissionLogDetail, Integer> row;
+    private TableColumn<MissionRecordDetail, Integer> row;
 
     /** 日付 */
     @FXML
-    private TableColumn<MissionLogDetail, String> date;
+    private TableColumn<MissionRecordDetail, String> date;
 
     /** 遠征名 */
     @FXML
-    private TableColumn<MissionLogDetail, String> name;
+    private TableColumn<MissionRecordDetail, String> name;
 
     /** 結果 */
     @FXML
-    private TableColumn<MissionLogDetail, String> result;
+    private TableColumn<MissionRecordDetail, String> result;
 
     /** 燃料 */
     @FXML
-    private TableColumn<MissionLogDetail, Integer> fuel;
+    private TableColumn<MissionRecordDetail, Integer> fuel;
 
     /** 弾薬 */
     @FXML
-    private TableColumn<MissionLogDetail, Integer> ammo;
+    private TableColumn<MissionRecordDetail, Integer> ammo;
 
     /** 鋼材 */
     @FXML
-    private TableColumn<MissionLogDetail, Integer> metal;
+    private TableColumn<MissionRecordDetail, Integer> metal;
 
     /** ボーキ */
     @FXML
-    private TableColumn<MissionLogDetail, Integer> bauxite;
+    private TableColumn<MissionRecordDetail, Integer> bauxite;
 
     /** アイテム1 */
     @FXML
-    private TableColumn<MissionLogDetail, String> item1name;
+    private TableColumn<MissionRecordDetail, String> item1name;
 
     /** アイテム1 */
     @FXML
-    private TableColumn<MissionLogDetail, String> item1count;
+    private TableColumn<MissionRecordDetail, String> item1count;
 
     /** アイテム2 */
     @FXML
-    private TableColumn<MissionLogDetail, String> item2name;
+    private TableColumn<MissionRecordDetail, String> item2name;
 
     /** アイテム2 */
     @FXML
-    private TableColumn<MissionLogDetail, String> item2count;
+    private TableColumn<MissionRecordDetail, String> item2count;
 
     /** 集計 */
     @FXML
@@ -153,10 +153,10 @@ public class MissionLogController extends FeatureUiV1.Window {
     private PieChart chart;
 
     /** ログ */
-    private Map<Unit, List<SimpleMissionLog>> logMap = new EnumMap<>(Unit.class);
+    private Map<Period, List<MissionRow>> logMap = new EnumMap<>(Period.class);
 
     /** 詳細 */
-    private ObservableList<MissionLogDetail> details = FXCollections.observableArrayList();
+    private ObservableList<MissionRecordDetail> details = FXCollections.observableArrayList();
 
     /** 集計 */
     private ObservableList<MissionAggregate> aggregates = FXCollections.observableArrayList();
@@ -183,7 +183,7 @@ public class MissionLogController extends FeatureUiV1.Window {
         this.fail.setCellValueFactory(new TreeItemPropertyValueFactory<>("fail"));
 
         // 詳細
-        SortedList<MissionLogDetail> sortedList = new SortedList<>(this.details);
+        SortedList<MissionRecordDetail> sortedList = new SortedList<>(this.details);
         this.detail.setItems(sortedList);
         sortedList.comparatorProperty().bind(this.detail.comparatorProperty());
         this.detail.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -227,11 +227,11 @@ public class MissionLogController extends FeatureUiV1.Window {
                 .addListener(this::chart);
     }
 
-    private boolean sortCollect(List<TreeTableColumn<MissionLogCollect, ?>> sortOrder, List<TreeItem<MissionLogCollect>> items) {
+    private boolean sortCollect(List<TreeTableColumn<MissionRecordCollect, ?>> sortOrder, List<TreeItem<MissionRecordCollect>> items) {
         items.sort((o1, o2) -> {
-            MissionLogCollect c1 = (MissionLogCollect)o1.getValue();
-            MissionLogCollect c2 = (MissionLogCollect)o2.getValue();
-            for (TreeTableColumn<MissionLogCollect, ?> column : sortOrder) {
+            MissionRecordCollect c1 = (MissionRecordCollect)o1.getValue();
+            MissionRecordCollect c2 = (MissionRecordCollect)o2.getValue();
+            for (TreeTableColumn<MissionRecordCollect, ?> column : sortOrder) {
                 int diff = 0;
                 if (column == this.unit) {
                     if (c1.getName() != null && c2.getName() != null) {
@@ -303,8 +303,8 @@ public class MissionLogController extends FeatureUiV1.Window {
      * @param oldValue 古い値
      * @param value 新しい値
      */
-    private void detail(ObservableValue<? extends TreeItem<MissionLogCollect>> observable,
-            TreeItem<MissionLogCollect> oldValue, TreeItem<MissionLogCollect> value) {
+    private void detail(ObservableValue<? extends TreeItem<MissionRecordCollect>> observable,
+            TreeItem<MissionRecordCollect> oldValue, TreeItem<MissionRecordCollect> value) {
         this.details.clear();
         this.aggregates.clear();
 
@@ -313,15 +313,15 @@ public class MissionLogController extends FeatureUiV1.Window {
         if (value != null) {
             this.chart.setTitle("入手資材");
 
-            MissionLogCollect collect = value.getValue();
+            MissionRecordCollect collect = value.getValue();
 
-            List<SimpleMissionLog> subLog = this.logMap.get(collect.getCollectUnit())
+            List<MissionRow> subLog = this.logMap.get(collect.getCollectUnit())
                     .stream()
                     .filter(e -> collect.getName() == null || e.getName().equals(collect.getName()))
                     .collect(Collectors.toList());
 
             this.details.addAll(subLog.stream()
-                    .map(MissionLogDetail::toMissionLogDetail)
+                    .map(MissionRecordDetail::toMissionRecordDetail)
                     .collect(Collectors.toList()));
 
             List<Pair<String, Integer>> aggregateBase = this.aggregateBase(subLog);
@@ -371,19 +371,19 @@ public class MissionLogController extends FeatureUiV1.Window {
         this.chart.getData().clear();
 
         if (value != null) {
-            TreeItem<MissionLogCollect> ti = this.collect.getSelectionModel()
+            TreeItem<MissionRecordCollect> ti = this.collect.getSelectionModel()
                     .getSelectedItem();
 
             if (ti != null) {
                 this.chart.setTitle(value.resourceProperty().get() + " の入手元");
 
-                MissionLogCollect collect = ti.getValue();
-                Map<String, List<SimpleMissionLog>> subLog = this.logMap.get(collect.getCollectUnit())
+                MissionRecordCollect collect = ti.getValue();
+                Map<String, List<MissionRow>> subLog = this.logMap.get(collect.getCollectUnit())
                         .stream()
                         .filter(e -> collect.getName() == null || e.getName().equals(collect.getName()))
-                        .collect(Collectors.groupingBy(SimpleMissionLog::getName));
+                        .collect(Collectors.groupingBy(MissionRow::getName));
 
-                for (Entry<String, List<SimpleMissionLog>> entry : subLog.entrySet()) {
+                for (Entry<String, List<MissionRow>> entry : subLog.entrySet()) {
                     int sum = this.aggregateBase(entry.getValue()).stream()
                             .filter(p -> p.getKey().equals(value.resourceProperty().get()))
                             .mapToInt(Pair<String, Integer>::getValue)
@@ -406,8 +406,8 @@ public class MissionLogController extends FeatureUiV1.Window {
         // ログ読み込み制限
         ZonedDateTime limit = now.minusMonths(2);
 
-        List<SimpleMissionLog> all = MissionLogs.readSimpleLog(log -> log.getDate().compareTo(limit) > 0);
-        for (Unit unit : Unit.values()) {
+        List<MissionRow> all = RecordDataV1.missionsSince(limit);
+        for (Period unit : Period.values()) {
             this.logMap.put(unit, all.stream()
                     .filter(log -> unit.accept(log.getDate(), now))
                     .collect(Collectors.toList()));
@@ -420,36 +420,36 @@ public class MissionLogController extends FeatureUiV1.Window {
     private void setCollect() {
         // 統計
         // ルート要素(非表示)
-        TreeItem<MissionLogCollect> root = new TreeItem<MissionLogCollect>(new MissionLogCollect());
+        TreeItem<MissionRecordCollect> root = new TreeItem<MissionRecordCollect>(new MissionRecordCollect());
         this.collect.setRoot(root);
 
         int index = 0;
         Map<String, Integer> orders = MissionCollection.get().getMissionMap().values().stream().collect(
                 Collectors.toMap(Mission::getName, m -> m.getMapareaId()*10000+m.getId(), (k1, k2) -> k1));
-        for (Unit unit : Unit.values()) {
-            List<SimpleMissionLog> list = this.logMap.get(unit);
+        for (Period unit : Period.values()) {
+            List<MissionRow> list = this.logMap.get(unit);
             // 単位のルート
-            MissionLogCollect rootValue = collect(list, null);
+            MissionRecordCollect rootValue = collect(list, null);
             rootValue.setUnit(unit.getName());
             rootValue.setCollectUnit(unit);
             rootValue.setSortOrder(index++);
 
-            TreeItem<MissionLogCollect> unitRoot = new TreeItem<MissionLogCollect>(rootValue);
+            TreeItem<MissionRecordCollect> unitRoot = new TreeItem<MissionRecordCollect>(rootValue);
             unitRoot.setExpanded(true);
 
             // 遠征の名前
             List<String> names = list.stream()
-                    .map(SimpleMissionLog::getName)
+                    .map(MissionRow::getName)
                     .distinct()
                     .sorted(Comparator.naturalOrder())
                     .collect(Collectors.toList());
             for (String name : names) {
                 // 遠征毎の集計
-                MissionLogCollect subValue = collect(list, name);
+                MissionRecordCollect subValue = collect(list, name);
                 subValue.setCollectUnit(unit);
                 subValue.setName(name);
                 subValue.setSortOrder(orders.getOrDefault(name, Integer.MAX_VALUE));
-                TreeItem<MissionLogCollect> subRow = new TreeItem<MissionLogCollect>(subValue);
+                TreeItem<MissionRecordCollect> subRow = new TreeItem<MissionRecordCollect>(subValue);
                 unitRoot.getChildren().add(subRow);
             }
             root.getChildren().add(unitRoot);
@@ -463,10 +463,10 @@ public class MissionLogController extends FeatureUiV1.Window {
      * @param name 遠征名
      * @return 集計行(左ペインの行)
      */
-    private static MissionLogCollect collect(List<SimpleMissionLog> list, String name) {
-        MissionLogCollect row = new MissionLogCollect();
+    private static MissionRecordCollect collect(List<MissionRow> list, String name) {
+        MissionRecordCollect row = new MissionRecordCollect();
 
-        List<SimpleMissionLog> subList;
+        List<MissionRow> subList;
         if (name != null) {
             subList = list.stream()
                     .filter(e -> e.getName().equals(name))
@@ -476,16 +476,16 @@ public class MissionLogController extends FeatureUiV1.Window {
             subList = list;
             row.setUnit("-");
         }
-        row.setSuccessGood((int) subList.stream().map(SimpleMissionLog::getResult)
+        row.setSuccessGood((int) subList.stream().map(MissionRow::getResult)
                 .filter("大成功"::equals).count());
-        row.setSuccess((int) subList.stream().map(SimpleMissionLog::getResult)
+        row.setSuccess((int) subList.stream().map(MissionRow::getResult)
                 .filter("成功"::equals).count());
-        row.setFail((int) subList.stream().map(SimpleMissionLog::getResult)
+        row.setFail((int) subList.stream().map(MissionRow::getResult)
                 .filter("失敗"::equals).count());
         return row;
     }
 
-    private List<Pair<String, Integer>> aggregateBase(List<SimpleMissionLog> log) {
+    private List<Pair<String, Integer>> aggregateBase(List<MissionRow> log) {
         return log.stream()
                 .flatMap(e -> {
                     List<Pair<String, Integer>> pairs = new ArrayList<>();
