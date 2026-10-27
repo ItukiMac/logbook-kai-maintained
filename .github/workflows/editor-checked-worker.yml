@@ -1,0 +1,92 @@
+name: Exact arrival editor verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/arrival-editor-checked-worker-20261027']
+permissions:
+  contents: write
+concurrency:
+  group: arrival-editor-checked-20261027
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: a094771d73ce420f2bd2ddf237e0c69cf2005067
+      TARGET: maintenance/arrival-editor-ui-20261027
+      TREE: 9070e75f90981468d7fa1224be935882444ffff2
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: payload
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: a094771d73ce420f2bd2ddf237e0c69cf2005067
+          path: candidate
+          persist-credentials: true
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Verify exact patch and resulting source tree
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import base64,hashlib,lzma,subprocess,os
+          from pathlib import Path
+          encoded=Path('../payload/.maintenance-transfers/editor/patch.txt').read_bytes()
+          assert len(encoded)==9416 and hashlib.sha256(encoded).hexdigest()=='db04637c0cee32b49065e0d972100e198fe7edd5ad84fa025aad44e234f41436'
+          d=lzma.LZMADecompressor(memlimit=64*1024*1024)
+          patch=d.decompress(base64.b64decode(encoded,validate=True),max_length=40001)
+          assert len(patch)==27669 and d.eof and not d.unused_data
+          subprocess.run(['git','apply','--check','--whitespace=nowarn','-'],input=patch,check=True)
+          subprocess.run(['git','apply','--index','--whitespace=nowarn','-'],input=patch,check=True)
+          paths=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+          assert paths=={'src/main/java/logbook/internal/gui/QuestConditionEditController.java','src/main/resources/logbook/gui/quest_condition_edit.fxml','src/test/java/logbook/internal/gui/ArrivalConditionEditorGuiTest.java','docs/maintenance/arrival-editor-ui-20261027.md'}
+          assert subprocess.check_output(['git','write-tree'],text=True).strip()==os.environ['TREE']
+          PY
+          git -c core.whitespace=cr-at-eol diff --cached --check
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Full isolated GUI, data and update/restore verification
+        working-directory: candidate
+        run: bash scripts/verify_r3.sh
+      - name: Commit tested files and non-force push dedicated source branch
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          test "$(git write-tree)" = "$TREE"
+          git diff --exit-code
+          python3 - <<'PY'
+          import xml.etree.ElementTree as E
+          from pathlib import Path
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
+          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          assert totals=={'tests':492,'failures':0,'errors':0,'skipped':1},totals
+          ui=[s for s in suites if s.get('name','').endswith('.ArrivalConditionEditorGuiTest')]
+          assert len(ui)==1 and ui[0].get('tests')=='12' and ui[0].get('skipped')=='0'
+          print('EDITOR_VERIFIED',totals)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Add explicit 1-6 arrival editor controls with guarded save and twelve real GUI regressions'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > target/r3-verification/source-commit.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: arrival-editor-worker-evidence
+          path: |
+            candidate/target/r3-verification/*.json
+            candidate/target/r3-verification/*.txt
+            candidate/target/r3-verification/*.log
+            candidate/target/surefire-reports/
+          retention-days: 14
