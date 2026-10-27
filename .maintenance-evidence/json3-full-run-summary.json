@@ -1,0 +1,456 @@
+{
+  "source_head": "78e34ddc09bccf399f7a1018524e3bee95766ad0",
+  "runs": [
+    {
+      "id": 40486902659,
+      "status": "completed",
+      "conclusion": "failure",
+      "artifacts": [
+        {
+          "id": 12725468566,
+          "name": "modern-runtime-evidence-java25",
+          "digest": "sha256:20a5a772ebebedb08c014ba97f755b95b79d808d8fab54e0c8552b8c399326a0",
+          "totals": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "failures": [],
+          "reports": {
+            "r3-verification/feature-version-qncsevnf.json": {
+              "fixture_root": "/tmp/logbook-feature-version-fixture-68my77yb",
+              "production_accessed": false,
+              "original_and_failed_outputs_retained": true,
+              "checkout": "523f50ef31d1e75475cff5b5920b45e5d2511872",
+              "result": "passed",
+              "initial_bundle": "c0feccaa78f99500c65ad049b46628b24e080f630990f7c125853ca2df36b483",
+              "updated_bundle": "47c54ce82fbf84c0678343abd49a261f9c1250fed2af5e899ef6857f2ba958aa",
+              "calculations": [
+                10,
+                15,
+                15,
+                10
+              ],
+              "launch_count": 4,
+              "refused_launch_count": 1,
+              "executable_metadata_mismatch_refused": true,
+              "incompatible_rejected_before_features": true,
+              "interrupted_stage_retained": true,
+              "failed_selector_retained": true,
+              "source_bytes_unchanged": true,
+              "historical_version_reuse_single_stage_refused": true,
+              "historical_version_reuse_whole_stage_refused": true,
+              "version_reuse_store_and_runtime_unchanged": true,
+              "reused_version_candidate_preflight_accepted": true,
+              "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-moi7vxdh.log"
+            },
+            "r3-verification/parallel-integration-u9t_wbq9.json": {
+              "fixture_root": "/tmp/logbook-parallel-integration-b97prelj",
+              "production_accessed": false,
+              "result": "passed",
+              "calculations": [
+                10,
+                15,
+                10
+              ],
+              "actual_launcher_runs": 3,
+              "tracking_checkpoints": 4,
+              "arrival_records": 1,
+              "retired_original_slot": 2,
+              "original_unchanged": true,
+              "whole_store_restored_to_new_copy": true,
+              "pending_stage_preserved": true,
+              "live_mint_tested": false,
+              "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-hal4y4k3.log"
+            },
+            "r3-verification/summary.json": {
+              "parallel_integration": {
+                "fixture_root": "/tmp/logbook-parallel-integration-b97prelj",
+                "production_accessed": false,
+                "result": "passed",
+                "calculations": [
+                  10,
+                  15,
+                  10
+                ],
+                "actual_launcher_runs": 3,
+                "tracking_checkpoints": 4,
+                "arrival_records": 1,
+                "retired_original_slot": 2,
+                "original_unchanged": true,
+                "whole_store_restored_to_new_copy": true,
+                "pending_stage_preserved": true,
+                "live_mint_tested": false,
+                "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-hal4y4k3.log"
+              },
+              "seasonal_retreat_integration_tests": 8,
+              "checkout": "523f50ef31d1e75475cff5b5920b45e5d2511872",
+              "java_tests": {
+                "tests": 765,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 1
+              },
+              "split_features": 7,
+              "split_gui_windows": 8,
+              "isolated_typed_definitions": 152,
+              "review_ledger": {
+                "format": "logbook-review-ledger-v1",
+                "counts": {
+                  "unreviewed": 82,
+                  "partially_reviewed": 65,
+                  "source_conflict": 1
+                },
+                "definitions": 148,
+                "field_comparisons": 77,
+                "orphaned_review_records": [],
+                "whole_rule_verified": 0,
+                "whole_rule_pending": 148,
+                "complete": false,
+                "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+                "freshness": "Retrieval time is not the source publication/update date."
+              },
+              "production_deployed": false
+            }
+          },
+          "log_results": {
+            "r3-verification/python-scripts.log": {
+              "matches": [
+                "Ran 397 tests in 297.367s",
+                "SPLIT_SUPPORT_GUI_SAVE_OK windows=2 synthetic-only; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/split-support-6o7_fzjq.log",
+                "FEATURE_SINGLE_UPDATE_ROLLBACK_OK versions=1.0.0->1.1.0->1.0.0 calculation=10,15,15,10 actual_menu_and_save=true incompatible_refused=true partial_failure_retained=true original_and_runtime_retained=true historical_version_reuse_refused=true",
+                "MANAGED_LAUNCH_UPDATE_ROLLBACK_OK A->B->A; main window+localhost proxy+7 features; retained runtime; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/managed-launcher-v1f3rry_.log",
+                "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true",
+                "Ran 1 test in 13.428s",
+                "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false",
+                "RUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2"
+              ],
+              "tail": "\ntest_in_root_symbolic_target_is_reported_without_following_it (test_runtime_snapshot.RuntimeSnapshotTest.test_in_root_symbolic_target_is_reported_without_following_it) ... ok\ntest_intent_tampering_or_symbolic_intent_blocks_restore (test_runtime_snapshot.RuntimeSnapshotTest.test_intent_tampering_or_symbolic_intent_blocks_restore) ... ok\ntest_interrupted_copy_retains_partial_copy_and_original (test_runtime_snapshot.RuntimeSnapshotTest.test_interrupted_copy_retains_partial_copy_and_original) ... ok\ntest_invalid_and_parent_traversal_path_values_are_not_cleared (test_runtime_snapshot.RuntimeSnapshotTest.test_invalid_and_parent_traversal_path_values_are_not_cleared) ... ok\ntest_legacy_paths_are_reported_not_followed_or_rewritten (test_runtime_snapshot.RuntimeSnapshotTest.test_legacy_paths_are_reported_not_followed_or_rewritten) ... ok\ntest_malformed_primary_retains_error_and_reports_backup_paths (test_runtime_snapshot.RuntimeSnapshotTest.test_malformed_primary_retains_error_and_reports_backup_paths) ... ok\ntest_managed_store_running_is_rejected_and_lock_bytes_unchanged (test_runtime_snapshot.RuntimeSnapshotTest.test_managed_store_running_is_rejected_and_lock_bytes_unchanged) ... ok\ntest_manifest_paths_cannot_direct_restore_outside_output (test_runtime_snapshot.RuntimeSnapshotTest.test_manifest_paths_cannot_direct_restore_outside_output) ... ok\ntest_missing_checksum_and_incomplete_snapshot_fail_closed (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_checksum_and_incomplete_snapshot_fail_closed) ... ok\ntest_missing_data_and_permission_changes_are_detected (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_data_and_permission_changes_are_detected) ... ok\ntest_missing_destination_parent_is_not_created (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_destination_parent_is_not_created) ... ok\ntest_nested_output_and_source_ancestor_are_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_nested_output_and_source_ancestor_are_rejected) ... ok\ntest_new_file_during_copy_is_not_silently_omitted (test_runtime_snapshot.RuntimeSnapshotTest.test_new_file_during_copy_is_not_silently_omitted) ... ok\ntest_parent_traversal_aliases_are_rejected_before_writes (test_runtime_snapshot.RuntimeSnapshotTest.test_parent_traversal_aliases_are_rejected_before_writes) ... ok\ntest_primary_and_backup_are_both_inventoried_for_possible_typed_fallback (test_runtime_snapshot.RuntimeSnapshotTest.test_primary_and_backup_are_both_inventoried_for_possible_typed_fallback) ... ok\ntest_primary_json_null_uses_java_defaults_without_selecting_backup (test_runtime_snapshot.RuntimeSnapshotTest.test_primary_json_null_uses_java_defaults_without_selecting_backup) ... ok\ntest_restore_never_writes_inside_original_or_backup (test_runtime_snapshot.RuntimeSnapshotTest.test_restore_never_writes_inside_original_or_backup) ... ok\ntest_restore_refuses_existing_empty_directory (test_runtime_snapshot.RuntimeSnapshotTest.test_restore_refuses_existing_empty_directory) ... ok\ntest_review_never_reads_or_stats_external_reference_targets (test_runtime_snapshot.RuntimeSnapshotTest.test_review_never_reads_or_stats_external_reference_targets) ... ok\ntest_runtime_child_honors_parent_managed_store_lock (test_runtime_snapshot.RuntimeSnapshotTest.test_runtime_child_honors_parent_managed_store_lock) ... ok\ntest_snapshot_change_during_restore_keeps_partial_clone_uncommitted (test_runtime_snapshot.RuntimeSnapshotTest.test_snapshot_change_during_restore_keeps_partial_clone_uncommitted) ... ok\ntest_source_and_copy_hardlinks_are_not_shared (test_runtime_snapshot.RuntimeSnapshotTest.test_source_and_copy_hardlinks_are_not_shared) ... ok\ntest_source_symlink_and_dangling_link_are_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_source_symlink_and_dangling_link_are_rejected) ... ok\ntest_space_reserve_is_checked_before_creation (test_runtime_snapshot.RuntimeSnapshotTest.test_space_reserve_is_checked_before_creation) ... ok\ntest_stopped_managed_store_can_be_copied_without_changing_selector_or_lock (test_runtime_snapshot.RuntimeSnapshotTest.test_stopped_managed_store_can_be_copied_without_changing_selector_or_lock) ... ok\ntest_symbolic_config_parent_does_not_read_or_stat_the_external_config (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_config_parent_does_not_read_or_stat_the_external_config) ... ok\ntest_symbolic_configuration_is_not_read_as_a_regular_config (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_configuration_is_not_read_as_a_regular_config) ... ok\ntest_symbolic_destination_parent_is_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_destination_parent_is_rejected) ... ok\ntest_symbolic_source_parent_is_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_source_parent_is_rejected) ... ok\ntest_tampered_data_blocks_restore_before_output (test_runtime_snapshot.RuntimeSnapshotTest.test_tampered_data_blocks_restore_before_output) ... ok\ntest_tampered_manifest_is_rejected_by_pinned_hash (test_runtime_snapshot.RuntimeSnapshotTest.test_tampered_manifest_is_rejected_by_pinned_hash) ... ok\ntest_unknown_plugin_and_start_script_paths_are_explicitly_unreviewed (test_runtime_snapshot.RuntimeSnapshotTest.test_unknown_plugin_and_start_script_paths_are_explicitly_unreviewed) ... ok\ntest_actual_arrival_and_acceptance_readers_survive_copy_restore_without_source_writes (test_runtime_snapshot_java.RuntimeSnapshotJavaTest.test_actual_arrival_and_acceptance_readers_survive_copy_restore_without_source_writes) ... ok\ntest_all_thirteen_observations_remain_unconfirmed_not_autoactivated (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_all_thirteen_observations_remain_unconfirmed_not_autoactivated) ... ok\ntest_changed_hash_requires_recomparison_not_year_based_acceptance (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_changed_hash_requires_recomparison_not_year_based_acceptance) ... ok\ntest_future_and_same_year_are_not_proof_of_current_lifecycle (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_future_and_same_year_are_not_proof_of_current_lifecycle) ... ok\ntest_malformed_rows_do_not_abort_later_valid_records (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_malformed_rows_do_not_abort_later_valid_records) ... ok\ntest_nonstring_path_remains_a_row_error (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_nonstring_path_remains_a_row_error) ... ok\ntest_registry_type_is_checked_before_field_access (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_registry_type_is_checked_before_field_access) ... ok\ntest_source_bytes_are_unchanged_and_invalid_scope_cannot_hide_errors (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_source_bytes_are_unchanged_and_invalid_scope_cannot_hide_errors) ... ok\ntest_candidate_file_byte_change_requires_recomparison (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_candidate_file_byte_change_requires_recomparison) ... ok\ntest_catalog_hashes_must_match_the_independent_review_record (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_catalog_hashes_must_match_the_independent_review_record) ... ok\ntest_cli_returns_failure_for_invalid_runtime_catalog (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_cli_returns_failure_for_invalid_runtime_catalog) ... ok\ntest_conservative_window_excludes_both_boundary_days (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_conservative_window_excludes_both_boundary_days) ... ok\ntest_corrupt_or_missing_catalog_is_a_reported_error (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_corrupt_or_missing_catalog_is_a_reported_error) ... ok\ntest_date_inside_a_window_only_reports_a_candidate (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_date_inside_a_window_only_reports_a_candidate) ... ok\ntest_date_window_needs_a_source_and_public_text_cannot_be_called_a_live_packet (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_date_window_needs_a_source_and_public_text_cannot_be_called_a_live_packet) ... ok\ntest_duplicate_edition_ids_do_not_hide_ambiguity (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_duplicate_edition_ids_do_not_hide_ambiguity) ... ok\ntest_every_identity_operand_and_year_must_match_the_review_record (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_every_identity_operand_and_year_must_match_the_review_record) ... ok\ntest_full_completion_claims_in_evidence_do_not_change_the_audit (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_full_completion_claims_in_evidence_do_not_change_the_audit) ... ok\ntest_missing_manual_condition_evidence_is_rejected (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_missing_manual_condition_evidence_is_rejected) ... ok\ntest_missing_or_modified_source_checks_cannot_certify_conditions (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_missing_or_modified_source_checks_cannot_certify_conditions) ... ok\ntest_original_file_change_cannot_fall_back_to_the_reviewed_candidate (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_original_file_change_cannot_fall_back_to_the_reviewed_candidate) ... ok\ntest_source_dates_urls_and_manual_review_flags_must_match (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_source_dates_urls_and_manual_review_flags_must_match) ... ok\ntest_unsafe_definition_path_is_not_read (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_unsafe_definition_path_is_not_read) ... ok\ntest_valid_catalog_exposes_evidence_without_evaluating_current_selection (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_valid_catalog_exposes_evidence_without_evaluating_current_selection) ... ok\ntest_verified_condition_must_resolve_to_the_reviewed_definition (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_verified_condition_must_resolve_to_the_reviewed_definition) ... ok\ntest_window_must_equal_the_reviewed_conservative_window (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_window_must_equal_the_reviewed_conservative_window) ... ok\ntest_capture_is_not_semantic_approval_and_uses_no_credentials (test_source_collector.SourceCollectorTest.test_capture_is_not_semantic_approval_and_uses_no_credentials) ... ok\ntest_existing_directory_and_duplicate_requests_rejected (test_source_collector.SourceCollectorTest.test_existing_directory_and_duplicate_requests_rejected) ... ok\ntest_failed_response_does_not_starve_next_source (test_source_collector.SourceCollectorTest.test_failed_response_does_not_starve_next_source) ... ok\ntest_japanese_url_is_encoded_without_changing_host (test_source_collector.SourceCollectorTest.test_japanese_url_is_encoded_without_changing_host) ... ok\ntest_redirect_oversize_and_binary_responses_rejected (test_source_collector.SourceCollectorTest.test_redirect_oversize_and_binary_responses_rejected) ... ok\ntest_unsafe_url_types_auth_hosts_queries_never_contact_network (test_source_collector.SourceCollectorTest.test_unsafe_url_types_auth_hosts_queries_never_contact_network) ... ok\n\n----------------------------------------------------------------------\nRan 397 tests in 297.367s\n\nOK (skipped=1)\nSPLIT_SUPPORT_GUI_SAVE_OK windows=2 synthetic-only; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/split-support-6o7_fzjq.log\nFEATURE_SINGLE_UPDATE_ROLLBACK_OK versions=1.0.0->1.1.0->1.0.0 calculation=10,15,15,10 actual_menu_and_save=true incompatible_refused=true partial_failure_retained=true original_and_runtime_retained=true historical_version_reuse_refused=true\nFEATURE_VERSION_EVIDENCE=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-qncsevnf.json\nMANAGED_LAUNCH_UPDATE_ROLLBACK_OK A->B->A; main window+localhost proxy+7 features; retained runtime; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/managed-launcher-v1f3rry_.log\nPARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true\nPARALLEL_INTEGRATION_EVIDENCE=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-u9t_wbq9.json\nR4_REVIEW_COVERAGE {\"definitions\": 148, \"with_partial_evidence\": 104, \"no_comparison_yet\": 44, \"whole_rule_verified\": 0, \"complete\": false, \"unreviewed\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1005.json\", \"src/main/resources/logbook/quest/1012.json\", \"src/main/resources/logbook/quest/1018.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/1045.json\", \"src/main/resources/logbook/quest/402.json\", \"src/main/resources/logbook/quest/403.json\", \"src/main/resources/logbook/quest/404.json\", \"src/main/resources/logbook/quest/410.json\", \"src/main/resources/logbook/quest/411.json\", \"src/main/resources/logbook/quest/434.json\", \"src/main/resources/logbook/quest/436.json\", \"src/main/resources/logbook/quest/437.json\", \"src/main/resources/logbook/quest/438.json\", \"src/main/resources/logbook/quest/439.json\", \"src/main/resources/logbook/quest/440.json\", \"src/main/resources/logbook/quest/442.json\", \"src/main/resources/logbook/quest/444.json\", \"src/main/resources/logbook/quest/904.json\", \"src/main/resources/logbook/quest/905.json\", \"src/main/resources/logbook/quest/912.json\", \"src/main/resources/logbook/quest/914.json\", \"src/main/resources/logbook/quest/928.json\", \"src/main/resources/logbook/quest/944.json\", \"src/main/resources/logbook/quest/945.json\", \"src/main/resources/logbook/quest/946.json\", \"src/main/resources/logbook/quest/947.json\", \"src/main/resources/logbook/quest/948.json\", \"src/main/resources/logbook/quest/973.json\", \"src/main/resources/logbook/quest/975.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR5_REVIEW_COVERAGE {\"definitions\": 148, \"with_partial_evidence\": 117, \"no_comparison_yet\": 31, \"whole_rule_verified\": 0, \"complete\": false, \"unreviewed\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1005.json\", \"src/main/resources/logbook/quest/1012.json\", \"src/main/resources/logbook/quest/1018.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/1045.json\", \"src/main/resources/logbook/quest/904.json\", \"src/main/resources/logbook/quest/905.json\", \"src/main/resources/logbook/quest/912.json\", \"src/main/resources/logbook/quest/914.json\", \"src/main/resources/logbook/quest/928.json\", \"src/main/resources/logbook/quest/944.json\", \"src/main/resources/logbook/quest/945.json\", \"src/main/resources/logbook/quest/946.json\", \"src/main/resources/logbook/quest/947.json\", \"src/main/resources/logbook/quest/948.json\", \"src/main/resources/logbook/quest/973.json\", \"src/main/resources/logbook/quest/975.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR6_REVIEW_COVERAGE {\"definitions\": 148, \"partial\": 133, \"unreviewed\": 15, \"whole_rule_verified\": 0, \"complete\": false, \"remaining\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR7_REVIEW_COVERAGE {\"definitions\": 148, \"partially_compared\": 148, \"never_compared\": 0, \"whole_rule_verified\": 0, \"complete\": false}\ntest_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 13.428s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false\nRUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2"
+            },
+            "r3-verification/python-tools.log": {
+              "matches": [
+                "Ran 25 tests in 0.096s"
+              ],
+              "tail": "test_arrival_declaration_for_true_false_and_null (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_arrival_declaration_for_true_false_and_null) ... ok\ntest_combined_capabilities_are_all_declared (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_combined_capabilities_are_all_declared) ... ok\ntest_event_conditions_share_capability_but_unrelated_metadata_does_not (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_event_conditions_share_capability_but_unrelated_metadata_does_not) ... ok\ntest_comments_removed_without_touching_strings (test_build_data_pack.DataPackTest.test_comments_removed_without_touching_strings) ... ok\ntest_invalid_json_is_rejected (test_build_data_pack.DataPackTest.test_invalid_json_is_rejected) ... ok\ntest_pack_hashes_match_real_contents (test_build_data_pack.DataPackTest.test_pack_hashes_match_real_contents) ... ok\ntest_deck_guard_requires_new_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_deck_guard_requires_new_format) ... ok\ntest_false_or_null_extended_field_is_not_disguised_as_old_schema (test_data_pack_capabilities.DataPackCapabilitiesTest.test_false_or_null_extended_field_is_not_disguised_as_old_schema) ... ok\ntest_legacy_definitions_keep_legacy_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_legacy_definitions_keep_legacy_format) ... ok\ntest_nonsemantic_similarly_named_keys_do_not_change_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_nonsemantic_similarly_named_keys_do_not_change_format) ... ok\ntest_retreat_guard_and_event_quest_are_versioned (test_data_pack_capabilities.DataPackCapabilitiesTest.test_retreat_guard_and_event_quest_are_versioned) ... ok\ntest_duplicate_and_nonfinite_values_cannot_hide_capability_fields (test_data_pack_capabilities.StrictPackJsonTest.test_duplicate_and_nonfinite_values_cannot_hide_capability_fields) ... ok\ntest_dry_run_never_changes_live_or_stage (test_mint_staged_update.StagedUpdateTest.test_dry_run_never_changes_live_or_stage) ... ok\ntest_explicit_verified_restore_keeps_both_versions (test_mint_staged_update.StagedUpdateTest.test_explicit_verified_restore_keeps_both_versions) ... ok\ntest_invalid_stage_does_not_touch_live (test_mint_staged_update.StagedUpdateTest.test_invalid_stage_does_not_touch_live) ... ok\ntest_no_update_is_noop (test_mint_staged_update.StagedUpdateTest.test_no_update_is_noop) ... ok\ntest_restore_refuses_outside_or_corrupted_backup (test_mint_staged_update.StagedUpdateTest.test_restore_refuses_outside_or_corrupted_backup) ... ok\ntest_staging_same_version_only_discards_redundant_stage (test_mint_staged_update.StagedUpdateTest.test_staging_same_version_only_discards_redundant_stage) ... ok\ntest_symlinked_candidate_is_rejected (test_mint_staged_update.StagedUpdateTest.test_symlinked_candidate_is_rejected) ... ok\ntest_symlinked_update_folder_is_rejected (test_mint_staged_update.StagedUpdateTest.test_symlinked_update_folder_is_rejected) ... ok\ntest_valid_stage_replaces_jar_and_keeps_backup (test_mint_staged_update.StagedUpdateTest.test_valid_stage_replaces_jar_and_keeps_backup) ... ok\ntest_arrival_presence_is_recomputed_in_all_three_guards (test_pack_workflow_guards.PackWorkflowGuardTest.test_arrival_presence_is_recomputed_in_all_three_guards) ... ok\ntest_extra_undeclared_by_content_capability_is_rejected (test_pack_workflow_guards.PackWorkflowGuardTest.test_extra_undeclared_by_content_capability_is_rejected) ... ok\ntest_missing_arrival_capability_is_rejected (test_pack_workflow_guards.PackWorkflowGuardTest.test_missing_arrival_capability_is_rejected) ... ok\ntest_ordinary_legacy_pack_still_passes (test_pack_workflow_guards.PackWorkflowGuardTest.test_ordinary_legacy_pack_still_passes) ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.096s\n\nOK"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 40486902690,
+      "status": "completed",
+      "conclusion": "success",
+      "artifacts": [
+        {
+          "id": 12725279247,
+          "name": "r3-evidence-java25",
+          "digest": "sha256:7970fd839d2f0f9cea43c3b2798a8a5288ee628fbe75ae6e8f613a389b3b31fc",
+          "totals": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "failures": [],
+          "reports": {
+            "r3-verification/feature-version-uch4_9go.json": {
+              "fixture_root": "/tmp/logbook-feature-version-fixture-3jzynq7i",
+              "production_accessed": false,
+              "original_and_failed_outputs_retained": true,
+              "checkout": "523f50ef31d1e75475cff5b5920b45e5d2511872",
+              "result": "passed",
+              "initial_bundle": "ad5c1bcac3366b86d1c5f3b72f6c6aa8a7eb7023b04beda01a8a5ec67f9369c8",
+              "updated_bundle": "16d5607bde9fec68250eb57f4f80902ad1548e846f224fa8b9fcf46c94fedfe7",
+              "calculations": [
+                10,
+                15,
+                15,
+                10
+              ],
+              "launch_count": 4,
+              "refused_launch_count": 1,
+              "executable_metadata_mismatch_refused": true,
+              "incompatible_rejected_before_features": true,
+              "interrupted_stage_retained": true,
+              "failed_selector_retained": true,
+              "source_bytes_unchanged": true,
+              "historical_version_reuse_single_stage_refused": true,
+              "historical_version_reuse_whole_stage_refused": true,
+              "version_reuse_store_and_runtime_unchanged": true,
+              "reused_version_candidate_preflight_accepted": true,
+              "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-m21c20e4.log"
+            },
+            "r3-verification/parallel-integration-fy0646ll.json": {
+              "fixture_root": "/tmp/logbook-parallel-integration-m8k48o63",
+              "production_accessed": false,
+              "result": "passed",
+              "calculations": [
+                10,
+                15,
+                10
+              ],
+              "actual_launcher_runs": 3,
+              "tracking_checkpoints": 4,
+              "arrival_records": 1,
+              "retired_original_slot": 2,
+              "original_unchanged": true,
+              "whole_store_restored_to_new_copy": true,
+              "pending_stage_preserved": true,
+              "live_mint_tested": false,
+              "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-6j_y_kyi.log"
+            },
+            "r3-verification/summary.json": {
+              "parallel_integration": {
+                "fixture_root": "/tmp/logbook-parallel-integration-m8k48o63",
+                "production_accessed": false,
+                "result": "passed",
+                "calculations": [
+                  10,
+                  15,
+                  10
+                ],
+                "actual_launcher_runs": 3,
+                "tracking_checkpoints": 4,
+                "arrival_records": 1,
+                "retired_original_slot": 2,
+                "original_unchanged": true,
+                "whole_store_restored_to_new_copy": true,
+                "pending_stage_preserved": true,
+                "live_mint_tested": false,
+                "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-6j_y_kyi.log"
+              },
+              "seasonal_retreat_integration_tests": 8,
+              "checkout": "523f50ef31d1e75475cff5b5920b45e5d2511872",
+              "java_tests": {
+                "tests": 765,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 1
+              },
+              "split_features": 7,
+              "split_gui_windows": 8,
+              "isolated_typed_definitions": 152,
+              "review_ledger": {
+                "format": "logbook-review-ledger-v1",
+                "counts": {
+                  "unreviewed": 82,
+                  "partially_reviewed": 65,
+                  "source_conflict": 1
+                },
+                "definitions": 148,
+                "field_comparisons": 77,
+                "orphaned_review_records": [],
+                "whole_rule_verified": 0,
+                "whole_rule_pending": 148,
+                "complete": false,
+                "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+                "freshness": "Retrieval time is not the source publication/update date."
+              },
+              "production_deployed": false
+            }
+          },
+          "log_results": {
+            "r3-verification/python-scripts.log": {
+              "matches": [
+                "Ran 397 tests in 371.765s",
+                "SPLIT_SUPPORT_GUI_SAVE_OK windows=2 synthetic-only; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/split-support-ccizxhl5.log",
+                "FEATURE_SINGLE_UPDATE_ROLLBACK_OK versions=1.0.0->1.1.0->1.0.0 calculation=10,15,15,10 actual_menu_and_save=true incompatible_refused=true partial_failure_retained=true original_and_runtime_retained=true historical_version_reuse_refused=true",
+                "MANAGED_LAUNCH_UPDATE_ROLLBACK_OK A->B->A; main window+localhost proxy+7 features; retained runtime; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/managed-launcher-p73yvd09.log",
+                "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true",
+                "Ran 1 test in 15.914s",
+                "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false",
+                "RUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2"
+              ],
+              "tail": "\ntest_in_root_symbolic_target_is_reported_without_following_it (test_runtime_snapshot.RuntimeSnapshotTest.test_in_root_symbolic_target_is_reported_without_following_it) ... ok\ntest_intent_tampering_or_symbolic_intent_blocks_restore (test_runtime_snapshot.RuntimeSnapshotTest.test_intent_tampering_or_symbolic_intent_blocks_restore) ... ok\ntest_interrupted_copy_retains_partial_copy_and_original (test_runtime_snapshot.RuntimeSnapshotTest.test_interrupted_copy_retains_partial_copy_and_original) ... ok\ntest_invalid_and_parent_traversal_path_values_are_not_cleared (test_runtime_snapshot.RuntimeSnapshotTest.test_invalid_and_parent_traversal_path_values_are_not_cleared) ... ok\ntest_legacy_paths_are_reported_not_followed_or_rewritten (test_runtime_snapshot.RuntimeSnapshotTest.test_legacy_paths_are_reported_not_followed_or_rewritten) ... ok\ntest_malformed_primary_retains_error_and_reports_backup_paths (test_runtime_snapshot.RuntimeSnapshotTest.test_malformed_primary_retains_error_and_reports_backup_paths) ... ok\ntest_managed_store_running_is_rejected_and_lock_bytes_unchanged (test_runtime_snapshot.RuntimeSnapshotTest.test_managed_store_running_is_rejected_and_lock_bytes_unchanged) ... ok\ntest_manifest_paths_cannot_direct_restore_outside_output (test_runtime_snapshot.RuntimeSnapshotTest.test_manifest_paths_cannot_direct_restore_outside_output) ... ok\ntest_missing_checksum_and_incomplete_snapshot_fail_closed (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_checksum_and_incomplete_snapshot_fail_closed) ... ok\ntest_missing_data_and_permission_changes_are_detected (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_data_and_permission_changes_are_detected) ... ok\ntest_missing_destination_parent_is_not_created (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_destination_parent_is_not_created) ... ok\ntest_nested_output_and_source_ancestor_are_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_nested_output_and_source_ancestor_are_rejected) ... ok\ntest_new_file_during_copy_is_not_silently_omitted (test_runtime_snapshot.RuntimeSnapshotTest.test_new_file_during_copy_is_not_silently_omitted) ... ok\ntest_parent_traversal_aliases_are_rejected_before_writes (test_runtime_snapshot.RuntimeSnapshotTest.test_parent_traversal_aliases_are_rejected_before_writes) ... ok\ntest_primary_and_backup_are_both_inventoried_for_possible_typed_fallback (test_runtime_snapshot.RuntimeSnapshotTest.test_primary_and_backup_are_both_inventoried_for_possible_typed_fallback) ... ok\ntest_primary_json_null_uses_java_defaults_without_selecting_backup (test_runtime_snapshot.RuntimeSnapshotTest.test_primary_json_null_uses_java_defaults_without_selecting_backup) ... ok\ntest_restore_never_writes_inside_original_or_backup (test_runtime_snapshot.RuntimeSnapshotTest.test_restore_never_writes_inside_original_or_backup) ... ok\ntest_restore_refuses_existing_empty_directory (test_runtime_snapshot.RuntimeSnapshotTest.test_restore_refuses_existing_empty_directory) ... ok\ntest_review_never_reads_or_stats_external_reference_targets (test_runtime_snapshot.RuntimeSnapshotTest.test_review_never_reads_or_stats_external_reference_targets) ... ok\ntest_runtime_child_honors_parent_managed_store_lock (test_runtime_snapshot.RuntimeSnapshotTest.test_runtime_child_honors_parent_managed_store_lock) ... ok\ntest_snapshot_change_during_restore_keeps_partial_clone_uncommitted (test_runtime_snapshot.RuntimeSnapshotTest.test_snapshot_change_during_restore_keeps_partial_clone_uncommitted) ... ok\ntest_source_and_copy_hardlinks_are_not_shared (test_runtime_snapshot.RuntimeSnapshotTest.test_source_and_copy_hardlinks_are_not_shared) ... ok\ntest_source_symlink_and_dangling_link_are_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_source_symlink_and_dangling_link_are_rejected) ... ok\ntest_space_reserve_is_checked_before_creation (test_runtime_snapshot.RuntimeSnapshotTest.test_space_reserve_is_checked_before_creation) ... ok\ntest_stopped_managed_store_can_be_copied_without_changing_selector_or_lock (test_runtime_snapshot.RuntimeSnapshotTest.test_stopped_managed_store_can_be_copied_without_changing_selector_or_lock) ... ok\ntest_symbolic_config_parent_does_not_read_or_stat_the_external_config (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_config_parent_does_not_read_or_stat_the_external_config) ... ok\ntest_symbolic_configuration_is_not_read_as_a_regular_config (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_configuration_is_not_read_as_a_regular_config) ... ok\ntest_symbolic_destination_parent_is_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_destination_parent_is_rejected) ... ok\ntest_symbolic_source_parent_is_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_source_parent_is_rejected) ... ok\ntest_tampered_data_blocks_restore_before_output (test_runtime_snapshot.RuntimeSnapshotTest.test_tampered_data_blocks_restore_before_output) ... ok\ntest_tampered_manifest_is_rejected_by_pinned_hash (test_runtime_snapshot.RuntimeSnapshotTest.test_tampered_manifest_is_rejected_by_pinned_hash) ... ok\ntest_unknown_plugin_and_start_script_paths_are_explicitly_unreviewed (test_runtime_snapshot.RuntimeSnapshotTest.test_unknown_plugin_and_start_script_paths_are_explicitly_unreviewed) ... ok\ntest_actual_arrival_and_acceptance_readers_survive_copy_restore_without_source_writes (test_runtime_snapshot_java.RuntimeSnapshotJavaTest.test_actual_arrival_and_acceptance_readers_survive_copy_restore_without_source_writes) ... ok\ntest_all_thirteen_observations_remain_unconfirmed_not_autoactivated (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_all_thirteen_observations_remain_unconfirmed_not_autoactivated) ... ok\ntest_changed_hash_requires_recomparison_not_year_based_acceptance (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_changed_hash_requires_recomparison_not_year_based_acceptance) ... ok\ntest_future_and_same_year_are_not_proof_of_current_lifecycle (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_future_and_same_year_are_not_proof_of_current_lifecycle) ... ok\ntest_malformed_rows_do_not_abort_later_valid_records (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_malformed_rows_do_not_abort_later_valid_records) ... ok\ntest_nonstring_path_remains_a_row_error (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_nonstring_path_remains_a_row_error) ... ok\ntest_registry_type_is_checked_before_field_access (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_registry_type_is_checked_before_field_access) ... ok\ntest_source_bytes_are_unchanged_and_invalid_scope_cannot_hide_errors (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_source_bytes_are_unchanged_and_invalid_scope_cannot_hide_errors) ... ok\ntest_candidate_file_byte_change_requires_recomparison (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_candidate_file_byte_change_requires_recomparison) ... ok\ntest_catalog_hashes_must_match_the_independent_review_record (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_catalog_hashes_must_match_the_independent_review_record) ... ok\ntest_cli_returns_failure_for_invalid_runtime_catalog (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_cli_returns_failure_for_invalid_runtime_catalog) ... ok\ntest_conservative_window_excludes_both_boundary_days (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_conservative_window_excludes_both_boundary_days) ... ok\ntest_corrupt_or_missing_catalog_is_a_reported_error (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_corrupt_or_missing_catalog_is_a_reported_error) ... ok\ntest_date_inside_a_window_only_reports_a_candidate (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_date_inside_a_window_only_reports_a_candidate) ... ok\ntest_date_window_needs_a_source_and_public_text_cannot_be_called_a_live_packet (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_date_window_needs_a_source_and_public_text_cannot_be_called_a_live_packet) ... ok\ntest_duplicate_edition_ids_do_not_hide_ambiguity (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_duplicate_edition_ids_do_not_hide_ambiguity) ... ok\ntest_every_identity_operand_and_year_must_match_the_review_record (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_every_identity_operand_and_year_must_match_the_review_record) ... ok\ntest_full_completion_claims_in_evidence_do_not_change_the_audit (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_full_completion_claims_in_evidence_do_not_change_the_audit) ... ok\ntest_missing_manual_condition_evidence_is_rejected (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_missing_manual_condition_evidence_is_rejected) ... ok\ntest_missing_or_modified_source_checks_cannot_certify_conditions (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_missing_or_modified_source_checks_cannot_certify_conditions) ... ok\ntest_original_file_change_cannot_fall_back_to_the_reviewed_candidate (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_original_file_change_cannot_fall_back_to_the_reviewed_candidate) ... ok\ntest_source_dates_urls_and_manual_review_flags_must_match (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_source_dates_urls_and_manual_review_flags_must_match) ... ok\ntest_unsafe_definition_path_is_not_read (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_unsafe_definition_path_is_not_read) ... ok\ntest_valid_catalog_exposes_evidence_without_evaluating_current_selection (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_valid_catalog_exposes_evidence_without_evaluating_current_selection) ... ok\ntest_verified_condition_must_resolve_to_the_reviewed_definition (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_verified_condition_must_resolve_to_the_reviewed_definition) ... ok\ntest_window_must_equal_the_reviewed_conservative_window (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_window_must_equal_the_reviewed_conservative_window) ... ok\ntest_capture_is_not_semantic_approval_and_uses_no_credentials (test_source_collector.SourceCollectorTest.test_capture_is_not_semantic_approval_and_uses_no_credentials) ... ok\ntest_existing_directory_and_duplicate_requests_rejected (test_source_collector.SourceCollectorTest.test_existing_directory_and_duplicate_requests_rejected) ... ok\ntest_failed_response_does_not_starve_next_source (test_source_collector.SourceCollectorTest.test_failed_response_does_not_starve_next_source) ... ok\ntest_japanese_url_is_encoded_without_changing_host (test_source_collector.SourceCollectorTest.test_japanese_url_is_encoded_without_changing_host) ... ok\ntest_redirect_oversize_and_binary_responses_rejected (test_source_collector.SourceCollectorTest.test_redirect_oversize_and_binary_responses_rejected) ... ok\ntest_unsafe_url_types_auth_hosts_queries_never_contact_network (test_source_collector.SourceCollectorTest.test_unsafe_url_types_auth_hosts_queries_never_contact_network) ... ok\n\n----------------------------------------------------------------------\nRan 397 tests in 371.765s\n\nOK (skipped=1)\nSPLIT_SUPPORT_GUI_SAVE_OK windows=2 synthetic-only; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/split-support-ccizxhl5.log\nFEATURE_SINGLE_UPDATE_ROLLBACK_OK versions=1.0.0->1.1.0->1.0.0 calculation=10,15,15,10 actual_menu_and_save=true incompatible_refused=true partial_failure_retained=true original_and_runtime_retained=true historical_version_reuse_refused=true\nFEATURE_VERSION_EVIDENCE=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-uch4_9go.json\nMANAGED_LAUNCH_UPDATE_ROLLBACK_OK A->B->A; main window+localhost proxy+7 features; retained runtime; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/managed-launcher-p73yvd09.log\nPARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true\nPARALLEL_INTEGRATION_EVIDENCE=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-fy0646ll.json\nR4_REVIEW_COVERAGE {\"definitions\": 148, \"with_partial_evidence\": 104, \"no_comparison_yet\": 44, \"whole_rule_verified\": 0, \"complete\": false, \"unreviewed\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1005.json\", \"src/main/resources/logbook/quest/1012.json\", \"src/main/resources/logbook/quest/1018.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/1045.json\", \"src/main/resources/logbook/quest/402.json\", \"src/main/resources/logbook/quest/403.json\", \"src/main/resources/logbook/quest/404.json\", \"src/main/resources/logbook/quest/410.json\", \"src/main/resources/logbook/quest/411.json\", \"src/main/resources/logbook/quest/434.json\", \"src/main/resources/logbook/quest/436.json\", \"src/main/resources/logbook/quest/437.json\", \"src/main/resources/logbook/quest/438.json\", \"src/main/resources/logbook/quest/439.json\", \"src/main/resources/logbook/quest/440.json\", \"src/main/resources/logbook/quest/442.json\", \"src/main/resources/logbook/quest/444.json\", \"src/main/resources/logbook/quest/904.json\", \"src/main/resources/logbook/quest/905.json\", \"src/main/resources/logbook/quest/912.json\", \"src/main/resources/logbook/quest/914.json\", \"src/main/resources/logbook/quest/928.json\", \"src/main/resources/logbook/quest/944.json\", \"src/main/resources/logbook/quest/945.json\", \"src/main/resources/logbook/quest/946.json\", \"src/main/resources/logbook/quest/947.json\", \"src/main/resources/logbook/quest/948.json\", \"src/main/resources/logbook/quest/973.json\", \"src/main/resources/logbook/quest/975.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR5_REVIEW_COVERAGE {\"definitions\": 148, \"with_partial_evidence\": 117, \"no_comparison_yet\": 31, \"whole_rule_verified\": 0, \"complete\": false, \"unreviewed\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1005.json\", \"src/main/resources/logbook/quest/1012.json\", \"src/main/resources/logbook/quest/1018.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/1045.json\", \"src/main/resources/logbook/quest/904.json\", \"src/main/resources/logbook/quest/905.json\", \"src/main/resources/logbook/quest/912.json\", \"src/main/resources/logbook/quest/914.json\", \"src/main/resources/logbook/quest/928.json\", \"src/main/resources/logbook/quest/944.json\", \"src/main/resources/logbook/quest/945.json\", \"src/main/resources/logbook/quest/946.json\", \"src/main/resources/logbook/quest/947.json\", \"src/main/resources/logbook/quest/948.json\", \"src/main/resources/logbook/quest/973.json\", \"src/main/resources/logbook/quest/975.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR6_REVIEW_COVERAGE {\"definitions\": 148, \"partial\": 133, \"unreviewed\": 15, \"whole_rule_verified\": 0, \"complete\": false, \"remaining\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR7_REVIEW_COVERAGE {\"definitions\": 148, \"partially_compared\": 148, \"never_compared\": 0, \"whole_rule_verified\": 0, \"complete\": false}\ntest_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 15.914s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false\nRUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2"
+            },
+            "r3-verification/python-tools.log": {
+              "matches": [
+                "Ran 25 tests in 0.094s"
+              ],
+              "tail": "test_arrival_declaration_for_true_false_and_null (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_arrival_declaration_for_true_false_and_null) ... ok\ntest_combined_capabilities_are_all_declared (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_combined_capabilities_are_all_declared) ... ok\ntest_event_conditions_share_capability_but_unrelated_metadata_does_not (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_event_conditions_share_capability_but_unrelated_metadata_does_not) ... ok\ntest_comments_removed_without_touching_strings (test_build_data_pack.DataPackTest.test_comments_removed_without_touching_strings) ... ok\ntest_invalid_json_is_rejected (test_build_data_pack.DataPackTest.test_invalid_json_is_rejected) ... ok\ntest_pack_hashes_match_real_contents (test_build_data_pack.DataPackTest.test_pack_hashes_match_real_contents) ... ok\ntest_deck_guard_requires_new_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_deck_guard_requires_new_format) ... ok\ntest_false_or_null_extended_field_is_not_disguised_as_old_schema (test_data_pack_capabilities.DataPackCapabilitiesTest.test_false_or_null_extended_field_is_not_disguised_as_old_schema) ... ok\ntest_legacy_definitions_keep_legacy_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_legacy_definitions_keep_legacy_format) ... ok\ntest_nonsemantic_similarly_named_keys_do_not_change_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_nonsemantic_similarly_named_keys_do_not_change_format) ... ok\ntest_retreat_guard_and_event_quest_are_versioned (test_data_pack_capabilities.DataPackCapabilitiesTest.test_retreat_guard_and_event_quest_are_versioned) ... ok\ntest_duplicate_and_nonfinite_values_cannot_hide_capability_fields (test_data_pack_capabilities.StrictPackJsonTest.test_duplicate_and_nonfinite_values_cannot_hide_capability_fields) ... ok\ntest_dry_run_never_changes_live_or_stage (test_mint_staged_update.StagedUpdateTest.test_dry_run_never_changes_live_or_stage) ... ok\ntest_explicit_verified_restore_keeps_both_versions (test_mint_staged_update.StagedUpdateTest.test_explicit_verified_restore_keeps_both_versions) ... ok\ntest_invalid_stage_does_not_touch_live (test_mint_staged_update.StagedUpdateTest.test_invalid_stage_does_not_touch_live) ... ok\ntest_no_update_is_noop (test_mint_staged_update.StagedUpdateTest.test_no_update_is_noop) ... ok\ntest_restore_refuses_outside_or_corrupted_backup (test_mint_staged_update.StagedUpdateTest.test_restore_refuses_outside_or_corrupted_backup) ... ok\ntest_staging_same_version_only_discards_redundant_stage (test_mint_staged_update.StagedUpdateTest.test_staging_same_version_only_discards_redundant_stage) ... ok\ntest_symlinked_candidate_is_rejected (test_mint_staged_update.StagedUpdateTest.test_symlinked_candidate_is_rejected) ... ok\ntest_symlinked_update_folder_is_rejected (test_mint_staged_update.StagedUpdateTest.test_symlinked_update_folder_is_rejected) ... ok\ntest_valid_stage_replaces_jar_and_keeps_backup (test_mint_staged_update.StagedUpdateTest.test_valid_stage_replaces_jar_and_keeps_backup) ... ok\ntest_arrival_presence_is_recomputed_in_all_three_guards (test_pack_workflow_guards.PackWorkflowGuardTest.test_arrival_presence_is_recomputed_in_all_three_guards) ... ok\ntest_extra_undeclared_by_content_capability_is_rejected (test_pack_workflow_guards.PackWorkflowGuardTest.test_extra_undeclared_by_content_capability_is_rejected) ... ok\ntest_missing_arrival_capability_is_rejected (test_pack_workflow_guards.PackWorkflowGuardTest.test_missing_arrival_capability_is_rejected) ... ok\ntest_ordinary_legacy_pack_still_passes (test_pack_workflow_guards.PackWorkflowGuardTest.test_ordinary_legacy_pack_still_passes) ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.094s\n\nOK"
+            }
+          }
+        },
+        {
+          "id": 12725154772,
+          "name": "r3-evidence-java21",
+          "digest": "sha256:e524a48fd7e14d23effeb3b5e9da5fe3f099c89ef027431c12c31c442a23589d",
+          "totals": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "failures": [],
+          "reports": {
+            "r3-verification/feature-version-8lvzrt0c.json": {
+              "fixture_root": "/tmp/logbook-feature-version-fixture-d61ztd6t",
+              "production_accessed": false,
+              "original_and_failed_outputs_retained": true,
+              "checkout": "523f50ef31d1e75475cff5b5920b45e5d2511872",
+              "result": "passed",
+              "initial_bundle": "56bdb346c535c7673cae5ef2e2c0a76663b2fd73e94295a50917459384582ac6",
+              "updated_bundle": "bd36ca9d69ff0a7dc625a63354b6b4b00724422953a74c02e1378dd8fce989d5",
+              "calculations": [
+                10,
+                15,
+                15,
+                10
+              ],
+              "launch_count": 4,
+              "refused_launch_count": 1,
+              "executable_metadata_mismatch_refused": true,
+              "incompatible_rejected_before_features": true,
+              "interrupted_stage_retained": true,
+              "failed_selector_retained": true,
+              "source_bytes_unchanged": true,
+              "historical_version_reuse_single_stage_refused": true,
+              "historical_version_reuse_whole_stage_refused": true,
+              "version_reuse_store_and_runtime_unchanged": true,
+              "reused_version_candidate_preflight_accepted": true,
+              "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-zbl2pm0q.log"
+            },
+            "r3-verification/parallel-integration-37pwgj8u.json": {
+              "fixture_root": "/tmp/logbook-parallel-integration-4ylspvi7",
+              "production_accessed": false,
+              "result": "passed",
+              "calculations": [
+                10,
+                15,
+                10
+              ],
+              "actual_launcher_runs": 3,
+              "tracking_checkpoints": 4,
+              "arrival_records": 1,
+              "retired_original_slot": 2,
+              "original_unchanged": true,
+              "whole_store_restored_to_new_copy": true,
+              "pending_stage_preserved": true,
+              "live_mint_tested": false,
+              "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-eqpelec9.log"
+            },
+            "r3-verification/summary.json": {
+              "parallel_integration": {
+                "fixture_root": "/tmp/logbook-parallel-integration-4ylspvi7",
+                "production_accessed": false,
+                "result": "passed",
+                "calculations": [
+                  10,
+                  15,
+                  10
+                ],
+                "actual_launcher_runs": 3,
+                "tracking_checkpoints": 4,
+                "arrival_records": 1,
+                "retired_original_slot": 2,
+                "original_unchanged": true,
+                "whole_store_restored_to_new_copy": true,
+                "pending_stage_preserved": true,
+                "live_mint_tested": false,
+                "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-eqpelec9.log"
+              },
+              "seasonal_retreat_integration_tests": 8,
+              "checkout": "523f50ef31d1e75475cff5b5920b45e5d2511872",
+              "java_tests": {
+                "tests": 765,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 1
+              },
+              "split_features": 7,
+              "split_gui_windows": 8,
+              "isolated_typed_definitions": 152,
+              "review_ledger": {
+                "format": "logbook-review-ledger-v1",
+                "counts": {
+                  "unreviewed": 82,
+                  "partially_reviewed": 65,
+                  "source_conflict": 1
+                },
+                "definitions": 148,
+                "field_comparisons": 77,
+                "orphaned_review_records": [],
+                "whole_rule_verified": 0,
+                "whole_rule_pending": 148,
+                "complete": false,
+                "scope": "Only listed literal fields; logical alternatives, hull/equipment substitutions, aggregation, success type, prerequisites and live behaviour remain separate reviews.",
+                "freshness": "Retrieval time is not the source publication/update date."
+              },
+              "production_deployed": false
+            }
+          },
+          "log_results": {
+            "r3-verification/python-scripts.log": {
+              "matches": [
+                "Ran 397 tests in 352.136s",
+                "SPLIT_SUPPORT_GUI_SAVE_OK windows=2 synthetic-only; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/split-support-iuo0xs4k.log",
+                "FEATURE_SINGLE_UPDATE_ROLLBACK_OK versions=1.0.0->1.1.0->1.0.0 calculation=10,15,15,10 actual_menu_and_save=true incompatible_refused=true partial_failure_retained=true original_and_runtime_retained=true historical_version_reuse_refused=true",
+                "MANAGED_LAUNCH_UPDATE_ROLLBACK_OK A->B->A; main window+localhost proxy+7 features; retained runtime; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/managed-launcher-es7rj5uf.log",
+                "PARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true",
+                "Ran 1 test in 16.374s",
+                "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+                "RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false",
+                "RUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2"
+              ],
+              "tail": "\ntest_in_root_symbolic_target_is_reported_without_following_it (test_runtime_snapshot.RuntimeSnapshotTest.test_in_root_symbolic_target_is_reported_without_following_it) ... ok\ntest_intent_tampering_or_symbolic_intent_blocks_restore (test_runtime_snapshot.RuntimeSnapshotTest.test_intent_tampering_or_symbolic_intent_blocks_restore) ... ok\ntest_interrupted_copy_retains_partial_copy_and_original (test_runtime_snapshot.RuntimeSnapshotTest.test_interrupted_copy_retains_partial_copy_and_original) ... ok\ntest_invalid_and_parent_traversal_path_values_are_not_cleared (test_runtime_snapshot.RuntimeSnapshotTest.test_invalid_and_parent_traversal_path_values_are_not_cleared) ... ok\ntest_legacy_paths_are_reported_not_followed_or_rewritten (test_runtime_snapshot.RuntimeSnapshotTest.test_legacy_paths_are_reported_not_followed_or_rewritten) ... ok\ntest_malformed_primary_retains_error_and_reports_backup_paths (test_runtime_snapshot.RuntimeSnapshotTest.test_malformed_primary_retains_error_and_reports_backup_paths) ... ok\ntest_managed_store_running_is_rejected_and_lock_bytes_unchanged (test_runtime_snapshot.RuntimeSnapshotTest.test_managed_store_running_is_rejected_and_lock_bytes_unchanged) ... ok\ntest_manifest_paths_cannot_direct_restore_outside_output (test_runtime_snapshot.RuntimeSnapshotTest.test_manifest_paths_cannot_direct_restore_outside_output) ... ok\ntest_missing_checksum_and_incomplete_snapshot_fail_closed (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_checksum_and_incomplete_snapshot_fail_closed) ... ok\ntest_missing_data_and_permission_changes_are_detected (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_data_and_permission_changes_are_detected) ... ok\ntest_missing_destination_parent_is_not_created (test_runtime_snapshot.RuntimeSnapshotTest.test_missing_destination_parent_is_not_created) ... ok\ntest_nested_output_and_source_ancestor_are_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_nested_output_and_source_ancestor_are_rejected) ... ok\ntest_new_file_during_copy_is_not_silently_omitted (test_runtime_snapshot.RuntimeSnapshotTest.test_new_file_during_copy_is_not_silently_omitted) ... ok\ntest_parent_traversal_aliases_are_rejected_before_writes (test_runtime_snapshot.RuntimeSnapshotTest.test_parent_traversal_aliases_are_rejected_before_writes) ... ok\ntest_primary_and_backup_are_both_inventoried_for_possible_typed_fallback (test_runtime_snapshot.RuntimeSnapshotTest.test_primary_and_backup_are_both_inventoried_for_possible_typed_fallback) ... ok\ntest_primary_json_null_uses_java_defaults_without_selecting_backup (test_runtime_snapshot.RuntimeSnapshotTest.test_primary_json_null_uses_java_defaults_without_selecting_backup) ... ok\ntest_restore_never_writes_inside_original_or_backup (test_runtime_snapshot.RuntimeSnapshotTest.test_restore_never_writes_inside_original_or_backup) ... ok\ntest_restore_refuses_existing_empty_directory (test_runtime_snapshot.RuntimeSnapshotTest.test_restore_refuses_existing_empty_directory) ... ok\ntest_review_never_reads_or_stats_external_reference_targets (test_runtime_snapshot.RuntimeSnapshotTest.test_review_never_reads_or_stats_external_reference_targets) ... ok\ntest_runtime_child_honors_parent_managed_store_lock (test_runtime_snapshot.RuntimeSnapshotTest.test_runtime_child_honors_parent_managed_store_lock) ... ok\ntest_snapshot_change_during_restore_keeps_partial_clone_uncommitted (test_runtime_snapshot.RuntimeSnapshotTest.test_snapshot_change_during_restore_keeps_partial_clone_uncommitted) ... ok\ntest_source_and_copy_hardlinks_are_not_shared (test_runtime_snapshot.RuntimeSnapshotTest.test_source_and_copy_hardlinks_are_not_shared) ... ok\ntest_source_symlink_and_dangling_link_are_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_source_symlink_and_dangling_link_are_rejected) ... ok\ntest_space_reserve_is_checked_before_creation (test_runtime_snapshot.RuntimeSnapshotTest.test_space_reserve_is_checked_before_creation) ... ok\ntest_stopped_managed_store_can_be_copied_without_changing_selector_or_lock (test_runtime_snapshot.RuntimeSnapshotTest.test_stopped_managed_store_can_be_copied_without_changing_selector_or_lock) ... ok\ntest_symbolic_config_parent_does_not_read_or_stat_the_external_config (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_config_parent_does_not_read_or_stat_the_external_config) ... ok\ntest_symbolic_configuration_is_not_read_as_a_regular_config (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_configuration_is_not_read_as_a_regular_config) ... ok\ntest_symbolic_destination_parent_is_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_destination_parent_is_rejected) ... ok\ntest_symbolic_source_parent_is_rejected (test_runtime_snapshot.RuntimeSnapshotTest.test_symbolic_source_parent_is_rejected) ... ok\ntest_tampered_data_blocks_restore_before_output (test_runtime_snapshot.RuntimeSnapshotTest.test_tampered_data_blocks_restore_before_output) ... ok\ntest_tampered_manifest_is_rejected_by_pinned_hash (test_runtime_snapshot.RuntimeSnapshotTest.test_tampered_manifest_is_rejected_by_pinned_hash) ... ok\ntest_unknown_plugin_and_start_script_paths_are_explicitly_unreviewed (test_runtime_snapshot.RuntimeSnapshotTest.test_unknown_plugin_and_start_script_paths_are_explicitly_unreviewed) ... ok\ntest_actual_arrival_and_acceptance_readers_survive_copy_restore_without_source_writes (test_runtime_snapshot_java.RuntimeSnapshotJavaTest.test_actual_arrival_and_acceptance_readers_survive_copy_restore_without_source_writes) ... ok\ntest_all_thirteen_observations_remain_unconfirmed_not_autoactivated (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_all_thirteen_observations_remain_unconfirmed_not_autoactivated) ... ok\ntest_changed_hash_requires_recomparison_not_year_based_acceptance (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_changed_hash_requires_recomparison_not_year_based_acceptance) ... ok\ntest_future_and_same_year_are_not_proof_of_current_lifecycle (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_future_and_same_year_are_not_proof_of_current_lifecycle) ... ok\ntest_malformed_rows_do_not_abort_later_valid_records (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_malformed_rows_do_not_abort_later_valid_records) ... ok\ntest_nonstring_path_remains_a_row_error (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_nonstring_path_remains_a_row_error) ... ok\ntest_registry_type_is_checked_before_field_access (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_registry_type_is_checked_before_field_access) ... ok\ntest_source_bytes_are_unchanged_and_invalid_scope_cannot_hide_errors (test_seasonal_edition_audit.SeasonalEditionAuditTest.test_source_bytes_are_unchanged_and_invalid_scope_cannot_hide_errors) ... ok\ntest_candidate_file_byte_change_requires_recomparison (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_candidate_file_byte_change_requires_recomparison) ... ok\ntest_catalog_hashes_must_match_the_independent_review_record (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_catalog_hashes_must_match_the_independent_review_record) ... ok\ntest_cli_returns_failure_for_invalid_runtime_catalog (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_cli_returns_failure_for_invalid_runtime_catalog) ... ok\ntest_conservative_window_excludes_both_boundary_days (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_conservative_window_excludes_both_boundary_days) ... ok\ntest_corrupt_or_missing_catalog_is_a_reported_error (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_corrupt_or_missing_catalog_is_a_reported_error) ... ok\ntest_date_inside_a_window_only_reports_a_candidate (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_date_inside_a_window_only_reports_a_candidate) ... ok\ntest_date_window_needs_a_source_and_public_text_cannot_be_called_a_live_packet (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_date_window_needs_a_source_and_public_text_cannot_be_called_a_live_packet) ... ok\ntest_duplicate_edition_ids_do_not_hide_ambiguity (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_duplicate_edition_ids_do_not_hide_ambiguity) ... ok\ntest_every_identity_operand_and_year_must_match_the_review_record (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_every_identity_operand_and_year_must_match_the_review_record) ... ok\ntest_full_completion_claims_in_evidence_do_not_change_the_audit (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_full_completion_claims_in_evidence_do_not_change_the_audit) ... ok\ntest_missing_manual_condition_evidence_is_rejected (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_missing_manual_condition_evidence_is_rejected) ... ok\ntest_missing_or_modified_source_checks_cannot_certify_conditions (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_missing_or_modified_source_checks_cannot_certify_conditions) ... ok\ntest_original_file_change_cannot_fall_back_to_the_reviewed_candidate (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_original_file_change_cannot_fall_back_to_the_reviewed_candidate) ... ok\ntest_source_dates_urls_and_manual_review_flags_must_match (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_source_dates_urls_and_manual_review_flags_must_match) ... ok\ntest_unsafe_definition_path_is_not_read (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_unsafe_definition_path_is_not_read) ... ok\ntest_valid_catalog_exposes_evidence_without_evaluating_current_selection (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_valid_catalog_exposes_evidence_without_evaluating_current_selection) ... ok\ntest_verified_condition_must_resolve_to_the_reviewed_definition (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_verified_condition_must_resolve_to_the_reviewed_definition) ... ok\ntest_window_must_equal_the_reviewed_conservative_window (test_seasonal_runtime_audit.SeasonalRuntimeAuditTest.test_window_must_equal_the_reviewed_conservative_window) ... ok\ntest_capture_is_not_semantic_approval_and_uses_no_credentials (test_source_collector.SourceCollectorTest.test_capture_is_not_semantic_approval_and_uses_no_credentials) ... ok\ntest_existing_directory_and_duplicate_requests_rejected (test_source_collector.SourceCollectorTest.test_existing_directory_and_duplicate_requests_rejected) ... ok\ntest_failed_response_does_not_starve_next_source (test_source_collector.SourceCollectorTest.test_failed_response_does_not_starve_next_source) ... ok\ntest_japanese_url_is_encoded_without_changing_host (test_source_collector.SourceCollectorTest.test_japanese_url_is_encoded_without_changing_host) ... ok\ntest_redirect_oversize_and_binary_responses_rejected (test_source_collector.SourceCollectorTest.test_redirect_oversize_and_binary_responses_rejected) ... ok\ntest_unsafe_url_types_auth_hosts_queries_never_contact_network (test_source_collector.SourceCollectorTest.test_unsafe_url_types_auth_hosts_queries_never_contact_network) ... ok\n\n----------------------------------------------------------------------\nRan 397 tests in 352.136s\n\nOK (skipped=1)\nSPLIT_SUPPORT_GUI_SAVE_OK windows=2 synthetic-only; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/split-support-iuo0xs4k.log\nFEATURE_SINGLE_UPDATE_ROLLBACK_OK versions=1.0.0->1.1.0->1.0.0 calculation=10,15,15,10 actual_menu_and_save=true incompatible_refused=true partial_failure_retained=true original_and_runtime_retained=true historical_version_reuse_refused=true\nFEATURE_VERSION_EVIDENCE=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/feature-version-8lvzrt0c.json\nMANAGED_LAUNCH_UPDATE_ROLLBACK_OK A->B->A; main window+localhost proxy+7 features; retained runtime; evidence=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/managed-launcher-es7rj5uf.log\nPARALLEL_BDE_INTEGRATION_OK import_launch_update_newcopy_restore=true calculations=10,15,10 tracking=4 original_unchanged=true\nPARALLEL_INTEGRATION_EVIDENCE=/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-37pwgj8u.json\nR4_REVIEW_COVERAGE {\"definitions\": 148, \"with_partial_evidence\": 104, \"no_comparison_yet\": 44, \"whole_rule_verified\": 0, \"complete\": false, \"unreviewed\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1005.json\", \"src/main/resources/logbook/quest/1012.json\", \"src/main/resources/logbook/quest/1018.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/1045.json\", \"src/main/resources/logbook/quest/402.json\", \"src/main/resources/logbook/quest/403.json\", \"src/main/resources/logbook/quest/404.json\", \"src/main/resources/logbook/quest/410.json\", \"src/main/resources/logbook/quest/411.json\", \"src/main/resources/logbook/quest/434.json\", \"src/main/resources/logbook/quest/436.json\", \"src/main/resources/logbook/quest/437.json\", \"src/main/resources/logbook/quest/438.json\", \"src/main/resources/logbook/quest/439.json\", \"src/main/resources/logbook/quest/440.json\", \"src/main/resources/logbook/quest/442.json\", \"src/main/resources/logbook/quest/444.json\", \"src/main/resources/logbook/quest/904.json\", \"src/main/resources/logbook/quest/905.json\", \"src/main/resources/logbook/quest/912.json\", \"src/main/resources/logbook/quest/914.json\", \"src/main/resources/logbook/quest/928.json\", \"src/main/resources/logbook/quest/944.json\", \"src/main/resources/logbook/quest/945.json\", \"src/main/resources/logbook/quest/946.json\", \"src/main/resources/logbook/quest/947.json\", \"src/main/resources/logbook/quest/948.json\", \"src/main/resources/logbook/quest/973.json\", \"src/main/resources/logbook/quest/975.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR5_REVIEW_COVERAGE {\"definitions\": 148, \"with_partial_evidence\": 117, \"no_comparison_yet\": 31, \"whole_rule_verified\": 0, \"complete\": false, \"unreviewed\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1005.json\", \"src/main/resources/logbook/quest/1012.json\", \"src/main/resources/logbook/quest/1018.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/1045.json\", \"src/main/resources/logbook/quest/904.json\", \"src/main/resources/logbook/quest/905.json\", \"src/main/resources/logbook/quest/912.json\", \"src/main/resources/logbook/quest/914.json\", \"src/main/resources/logbook/quest/928.json\", \"src/main/resources/logbook/quest/944.json\", \"src/main/resources/logbook/quest/945.json\", \"src/main/resources/logbook/quest/946.json\", \"src/main/resources/logbook/quest/947.json\", \"src/main/resources/logbook/quest/948.json\", \"src/main/resources/logbook/quest/973.json\", \"src/main/resources/logbook/quest/975.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR6_REVIEW_COVERAGE {\"definitions\": 148, \"partial\": 133, \"unreviewed\": 15, \"whole_rule_verified\": 0, \"complete\": false, \"remaining\": [\"src/main/resources/logbook/eventquest/441.json\", \"src/main/resources/logbook/eventquest/840.json\", \"src/main/resources/logbook/eventquest/841.json\", \"src/main/resources/logbook/eventquest/843.json\", \"src/main/resources/logbook/eventquest/906.json\", \"src/main/resources/logbook/eventquest/907.json\", \"src/main/resources/logbook/eventquest/909.json\", \"src/main/resources/logbook/eventquest/953.json\", \"src/main/resources/logbook/eventquest/954.json\", \"src/main/resources/logbook/eventquest/955.json\", \"src/main/resources/logbook/quest/1019.json\", \"src/main/resources/logbook/quest/1022.json\", \"src/main/resources/logbook/quest/1039.json\", \"src/main/resources/logbook/quest/1040.json\", \"src/main/resources/logbook/quest/987.json\"]}\nR7_REVIEW_COVERAGE {\"definitions\": 148, \"partially_compared\": 148, \"never_compared\": 0, \"whole_rule_verified\": 0, \"complete\": false}\ntest_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 16.374s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true\nRUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false\nRUNTIME_SNAPSHOT_RESTORE_OK original_unchanged=true restored_bytes_equal=true arrival_records=3 accepted=2"
+            },
+            "r3-verification/python-tools.log": {
+              "matches": [
+                "Ran 25 tests in 0.136s"
+              ],
+              "tail": "test_arrival_declaration_for_true_false_and_null (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_arrival_declaration_for_true_false_and_null) ... ok\ntest_combined_capabilities_are_all_declared (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_combined_capabilities_are_all_declared) ... ok\ntest_event_conditions_share_capability_but_unrelated_metadata_does_not (test_arrival_pack_capability.ArrivalPackCapabilityTest.test_event_conditions_share_capability_but_unrelated_metadata_does_not) ... ok\ntest_comments_removed_without_touching_strings (test_build_data_pack.DataPackTest.test_comments_removed_without_touching_strings) ... ok\ntest_invalid_json_is_rejected (test_build_data_pack.DataPackTest.test_invalid_json_is_rejected) ... ok\ntest_pack_hashes_match_real_contents (test_build_data_pack.DataPackTest.test_pack_hashes_match_real_contents) ... ok\ntest_deck_guard_requires_new_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_deck_guard_requires_new_format) ... ok\ntest_false_or_null_extended_field_is_not_disguised_as_old_schema (test_data_pack_capabilities.DataPackCapabilitiesTest.test_false_or_null_extended_field_is_not_disguised_as_old_schema) ... ok\ntest_legacy_definitions_keep_legacy_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_legacy_definitions_keep_legacy_format) ... ok\ntest_nonsemantic_similarly_named_keys_do_not_change_format (test_data_pack_capabilities.DataPackCapabilitiesTest.test_nonsemantic_similarly_named_keys_do_not_change_format) ... ok\ntest_retreat_guard_and_event_quest_are_versioned (test_data_pack_capabilities.DataPackCapabilitiesTest.test_retreat_guard_and_event_quest_are_versioned) ... ok\ntest_duplicate_and_nonfinite_values_cannot_hide_capability_fields (test_data_pack_capabilities.StrictPackJsonTest.test_duplicate_and_nonfinite_values_cannot_hide_capability_fields) ... ok\ntest_dry_run_never_changes_live_or_stage (test_mint_staged_update.StagedUpdateTest.test_dry_run_never_changes_live_or_stage) ... ok\ntest_explicit_verified_restore_keeps_both_versions (test_mint_staged_update.StagedUpdateTest.test_explicit_verified_restore_keeps_both_versions) ... ok\ntest_invalid_stage_does_not_touch_live (test_mint_staged_update.StagedUpdateTest.test_invalid_stage_does_not_touch_live) ... ok\ntest_no_update_is_noop (test_mint_staged_update.StagedUpdateTest.test_no_update_is_noop) ... ok\ntest_restore_refuses_outside_or_corrupted_backup (test_mint_staged_update.StagedUpdateTest.test_restore_refuses_outside_or_corrupted_backup) ... ok\ntest_staging_same_version_only_discards_redundant_stage (test_mint_staged_update.StagedUpdateTest.test_staging_same_version_only_discards_redundant_stage) ... ok\ntest_symlinked_candidate_is_rejected (test_mint_staged_update.StagedUpdateTest.test_symlinked_candidate_is_rejected) ... ok\ntest_symlinked_update_folder_is_rejected (test_mint_staged_update.StagedUpdateTest.test_symlinked_update_folder_is_rejected) ... ok\ntest_valid_stage_replaces_jar_and_keeps_backup (test_mint_staged_update.StagedUpdateTest.test_valid_stage_replaces_jar_and_keeps_backup) ... ok\ntest_arrival_presence_is_recomputed_in_all_three_guards (test_pack_workflow_guards.PackWorkflowGuardTest.test_arrival_presence_is_recomputed_in_all_three_guards) ... ok\ntest_extra_undeclared_by_content_capability_is_rejected (test_pack_workflow_guards.PackWorkflowGuardTest.test_extra_undeclared_by_content_capability_is_rejected) ... ok\ntest_missing_arrival_capability_is_rejected (test_pack_workflow_guards.PackWorkflowGuardTest.test_missing_arrival_capability_is_rejected) ... ok\ntest_ordinary_legacy_pack_still_passes (test_pack_workflow_guards.PackWorkflowGuardTest.test_ordinary_legacy_pack_still_passes) ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.136s\n\nOK"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 40486902699,
+      "status": "completed",
+      "conclusion": "success",
+      "artifacts": [
+        {
+          "id": 12726615073,
+          "name": "integrated-test-reports-java21",
+          "digest": "sha256:a48c82e4ac81637fc62d863443415b11cb6f9c556c8e913a566dfef159c6c9be",
+          "totals": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "failures": [],
+          "reports": {},
+          "log_results": {}
+        },
+        {
+          "id": 12726230209,
+          "name": "integrated-test-reports-java25",
+          "digest": "sha256:e479622424d75f1cfdcecd64d5232787c5e1d0c987f5a89d1a843521cff976d7",
+          "totals": {
+            "tests": 765,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1
+          },
+          "failures": [],
+          "reports": {},
+          "log_results": {}
+        }
+      ]
+    }
+  ]
+}
