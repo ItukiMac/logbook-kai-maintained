@@ -1,0 +1,50 @@
+name: Modernization pinned inputs (no publish)
+on:
+  push:
+    branches: ['maintenance/modernization-inputs-20261027']
+    paths: ['.github/workflows/modernization-inputs.yml']
+permissions:
+  contents: read
+jobs:
+  inputs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: b2d224adff26cedf0f049be4b454140a9fc8d176
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Resolve only public artifacts and archive exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence public-cache
+          git archive --format=zip HEAD > evidence/source.zip
+          git rev-parse HEAD > evidence/source-commit.txt
+          git ls-files -s > evidence/tracked-blobs.txt
+          mvn -B -ntp -Dmaven.repo.local="$PWD/public-cache" -DskipTests package > evidence/build-input.log 2>&1
+          mvn -B -ntp -Dmaven.repo.local="$PWD/public-cache" dependency:go-offline >> evidence/build-input.log 2>&1
+          for artifact in tools.jackson.core:jackson-databind:3.2.4 tools.jackson.core:jackson-databind:3.2.4:jar:sources tools.jackson.core:jackson-core:3.2.4:jar:sources; do
+            mvn -B -ntp -Dmaven.repo.local="$PWD/public-cache" dependency:get -Dartifact="$artifact" >> evidence/build-input.log 2>&1
+          done
+          for module in base controls fxml graphics media swing web; do
+            for suffix in '' ':jar:linux'; do
+              mvn -B -ntp -Dmaven.repo.local="$PWD/public-cache" dependency:get -Dartifact="org.openjfx:javafx-$module:27.0.1$suffix" >> evidence/build-input.log 2>&1
+            done
+          done
+          git diff --exit-code
+          tar -czf evidence/public-cache.tar.gz public-cache
+          tar -C "$JAVA_HOME" -czf evidence/jdk25.tar.gz .
+          (cd evidence && sha256sum source.zip public-cache.tar.gz jdk25.tar.gz > SHA256SUMS)
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: modernization-pinned-inputs
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error
