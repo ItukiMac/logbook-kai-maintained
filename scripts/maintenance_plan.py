@@ -116,8 +116,18 @@ def plan(root: Path, candidates: list, approvals: list, budget: dict, *, previou
             # and increased declared costs must be checked against this run's budget.
             estimate_digest = json_digest(candidate.get('upper_bound'))
             row['estimate_digest'] = estimate_digest
+            # Even a resume with a matching fingerprint must parse the CURRENT
+            # proposal; checkpoint JSON is not trusted parser evidence.
+            if old != new:
+                parse_jsonc(proposed)
             previous_row = cache.get(identity)
-            if (previous_row and previous_row.get('approval_digest') == approval_digest
+            # Checkpoints are user-provided JSON, not signed execution receipts.
+            # They may only defer an UNAPPROVED proposal. A cached 'approved_candidate'
+            # or 'unchanged' assertion must never skip validation or the current
+            # approval/budget/JSON gates, even if all its hashes were forged.
+            if (previous_row and not approval and previous_row.get('status') in
+                    ('requires_approval', 'requires_source_review', 'error')
+                    and previous_row.get('approval_digest') == approval_digest
                     and previous_row.get('evidence_valid') == evidence_ok
                     and previous_row.get('estimate_digest') == estimate_digest):
                 row.update(previous_row, reused=True)
