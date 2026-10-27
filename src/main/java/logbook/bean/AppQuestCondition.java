@@ -211,6 +211,26 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             return evaluate(new ArrayList<>(ships));
         }
 
+        /**
+         * Evaluate a complete observed fleet without compacting proven retreat vacancies.
+         * Null is accepted only at the explicitly absent, one-based positions; every other
+         * missing member remains unknown evidence and fails closed. Ordinary test() keeps
+         * rejecting all null input entries.
+         */
+        public boolean testObservedSlots(List<ShipMst> ships, java.util.Set<Integer> absentSlots) {
+            if (ships == null || ships.isEmpty() || ships.size() > 7 || absentSlots == null
+                    || absentSlots.stream().anyMatch(slot -> slot == null || slot < 1 || slot > ships.size())) {
+                return false;
+            }
+            boolean hasSurvivor = false;
+            for (int slot = 0; slot < ships.size(); slot++) {
+                boolean absent = absentSlots.contains(slot + 1);
+                if (absent != (ships.get(slot) == null)) return false;
+                if (!absent) hasSurvivor = true;
+            }
+            return hasSurvivor && evaluate(new ArrayList<>(ships));
+        }
+
         private boolean evaluate(List<ShipMst> ships) {
             if (this.count == null && this.operator != null) {
                 return this.testOperator(ships);
