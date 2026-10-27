@@ -426,47 +426,15 @@ public class BattleLogs {
      * @param bossOnly 集計対象をボスのみにする場合true
      * @return 出撃統計
      */
+    /** @deprecated New record features use immutable RecordDataV1.BattleTotals. */
+    @Deprecated
     public static BattleLogCollect collect(List<SimpleBattleLog> logs, String areaShortName, boolean bossOnly) {
-        Predicate<SimpleBattleLog> anyFilter = e -> true;
-        // 海域フィルタ
-        Predicate<SimpleBattleLog> areaFilter = areaShortName != null ? e -> areaShortName.equals(e.getAreaShortName()) : anyFilter;
-        // ボスフィルタ
-        Predicate<SimpleBattleLog> bossFilter = bossOnly ? e -> e.getBoss().indexOf("ボス") != -1 : anyFilter;
-
-        // 出撃回数
-        String start;
-        if (bossOnly) {
-            // 集計対象をボスのみにする場合は出撃を集計しない
-            start = "-";
-        } else {
-            start = Long.toString(logs.stream()
-                    .filter(areaFilter)
-                    .map(SimpleBattleLog::getBoss)
-                    .filter(boss -> boss.indexOf("出撃") != -1)
-                    .count());
-        }
-
-        // 評価(S-D)
-        Map<String, Long> rank = logs.stream()
-                .filter(areaFilter)
-                .filter(bossFilter)
-                .map(SimpleBattleLog::getRank)
-                .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
-        int s = rank.getOrDefault("S", 0L).intValue();
-        int a = rank.getOrDefault("A", 0L).intValue();
-        int b = rank.getOrDefault("B", 0L).intValue();
-        int c = rank.getOrDefault("C", 0L).intValue();
-        int d = rank.getOrDefault("D", 0L).intValue();
-        int win = s + a + b;
-
+        var totals = logbook.plugin.api.RecordDataV1.summarizeBattles(logs.stream()
+                .map(logbook.core.RecordDataService::copyBattle).toList(), areaShortName, bossOnly);
         BattleLogCollect value = new BattleLogCollect();
-        value.setStart(start);
-        value.setWin(win);
-        value.setS(s);
-        value.setA(a);
-        value.setB(b);
-        value.setC(c);
-        value.setD(d);
+        value.setStart(totals.departures()); value.setWin(totals.wins());
+        value.setS(totals.s()); value.setA(totals.a()); value.setB(totals.b());
+        value.setC(totals.c()); value.setD(totals.d());
         return value;
     }
 

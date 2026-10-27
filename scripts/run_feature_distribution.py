@@ -56,6 +56,29 @@ FILES = ('logbook-core.jar', 'features/logbook-feature-calculators.jar',
 JARS = tuple(name for name in FILES if name.endswith('.jar'))
 
 
+# Additive v2 packaging profile: existing three modules/classpath are retained.
+# Presence of the immutable data API in the host is the profile discriminator.
+RECORD_UI_PROFILE = 'record-ui-in-charts-v1'
+RECORD_UI_API = 'logbook/plugin/api/RecordDataV1.class'
+RECORD_UI_FAMILIES = ('BattleLogController', 'MissionLogController', 'CreateItemController',
+    'BattleRecordCollect', 'BattleRecordDetail', 'BattleLogDetailAggregate',
+    'MissionRecordCollect', 'MissionRecordDetail', 'MissionAggregate')
+RECORD_UI_RESOURCES = ('battlelog', 'battlelog_dialog', 'missionlog', 'createitemlog')
+
+
+def record_ui_entry(name):
+    if name in {'logbook/gui/' + value + '.fxml' for value in RECORD_UI_RESOURCES}:
+        return True
+    return any(name == 'logbook/internal/gui/' + value + '.class' or
+               name.startswith('logbook/internal/gui/' + value + '$') and name.endswith('.class')
+               for value in RECORD_UI_FAMILIES)
+
+
+def record_ui_required_entries():
+    return {'logbook/internal/gui/' + value + '.class' for value in RECORD_UI_FAMILIES} | {
+            'logbook/gui/' + value + '.fxml' for value in RECORD_UI_RESOURCES}
+
+
 def required_entries(module_id):
     provider, controllers, resources = GROUPS[module_id]
     stems = ['logbook/features/' + provider]
@@ -103,6 +126,9 @@ def validate_manifest(report):
     """Validate the complete compatibility graph without opening files or Java."""
     if not isinstance(report, dict) or report.get('format') != FORMAT:
         raise ValueError('Versioned distribution manifest required; legacy v1 is not launchable')
+    profile = report.get('record_ui_profile')
+    if profile is not None and profile != RECORD_UI_PROFILE:
+        raise ValueError('Unsupported record UI packaging profile')
     files = report.get('files')
     if not isinstance(files, dict) or set(files) != set(FILES):
         raise ValueError('Unexpected distribution inventory')
@@ -213,6 +239,7 @@ def manifest_attributes(raw):
 
 
 def verify_jars(root, report, catalog):
+    record_profile = report.get('record_ui_profile') == RECORD_UI_PROFILE
     classes, resources, total = set(), set(), 0
     for path in JARS:
         with ZipFile(root / path) as jar:
@@ -257,6 +284,10 @@ def verify_jars(root, report, catalog):
             if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':
                 raise ValueError('Multi-release feature JARs are not supported')
             if path == JARS[0]:
+                if (RECORD_UI_API in names) != record_profile:
+                    raise ValueError('Record data API and packaging profile disagree')
+                if record_profile and any(record_ui_entry(name) for name in names):
+                    raise ValueError('Record UI remains in the host instead of charts')
                 if SERVICE in names:
                     raise ValueError('Feature provider still present in the host')
                 if HOST_METADATA not in names or jar.getinfo(HOST_METADATA).file_size > 65536:
@@ -266,7 +297,13 @@ def verify_jars(root, report, catalog):
                     raise ValueError('Embedded host API does not match distribution')
                 continue
             module = next(m for m in catalog.values() if m['path'] == path)
-            missing = required_entries(module['id']) - names
+            required = required_entries(module['id'])
+            if record_profile:
+                if module['id'] == 'charts':
+                    required |= record_ui_required_entries()
+                elif any(record_ui_entry(name) for name in names):
+                    raise ValueError('Record UI belongs to the charts module')
+            missing = required - names
             if missing:
                 raise ValueError('Missing required feature entry: ' + sorted(missing)[0])
             if FEATURE_METADATA not in names or jar.getinfo(FEATURE_METADATA).file_size > 65536:

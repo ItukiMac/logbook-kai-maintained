@@ -1,4 +1,4 @@
-"""Record GUI runtime-package proof; not a new shipped bundle or production classloader policy."""
+"""Actual chart-module record views; separate loader additionally detects accidental host fallback."""
 import hashlib
 import json
 import os
@@ -12,10 +12,12 @@ from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from build_feature_distribution import explicit_classpath_manifest
+from build_feature_distribution import build
+from run_feature_distribution import RECORD_UI_PROFILE, record_ui_required_entries
 
 FAMILIES = ('BattleLogController', 'MissionLogController', 'CreateItemController',
-            'BattleLogDetailAggregate', 'MissionLogCollect', 'MissionLogDetail', 'MissionAggregate')
+            'BattleLogDetailAggregate', 'BattleRecordCollect', 'BattleRecordDetail',
+            'MissionRecordCollect', 'MissionRecordDetail', 'MissionAggregate')
 RESOURCES = {'logbook/gui/' + name + '.fxml' for name in
              ('battlelog', 'battlelog_dialog', 'missionlog', 'createitemlog')}
 
@@ -39,30 +41,22 @@ class RecordUiIntegrationTest(unittest.TestCase):
         log_file = evidence / (fixture.name + '.log')
         summary_file = evidence / (fixture.name + '.json')
         summary = {'fixture': str(fixture), 'source_jar_sha256': source_hash,
-                   'production_accessed': False, 'new_distribution_format': False, 'legacy_missing_experience_bug_fixed': False,
-                   'shared_legacy_row_models_retained_in_core': ['BattleLogCollect', 'BattleLogDetail'],
+                   'production_accessed': False, 'new_distribution_format': False, 'legacy_missing_experience_bug_fixed': True,
+                   'shared_legacy_row_models_retained_in_core': ['BattleLogCollect', 'BattleLogDetail', 'MissionLogCollect', 'MissionLogDetail'],
                    'result': 'not_completed'}
         logs = []
         try:
-            host = fixture / 'host-proof.jar'
-            feature = fixture / 'record-ui-proof.jar'
-            with ZipFile(original) as source, ZipFile(host, 'x') as core, ZipFile(feature, 'x') as records:
-                selected = set()
-                for info in source.infolist():
-                    raw = source.read(info)
-                    if info.filename == 'META-INF/MANIFEST.MF':
-                        raw = explicit_classpath_manifest(raw)
-                    if record_entry(info.filename):
-                        records.writestr(info, raw)
-                        selected.add(info.filename)
-                    else:
-                        core.writestr(info, raw)
-                    if info.filename.startswith('logbook/gui/') and info.filename.endswith('.css'):
-                        records.writestr(info, raw)
-                required = RESOURCES | {'logbook/internal/gui/' + f + '.class' for f in FAMILIES}
-                self.assertTrue(required.issubset(selected), sorted(required - selected))
+            distribution = fixture / 'distribution'
+            report = build(original, distribution, 'a' * 40)
+            self.assertEqual(RECORD_UI_PROFILE, report.get('record_ui_profile'))
+            host = distribution / 'logbook-core.jar'
+            feature = distribution / 'features/logbook-feature-charts.jar'
             with ZipFile(host) as core:
                 self.assertFalse(any(record_entry(n) for n in core.namelist()), 'Hidden fallback remained in host')
+            with ZipFile(feature) as records:
+                self.assertTrue(record_ui_required_entries().issubset(records.namelist()))
+            summary.update(product_distribution=True, record_ui_profile=RECORD_UI_PROFILE,
+                           record_module='charts', original_distribution_source_unchanged=True)
             classes = fixture / 'probe-classes'
             classes.mkdir()
             runtime = fixture / 'runtime'
@@ -82,7 +76,7 @@ class RecordUiIntegrationTest(unittest.TestCase):
             self.assertIn('RECORD_UI_ISOLATION_OK', run.stdout)
             self.assertNotIn('FXMLの初期化に失敗しました', logs[-1])
             self.assertEqual(source_hash, hashlib.sha256(original.read_bytes()).hexdigest())
-            summary.update(result='passed', windows=3, battle_rows=1, battle_exp=60, mission_fuel=75, development_rows=2,
+            summary.update(result='passed', windows=3, battle_rows=3, battle_exp=60, mission_fuel=75, development_rows=2,
                            nested_dialog=True, settings_reread=True, original_history_unchanged=True,
                            host_sha256=hashlib.sha256(host.read_bytes()).hexdigest(),
                            record_ui_sha256=hashlib.sha256(feature.read_bytes()).hexdigest(),

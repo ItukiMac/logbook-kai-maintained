@@ -1,6 +1,7 @@
 package logbook.internal.gui;
 
 import logbook.plugin.api.FeatureUiV1;
+import logbook.plugin.api.RecordDataV1;
 
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
@@ -9,9 +10,6 @@ import static java.util.stream.Collectors.toMap;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,7 +54,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-import logbook.bean.AppConfig;
 import logbook.bean.AppViewConfig;
 import logbook.bean.AppViewConfig.CreateItemLogConfig;
 import logbook.bean.SlotitemEquiptype;
@@ -65,8 +62,6 @@ import logbook.bean.SlotitemMst;
 import logbook.bean.SlotitemMstCollection;
 import logbook.internal.Tuple;
 import logbook.internal.kancolle.Items;
-import logbook.internal.log.CreateitemLogFormat;
-import logbook.internal.log.LogWriter;
 import logbook.internal.logger.LoggerHolder;
 import lombok.EqualsAndHashCode;
 import lombok.val;
@@ -268,18 +263,14 @@ public class CreateItemController extends FeatureUiV1.Window {
      */
     private void setCollect(Toggle button) {
         this.detailList.clear();
-        Path logFile = Paths.get(AppConfig.get().getReportPath(), new CreateitemLogFormat().fileName());
         try {
             List<CreateItem> logs;
             Map<String, Integer> map = SlotitemEquiptypeCollection.get().getEquiptypeMap().values().stream()
                 .collect(Collectors.toMap(SlotitemEquiptype::getName, SlotitemEquiptype::getId)); 
-            try (Stream<String> lines = Files.lines(logFile, LogWriter.DEFAULT_CHARSET)) {
-                logs = lines.skip(1)
-                        .map(CreateItem::parse)
-                        .filter(Objects::nonNull)
-                        .map(item -> item.setEquipType(map.getOrDefault(item.getType(), -1)))
-                        .collect(toList());
-            }
+            logs = RecordDataV1.developments().stream()
+                    .map(CreateItem::fromSnapshot)
+                    .map(item -> item.setEquipType(map.getOrDefault(item.getType(), -1)))
+                    .collect(toList());
 
             Map<Recipe, Long> count = logs.stream()
                     .collect(groupingBy(CreateItem::getRecipe, counting()));
@@ -655,20 +646,20 @@ public class CreateItemController extends FeatureUiV1.Window {
                     .toString();
         }
 
+        /** Legacy parser entry point delegates to the shared data parser. */
         public static CreateItem parse(String line) {
-            try {
-                String[] columns = line.split(",", -1);
-                CreateItem value = new CreateItem();
-                value.setDate(columns[0]);
-                value.setItem(columns[1]);
-                value.setType(columns[2]);
-                value.setRecipe(new Recipe(columns[3], columns[4], columns[5], columns[6]));
-                value.setSecretary(columns[7]);
-                return value;
-            } catch (Exception e) {
-            }
-            return null;
+            return RecordDataV1.parseDevelopment(line).map(CreateItem::fromSnapshot).orElse(null);
         }
+
+        public static CreateItem fromSnapshot(RecordDataV1.DevelopmentRow row) {
+            CreateItem value = new CreateItem();
+            value.setDate(row.date()); value.setItem(row.item()); value.setType(row.type());
+            value.setRecipe(new Recipe(Integer.toString(row.fuel()), Integer.toString(row.ammo()),
+                    Integer.toString(row.metal()), Integer.toString(row.bauxite())));
+            value.setSecretary(row.secretary());
+            return value;
+        }
+
     }
 
     /**

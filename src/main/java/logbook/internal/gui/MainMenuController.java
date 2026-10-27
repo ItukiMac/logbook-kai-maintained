@@ -145,7 +145,7 @@ public class MainMenuController extends WindowController {
                                 .map(SimpleBattleLog::new)
                                 .orElse(null);
                         if (battleLog != null) {
-                            log = BattleLogs.read(BattleLogDetail.toBattleLogDetail(battleLog).getDate());
+                            log = BattleLogs.read(battleLog.getDateString());
                         }
                     } catch (Exception ex) {
                         log = null;
