@@ -65,6 +65,7 @@ public class QuestConditionEditController extends WindowController {
     private com.fasterxml.jackson.databind.JsonNode loadedForm;
     private byte[] loadedBytes;
     private boolean loadFailed;
+    private boolean arrivalAreaConflict;
 
     // Overridden only by the isolated FXML test controller, not a runtime property.
     java.nio.file.Path questDirectory() { return java.nio.file.Paths.get("./customquest"); }
@@ -166,7 +167,9 @@ public class QuestConditionEditController extends WindowController {
             this.resetType.getSelectionModel().select(type);
             this.yearlyResetMonth.setText("");
 
-            // Filter / Conditions Clear
+            // Filter / Conditions Clear (do not carry arrival-mode guards into another quest).
+            this.conditionsBox.getChildren().clear();
+            this.arrivalAreaConflict = false;
             this.filterArea.setText("");
             this.filterDeckIds.clear();
             this.filterNoRetreat.setSelected(false);
@@ -366,7 +369,7 @@ public class QuestConditionEditController extends WindowController {
                         // row children: Label(Area), (Label, TextField)?, S, A, B, Count, Label
                         int idx = 1;
                         // Check if cell field exists
-                        if (row.getChildren().size() > 6) {
+                        if (hasCellField(row)) {
                             idx++; // Label("マス")
                             TextField cellField = (TextField) row.getChildren().get(idx++);
                             if (cond.getCell() != null) {
@@ -387,6 +390,8 @@ public class QuestConditionEditController extends WindowController {
                             b.setSelected(cond.getRank().contains("B"));
                         }
                         countField.setText(String.valueOf(cond.getCount()));
+                        CheckBox arrival = arrivalControl(row);
+                        if (arrival != null) arrival.setSelected(cond.isArrival());
                     }
                 }
             }
@@ -400,6 +405,28 @@ public class QuestConditionEditController extends WindowController {
     }
 
     private void updateConditionsArea(String areaText) {
+        // Keep entered values when the same area is retained (including whitespace edits).
+        // setQuestData first clears the area, so controls never leak into another quest.
+        var retained = new java.util.LinkedHashMap<String, java.util.Deque<HBox>>();
+        for (javafx.scene.Node node : this.conditionsBox.getChildren()) {
+            HBox row = (HBox) node;
+            String area = ((Label) row.getChildren().get(0)).getText();
+            retained.computeIfAbsent(area, key -> new java.util.ArrayDeque<>()).add(row);
+        }
+        // An active goal row cannot silently turn into a battle row when its map is edited.
+        long newArrivalRows = areaText == null ? 0 : Arrays.stream(areaText.split(","))
+                .map(String::trim).filter("1-6"::equals).count();
+        var oldArrivalRows = retained.get("1-6");
+        if (oldArrivalRows != null && newArrivalRows < oldArrivalRows.size()
+                && oldArrivalRows.stream().anyMatch(row -> arrivalControl(row) != null
+                        && arrivalControl(row).isSelected())) {
+            this.arrivalAreaConflict = true;
+            this.editNotice.setText("港到達を解除してから1-6を削除・変更してください。保存は中止しています。");
+            return;
+        }
+        if (this.arrivalAreaConflict)
+            this.editNotice.setText("海域の矛盾を解消しました。既存条件を保持して保存します。");
+        this.arrivalAreaConflict = false;
         this.conditionsBox.getChildren().clear();
         if (areaText == null || areaText.isEmpty()) {
             return;
@@ -417,6 +444,11 @@ public class QuestConditionEditController extends WindowController {
         for (String area : areas) {
             String val = area.trim();
             if (!val.isEmpty()) {
+                var previous = retained.get(val);
+                if (previous != null && !previous.isEmpty()) {
+                    this.conditionsBox.getChildren().add(previous.removeFirst());
+                    continue;
+                }
                 HBox row = new HBox(10);
                 row.setAlignment(Pos.CENTER_LEFT);
 
@@ -464,9 +496,34 @@ public class QuestConditionEditController extends WindowController {
                 }
 
                 row.getChildren().addAll(checkS, checkA, checkB, count, countLabel);
+                if ("1-6".equals(val)) {
+                    CheckBox arrival = new CheckBox("港到達");
+                    arrival.setId("arrivalMode");
+                    arrival.setMnemonicParsing(false);
+                    arrival.setOnAction(event -> this.updateConditionsArea(this.filterArea.getText()));
+                    arrival.setTooltip(new javafx.scene.control.Tooltip(
+                            "1-6のゴール到達記録で数えます。戦闘回数からは推測しません。"));
+                    // Keep unsaved battle inputs so switching back does not discard them.
+                    checkS.disableProperty().bind(arrival.selectedProperty());
+                    checkA.disableProperty().bind(arrival.selectedProperty());
+                    checkB.disableProperty().bind(arrival.selectedProperty());
+                    if (hasCellField(row))
+                        row.getChildren().get(2).disableProperty().bind(arrival.selectedProperty());
+                    row.getProperties().put("arrivalControl", arrival);
+                    row.getChildren().add(arrival);
+                }
                 this.conditionsBox.getChildren().add(row);
             }
         }
+    }
+
+    private static boolean hasCellField(HBox row) {
+        return row.getChildren().size() > 2 && row.getChildren().get(1) instanceof Label
+                && row.getChildren().get(2) instanceof TextField;
+    }
+
+    private static CheckBox arrivalControl(HBox row) {
+        return (CheckBox) row.getProperties().get("arrivalControl");
     }
 
     private String getCategoryName(int category) {
@@ -684,6 +741,8 @@ public class QuestConditionEditController extends WindowController {
 
     @SuppressWarnings("unchecked")
     logbook.bean.AppQuestCondition readForm() {
+        if (this.arrivalAreaConflict)
+            throw new IllegalArgumentException("港到達を解除してから1-6を削除・変更してください。");
         AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
         if (appQuest == null || appQuest.getQuest() == null)
             throw new IllegalStateException("任務が選択されていません。");
@@ -848,7 +907,7 @@ public class QuestConditionEditController extends WindowController {
 
                 int idx = 1;
                 String cellValue = null;
-                if (row.getChildren().size() > 6) {
+                if (hasCellField(row)) {
                     idx++; // Label("マス")
                     TextField cellField = (TextField) row.getChildren().get(idx++);
                     cellValue = cellField.getText();
@@ -919,10 +978,29 @@ public class QuestConditionEditController extends WindowController {
                     cond.setRank(ranks);
                 }
 
-                try {
-                    cond.setCount(Integer.parseInt(countField.getText()));
-                } catch (Exception ex) {
-                    cond.setCount(1);
+                CheckBox arrival = arrivalControl(row);
+                if (arrival != null && arrival.isSelected()) {
+                    String value = countField.getText();
+                    if (value == null || !value.trim().matches("[0-9]+"))
+                        throw new IllegalArgumentException("港到達の回数は1以上の整数で入力してください。");
+                    try {
+                        cond.setCount(Integer.parseInt(value.trim()));
+                    } catch (NumberFormatException ex) {
+                        throw new IllegalArgumentException("港到達の回数は2147483647以下で入力してください。", ex);
+                    }
+                    if (cond.getCount() <= 0)
+                        throw new IllegalArgumentException("港到達の回数は1以上の整数で入力してください。");
+                    cond.setArrival(true);
+                    cond.setBoss(false);
+                    cond.setRank(null);
+                    cond.setCell(null);
+                    cond.setCells(null);
+                } else {
+                    try {
+                        cond.setCount(Integer.parseInt(countField.getText()));
+                    } catch (Exception ex) {
+                        cond.setCount(1);
+                    }
                 }
 
                 condition.getConditions().add(cond);
@@ -1093,6 +1171,9 @@ public class QuestConditionEditController extends WindowController {
 
     @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "start" })
     abstract class ConditionMixin {
+        // Do not add an arrival capability requirement to ordinary battle-only documents.
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT)
+        public abstract boolean isArrival();
     }
 
     @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "collectStypeInternal" })
