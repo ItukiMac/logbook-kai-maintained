@@ -1,0 +1,98 @@
+name: Record GUI final CI evidence (tooling only)
+on:
+  push:
+    branches: ['maintenance/records-boundary-worker-20261027']
+    paths: ['.github/workflows/record-ui-final-evidence.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Inspect exact-head results and bounded artifacts; do not run artifact executables
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import os,json,urllib.request,zipfile,io,hashlib,xml.etree.ElementTree as E,time
+          from pathlib import Path
+          head='3b0639a1f732b27abcffd5368ab123e0a33c4933'
+          base='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          target=Path('.maintenance-evidence/record-ui-final-evidence.json')
+          result={'source_head':head,'production_accessed':False,'workflow_states':[],'artifacts':[],'verified':False}
+          def save():target.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          def get(path):
+              req=urllib.request.Request(base+path,headers={'Accept':'application/vnd.github+json'})
+              req.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(req,timeout=60) as response:
+                  raw=response.read(8*1024*1024+1)
+              assert len(raw)<=8*1024*1024,'Response size limit'
+              return raw
+          expected={40496571248,40496571270,40496571123,40496571240,40496571218,40496571325,40496571131,
+                    40496571170,40496571146,40496571196,40496571188,40496571438,40496571266,40496571202}
+          try:
+              for attempt in range(24):
+                  runs=json.loads(get('/actions/runs?head_sha='+head+'&event=pull_request&per_page=100'))['workflow_runs']
+                  assert expected.issubset({r['id'] for r in runs}),'Missing expected PR workflow'
+                  result['workflow_states']=[{k:r[k] for k in ('id','name','head_sha','status','conclusion')} for r in runs]
+                  save()
+                  if all(r['status']=='completed' for r in runs):break
+                  time.sleep(25)
+              assert all(r['status']=='completed' and r['conclusion']=='success' for r in runs),result['workflow_states']
+              assert all(r['head_sha']==head for r in runs)
+              wanted={'r3-evidence-java21','r3-evidence-java25','modern-runtime-evidence-java25'}
+              found=set()
+              for runid in (40496571196,40496571131):
+                  for a in json.loads(get('/actions/runs/'+str(runid)+'/artifacts'))['artifacts']:
+                      if a['name'] not in wanted:continue
+                      assert a['size_in_bytes']<=8*1024*1024
+                      raw=get('/actions/artifacts/'+str(a['id'])+'/zip')
+                      digest='sha256:'+hashlib.sha256(raw).hexdigest()
+                      assert digest==a['digest'],'Artifact digest mismatch'
+                      z=zipfile.ZipFile(io.BytesIO(raw))
+                      assert sum(i.file_size for i in z.infolist())<=50*1024*1024
+                      assert z.testzip() is None
+                      item={'run':runid,'id':a['id'],'name':a['name'],'digest':digest,'java':{},'record_suites':{},'record_gui_reports':{},'summaries':{},'python_results':[]}
+                      for n in z.namelist():
+                          if n.endswith('.xml') and '/TEST-' in '/'+n:
+                              s=E.fromstring(z.read(n))
+                              counts={k:int(s.get(k,0)) for k in ('tests','failures','errors','skipped')}
+                              for k,v in counts.items():item['java'][k]=item['java'].get(k,0)+v
+                              if 'RecordUi' in s.get('name',''):item['record_suites'][s.get('name')]=counts
+                          elif n.endswith('.json') and 'record-ui-fixture-' in n:
+                              item['record_gui_reports'][n]=json.loads(z.read(n))
+                          elif n.endswith('summary.json') and z.getinfo(n).file_size<30000:
+                              item['summaries'][n]=json.loads(z.read(n))
+                          elif n.endswith(('python-scripts.log','python-tools.log')):
+                              lines=z.read(n).decode('utf8',errors='replace').splitlines()
+                              item['python_results'].append({'path':n,'results':[l for l in lines if l.startswith(('Ran ','OK','FAILED','RECORD_UI_ISOLATION_OK')) or 'test_records_use_public_gui_boundary' in l]})
+                      assert len(item['record_suites'])==2,item['record_suites']
+                      assert sum(s['tests'] for s in item['record_suites'].values())==5
+                      assert all(s[k]==0 for s in item['record_suites'].values() for k in ('failures','errors','skipped'))
+                      assert len(item['record_gui_reports'])==1,item['record_gui_reports']
+                      proof=next(iter(item['record_gui_reports'].values()))
+                      assert proof['result']=='passed' and proof['windows']==3 and proof['battle_rows']==1 and proof['battle_exp']==60
+                      assert proof['mission_fuel']==75 and proof['development_rows']==2 and proof['settings_reread'] and proof['original_history_unchanged']
+                      assert not proof['production_accessed'] and not proof['new_distribution_format'] and not proof['legacy_missing_experience_bug_fixed']
+                      assert item['java']['failures']==item['java']['errors']==0
+                      result['artifacts'].append(item);found.add(a['name']);save()
+              assert found==wanted,found
+              pr=json.loads(get('/pulls/58'));assert pr['head']['sha']==head
+              result['pull_request']={k:pr[k] for k in ('number','state','draft','merged','merge_commit_sha')}
+              result['verified']=True;save()
+              print('RECORD_UI_FINAL_EVIDENCE_OK',json.dumps({'head':head,'workflows':len(runs),'artifacts':sorted(found),'native_mint_tested':False,'merged':pr['merged']}))
+          except Exception as error:
+              result['error']=str(error);save();raise
+          PY
+      - name: Retain evidence only, including failures; no product source or master update
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/record-ui-final-evidence.json
+          git commit -m 'Retain independently checked final record UI CI evidence'
+          git push origin HEAD:refs/heads/maintenance/records-boundary-worker-20261027
