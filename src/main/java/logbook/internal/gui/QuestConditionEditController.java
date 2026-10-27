@@ -196,7 +196,7 @@ public class QuestConditionEditController extends WindowController {
             this.loadedBytes = logbook.internal.util.QuestDocumentStore.read(file);
             if (this.loadedBytes == null) return;
             tools.jackson.databind.ObjectMapper mapper = QuestEditorDocument.mapper();
-            this.originalDocument = mapper.readTree(this.loadedBytes);
+            this.originalDocument = QuestEditorDocument.parse(this.loadedBytes);
             QuestEditorDocument.validate(this.originalDocument);
             mapper = mapper.rebuild().disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).build();
 

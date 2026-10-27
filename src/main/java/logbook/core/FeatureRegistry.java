@@ -167,7 +167,8 @@ public final class FeatureRegistry {
             if (raw.length > maxMetadataBytes) {
                 throw new IllegalArgumentException("Oversized embedded feature descriptor: " + provider);
             }
-            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+            // Preflight is intentionally usable without application implementation classes.
+            ObjectMapper mapper = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
                     .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
             JsonNode metadata = mapper.readTree(raw);
             requireFields(metadata, Set.of("id", "version", "host_api", "host_sha256", "dependencies", "provider", "features"));
@@ -195,7 +196,7 @@ public final class FeatureRegistry {
                     || !supplied.stream().map(FeatureModule.Feature::id).toList().equals(featureIds)) {
                 throw new IllegalArgumentException("Embedded feature descriptor differs from provider contract: " + provider);
             }
-        } catch (IOException | URISyntaxException error) {
+        } catch (IOException | URISyntaxException | tools.jackson.core.JacksonException error) {
             throw new IllegalArgumentException("Cannot verify embedded feature descriptor: " + provider, error);
         }
     }

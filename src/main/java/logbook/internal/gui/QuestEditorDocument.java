@@ -19,6 +19,18 @@ final class QuestEditorDocument {
         return logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     }
 
+/** Stable editor parsing boundary independent of the JSON engine exception hierarchy. */
+static JsonNode parse(byte[] input) throws IOException {
+    try { return mapper().readTree(input); }
+    catch (tools.jackson.core.JacksonException error) {
+        throw new IOException("任務設定のJSONを読み込めません。元ファイルは変更しません。", error);
+    }
+}
+
+static JsonNode parse(String input) throws IOException {
+    return parse(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+}
+
     static Set<Integer> deckIds(String text) {
         if (text == null || text.isBlank()) return null;
         Set<Integer> ids = new LinkedHashSet<>();
