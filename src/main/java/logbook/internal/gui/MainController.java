@@ -88,6 +88,8 @@ public class MainController extends WindowController {
     private logbook.plugin.api.QuestListV1.Listing displayedQuests;
     private java.util.List<Boolean> displayedCustomFiles;
     private boolean displayedQuestVisibility;
+    private logbook.plugin.api.QuestVisibilityV1.State displayedHiddenQuests;
+    private boolean questVisibilityListenerInstalled;
 
     /** 戦果のハッシュ・コード */
     private long achievementHashCode;
@@ -528,6 +530,11 @@ public class MainController extends WindowController {
      * 任務の更新
      */
     private void quest() {
+        if (!this.questVisibilityListenerInstalled) {
+            this.questbox.addEventHandler(QuestVisibilityUi.CHANGED, event -> { this.quest(); event.consume(); });
+            this.questVisibilityListenerInstalled = true;
+        }
+        var visibility = logbook.plugin.api.QuestVisibilityV1.snapshot();
         // Capture once for both refresh comparison and rendering; drawing must not mutate saved quests.
         var listing = logbook.plugin.api.QuestListV1.snapshot();
         boolean show = AppConfig.get().isShowQuest();
@@ -537,15 +544,16 @@ public class MainController extends WindowController {
         }
         // Full value equality avoids silent missed refreshes from colliding Java hash codes.
         if (!listing.equals(this.displayedQuests) || !customFiles.equals(this.displayedCustomFiles)
-                || show != this.displayedQuestVisibility) {
+                || show != this.displayedQuestVisibility || !visibility.equals(this.displayedHiddenQuests)) {
             this.questPane.setVisible(show);
             this.questPane.setManaged(show);
             // ハッシュ・コードが変わっている場合任務の更新
             ObservableList<Node> quest = this.questbox.getChildren();
             quest.clear();
-            
+            if (!visibility.hiddenIds().isEmpty()) quest.add(QuestVisibilityUi.banner(visibility));
+
             // 1. 受領中の任務を追加
-            listing.quests().stream()
+            listing.quests().stream().filter(row -> !visibility.hiddenIds().contains(row.no()))
                     .filter(logbook.plugin.api.QuestListV1.Quest::active)
                     .map(QuestPane::new)
                     .forEach(quest::add);
@@ -554,7 +562,7 @@ public class MainController extends WindowController {
             for (int i = 1; i <= 5; i++) {
                 int no = 10000 + i;
                 java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + no + ".json");
-                if (java.nio.file.Files.exists(file)) {
+                if (java.nio.file.Files.exists(file) && !visibility.hiddenIds().contains(no)) {
                     logbook.bean.QuestList.Quest q = new logbook.bean.QuestList.Quest();
                     q.setNo(no);
                     q.setCategory(2);
@@ -585,7 +593,7 @@ public class MainController extends WindowController {
             }
 
             // 3. 非受領の任務を追加
-            listing.quests().stream()
+            listing.quests().stream().filter(row -> !visibility.hiddenIds().contains(row.no()))
                     .filter(aq -> !aq.active())
                     .map(QuestPane::new)
                     .forEach(quest::add);
@@ -594,6 +602,7 @@ public class MainController extends WindowController {
             this.displayedQuests = listing;
             this.displayedCustomFiles = java.util.List.copyOf(customFiles);
             this.displayedQuestVisibility = show;
+            this.displayedHiddenQuests = visibility;
         }
     }
 
