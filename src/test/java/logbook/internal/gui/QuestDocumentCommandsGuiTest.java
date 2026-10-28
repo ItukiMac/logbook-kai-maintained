@@ -103,4 +103,21 @@ class QuestDocumentCommandsGuiTest {
             assertEquals(10002,v.selector().getValue().getNo());try(var p=Files.list(root)){assertEquals(2,p.count());}
         }return null;});
     }
+    @Test void clearedSelectionDuringConfirmationDoesNotRetireTheOldTarget()throws Exception{
+        Files.writeString(root.resolve("10001.json"),ORIGINAL,StandardOpenOption.CREATE_NEW);
+        fx(()->{try(var v=open()){
+  dialogs(()->v.editor().remove(null),()->v.selector().getSelectionModel().clearSelection(),true,true);
+  assertEquals(ORIGINAL,Files.readString(root.resolve("10001.json")));assertNull(v.selector().getValue());
+  try(var p=Files.list(root)){assertEquals(1,p.count());}
+        }return null;});
+    }
+    @Test void cancellingAfterSelectionChangesDoesNotRunTheOldOrNewCommand()throws Exception{
+        Files.writeString(root.resolve("10001.json"),ORIGINAL,StandardOpenOption.CREATE_NEW);
+        Files.writeString(root.resolve("10002.json"),ORIGINAL,StandardOpenOption.CREATE_NEW);
+        fx(()->{try(var v=open()){
+  dialogs(()->v.editor().remove(null),()->v.selector().getSelectionModel().select(1),false);
+  assertEquals(ORIGINAL,Files.readString(root.resolve("10001.json")));assertEquals(ORIGINAL,Files.readString(root.resolve("10002.json")));
+  assertEquals(10002,v.selector().getValue().getNo());try(var p=Files.list(root)){assertEquals(2,p.count());}
+        }return null;});
+    }
 }

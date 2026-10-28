@@ -1123,6 +1123,11 @@ public class QuestConditionEditController extends WindowController {
 
     private java.nio.file.Path applyRetirementDocument(logbook.plugin.api.QuestDocumentsV1.Plan plan)
             throws java.io.IOException {
+        var selected = this.questSelector.getSelectionModel().getSelectedItem();
+        if (selected == null || selected.getQuest() == null || this.documentSession == null
+      || selected.getQuest().getNo() == null || selected.getQuest().getNo() != plan.questId()
+      || this.documentSession.document().questId() != plan.questId())
+  throw new java.io.IOException("確認中に選択対象が変わりました。退避せず、対象を再確認してください。");
         var result = this.documentSession.apply(plan, true);
         if (result.retained() != null) {
             this.setQuestData(this.questSelector.getSelectionModel().getSelectedItem());
@@ -1149,6 +1154,7 @@ public class QuestConditionEditController extends WindowController {
 
         try {
             var plan = this.prepareRetirementDocument();
+            var preparedSession = this.documentSession;
             if (plan.existing()) {
                 var proceed = new javafx.scene.control.ButtonType("原本を保持して退避", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
                 var confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION,
@@ -1160,7 +1166,7 @@ public class QuestConditionEditController extends WindowController {
                 confirm.initOwner(this.questSelector.getScene().getWindow());
                 confirm.setTitle("カスタム任務の退避確認"); confirm.setHeaderText("完全削除ではなく、復旧可能な別名退避です");
                 if (confirm.showAndWait().filter(proceed::equals).isEmpty()) {
-                    this.documentSession.apply(plan, false);
+                    preparedSession.apply(plan, false);
                     return;
                 }
             }

@@ -132,9 +132,9 @@ assert all(int(s.get(k,0))==0 for s in visibility_suites for k in ('failures','e
 document_suites=[s for s in suites if s.get('name') in {'logbook.core.QuestDocumentCommandsTest','logbook.internal.gui.QuestDocumentCommandsBoundaryTest','logbook.internal.gui.QuestDocumentCommandsGuiTest'}]
 assert len(document_suites)==3 and all(int(s.get(k,0))==0 for s in document_suites for k in ('failures','errors','skipped'))
 document_test_count=sum(int(s.get('tests',0)) for s in document_suites)
-assert document_test_count>=35
+assert document_test_count>=37
 document_gui=[s for s in document_suites if s.get('name')=='logbook.internal.gui.QuestDocumentCommandsGuiTest']
-assert len(document_gui)==1 and int(document_gui[0].get('tests',0))>=5
+assert len(document_gui)==1 and int(document_gui[0].get('tests',0))>=7
 report={'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
