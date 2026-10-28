@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -408,7 +410,7 @@ public class ShipTablePane extends VBox {
         this.shipSupplier = shipSupplier;
         this.fleetName = fleetName;
         try {
-            FXMLLoader loader = InternalFXMLLoader.load("logbook/gui/ship_table.fxml");
+            FXMLLoader loader = FeatureUiV1.componentLoader(ShipTablePane.class, "/logbook/gui/ship_table.fxml");
             loader.setRoot(this);
             loader.setController(this);
             loader.load();
@@ -420,7 +422,7 @@ public class ShipTablePane extends VBox {
     @FXML
     void initialize() {
         try {
-            TableTool.setVisible(this.table, this.getClass().toString() + "#" + "table");
+            FeatureUiV1.Tables.setVisible(this.table, this.getClass().toString() + "#" + "table");
 
             // フィルターの更新停止
             this.disableFilterUpdate = true;
@@ -487,7 +489,7 @@ public class ShipTablePane extends VBox {
             this.ctypeValue.getSelectionModel().selectedItemProperty().addListener(this::filterAction);
 
             // カラムとオブジェクトのバインド
-            this.row.setCellFactory(TableTool.getRowCountCellFactory());
+            this.row.setCellFactory(FeatureUiV1.Tables.getRowCountCellFactory());
             this.id.setCellValueFactory(new PropertyValueFactory<>("id"));
             this.fleet.setCellValueFactory(new PropertyValueFactory<>("fleet"));
             this.ship.setCellValueFactory(new PropertyValueFactory<>("ship"));
@@ -548,7 +550,7 @@ public class ShipTablePane extends VBox {
             SortedList<ShipItem> sortedList = new SortedList<>(this.filteredShipItems);
             this.table.setItems(sortedList);
             sortedList.comparatorProperty().bind(this.table.comparatorProperty());
-            this.table.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.table.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
             this.table.setStyle("-fx-cell-size: 16px;");
 
             // フィルターの更新再開
@@ -699,7 +701,7 @@ public class ShipTablePane extends VBox {
      */
     @FXML
     void copy() {
-        TableTool.selectionCopy(this.table);
+        FeatureUiV1.Tables.selectionCopy(this.table);
     }
 
     /**
@@ -707,7 +709,7 @@ public class ShipTablePane extends VBox {
      */
     @FXML
     void selectAll() {
-        TableTool.selectAll(this.table);
+        FeatureUiV1.Tables.selectAll(this.table);
     }
 
     /**
@@ -716,7 +718,7 @@ public class ShipTablePane extends VBox {
     @FXML
     void store() {
         try {
-            TableTool.store(this.table, "所有艦娘一覧(" + this.fleetName + ")", this.getScene().getWindow());
+            FeatureUiV1.Tables.store(this.table, "所有艦娘一覧(" + this.fleetName + ")", (Stage) this.getScene().getWindow());
         } catch (IOException e) {
             LoggerHolder.get().error("CSVファイルとして保存に失敗しました", e);
         }
@@ -728,9 +730,9 @@ public class ShipTablePane extends VBox {
             return ShipLabelsV1.capture(this.table.getSelectionModel().getSelectedItems().stream()
                     .map(ShipItem::getId).collect(Collectors.toList()));
         } catch (IllegalArgumentException | IllegalStateException changed) {
-            Tools.Controls.alert(AlertType.WARNING, "艦娘の状態が変わりました",
+            FeatureUiV1.Controls.alert(AlertType.WARNING, "艦娘の状態が変わりました",
                     "ラベルを変更していません。対象を選び直して再実行してください。",
-                    this.getScene().getWindow());
+                    (Stage) this.getScene().getWindow());
             return null;
         }
     }
@@ -752,17 +754,17 @@ public class ShipTablePane extends VBox {
 
     private void confirmedLabelEdit(List<ShipLabelsV1.Target> targets, String label, boolean add) {
         if (!applyLabelEdit(targets, label, add).accepted()) {
-            Tools.Controls.alert(AlertType.WARNING, "ラベルを変更できませんでした",
+            FeatureUiV1.Controls.alert(AlertType.WARNING, "ラベルを変更できませんでした",
                     "確認中に艦娘またはラベルの状態が変わりました。変更していません。対象を選び直してください。",
-                    this.getScene().getWindow());
+                    (Stage) this.getScene().getWindow());
         }
     }
 
     @FXML
     void addLabel() {
         if (this.table.getSelectionModel().getSelectedItems().isEmpty()) {
-            Tools.Controls.alert(AlertType.INFORMATION, "艦娘が選ばれていません",
-                    "ラベルを追加する艦娘を選択してください", this.getScene().getWindow());
+            FeatureUiV1.Controls.alert(AlertType.INFORMATION, "艦娘が選ばれていません",
+                    "ラベルを追加する艦娘を選択してください", (Stage) this.getScene().getWindow());
             return;
         }
         List<ShipLabelsV1.Target> targets = labelTargets();
@@ -772,7 +774,7 @@ public class ShipTablePane extends VBox {
                 .collect(Collectors.joining(","));
         if (shipNames.length() > 50) shipNames = shipNames.substring(0, 50) + "...";
         TextInputDialog dialog = new TextInputDialog("");
-        dialog.initOwner(this.getScene().getWindow());
+        dialog.initOwner((Stage) this.getScene().getWindow());
         dialog.setTitle("艦娘にラベルを追加");
         dialog.setHeaderText(shipNames + "にラベルを追加します");
         PublicAutoCompletion.bindAutoCompletion(dialog.getEditor(), new SuggestSupport(this.labelValue.getItems()));
@@ -783,8 +785,8 @@ public class ShipTablePane extends VBox {
     @FXML
     void removeLabel() {
         if (this.table.getSelectionModel().getSelectedItems().isEmpty()) {
-            Tools.Controls.alert(AlertType.INFORMATION, "艦娘が選ばれていません",
-                    "ラベルを除去する艦娘を選択してください", this.getScene().getWindow());
+            FeatureUiV1.Controls.alert(AlertType.INFORMATION, "艦娘が選ばれていません",
+                    "ラベルを除去する艦娘を選択してください", (Stage) this.getScene().getWindow());
             return;
         }
         List<ShipLabelsV1.Target> targets = labelTargets();
@@ -797,7 +799,7 @@ public class ShipTablePane extends VBox {
         Set<String> labels = new TreeSet<>();
         targets.forEach(target -> labels.addAll(target.expectedLabels()));
         ChoiceDialog<String> dialog = new ChoiceDialog<>();
-        dialog.initOwner(this.getScene().getWindow());
+        dialog.initOwner((Stage) this.getScene().getWindow());
         dialog.getItems().addAll(labels);
         dialog.setTitle("艦娘からラベルを除去");
         dialog.setHeaderText(shipNames + "からラベルを除去");
@@ -874,7 +876,7 @@ public class ShipTablePane extends VBox {
     @FXML
     void columnVisible() {
         try {
-            TableTool.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
+            FeatureUiV1.Tables.showVisibleSetting(this.table, this.getClass().toString() + "#" + "table",
                     (Stage) this.getScene().getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
@@ -1113,7 +1115,7 @@ public class ShipTablePane extends VBox {
                 if (AppConfig.get().isHideShipImageFromShipTablePane()) {
                     this.setGraphic(null);
                 } else {
-                    this.setGraphic(Tools.Controls.zoomImage(new ImageView(Ships.shipWithItemImage(ship))));
+                    this.setGraphic(FeatureUiV1.Controls.zoomImage(new ImageView(Ships.shipWithItemImage(ship))));
                 }
                 this.setText(Ships.shipMst(ship)
                         .map(ShipMst::getName)

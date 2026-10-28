@@ -112,6 +112,26 @@ def ship_statistics_required_entries():
     return {'logbook/internal/gui/StatisticsPane.class', 'logbook/gui/statistics.fxml'}
 
 
+SHIP_LIST_UI_PROFILE = 'ship-list-in-status-v1'
+SHIP_LIST_UI_API = 'logbook/plugin/api/ShipListUiV1.class'
+SHIP_LIST_UI_FAMILIES = ('ShipController', 'ShipTablePane', 'ParameterFilterPane')
+SHIP_LIST_UI_RESOURCES = ('ship', 'ship_table', 'param_filter_pane')
+
+
+def ship_list_ui_entry(name):
+    return (name in {'logbook/gui/' + resource + '.fxml' for resource in SHIP_LIST_UI_RESOURCES}
+            or any(name == 'logbook/internal/gui/' + family + '.class'
+                   or name.startswith('logbook/internal/gui/' + family + '$') and name.endswith('.class')
+                   for family in SHIP_LIST_UI_FAMILIES))
+
+
+def ship_list_ui_required_entries():
+    return ({'logbook/internal/gui/' + family + '.class' for family in SHIP_LIST_UI_FAMILIES}
+            | {'logbook/gui/' + resource + '.fxml' for resource in SHIP_LIST_UI_RESOURCES}
+            | {'logbook/internal/gui/ParameterFilterPane$' + inner + '.class' for inner in
+               ('IntegerParameter', 'ShipItemParameterFilterPane', 'ItemParameterFilterPane', 'AirBaseParameterFilterPane')})
+
+
 def required_entries(module_id):
     provider, controllers, resources = GROUPS[module_id]
     stems = ['logbook/features/' + provider]
@@ -159,6 +179,9 @@ def validate_manifest(report):
     """Validate the complete compatibility graph without opening files or Java."""
     if not isinstance(report, dict) or report.get('format') != FORMAT:
         raise ValueError('Versioned distribution manifest required; legacy v1 is not launchable')
+    ship_list_profile = report.get('ship_list_ui_profile')
+    if ship_list_profile is not None and ship_list_profile != SHIP_LIST_UI_PROFILE:
+        raise ValueError('Unsupported ship list UI packaging profile')
     statistics_profile = report.get('ship_statistics_profile')
     if statistics_profile is not None and statistics_profile != SHIP_STATISTICS_PROFILE:
         raise ValueError('Unsupported ship statistics packaging profile')
@@ -278,6 +301,7 @@ def manifest_attributes(raw):
 
 
 def verify_jars(root, report, catalog):
+    ship_list_profile = report.get('ship_list_ui_profile') == SHIP_LIST_UI_PROFILE
     statistics_profile = report.get('ship_statistics_profile') == SHIP_STATISTICS_PROFILE
     equipment_profile = report.get('equipment_ui_profile') == EQUIPMENT_UI_PROFILE
     record_profile = report.get('record_ui_profile') == RECORD_UI_PROFILE
@@ -325,6 +349,10 @@ def verify_jars(root, report, catalog):
             if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':
                 raise ValueError('Multi-release feature JARs are not supported')
             if path == JARS[0]:
+                if (SHIP_LIST_UI_API in names) != ship_list_profile:
+                    raise ValueError('Ship list UI API and packaging profile disagree')
+                if ship_list_profile and any(ship_list_ui_entry(name) for name in names):
+                    raise ValueError('Ship list UI remains in the host instead of status')
                 if (SHIP_STATISTICS_API in names) != statistics_profile:
                     raise ValueError('Ship statistics API and packaging profile disagree')
                 if statistics_profile and any(ship_statistics_entry(name) for name in names):
@@ -347,6 +375,11 @@ def verify_jars(root, report, catalog):
                 continue
             module = next(m for m in catalog.values() if m['path'] == path)
             required = required_entries(module['id'])
+            if ship_list_profile:
+                if module['id'] == 'status':
+                    required |= ship_list_ui_required_entries()
+                elif any(ship_list_ui_entry(name) for name in names):
+                    raise ValueError('Ship list UI belongs to the status module')
             if statistics_profile:
                 if module['id'] == 'charts':
                     required |= ship_statistics_required_entries()
