@@ -62,6 +62,10 @@ public final class FeatureUiBridgeV1 {
         return Tools.Controls.alert(type, title, message, owner);
     }
 
+    public static void storeSnapshot(javafx.scene.Node node, String title, javafx.stage.Window owner) {
+        Tools.Controls.storeSnapshot(node, title, owner);
+    }
+
     public static void restoreTable(TableView<?> table, String key) { TableTool.setVisible(table, key); }
     public static void selectionCopy(TableView<?> table) { TableTool.selectionCopy(table); }
     public static void selectAll(TableView<?> table) { TableTool.selectAll(table); }

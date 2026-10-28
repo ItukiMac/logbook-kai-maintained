@@ -29,6 +29,7 @@
                         <Text fx:id="total" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-value" text="999.99M" />
                      </children>
                   </HBox>
+                  <Text fx:id="quality" visible="false" managed="false" wrappingWidth="760.0" />
                   <HBox>
                      <children>
                         <VBox HBox.hgrow="ALWAYS">
