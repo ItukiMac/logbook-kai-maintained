@@ -65,13 +65,10 @@ public class ShipController extends WindowController {
             });
 
             ShipTablePane allPane = new ShipTablePane(() -> {
-                Map<Integer, Ship> shipMap = ShipCollection.get()
-                        .getShipMap();
-                return shipMap.values().stream()
-//                      .sorted(Comparator.comparing(Ship::getLv).reversed()
-//                      .thenComparing(Comparator.comparing(Ship::getShipId)))
-                        .sorted(Comparator.comparingInt((Ship s) -> Ships.shipMst(s).map(ShipMst::getSortId).orElse(Integer.MAX_VALUE))
-                                .thenComparingInt(Ship::getId))
+                Map<Integer, Ship> shipMap = ShipCollection.get().getShipMap();
+                return logbook.plugin.api.ShipRosterV1.snapshot().sortedShips().stream()
+                        .map(row -> shipMap.get(row.id()))
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList());
             }, "全員");
 
@@ -121,9 +118,7 @@ public class ShipController extends WindowController {
         ShipTablePane deckPane = new ShipTablePane(() -> {
             Map<Integer, Ship> shipMap = ShipCollection.get()
                     .getShipMap();
-            return DeckPortCollection.get().getDeckPortMap().values().stream()
-                .map(DeckPort::getShip)
-                .flatMap(List::stream)
+            return logbook.plugin.api.ShipRosterV1.snapshot().allDeckShipIds().stream()
                 .map(shipMap::get)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
