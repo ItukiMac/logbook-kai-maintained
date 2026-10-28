@@ -1,0 +1,49 @@
+{
+  "source": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+  "run": 40723905576,
+  "artifacts": [
+    {
+      "id": 12832526286,
+      "sha256": "63b7e75fb8e9be420c09c9cbdb6ec782035f5e86af803b92b8186073a8aa8a8f",
+      "log": ".maintenance-evidence/pr68-first-migration-12832526286.log",
+      "timeout_exception": true,
+      "source_unchanged_markers": true,
+      "summary": [
+        "Ran 5 tests in 206.946s",
+        "FAILED (failures=1)",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 4, \"failures\": 1, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ],
+      "failure_details": [
+        "AssertionError: Validation command failed; evidence retained at /tmp/logbook-migration-java-km5tjjit/migrated/validation-runs/9c471a1333854cdb8ed46e07ff36ef0d",
+        "  \"changed_inputs\": [],",
+        "  \"external_write_events\": [],",
+        "  \"stderr\": \"Oct 28, 2026 4:16:02 PM com.sun.javafx.application.PlatformImpl startup\\nWARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @7b227d8d'\\n\\n(java:3382): dbind-WARNING **: 16:16:19.854: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files\\njava.util.concurrent.TimeoutException\\n\\tat java.base/java.util.concurrent.FutureTask.get(FutureTask.java:204)\\n\\tat logbook.internal.kancolle.RuntimeMigrationProbe.lambda$launcher$2(RuntimeMigrationProbe.java:225)\\n\\tat java.base/java.lang.Thread.run(Thread.java:1583)\\n\",",
+        "AssertionError: {'discovered': 5, 'executed': 5, 'successful': 4, 'failures': 1, 'errors': 0, 'skipped': 0, 'native_mint_tested': False, 'production_applied': False}"
+      ]
+    },
+    {
+      "id": 12831747866,
+      "sha256": "3f658506e4f1339cf55364030292459221d80261d604d837c794c8d81314400d",
+      "log": ".maintenance-evidence/pr68-first-migration-12831747866.log",
+      "timeout_exception": true,
+      "source_unchanged_markers": true,
+      "summary": [
+        "Ran 5 tests in 188.724s",
+        "FAILED (failures=2)",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 3, \"failures\": 2, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ],
+      "failure_details": [
+        "AssertionError: Validation command failed; evidence retained at /tmp/logbook-migration-java-mqba60ar/migrated/validation-runs/0bc8182dca094f6a98c5c5ff80940025",
+        "  \"changed_inputs\": [],",
+        "  \"external_write_events\": [],",
+        "  \"stderr\": \"Oct 28, 2026 4:16:45 PM com.sun.javafx.application.PlatformImpl startup\\nWARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @240237d2'\\nWARNING: A restricted method in java.lang.System has been called\\nWARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/tmp/logbook-migration-java-mqba60ar/current-managed-launch/logbook-core.jar)\\nWARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module\\nWARNING: Restricted methods will be blocked in a future release unless native access is enabled\\n\\n\\n(java:3424): dbind-WARNING **: 16:17:21.818: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files\\njava.lang.AssertionError: Actual Launcher window/local proxy did not become ready\\n\\tat logbook.internal.kancolle.RuntimeMigrationProbe.lambda$launcher$0(RuntimeMigrationProbe.java:234)\\n\\tat java.base/java.lang.Thread.run(Thread.java:1474)\\n\",",
+        "AssertionError: Validation command failed; evidence retained at /tmp/logbook-migration-java-i8xc3e20/migrated/validation-runs/9dc1b9b9f54542988cdb535ba277ab6e",
+        "  \"changed_inputs\": [],",
+        "  \"external_write_events\": [],",
+        "  \"stderr\": \"Oct 28, 2026 4:18:04 PM com.sun.javafx.application.PlatformImpl startup\\nWARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @16f7c8c1'\\nWARNING: A restricted method in java.lang.System has been called\\nWARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/fixtures/new/target/logbook-kai.jar)\\nWARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module\\nWARNING: Restricted methods will be blocked in a future release unless native access is enabled\\n\\n\\n(java:3683): dbind-WARNING **: 16:18:04.493: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files\\njava.util.concurrent.TimeoutException\\n\\tat java.base/java.util.concurrent.FutureTask.get(FutureTask.java:206)\\n\\tat logbook.internal.kancolle.RuntimeMigrationProbe.lambda$launcher$0(RuntimeMigrationProbe.java:225)\\n\\tat java.base/java.lang.Thread.run(Thread.java:1474)\\n\",",
+        "AssertionError: {'discovered': 5, 'executed': 5, 'successful': 3, 'failures': 2, 'errors': 0, 'skipped': 0, 'native_mint_tested': False, 'production_applied': False}"
+      ]
+    }
+  ],
+  "native_mint_tested": false
+}

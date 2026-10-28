@@ -1,0 +1,94 @@
+test_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor) ... FAIL
+test_backup_only_config_is_rewritten_and_restored_with_real_java (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_backup_only_config_is_rewritten_and_restored_with_real_java) ... ok
+test_declared_historical_application_versions_restore_real_old_state (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_declared_historical_application_versions_restore_real_old_state) ... FAIL
+test_real_java_copy_rewrite_approved_mutation_and_old_state_restore (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_real_java_copy_rewrite_approved_mutation_and_old_state_restore) ... ok
+test_real_java_schema_import_generations_and_whole_managed_store_restore (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_real_java_schema_import_generations_and_whole_managed_store_restore) ... ok
+
+======================================================================
+FAIL: test_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 190, in approved_launch
+    result = migration.launch(output, authorization, confirm_launch=True, timeout=60, limits=LIMITS)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/runtime_migration.py", line 633, in launch
+    raise ValueError('Validation command failed; evidence retained at ' + str(run_dir))
+ValueError: Validation command failed; evidence retained at /tmp/logbook-migration-java-mqba60ar/migrated/validation-runs/0bc8182dca094f6a98c5c5ff80940025
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 346, in test_actual_launcher_start_change_restore_with_external_write_monitor
+    self.exercise_roundtrip(launcher=True)
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 212, in exercise_roundtrip
+    result = self.approved_launch(output, 'launcher' if launcher else 'mutate')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 195, in approved_launch
+    self.fail(str(error) + '\n' + '\n'.join(evidence))
+AssertionError: Validation command failed; evidence retained at /tmp/logbook-migration-java-mqba60ar/migrated/validation-runs/0bc8182dca094f6a98c5c5ff80940025
+{
+  "changed_inputs": [],
+  "external_write_events": [],
+  "format": "logbook-runtime-validation-result-v1",
+  "native_mint_tested": false,
+  "originals_unchanged": true,
+  "output": "/tmp/logbook-migration-java-mqba60ar/migrated/validation-runs/0bc8182dca094f6a98c5c5ff80940025",
+  "process_error": null,
+  "ready_for_production": false,
+  "returncode": 23,
+  "stderr": "Oct 28, 2026 4:16:45 PM com.sun.javafx.application.PlatformImpl startup\nWARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @240237d2'\nWARNING: A restricted method in java.lang.System has been called\nWARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/tmp/logbook-migration-java-mqba60ar/current-managed-launch/logbook-core.jar)\nWARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module\nWARNING: Restricted methods will be blocked in a future release unless native access is enabled\n\n\n(java:3424): dbind-WARNING **: 16:17:21.818: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files\njava.lang.AssertionError: Actual Launcher window/local proxy did not become ready\n\tat logbook.internal.kancolle.RuntimeMigrationProbe.lambda$launcher$0(RuntimeMigrationProbe.java:234)\n\tat java.base/java.lang.Thread.run(Thread.java:1474)\n",
+  "stdout": "MIGRATION_REAL_JAVA_OK records=3 accepted=2 config_paths=12 pending_retained=true\n",
+  "timed_out": false
+}
+
+
+======================================================================
+FAIL: test_declared_historical_application_versions_restore_real_old_state (scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_declared_historical_application_versions_restore_real_old_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 190, in approved_launch
+    result = migration.launch(output, authorization, confirm_launch=True, timeout=60, limits=LIMITS)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/runtime_migration.py", line 633, in launch
+    raise ValueError('Validation command failed; evidence retained at ' + str(run_dir))
+ValueError: Validation command failed; evidence retained at /tmp/logbook-migration-java-i8xc3e20/migrated/validation-runs/9dc1b9b9f54542988cdb535ba277ab6e
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 262, in test_declared_historical_application_versions_restore_real_old_state
+    self.exercise_managed_pair(old_jar, new_jar, declared_versions=True)
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 299, in exercise_managed_pair
+    launched = self.approved_launch(output, 'launcher' if use_launcher else 'mutate', jar=new_jar)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/scripts/tests/test_runtime_migration_java.py", line 195, in approved_launch
+    self.fail(str(error) + '\n' + '\n'.join(evidence))
+AssertionError: Validation command failed; evidence retained at /tmp/logbook-migration-java-i8xc3e20/migrated/validation-runs/9dc1b9b9f54542988cdb535ba277ab6e
+{
+  "changed_inputs": [],
+  "external_write_events": [],
+  "format": "logbook-runtime-validation-result-v1",
+  "native_mint_tested": false,
+  "originals_unchanged": true,
+  "output": "/tmp/logbook-migration-java-i8xc3e20/migrated/validation-runs/9dc1b9b9f54542988cdb535ba277ab6e",
+  "process_error": null,
+  "ready_for_production": false,
+  "returncode": 23,
+  "stderr": "Oct 28, 2026 4:18:04 PM com.sun.javafx.application.PlatformImpl startup\nWARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @16f7c8c1'\nWARNING: A restricted method in java.lang.System has been called\nWARNING: java.lang.System::load has been called by com.sun.glass.utils.NativeLibLoader in an unnamed module (file:/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/fixtures/new/target/logbook-kai.jar)\nWARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module\nWARNING: Restricted methods will be blocked in a future release unless native access is enabled\n\n\n(java:3683): dbind-WARNING **: 16:18:04.493: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files\njava.util.concurrent.TimeoutException\n\tat java.base/java.util.concurrent.FutureTask.get(FutureTask.java:206)\n\tat logbook.internal.kancolle.RuntimeMigrationProbe.lambda$launcher$0(RuntimeMigrationProbe.java:225)\n\tat java.base/java.lang.Thread.run(Thread.java:1474)\n",
+  "stdout": "MIGRATION_REAL_JAVA_OK records=3 accepted=2 config_paths=12 pending_retained=true\n",
+  "timed_out": false
+}
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 188.724s
+
+FAILED (failures=2)
+MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true
+RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true
+RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true
+RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false
+RUNTIME_MIGRATION_TEST_SUMMARY {"discovered": 5, "executed": 5, "successful": 3, "failures": 2, "errors": 0, "skipped": 0, "native_mint_tested": false, "production_applied": false}
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+AssertionError: {'discovered': 5, 'executed': 5, 'successful': 3, 'failures': 2, 'errors': 0, 'skipped': 0, 'native_mint_tested': False, 'production_applied': False}
