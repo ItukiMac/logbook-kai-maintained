@@ -19,7 +19,8 @@ import javafx.scene.shape.Arc;
 import javafx.stage.Stage;
 import logbook.bean.AppQuest;
 import logbook.bean.AppQuestCollection;
-import logbook.bean.QuestList.Quest;
+import logbook.plugin.api.QuestListV1.Quest;
+import logbook.core.QuestListReadService;
 import logbook.core.LogBookCoreServices;
 import logbook.internal.ThreadManager;
 import logbook.internal.logger.LoggerHolder;
@@ -30,7 +31,7 @@ import logbook.internal.logger.LoggerHolder;
  */
 public class QuestPane extends HBox {
 
-    private AppQuest quest;
+    private final Quest display;
     private DefinitionUiBinding definitionBinding;
     private final javafx.beans.value.ChangeListener<javafx.stage.Window> definitionWindowListener = (o,a,b) -> attachDefinitionWindow(b);
     private void attachDefinitionWindow(javafx.stage.Window window) {
@@ -39,7 +40,7 @@ public class QuestPane extends HBox {
     }
     private void refreshDefinitionAvailability() {
         try (var scope = LogBookCoreServices.pinDefinitions()) {
-            int id = this.quest.getNo();
+            int id = this.display.no();
             this.condition.setVisible(LogBookCoreServices.getQuestResource(id,true) != null
                 || LogBookCoreServices.getQuestResource(id,false) != null || LogBookCoreServices.getCustomQuestResource(id) != null);
             getProperties().put("definitionGeneration", scope.snapshot().generation());
@@ -73,7 +74,12 @@ public class QuestPane extends HBox {
      * @param quest 任務
      */
     public QuestPane(AppQuest quest) {
-        this.quest = quest;
+        this(QuestListReadService.copy(quest));
+    }
+
+    /** Display an already captured immutable row; retain the legacy constructor above. */
+    public QuestPane(Quest quest) {
+        this.display = java.util.Objects.requireNonNull(quest);
         try {
             FXMLLoader loader = InternalFXMLLoader.load("logbook/gui/quest.fxml");
             loader.setRoot(this);
@@ -91,9 +97,9 @@ public class QuestPane extends HBox {
             this.detailView.managedProperty().bind(this.detailView.visibleProperty());
             this.detailView.setVisible(false);
 
-            Quest quest = this.quest.getQuest();
+            Quest quest = this.display;
 
-            switch (quest.getCategory()) {
+            switch (quest.category() == null ? 0 : quest.category()) {
                 case 1:
                     this.getStyleClass().add("deck");
                     break;
@@ -120,10 +126,10 @@ public class QuestPane extends HBox {
                 default:
                     break;
             }
-            if (!this.quest.isActive()) {
+            if (!this.display.active()) {
                 this.getStyleClass().add("inactive");
             }
-            switch (quest.getProgressFlag()) {
+            switch (quest.progressFlag() == null ? 0 : quest.progressFlag()) {
                 case 1:
                     this.progress.setStartAngle(90);
                     this.progress.setRadiusX(5);
@@ -137,7 +143,7 @@ public class QuestPane extends HBox {
                     this.progress.setLength(360 * 0.8);
                     break;
                 default:
-                    if (quest.getState() == 3) {
+                    if (Integer.valueOf(3).equals(quest.state())) {
                         this.progress.setRadiusX(5);
                         this.progress.setRadiusY(5);
                     } else {
@@ -147,8 +153,8 @@ public class QuestPane extends HBox {
                     this.progress.setLength(360);
                     break;
             }
-            this.name.setText(quest.getTitle());
-            this.detail.setText(quest.getDetail().replaceAll("<br>", ""));
+            this.name.setText(java.util.Objects.toString(quest.title(), "任務 " + quest.no()));
+            this.detail.setText(java.util.Objects.toString(quest.detail(), "").replace("<br>", ""));
             this.setOnContextMenuRequested(this::showContextMenu);
 
             refreshDefinitionAvailability();
@@ -159,9 +165,9 @@ public class QuestPane extends HBox {
             });
 
             // 工廠任務の備考を表示
-            int category = quest.getCategory();
+            int category = quest.category() == null ? 0 : quest.category();
             if (category == 6 || category == 11) {
-                java.nio.file.Path path = java.nio.file.Paths.get("./arsenalquest/" + quest.getNo() + ".json");
+                java.nio.file.Path path = java.nio.file.Paths.get("./arsenalquest/" + quest.no() + ".json");
                 if (java.nio.file.Files.exists(path)) {
                     tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
                     try {
@@ -188,7 +194,7 @@ public class QuestPane extends HBox {
                 }
             }
             // カスタム任務の場合、検索リンクを表示しない
-            int no = quest.getNo();
+            int no = quest.no();
             if (no >= 10001 && no <= 10005) {
                 this.searchLink.setVisible(false);
                 this.searchLink.setManaged(false);
@@ -200,7 +206,7 @@ public class QuestPane extends HBox {
 
     @FXML
     void remove(ActionEvent event) {
-        int no = this.quest.getNo();
+        int no = this.display.no();
         if (no >= 10001 && no <= 10005) {
             try {
                 java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + no + ".json");
@@ -211,7 +217,7 @@ public class QuestPane extends HBox {
         }
         AppQuestCollection.get()
                 .getQuest()
-                .remove(this.quest.getNo());
+                .remove(this.display.no());
     }
 
     @FXML
@@ -228,7 +234,7 @@ public class QuestPane extends HBox {
                     .submit(() -> {
                         Desktop.getDesktop()
                                 .browse(URI.create("https://www.google.co.jp/search?q="
-                                        + URLEncoder.encode(this.quest.getQuest().getTitle(), "UTF-8")));
+                                        + URLEncoder.encode(java.util.Objects.toString(this.display.title(), "任務 " + this.display.no()), "UTF-8")));
                         return null;
                     });
         } catch (Exception e) {
@@ -251,8 +257,8 @@ public class QuestPane extends HBox {
     void condition(ActionEvent event) {
         try {
             InternalFXMLLoader.showWindow("logbook/gui/quest_progress.fxml", (Stage) this.getScene().getWindow(),
-                    this.quest.getQuest().getTitle(), c -> {
-                        ((QuestProgress) c).setQuest(this.quest);
+                    java.util.Objects.toString(this.display.title(), "任務 " + this.display.no()), c -> {
+                        ((QuestProgress) c).setQuest(QuestListReadService.toLegacy(this.display));
                     }, null);
         } catch (IOException e) {
             LoggerHolder.get().warn("進捗を開けませんでした", e);
