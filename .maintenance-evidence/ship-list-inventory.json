@@ -1,0 +1,256 @@
+{
+  "base": "30d9c17e25adb9bdcffdf41c6ac71841a6f240ed",
+  "references": {
+    "src/main/resources/logbook/gui/ship.fxml": [
+      "7: <VBox prefHeight=\"600.0\" prefWidth=\"800.0\" styleClass=\"shipWindow\" xmlns=\"http://javafx.com/javafx/8.0.111\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"logbook.internal.gui.ShipController\">"
+    ],
+    "src/main/java/logbook/internal/kancolle/ComparableFilter.java": [
+      "16:     /** ShipItem からパラメータに変換する mapper */"
+    ],
+    "src/main/java/logbook/internal/kancolle/ShipFilter.java": [
+      "15: import logbook.internal.gui.ShipItem;",
+      "23: public interface ShipFilter extends Predicate<ShipItem> {",
+      "26:     public static class TypeFilter implements ShipFilter {",
+      "32:         public boolean test(ShipItem ship) {",
+      "40:     public static class CondFilter implements ShipFilter {",
+      "49:         public boolean test(ShipItem ship) {",
+      "57:     public static class LevelFilter implements ShipFilter {",
+      "66:         public boolean test(ShipItem ship) {",
+      "74:     public static class LabelFilter implements ShipFilter {",
+      "81:         public boolean test(ShipItem ship) {",
+      "93:     public static class SlotExFilter implements ShipFilter {",
+      "99:         public boolean test(ShipItem ship) {",
+      "107:     public static class TextFilter implements ShipFilter {",
+      "113:         public boolean test(ShipItem ship) {",
+      "173:     public static class MissionFilter implements ShipFilter {",
+      "179:         public boolean test(ShipItem ship) {",
+      "189:     public static class CtypeFilter implements ShipFilter {",
+      "195:         public boolean test(ShipItem ship) {"
+    ],
+    "src/main/java/logbook/internal/gui/ParameterFilterPane.java": [
+      "38: abstract class ParameterFilterPane<T> extends GridPane {",
+      "76:     protected ParameterFilterPane(List<IntegerParameter<T>> items) {",
+      "206:     static class ShipItemParameterFilterPane extends ParameterFilterPane<ShipItem> {",
+      "208:         private static final List<IntegerParameter<ShipItem>> SHIPITEM_PARAMETERS;",
+      "212:                     new IntegerParameter<ShipItem>(\"cond\", ShipItem::getCond, () -> new IntegerSpinnerValueFactory(0, 100, 53)),",
+      "213:                     new IntegerParameter<ShipItem>(\"Lv\", ShipItem::getLv, () -> new IntegerSpinnerValueFactory(1, ExpTable.MAX_LEVEL, 99)),",
+      "214:                     new IntegerParameter<ShipItem>(\"ID\", ShipItem::getId, () -> new IntegerSpinnerValueFactory(1, Integer.MAX_VALUE)),",
+      "215:                     new IntegerParameter<ShipItem>(\"exp\", ShipItem::getExp, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "216:                     new IntegerParameter<ShipItem>(\"next\", ShipItem::getNext, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "217:                     new IntegerParameter<ShipItem>(\"制空\", ShipItem::getSeiku, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "218:                     new IntegerParameter<ShipItem>(\"砲戦火力\", ShipItem::getHPower, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "219:                     new IntegerParameter<ShipItem>(\"雷戦火力\", ShipItem::getRPower, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "220:                     new IntegerParameter<ShipItem>(\"夜戦火力\", ShipItem::getYPower, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "221:                     new IntegerParameter<ShipItem>(\"対潜火力\", ShipItem::getTPower, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "222:                     new IntegerParameter<ShipItem>(\"火力(素)\", ShipItem::getKaryoku, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "223:                     new IntegerParameter<ShipItem>(\"雷装(素)\", ShipItem::getRaisou, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "224:                     new IntegerParameter<ShipItem>(\"対空(素)\", ShipItem::getTaiku, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "225:                     new IntegerParameter<ShipItem>(\"対潜(素)\", ShipItem::getTais, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "226:                     new IntegerParameter<ShipItem>(\"索敵(素)\", ShipItem::getSakuteki, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "227:                     new IntegerParameter<ShipItem>(\"運(素)\", ShipItem::getLucky, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "228:                     new IntegerParameter<ShipItem>(\"耐久\", ShipItem::getMaxhp, () -> new IntegerSpinnerValueFactory(1, Integer.MAX_VALUE)),",
+      "229:                     new IntegerParameter<ShipItem>(\"装甲(素)\", ShipItem::getSoukou, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "230:                     new IntegerParameter<ShipItem>(\"回避(素)\", ShipItem::getKaihi, () -> new IntegerSpinnerValueFactory(0, Integer.MAX_VALUE)),",
+      "231:                     new IntegerParameter<ShipItem>(\"速力\", ShipItem::getSoku, null, () -> IntStream.of(5, 10, 15, 20), Ships::sokuText),",
+      "232:                     new IntegerParameter<ShipItem>(\"射程\", ShipItem::getLeng, null, () -> IntStream.range(1, 5), Ships::lengText)",
+      "244:     static class ItemParameterFilterPane extends ParameterFilterPane<Item> {",
+      "273:     static class AirBaseParameterFilterPane extends ParameterFilterPane<AirBaseItem> {"
+    ],
+    "src/main/java/logbook/internal/gui/ShipTablePane.java": [
+      "73: import logbook.internal.kancolle.ShipFilter;",
+      "84: public class ShipTablePane extends VBox {",
+      "220:     private TableView<ShipItem> table;",
+      "224:     private TableColumn<ShipItem, Integer> row;",
+      "228:     private TableColumn<ShipItem, Integer> id;",
+      "232:     private TableColumn<ShipItem, String> fleet;",
+      "236:     private TableColumn<ShipItem, Ship> ship;",
+      "240:     private TableColumn<ShipItem, String> type;",
+      "244:     private TableColumn<ShipItem, Integer> lv;",
+      "248:     private TableColumn<ShipItem, Integer> exp;",
+      "252:     private TableColumn<ShipItem, Integer> next;",
+      "256:     private TableColumn<ShipItem, Integer> cond;",
+      "260:     private TableColumn<ShipItem, Set<String>> label;",
+      "264:     private TableColumn<ShipItem, Integer> seiku;",
+      "268:     private TableColumn<ShipItem, Integer> hPower;",
+      "272:     private TableColumn<ShipItem, Integer> rPower;",
+      "276:     private TableColumn<ShipItem, Integer> yPower;",
+      "280:     private TableColumn<ShipItem, Integer> tPower;",
+      "284:     private TableColumn<ShipItem, Integer> karyoku;",
+      "288:     private TableColumn<ShipItem, Integer> raisou;",
+      "292:     private TableColumn<ShipItem, Integer> taiku;",
+      "296:     private TableColumn<ShipItem, Integer> tais;",
+      "300:     private TableColumn<ShipItem, Integer> sakuteki;",
+      "304:     private TableColumn<ShipItem, Integer> lucky;",
+      "308:     private TableColumn<ShipItem, Integer> maxhp;",
+      "312:     private TableColumn<ShipItem, Integer> soukou;",
+      "316:     private TableColumn<ShipItem, Integer> kaihi;",
+      "320:     private TableColumn<ShipItem, Integer> soku;",
+      "324:     private TableColumn<ShipItem, Integer> leng;",
+      "328:     private TableColumn<ShipItem, SlotItem> slot1;",
+      "332:     private TableColumn<ShipItem, SlotItem> slot2;",
+      "336:     private TableColumn<ShipItem, SlotItem> slot3;",
+      "340:     private TableColumn<ShipItem, SlotItem> slot4;",
+      "344:     private TableColumn<ShipItem, SlotItem> slot5;",
+      "348:     private TableColumn<ShipItem, SlotItem> slotEx;",
+      "354:     private final ObservableList<ShipItem> shipItems = FXCollections.observableArrayList();",
+      "357:     private final FilteredList<ShipItem> filteredShipItems = new FilteredList<>(this.shipItems);",
+      "375:     private List<ParameterFilterPane.ShipItemParameterFilterPane> parameterFilters;",
+      "385:     public ShipTablePane(DeckPort port) {",
+      "407:     public ShipTablePane(Supplier<List<Ship>> shipSupplier, String fleetName) {",
+      "436:                 this.parameterFilters.add(new ParameterFilterPane.ShipItemParameterFilterPane());",
+      "457:                     return object.equals(ShipFilter.LabelFilter.NO_LABEL) ? \"(ラベルなし)\" : object;",
+      "519:             this.soku.setCellFactory(p -> new TableCell<ShipItem, Integer>() {",
+      "527:             this.leng.setCellFactory(p -> new TableCell<ShipItem, Integer>() {",
+      "548:             SortedList<ShipItem> sortedList = new SortedList<>(this.filteredShipItems);",
+      "596:                         .map(ShipItem::toShipItem)",
+      "618:                 .map(ShipItem::getShip)",
+      "672:         labels.add(ShipFilter.LabelFilter.NO_LABEL);",
+      "729:                     .map(ShipItem::getId).collect(Collectors.toList()));",
+      "742:             for (ShipItem row : this.shipItems) {",
+      "778:         PublicAutoCompletion.bindAutoCompletion(dialog.getEditor(), new SuggestSupport(this.labelValue.getItems()));",
+      "860:         DeckBuilder.displayCopy(this.table);",
+      "868:         DeckBuilder.selectionCopy(this.table);",
+      "924:             Predicate<ShipItem> filter = this.createFilter();",
+      "935:     private Predicate<ShipItem> createFilter() {",
+      "936:         Predicate<ShipItem> filter = null;",
+      "939:             filter = ShipFilter.TextFilter.builder()",
+      "949:             filter = this.filterAnd(filter, ShipFilter.TypeFilter.builder()",
+      "953:         for (Predicate<ShipItem> parameterFilter : this.parameterFilters.stream()",
+      "954:                 .map(ParameterFilterPane::filterProperty).map(ReadOnlyObjectProperty::get)",
+      "959:             filter = this.filterAnd(filter, ShipFilter.LabelFilter.builder()",
+      "964:             filter = this.filterAnd(filter, ShipFilter.SlotExFilter.builder()",
+      "969:             filter = this.filterAnd(filter, ShipFilter.MissionFilter.builder()",
+      "980:                 filter = this.filterAnd(filter, ShipFilter.CtypeFilter.builder()",
+      "988:     private Predicate<ShipItem> filterAnd(Predicate<ShipItem> base, Predicate<ShipItem> add) {",
+      "1079:                 .map(ParameterFilterPane::saveConfig)",
+      "1107:     private static class ShipImageCell extends TableCell<ShipItem, Ship> {",
+      "1132:     private static class ItemImageCell extends TableCell<ShipItem, SlotItem> {",
+      "1175:     private static class CondCell extends TableCell<ShipItem, Integer> {",
+      "1202:     class LabelCell extends TableCell<ShipItem, Set<String>> {",
+      "1227:                 ShipTablePane.this.labelValue.getSelectionModel().select(label.getText());",
+      "1228:                 ShipTablePane.this.labelFilter.setSelected(true);",
+      "1273:         public static void displayCopy(TableView<ShipItem> table) {",
+      "1277:                     .map(ShipItem::getShip)",
+      "1287:         public static void selectionCopy(TableView<ShipItem> table) {",
+      "1292:                     .map(ShipItem::getShip)"
+    ],
+    "src/main/java/logbook/internal/gui/PublicAutoCompletion.java": [
+      "19: public final class PublicAutoCompletion implements AutoCloseable {",
+      "22:     private final SuggestSupport provider;",
+      "41:     public static PublicAutoCompletion bindAutoCompletion(TextField field, SuggestSupport provider) {",
+      "46:         if (previous instanceof PublicAutoCompletion binding) binding.close();",
+      "47:         PublicAutoCompletion binding = new PublicAutoCompletion(field, provider);",
+      "52:     private PublicAutoCompletion(TextField field, SuggestSupport provider) {"
+    ],
+    "src/main/java/logbook/internal/gui/ItemAirBaseController.java": [
+      "144:     private List<ParameterFilterPane.AirBaseParameterFilterPane> parameterFilters;",
+      "157:             this.parameterFilters = IntStream.range(0, 5).mapToObj(i -> new ParameterFilterPane.AirBaseParameterFilterPane()).collect(Collectors.toList());",
+      "245:             .map(ParameterFilterPane::filterProperty)",
+      "353:         DeckBuilder.airbaseSelectionCopy(this.itemTable);",
+      "395:         airbaseTabConfig.setParameterFilters(this.parameterFilters.stream().map(ParameterFilterPane::saveConfig).collect(Collectors.toList()));"
+    ],
+    "src/main/java/logbook/internal/gui/DeckBuilder.java": [
+      "36: public class DeckBuilder {",
+      "43:     public static void displayCopy(TableView<ShipItem> table) {",
+      "46:                 .map(ShipItem::getShip)",
+      "55:     public static void selectionCopy(TableView<ShipItem> table) {",
+      "59:                 .map(ShipItem::getShip)",
+      "111:             Map<String, DeckBuilder.Kanmusu> fleetMap = new TreeMap<>();",
+      "116:                         .map(DeckBuilder.Kanmusu::new)",
+      "148:             Map<String, DeckBuilder.Kanmusu> fleet = new TreeMap<>();",
+      "155:                             .map(DeckBuilder.Kanmusu::new)",
+      "215:         private Map<String, DeckBuilder.Item> items;",
+      "231:                     DeckBuilder.Item item = new DeckBuilder.Item(itemId, itemLvs.get(i));",
+      "253:                                     .map(DeckBuilder.Item::new)",
+      "259:                     .map(DeckBuilder.Item::new)",
+      "267:         private final Map<String, DeckBuilder.Item> items = new TreeMap<>();"
+    ],
+    "src/main/java/logbook/internal/gui/ItemItemController.java": [
+      "154:     private List<ParameterFilterPane<Item>> parameterFilters;",
+      "295:             this.parameterFilters = IntStream.range(0, 3).mapToObj(i -> new ParameterFilterPane.ItemParameterFilterPane()).collect(Collectors.toList());",
+      "361:             PublicAutoCompletion.bindAutoCompletion(this.textValue.getEditor(),",
+      "362:                     new SuggestSupport(String::contains, items.stream()",
+      "469:                 .map(ParameterFilterPane::filterProperty)",
+      "797:         itemTabConfig.setParameterFilters(this.parameterFilters.stream().map(ParameterFilterPane::saveConfig).collect(Collectors.toList()));"
+    ],
+    "src/main/java/logbook/internal/gui/ShipController.java": [
+      "38: public class ShipController extends WindowController {",
+      "51:                     if (node instanceof ShipTablePane) {",
+      "52:                         ((ShipTablePane) node).disable();",
+      "57:                     if (node instanceof ShipTablePane) {",
+      "58:                         ((ShipTablePane) node).enable();",
+      "59:                         ((ShipTablePane) node).update();",
+      "67:             ShipTablePane allPane = new ShipTablePane(() -> {",
+      "118:         ShipTablePane deckPane = new ShipTablePane(() -> {",
+      "134:             ShipTablePane deckPane = new ShipTablePane(deck);",
+      "151:             ShipTablePane noLabelPane = new ShipTablePane(() -> {",
+      "175:                 .sorted(Comparator.comparing(ShipController::labelSortOrder))",
+      "177:                     ShipTablePane labelPane = new ShipTablePane(() -> {",
+      "224:             if (content instanceof ShipTablePane) {",
+      "225:                 ((ShipTablePane) content).update();"
+    ],
+    "src/main/java/logbook/internal/gui/SuggestSupport.java": [
+      "14: public class SuggestSupport implements Callback<ISuggestionRequest, Collection<String>> {",
+      "18:     public SuggestSupport(String... values) {",
+      "21:     public SuggestSupport(BiPredicate<String, String> predicate, String... values) {",
+      "24:     public SuggestSupport(List<String> values) {",
+      "27:     public SuggestSupport(BiPredicate<String, String> predicate, List<String> values) {"
+    ],
+    "src/main/java/logbook/internal/gui/DeckShipPane.java": [
+      "43: import logbook.internal.kancolle.ShipFilter;",
+      "296:         PopupSelectbox<ShipItem> box = new PopupSelectbox<>();",
+      "298:         ObservableList<ShipItem> ships = FXCollections.observableArrayList();",
+      "299:         ships.add(new ShipItem());",
+      "306:                 .map(ShipItem::toShipItem)",
+      "309:         FilteredList<ShipItem> filtered = new FilteredList<>(ships);",
+      "326:                 filtered.setPredicate(ShipFilter.TypeFilter.builder()",
+      "457:     static class ShipCell extends SelectboxCell<ShipItem> {",
+      "459:         protected void updateItem(ShipItem shipItem, boolean empty) {"
+    ],
+    "src/main/java/logbook/internal/gui/AirBaseController.java": [
+      "190:         DeckBuilder.airbaseSelectionCopy(airbases);"
+    ],
+    "src/main/java/logbook/internal/gui/ShipItem.java": [
+      "34: public class ShipItem {",
+      "1199:     public static ShipItem toShipItem(Ship ship) {",
+      "1203:         ShipItem shipItem = new ShipItem();"
+    ],
+    "src/main/java/logbook/internal/gui/Deck.java": [
+      "332:             this.deckJson.setText(DeckBuilder.toJson(fleets));"
+    ]
+  },
+  "sources": {
+    "src/main/java/logbook/internal/gui/DeckBuilder.java": "package logbook.internal.gui;\n\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Optional;\nimport java.util.Set;\nimport java.util.TreeMap;\nimport java.util.stream.Collectors;\nimport java.util.stream.IntStream;\n\nimport com.fasterxml.jackson.annotation.JsonIgnore;\nimport com.fasterxml.jackson.annotation.JsonInclude;\nimport tools.jackson.core.JacksonException;\nimport tools.jackson.databind.ObjectMapper;\n\nimport javafx.scene.control.TableView;\nimport javafx.scene.input.Clipboard;\nimport javafx.scene.input.ClipboardContent;\nimport logbook.bean.AppDeck.AppDeckFleet;\nimport logbook.bean.AppDeck.AppDeckShip;\nimport logbook.bean.Basic;\nimport logbook.bean.DeckPortCollection;\nimport logbook.bean.Ship;\nimport logbook.bean.ShipCollection;\nimport logbook.bean.SlotItem;\nimport logbook.bean.SlotItemCollection;\nimport logbook.bean.Mapinfo.AirBase;\nimport logbook.bean.Mapinfo.PlaneInfo;\nimport lombok.Data;\n\n/**\n * デッキビルダー形式の出力\n */\npublic class DeckBuilder {\n\n    /**\n     * 表示されている艦をクリップボードにコピーする。\n     *\n     * @param table テーブル\n     */\n    public static void displayCopy(TableView<ShipItem> table) {\n        copyToClipboard(table.getItems()\n                .stream()\n                .map(ShipItem::getShip)\n                .collect(Collectors.toList()), null);\n    }\n\n    /**\n     * 選択された艦のみをクリップボードにコピーする。\n     *\n     * @param table テーブル\n     */\n    public static void selectionCopy(TableView<ShipItem> table) {\n        copyToClipboard(table.getSelectionModel()\n                .getSelectedItems()\n                .stream()\n                .map(ShipItem::getShip)\n                .collect(Collectors.toList()), null);\n    }\n\n    /**\n     * 選択された基地航空隊の機体リストをクリップボードにコピーする。\n     * 艦隊部分は現在の艦隊が入る。\n     * \n     * @param table テーブル\n     */\n    public static void airbaseSelectionCopy(TableView<AirBaseItem> table) {\n        Airbase ab = new Airbase();\n        List<Airbase> all = new ArrayList<>();\n        all.add(ab);\n        for (AirBaseItem item : table.getSelectionModel().getSelectedItems()) {\n            if (ab.getList().size() == 4) {\n                ab = new Airbase();\n                all.add(ab);\n            }\n            ab.getList().add(item);\n        }\n        copyToClipboard(ShipCollection.get().getShipMap().values(), all);\n    }\n\n    /**\n     * 選択された基地航空隊をクリップボードにコピーする。\n     * 艦隊部分は現在の艦隊が入る。\n     * \n     * @param airbases 基地航空隊\n     */\n    public static void airbaseSelectionCopy(List<AirBase> airbases) {\n        List<Airbase> list = IntStream.range(1, 4)\n                .mapToObj(id -> airbases.stream().filter(ab -> ab.getRid() == id).findAny())\n                .map(ab -> ab.map(Airbase::new).orElse(new Airbase()))\n                .collect(Collectors.toList());\n        copyToClipboard(ShipCollection.get().getShipMap().values(), list);\n    }\n\n    /**\n     * 艦隊リストをデッキビルダー形式のJSONに変換する。\n     *\n     * @param fleets 艦隊リスト\n     * @return JSON\n     */\n    public static String toJson(List<AppDeckFleet> fleets) {\n        Map<String, Object> data = new TreeMap<>();\n        data.put(\"version\", 4);\n        Optional.ofNullable(Basic.get().getLevel()).ifPresent(lv -> data.put(\"hqlv\", lv));\n\n        for (int i = 0; i < fleets.size(); i++) {\n            final int fleetIndex = i + 1;\n            AppDeckFleet fleet = fleets.get(i);\n            Map<String, DeckBuilder.Kanmusu> fleetMap = new TreeMap<>();\n            List<AppDeckShip> ships = fleet.getShips();\n            for (int j = 0; j < ships.size(); j++) {\n                final int shipIndex = j + 1;\n                Optional.ofNullable(ships.get(j))\n                        .map(DeckBuilder.Kanmusu::new)\n                        .ifPresent(kanmusu -> fleetMap.put(\"s\" + shipIndex, kanmusu));\n            }\n            data.put(\"f\" + fleetIndex, fleetMap);\n        }\n\n        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();\n        try {\n            return mapper.writeValueAsString(data);\n        } catch (JacksonException e) {\n            return \"\";\n        }\n    }\n\n    /**\n     * 編成をデッキビルダー形式のJSONに変換する。\n     *\n     * @param fleet 艦隊\n     * @param index 艦隊番号(1-4)\n     * @return JSON\n     */\n    public static String toJson(AppDeckFleet fleet, int index) {\n        return toJson(java.util.Collections.singletonList(fleet));\n    }\n\n    private static void copyToClipboard(Collection<Ship> ships, List<Airbase> airbase) {\n        Set<Integer> targets = ships.stream().map(Ship::getId).collect(Collectors.toSet());\n        Map<Integer, Ship> shipsMap = ShipCollection.get().getShipMap();\n        Map<String, Object> data = new TreeMap<>();\n        data.put(\"version\", 4);\n        Optional.ofNullable(Basic.get().getLevel()).ifPresent(lv -> data.put(\"hqlv\", lv));\n        DeckPortCollection.get().getDeckPortMap().values().stream().forEach(port -> {\n            Map<String, DeckBuilder.Kanmusu> fleet = new TreeMap<>();\n            Optional.ofNullable(port.getShip()).ifPresent(list -> {\n                for (int i = 0; i < list.size(); i++) {\n                    final int index = i + 1;\n                    Optional.ofNullable(list.get(i))\n                            .filter(targets::contains)\n                            .map(shipsMap::get)\n                            .map(DeckBuilder.Kanmusu::new)\n                            .ifPresent(kanmusu -> fleet.put(\"s\" + index, kanmusu));\n                }\n            });\n            data.put(\"f\" + port.getId(), fleet);\n        });\n        Optional.ofNullable(airbase).ifPresent(list -> {\n            for (int a = 0; a < airbase.size(); a++) {\n                Airbase ab = airbase.get(a);\n                if (ab.getList() != null && ab.getList().size() > 0) {\n                    data.put(\"a\" + (a + 1), ab);\n                    List<AirBaseItem> planes = ab.getList();\n                    for (int i = 0; i < planes.size(); i++) {\n                        Item item = new Item(planes.get(i));\n                        ab.getItems().put(\"i\" + (i + 1), item);\n                    }\n                }\n            }\n        });\n        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();\n        try {\n            ClipboardContent content = new ClipboardContent();\n            content.putString(mapper.writeValueAsString(data));\n            Clipboard.getSystemClipboard().setContent(content);\n        } catch (JacksonException e) {\n            // ignore\n        }\n    }\n\n    @Data\n    @JsonInclude(JsonInclude.Include.NON_DEFAULT)\n    private static class Item {\n        private final int id;\n        private final Integer rf;\n        private final Integer mas;\n\n        Item(int id, Integer rf) {\n            this.id = id;\n            this.rf = rf;\n            this.mas = null;\n        }\n\n        Item(SlotItem item) {\n            this.id = item.getSlotitemId();\n            this.rf = item.getLevel();\n            this.mas = item.getAlv();\n        }\n\n        Item(AirBaseItem item) {\n            this.id = item.getId();\n            this.rf = item.getLevel();\n            this.mas = item.getAlv();\n        }\n    }\n\n    @Data\n    private static class Kanmusu {\n        private final int id;\n        private final int lv;\n        private final int luck;\n        private Map<String, DeckBuilder.Item> items;\n\n        Kanmusu(AppDeckShip ship) {\n            Integer instanceId = ship.getShipId();\n            Ship currentShip = ShipCollection.get().getShipMap().get(instanceId);\n            this.id = currentShip != null ? currentShip.getShipId() : 0;\n            // AppDeckShipはLvとLuckを持っていないためShip情報から取得する\n            this.lv = currentShip != null ? currentShip.getLv() : 1;\n            this.luck = currentShip != null ? currentShip.getLucky().get(0) : 0;\n            this.items = new TreeMap<>();\n            List<Integer> itemsIds = ship.getItems();\n            List<Integer> itemLvs = ship.getItemLvs();\n            for (int i = 0; i < itemsIds.size(); i++) {\n                Integer itemId = itemsIds.get(i);\n                if (itemId != null) {\n                    final int index = i + 1;\n                    DeckBuilder.Item item = new DeckBuilder.Item(itemId, itemLvs.get(i));\n                    if (index <= 5) {\n                        this.items.put(\"i\" + index, item);\n                    } else {\n                        this.items.put(\"ix\", item);\n                    }\n                }\n            }\n        }\n\n        Kanmusu(Ship ship) {\n            this.id = ship.getShipId();\n            this.lv = ship.getLv();\n            this.luck = ship.getLucky().get(0);\n            this.items = new TreeMap<>();\n            Map<Integer, SlotItem> slotitemMap = SlotItemCollection.get().getSlotitemMap();\n            Optional.ofNullable(ship.getSlot())\n                    .ifPresent(slot -> {\n                        for (int i = 0; i < slot.size(); i++) {\n                            final int index = i + 1;\n                            Optional.ofNullable(slot.get(i))\n                                    .map(slotitemMap::get)\n                                    .map(DeckBuilder.Item::new)\n                                    .ifPresent(item -> this.items.put(\"i\" + (index), item));\n                        }\n                    });\n            Optional.ofNullable(ship.getSlotEx())\n                    .map(slotitemMap::get)\n                    .map(DeckBuilder.Item::new)\n                    .ifPresent(item -> this.items.put(\"ix\", item));\n        }\n    }\n\n    @Data\n    private static class Airbase {\n        private int mode = 1; // default\n        private final Map<String, DeckBuilder.Item> items = new TreeMap<>();\n        @JsonIgnore\n        private List<AirBaseItem> list;\n\n        Airbase() {\n            this.list = new ArrayList<>();\n        }\n\n        Airbase(AirBase ab) {\n            this.mode = ab.getActionKind();\n            if (ab != null && ab.getPlaneInfo() != null) {\n                Map<Integer, SlotItem> map = SlotItemCollection.get().getSlotitemMap();\n                this.list = ab.getPlaneInfo().stream().map(PlaneInfo::getSlotid).map(map::get)\n                        .map(AirBaseItem::toAirBaseItem).collect(Collectors.toList());\n            }\n        }\n    }\n}",
+    "src/main/java/logbook/internal/gui/PublicAutoCompletion.java": "package logbook.internal.gui;\n\nimport java.util.List;\nimport java.util.Objects;\nimport javafx.application.Platform;\nimport javafx.beans.value.ChangeListener;\nimport javafx.event.EventHandler;\nimport javafx.geometry.Bounds;\nimport javafx.scene.Scene;\nimport javafx.scene.control.ListView;\nimport javafx.scene.control.TextField;\nimport javafx.scene.input.InputMethodEvent;\nimport javafx.scene.input.KeyCode;\nimport javafx.scene.input.KeyEvent;\nimport javafx.scene.input.MouseButton;\nimport javafx.stage.Popup;\n\n/** Text completion using public JavaFX APIs only; all operations are on the FX thread. */\npublic final class PublicAutoCompletion implements AutoCloseable {\n    private static final Object KEY = new Object();\n    private final TextField field;\n    private final SuggestSupport provider;\n    private final Popup popup = new Popup();\n    private final ListView<String> list = new ListView<>();\n    private final ChangeListener<String> textListener = (o, a, b) -> schedule();\n    private final ChangeListener<Boolean> focusListener = (o, a, focused) -> {\n        if (!focused) popup.hide();\n    };\n    private final ChangeListener<Scene> sceneListener = (o, a, b) -> popup.hide();\n    private final EventHandler<KeyEvent> keyHandler = this::keyPressed;\n    private final EventHandler<InputMethodEvent> imeHandler = event -> {\n        composing = !event.getComposed().isEmpty();\n        popup.hide();\n        schedule();\n    };\n    private boolean composing;\n    private boolean choosing;\n    private boolean scheduled;\n    private boolean closed;\n\n    public static PublicAutoCompletion bindAutoCompletion(TextField field, SuggestSupport provider) {\n        requireFxThread();\n        Objects.requireNonNull(field);\n        Objects.requireNonNull(provider);\n        Object previous = field.getProperties().get(KEY);\n        if (previous instanceof PublicAutoCompletion binding) binding.close();\n        PublicAutoCompletion binding = new PublicAutoCompletion(field, provider);\n        field.getProperties().put(KEY, binding);\n        return binding;\n    }\n\n    private PublicAutoCompletion(TextField field, SuggestSupport provider) {\n        this.field = field;\n        this.provider = provider;\n        list.setFixedCellSize(26);\n        list.setFocusTraversable(false);\n        list.setOnMouseClicked(event -> {\n            if (event.getButton() == MouseButton.PRIMARY) choose();\n        });\n        popup.getContent().add(list);\n        popup.setAutoHide(true);\n        popup.setAutoFix(true);\n        popup.setHideOnEscape(true);\n        field.textProperty().addListener(textListener);\n        field.focusedProperty().addListener(focusListener);\n        field.sceneProperty().addListener(sceneListener);\n        field.addEventFilter(KeyEvent.KEY_PRESSED, keyHandler);\n        field.addEventFilter(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED, imeHandler);\n    }\n\n    private void schedule() {\n        if (closed || choosing || scheduled) return;\n        scheduled = true;\n        // Coalesce text/IME events. Never display intermediate composition text.\n        Platform.runLater(() -> {\n            scheduled = false;\n            if (!closed) refresh();\n        });\n    }\n\n    private void refresh() {\n        if (composing || !field.isFocused() || field.getScene() == null\n                || field.getScene().getWindow() == null\n                || !field.getScene().getWindow().isShowing()) {\n            popup.hide();\n            return;\n        }\n        List<String> values = provider.suggest(field.getText()).stream()\n                .filter(Objects::nonNull).distinct().limit(50).toList();\n        list.getItems().setAll(values);\n        if (values.isEmpty()) {\n            popup.hide();\n            return;\n        }\n        Bounds screen = field.localToScreen(field.getBoundsInLocal());\n        if (screen == null) return;\n        list.setPrefSize(Math.max(180, screen.getWidth()), Math.min(8, values.size()) * 26 + 4);\n        list.getSelectionModel().selectFirst();\n        if (popup.isShowing()) {\n            popup.setX(screen.getMinX());\n            popup.setY(screen.getMaxY());\n        } else {\n            popup.show(field, screen.getMinX(), screen.getMaxY());\n        }\n    }\n\n    private void keyPressed(KeyEvent event) {\n        if (closed || composing || !popup.isShowing()) return;\n        KeyCode code = event.getCode();\n        if (code == KeyCode.DOWN || code == KeyCode.UP) {\n            int selected = list.getSelectionModel().getSelectedIndex();\n            int next = Math.max(0, Math.min(list.getItems().size() - 1,\n                    selected + (code == KeyCode.DOWN ? 1 : -1)));\n            list.getSelectionModel().select(next);\n            list.scrollTo(next);\n            event.consume();\n        } else if (code == KeyCode.ENTER) {\n            choose();\n            event.consume();\n        } else if (code == KeyCode.ESCAPE) {\n            popup.hide();\n            event.consume();\n        } else if (code == KeyCode.TAB) {\n            popup.hide(); // Preserve normal traversal rather than consume Tab.\n        }\n    }\n\n    private void choose() {\n        String selected = list.getSelectionModel().getSelectedItem();\n        if (closed || composing || selected == null) return;\n        choosing = true;\n        try {\n            popup.hide();\n            field.setText(selected);\n            field.positionCaret(selected.length());\n        } finally {\n            choosing = false;\n        }\n    }\n\n    List<String> suggestions() { return List.copyOf(list.getItems()); }\n    boolean isShowing() { return popup.isShowing(); }\n\n    @Override public void close() {\n        requireFxThread();\n        if (closed) return;\n        closed = true;\n        popup.hide();\n        field.textProperty().removeListener(textListener);\n        field.focusedProperty().removeListener(focusListener);\n        field.sceneProperty().removeListener(sceneListener);\n        field.removeEventFilter(KeyEvent.KEY_PRESSED, keyHandler);\n        field.removeEventFilter(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED, imeHandler);\n        if (field.getProperties().get(KEY) == this) field.getProperties().remove(KEY);\n        list.getItems().clear();\n    }\n\n    private static void requireFxThread() {\n        if (!Platform.isFxApplicationThread()) throw new IllegalStateException(\"JavaFX thread required\");\n    }\n}\n",
+    "src/main/java/logbook/internal/gui/SuggestSupport.java": "package logbook.internal.gui;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Collection;\nimport java.util.List;\nimport java.util.function.BiPredicate;\nimport java.util.stream.Collectors;\nimport org.controlsfx.control.textfield.AutoCompletionBinding.ISuggestionRequest;\nimport javafx.scene.control.TextField;\nimport javafx.util.Callback;\n\n/** Suggestions for a {@link TextField}; the legacy callback remains binary compatible. */\npublic class SuggestSupport implements Callback<ISuggestionRequest, Collection<String>> {\n    private List<String> values;\n    private BiPredicate<String, String> predicate;\n\n    public SuggestSupport(String... values) {\n        this(String::startsWith, values);\n    }\n    public SuggestSupport(BiPredicate<String, String> predicate, String... values) {\n        this(predicate, Arrays.asList(values));\n    }\n    public SuggestSupport(List<String> values) {\n        this(String::startsWith, new ArrayList<>(values));\n    }\n    public SuggestSupport(BiPredicate<String, String> predicate, List<String> values) {\n        this.predicate = predicate;\n        this.values = values;\n    }\n    @Override public Collection<String> call(ISuggestionRequest param) {\n        return suggest(param.getUserText());\n    }\n    /** Does not construct or access a ControlsFX popup/skin. */\n    public Collection<String> suggest(String text) {\n        if (text == null || text.isEmpty()) return new ArrayList<>(this.values);\n        return this.values.stream().filter(e -> this.predicate.test(e, text))\n                .collect(Collectors.toList());\n    }\n}\n"
+  },
+  "test_references": {
+    "scripts/java/ShipLabelGuiProbe.java": [
+      "74:         var pane=new ShipTablePane(()->new ArrayList<>(ShipCollection.get().getShipMap().values()),\"synthetic-label-probe\");",
+      "78:             var field=ShipTablePane.class.getDeclaredField(\"table\");field.setAccessible(true);",
+      "79:             TableView<ShipItem> table=(TableView<ShipItem>)field.get(pane);"
+    ],
+    "scripts/java/EquipmentInventoryProbe.java": [
+      "154:             List<ParameterFilterPane<Item>> filters=field(items,\"parameterFilters\");"
+    ],
+    "scripts/java/ShipStatisticsGuiProbe.java": [
+      "78:         FXMLLoader loader = new FXMLLoader(ShipController.class.getResource(\"/logbook/gui/ship.fxml\"));",
+      "79:         Parent root = loader.load(); ShipController controller = loader.getController();"
+    ],
+    "src/test/java/logbook/internal/gui/SuggestSupportTest.java": [
+      "10:         assertEquals(List.of(\"alpha\"), new ArrayList<>(new SuggestSupport(\"alpha\", \"beta\").suggest(\"al\")));",
+      "13:         assertEquals(List.of(\"beta\"), new ArrayList<>(new SuggestSupport(String::contains, \"alpha\", \"beta\").suggest(\"et\")));",
+      "16:         var provider = new SuggestSupport(\"a\", \"b\");",
+      "22:         var provider = new SuggestSupport(input);"
+    ],
+    "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java": [
+      "38:         final PublicAutoCompletion binding;",
+      "40:             binding = PublicAutoCompletion.bindAutoCompletion(field,",
+      "41:                     new SuggestSupport(\"alpha\", \"alpine\", \"beta\"));",
+      "75:                 var replacement = PublicAutoCompletion.bindAutoCompletion(f.field, new SuggestSupport(\"other\"));"
+    ],
+    "src/test/java/logbook/internal/gui/ShipLabelUiBoundaryTest.java": [
+      "9:         try(var input=ShipTablePane.class.getResourceAsStream(\"ShipTablePane.class\")) {"
+    ]
+  }
+}
