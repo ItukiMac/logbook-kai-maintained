@@ -1,0 +1,140 @@
+name: Ship statistics product extraction (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-statistics-worker-20261028']
+    paths: ['.github/workflows/ship-statistics-worker.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 4c62a8cdd8c31a0ebe94882450a92e9818a9129b
+      TARGET: maintenance/ship-statistics-api-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 4c62a8cdd8c31a0ebe94882450a92e9818a9129b
+          path: baseline
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 4c62a8cdd8c31a0ebe94882450a92e9818a9129b
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Demonstrate the old shared-bean GUI dependency with the same boundary check
+        working-directory: baseline
+        shell: bash
+        run: |
+          mkdir -p ../evidence
+          cp ../tooling/.maintenance-src/statistics/ShipStatisticsBoundaryTest.java src/test/java/logbook/internal/gui/ShipStatisticsBoundaryTest.java
+          set +e
+          mvn -B -ntp -Dtest=ShipStatisticsBoundaryTest test > ../evidence/before.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          python3 - <<'PY'
+          import json,xml.etree.ElementTree as E
+          from pathlib import Path
+          s=E.parse('target/surefire-reports/TEST-logbook.internal.gui.ShipStatisticsBoundaryTest.xml').getroot()
+          assert s.get('tests')=='1' and s.get('failures')=='1' and s.get('errors')=='0',s.attrib
+          assert 'logbook/bean/' in s.find('testcase/failure').get('message','')
+          Path('../evidence/before.json').write_text(json.dumps(s.attrib))
+          PY
+      - name: Apply only the scoped implementation to a fresh exact-base checkout
+        working-directory: candidate
+        run: |
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          source=Path('../tooling/.maintenance-src/statistics')
+          code=(source/'apply.py').read_text()
+          # Select only the first chart container, not the later histogram HBox.
+          old="'                  <HBox>\\n                     <children>',\n'''                  <Text"
+          new="'                  </HBox>\\n                  <HBox>\\n                     <children>',\n'''                  </HBox>\n                  <Text"
+          assert code.count(old)==1
+          code=code.replace(old,new)
+          sys.argv=['apply.py',str(source)]
+          exec(compile(code,'apply_statistics.py','exec'))
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Run actual aggregation and dependency regression tests
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=ShipStatisticsContractTest,ShipStatisticsBoundaryTest test > ../evidence/unit.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_ship_statistics_packaging.py -v > ../evidence/packaging.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_ship_statistics_ui.py -v > ../evidence/gui.log 2>&1
+      - name: Commit tested product files only, with non-force branch update
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import subprocess,xml.etree.ElementTree as E
+          from pathlib import Path
+          paths=['src/main/java/logbook/plugin/api/ShipStatisticsV1.java','src/main/java/logbook/core/ShipStatisticsService.java',
+                 'src/main/java/logbook/internal/gui/StatisticsPane.java','src/main/java/logbook/plugin/api/FeatureUiV1.java',
+                 'src/main/java/logbook/internal/gui/FeatureUiBridgeV1.java','src/main/resources/logbook/gui/statistics.fxml',
+                 'src/test/java/logbook/core/ShipStatisticsContractTest.java','src/test/java/logbook/internal/gui/ShipStatisticsBoundaryTest.java',
+                 'scripts/build_feature_distribution.py','scripts/run_feature_distribution.py','scripts/verify_r3.sh',
+                 'scripts/java/ShipStatisticsGuiProbe.java','scripts/tests/test_ship_statistics_ui.py',
+                 'scripts/tests/test_ship_statistics_packaging.py','docs/maintenance/ship-statistics-boundary-20261028.md']
+          subprocess.run(['git','add','--',*paths],check=True)
+          assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())==set(paths)
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*ShipStatistics*.xml')]
+          assert sum(int(s.get('tests',0)) for s in suites)==21
+          assert all(int(s.get(k,0))==0 for s in suites for k in ('failures','errors','skipped'))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Move locked-ship statistics to an immutable public contract and the product charts module'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Retain structured evidence even for failed attempts
+        if: always()
+        working-directory: tooling
+        shell: bash
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,os,xml.etree.ElementTree as E
+          r={'base':'4c62a8cdd8c31a0ebe94882450a92e9818a9129b','production_accessed':False,'logs':{},'reports':{},'suites':[]}
+          for p in Path('../evidence').glob('*'):
+              r['logs'][p.name]=p.read_text(errors='replace')[-25000:]
+          for p in Path('../candidate/target/r3-verification').glob('ship-statistics-fixture-*'):
+              if p.suffix=='.json':r['reports'][p.name]=json.loads(p.read_text())
+              elif p.suffix=='.log':r['logs'][p.name]=p.read_text(errors='replace')[-20000:]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*ShipStatistics*.xml'):
+              r['suites'].append(E.parse(p).getroot().attrib)
+          Path('.maintenance-evidence/statistics-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/
+          git commit -m 'Retain ship statistics worker results without claiming unrun full CI'
+          git push origin HEAD:refs/heads/maintenance/ship-statistics-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: ship-statistics-worker-evidence
+          path: |
+            evidence/
+            candidate/target/r3-verification/ship-statistics-*
+            candidate/target/surefire-reports/
+          retention-days: 14
