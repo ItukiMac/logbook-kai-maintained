@@ -1,0 +1,131 @@
+{
+  "head": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+  "pr": 68,
+  "verified": false,
+  "artifact_code_executed": false,
+  "production_accessed": false,
+  "runs": [
+    {
+      "id": 40723905401,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905552,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905345,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905533,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905457,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905391,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905358,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905484,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905577,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905493,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905296,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905576,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905389,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905598,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40723905532,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "26241fc003c1dfeeaba81c77ae983830def3d5ba",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "artifacts": [],
+  "error": "AssertionError: [{'id': 40723905401, 'name': 'Non-Mint ledger validation (not a completion or release approval)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905552, 'name': 'Read-only maintenance source inventory', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905345, 'name': 'Linux updater official-JAR to maintained-JAR integration', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905533, 'name': 'Java 25 application compatibility (headless)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905457, 'name': 'KLB and KQS plugin API compatibility (Java 21)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905391, 'name': 'Application release candidate (artifact only, no publish)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905358, 'name': 'Read-only complete game JSON syntax audit', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905484, 'name': 'Public JavaFX autocomplete integration', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905577, 'name': 'Offline game-data install integration (Java 21)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905493, 'name': 'Baseline Maven build (Java 21)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905296, 'name': 'Generation-scoped KQS and KLB compatibility (no publish)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905576, 'name': 'Runtime migration declared versions (no publish)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'failure', 'run_attempt': 1}, {'id': 40723905389, 'name': 'Integrated maintenance verification (no publish)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905598, 'name': 'Explicit JDK25 JavaFX27 runtime verification (no publish)', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}, {'id': 40723905532, 'name': 'R3 split features, source review and isolated candidate validation', 'head_sha': '26241fc003c1dfeeaba81c77ae983830def3d5ba', 'status': 'completed', 'conclusion': 'success', 'run_attempt': 1}]"
+}
