@@ -23,11 +23,13 @@ public class AirBases {
      * @return 制空値
      */
     public static int airSuperiority(AirBase airBase) {
-        Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
-                .getSlotitemMap();
-        Map<Integer, SlotitemMst> itemMstMap = SlotitemMstCollection.get()
-                .getSlotitemMap();
+        return airSuperiority(airBase, SlotItemCollection.get().getSlotitemMap(),
+                SlotitemMstCollection.get().getSlotitemMap());
+    }
 
+    /** Same formula, with caller-owned captured inputs instead of rereading globals. */
+    public static int airSuperiority(AirBase airBase, Map<Integer,SlotItem> itemMap,
+            Map<Integer,SlotitemMst> itemMstMap) {
         // 防空の場合true
         boolean isIntercept = airBase.getActionKind() == 2;
         // 対空値
@@ -46,7 +48,7 @@ public class AirBases {
                 continue;
 
             if (Items.isAircraft(itemMst)) {
-                tyku += airSuperiority(item, plane.getCount(), isIntercept);
+                tyku += airSuperiority(item, itemMst, plane.getCount(), isIntercept);
             }
             if (Items.isReconAircraft(itemMst)) {
                 if (isIntercept) {
@@ -72,11 +74,13 @@ public class AirBases {
      * @return 制空値
      */
     public static int airSuperiority(SlotItem item, int onSlot, boolean isIntercept) {
-        if (onSlot <= 0)
-            return 0;
-        Map<Integer, SlotitemMst> itemMstMap = SlotitemMstCollection.get()
-                .getSlotitemMap();
-        SlotitemMst itemMst = itemMstMap.get(item.getSlotitemId());
+        if (onSlot <= 0) return 0;
+        return airSuperiority(item, SlotitemMstCollection.get().getSlotitemMap().get(item.getSlotitemId()), onSlot, isIntercept);
+    }
+
+    /** Existing per-squadron formula; does not consult mutable equipment collections. */
+    public static int airSuperiority(SlotItem item, SlotitemMst itemMst, int onSlot, boolean isIntercept) {
+        if (onSlot <= 0) return 0;
         if (itemMst == null)
             return 0;
 

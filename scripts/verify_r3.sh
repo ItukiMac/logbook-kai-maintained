@@ -100,6 +100,14 @@ assert ship_list['timeline_stopped'] and ship_list['original_history_unchanged']
 list_suites=[s for s in suites if s.get('name') in {'logbook.internal.gui.ShipListUiBoundaryTest','logbook.internal.gui.ShipListUiContractTest'}]
 assert len(list_suites)==2 and all(int(s.get('skipped',0))==0 for s in list_suites)
 assert sum(int(s.get('tests',0)) for s in list_suites)>=4
+airbase=[json.loads(f.read_text()) for f in p.glob('airbase-status-fixture-*.json')]
+assert len(airbase)==1 and airbase[0]['result']=='passed'
+assert airbase[0]['product_status_jar'] and airbase[0]['captured_power']==40 and airbase[0]['refresh_power']==60
+assert all(airbase[0][k] for k in ('frozen_selection','identity_preserved','sorted_planes','unknown_visible','stale_values_cleared','legacy_export','timeline_stopped','original_history_unchanged','source_jar_unchanged'))
+assert not airbase[0]['production_accessed']
+airbase_suites=[s for s in suites if s.get('name') in {'logbook.core.AirBaseStatusContractTest','logbook.internal.gui.AirBaseStatusBoundaryTest'}]
+assert len(airbase_suites)==2 and all(int(s.get('skipped',0))==0 for s in airbase_suites)
+assert sum(int(s.get('tests',0)) for s in airbase_suites)>=23
 # Quest list reads cannot silently mutate cached state or pass with a skipped GUI probe.
 quest_reports=[json.loads(f.read_text()) for f in p.glob('quest-list-read-fixture-*.json')]
 assert len(quest_reports)==1 and quest_reports[0]['result']=='passed'
@@ -111,7 +119,7 @@ assert quest_list['product_distribution'] and not quest_list['production_accesse
 assert not quest_list['explicit_remove_executed'] and not quest_list['atomic_with_all_writers_claimed']
 quest_suites=[s for s in suites if s.get('name')=='logbook.core.QuestListReadContractTest']
 assert len(quest_suites)==1 and int(quest_suites[0].get('tests',0))>=17 and int(quest_suites[0].get('skipped',0))==0
-report={'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+report={'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,

@@ -1,6 +1,10 @@
 package logbook.internal.gui;
 
 import logbook.plugin.api.FeatureUiV1;
+import logbook.plugin.api.AirBaseStatusV1;
+import logbook.plugin.api.AirBaseStatusV1.BaseView;
+import logbook.plugin.api.AirBaseStatusV1.PlaneView;
+import logbook.plugin.api.EquipmentImagesV1;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,14 +49,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import logbook.bean.Maparea;
-import logbook.bean.MapareaCollection;
 import logbook.bean.Mapinfo;
 import logbook.bean.Mapinfo.AirBase;
 import logbook.bean.Mapinfo.PlaneInfo;
 import logbook.core.LogBookCoreServices;
 import logbook.bean.SlotItem;
 import logbook.bean.SlotItemCollection;
-import logbook.internal.kancolle.AirBases;
 import logbook.internal.kancolle.Items;
 import logbook.internal.logger.LoggerHolder;
 
@@ -135,7 +137,7 @@ public class AirBaseController extends FeatureUiV1.Window {
     private Timeline timeline;
 
     /** 更新検知用 ハッシュ・コード */
-    private int hashCode;
+    private AirBaseStatusV1.Snapshot snapshot;
 
     @FXML
     void initialize() {
@@ -162,7 +164,7 @@ public class AirBaseController extends FeatureUiV1.Window {
             this.cond.setCellFactory(p -> new CondImageCell());
 
             SortedList<Plane> sortedList2 = new SortedList<>(this.planes);
-            this.planeTable.setItems(this.planes);
+            this.planeTable.setItems(sortedList2);
             sortedList2.comparatorProperty().bind(this.planeTable.comparatorProperty());
             this.planeTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             this.planeTable.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
@@ -191,6 +193,7 @@ public class AirBaseController extends FeatureUiV1.Window {
     }
     
     void addItem(List<AirBase> list, TreeItem<AreaTable> item) {
+        if (item == null) return;
         Optional.ofNullable(item.getValue()).map(AreaTable::getAirBase).ifPresent(list::add);
         Optional.ofNullable(item.getChildren()).ifPresent(children -> children.forEach(child -> addItem(list, child)));
     }
@@ -230,92 +233,69 @@ public class AirBaseController extends FeatureUiV1.Window {
      * @param e ActionEvent
      */
     void update(ActionEvent e) {
-        int hashCode = Mapinfo.get()
-                .getAirBase()
-                .hashCode();
-        if (this.hashCode != hashCode) {
-            int selection = this.areaTable.getSelectionModel().getSelectedIndex();
-            this.setAirBase();
-            this.areaTable.getSelectionModel().select(selection);
-            this.hashCode = hashCode;
-        }
+        AirBaseStatusV1.Snapshot next = AirBaseStatusV1.snapshot();
+        if (!next.equals(this.snapshot)) render(next);
     }
 
-    /**
-     * 基地航空隊を設定する
-     */
-    private void setAirBase() {
-        this.hashCode = Mapinfo.get()
-                .getAirBase()
-                .hashCode();
-        // ルート要素(非表示)
-        TreeItem<AreaTable> root = new TreeItem<AreaTable>(new AreaTable());
+    private void setAirBase() { render(AirBaseStatusV1.snapshot()); }
+
+    /** One captured value set feeds the tree, details, warnings and copy text. */
+    private void render(AirBaseStatusV1.Snapshot next) {
+        TreeItem<AreaTable> selected = this.areaTable.getSelectionModel().getSelectedItem();
+        String selection = selected == null || selected.getValue() == null ? null : selected.getValue().selectionKey;
+        this.snapshot = next;
+        TreeItem<AreaTable> root = new TreeItem<>(new AreaTable());
         this.areaTable.setRoot(root);
-
-        // 海域
-        Map<Integer, Maparea> mapareaMap = MapareaCollection.get().getMaparea();
-
-        // 通常海域 ツリー
-        AreaTable normalArea = new AreaTable();
-        normalArea.setName("通常海域");
-        TreeItem<AreaTable> normal = new TreeItem<AreaTable>(normalArea);
-        root.getChildren().add(normal);
-
-        // イベント海域 ツリー
-        AreaTable eventArea = new AreaTable();
-        eventArea.setName("イベント海域");
-        TreeItem<AreaTable> event = new TreeItem<AreaTable>(eventArea);
-        root.getChildren().add(event);
-
-        Map<Integer, List<AirBase>> airBaseMap = Mapinfo.get()
-                .getAirBase()
-                .stream()
-                .sorted(Comparator.comparing(AirBase::getAreaId).thenComparing(AirBase::getRid))
-                .collect(Collectors.groupingBy(AirBase::getAreaId));
-
-        for (Entry<Integer, List<AirBase>> entry : airBaseMap.entrySet()) {
-            Maparea maparea = mapareaMap.get(entry.getKey());
-            if (maparea != null) {
-                AreaTable seaArea = new AreaTable();
-                seaArea.setName(maparea.getName());
-                TreeItem<AreaTable> sea = new TreeItem<AreaTable>(seaArea);
-
-                for (AirBase airBase : entry.getValue()) {
-                    AreaTable baseRow = new AreaTable();
-                    TreeItem<AreaTable> base = new TreeItem<AreaTable>(baseRow);
-
-                    baseRow.setName(airBase.getName());
-                    baseRow.setActionKind(this.actionKind(airBase.getActionKind()));
-                    baseRow.setSeiku(Integer.toString(AirBases.airSuperiority(airBase)));
-
-                    Mapinfo.Distance distance = airBase.getDistance();
-                    baseRow.setDistance(Integer.toString(distance.getBase() + distance.getBonus()));
-
-                    for (PlaneInfo planeInfo : airBase.getPlaneInfo()) {
-                        Plane plane = new Plane();
-
-                        plane.setSlot(planeInfo.getSlotid());
-                        plane.setCount(planeInfo.getCount());
-                        plane.setMaxCount(planeInfo.getMaxCount());
-                        plane.setCond(planeInfo.getCond());
-                        plane.setPlaneInfo(planeInfo);
-
-                        baseRow.getPlanes().add(plane);
-                    }
-                    baseRow.setAirBase(airBase);
-
-                    sea.getChildren().add(base);
-                }
-                if (maparea.getType() == 0) {
-                    normal.getChildren().add(sea);
-                } else {
-                    event.getChildren().add(sea);
-                }
-                sea.setExpanded(true);
+        var normal = group("通常海域", "normal"); var event = group("イベント海域", "event"); var unknown = group("不明海域", "unknown");
+        root.getChildren().addAll(normal, event);
+        Map<String,TreeItem<AreaTable>> areas = new java.util.LinkedHashMap<>();
+        TreeItem<AreaTable> restore = null;
+        for (BaseView value : next.bases()) {
+            String areaKey = value.key().areaId() + ":" + value.areaType();
+            TreeItem<AreaTable> sea = areas.get(areaKey);
+            if (sea == null) {
+                sea = group(value.areaName(), "area:" + areaKey); areas.put(areaKey, sea);
+                (value.areaType() == null ? unknown : value.areaType() == 0 ? normal : event).getChildren().add(sea);
+            }
+            AreaTable row = new AreaTable(); row.view = value; row.selectionKey = "base:" + value.key();
+            row.setName(value.name()); row.setActionKind(value.actionText());
+            row.setSeiku(AirBaseStatusV1.metric(value.airPower())); row.setDistance(AirBaseStatusV1.metric(value.distance()));
+            // Legacy public bean getters return detached copies, never the live communication state.
+            row.setAirBase(legacyBase(value));
+            for (PlaneView plane : value.planes()) {
+                Plane item = new Plane(); item.view = plane; item.setSlot(plane.slotId());
+                item.setCount(plane.count()); item.setMaxCount(plane.maxCount()); item.setCond(plane.condition());
+                item.setPlaneInfo(legacyPlane(plane)); row.getPlanes().add(item);
+            }
+            TreeItem<AreaTable> leaf = new TreeItem<>(row); sea.getChildren().add(leaf);
+        }
+        if (!unknown.getChildren().isEmpty()) root.getChildren().add(unknown);
+        if (selection != null) {
+            var queue = new java.util.ArrayDeque<TreeItem<AreaTable>>(); queue.add(root);
+            while (!queue.isEmpty()) {
+                var item = queue.removeFirst(); queue.addAll(item.getChildren());
+                if (selection.equals(item.getValue().selectionKey)) { restore = item; break; }
             }
         }
-        normal.setExpanded(true);
-        event.setExpanded(true);
+        if (restore != null) this.areaTable.getSelectionModel().select(restore);
+        else plane(null, null, null);
+    }
+
+    private static TreeItem<AreaTable> group(String name, String key) {
+        AreaTable value = new AreaTable(); value.setName(name); value.selectionKey = key;
+        TreeItem<AreaTable> item = new TreeItem<>(value); item.setExpanded(true); return item;
+    }
+
+    private static PlaneInfo legacyPlane(PlaneView p) {
+        PlaneInfo copy = new PlaneInfo(); copy.setSquadronId(p.squadronId()); copy.setState(p.state());
+        copy.setSlotid(p.slotId()); copy.setCount(p.count()); copy.setMaxCount(p.maxCount()); copy.setCond(p.condition()); return copy;
+    }
+
+    private static AirBase legacyBase(BaseView b) {
+        AirBase copy = new AirBase(); copy.setAreaId(b.key().areaId()); copy.setRid(b.key().baseId());
+        copy.setName(b.name()); copy.setActionKind(b.actionKind());
+        Mapinfo.Distance d = new Mapinfo.Distance(); d.setBase(b.distanceBase()); d.setBonus(b.distanceBonus()); copy.setDistance(d);
+        copy.setPlaneInfo(b.planes().stream().map(AirBaseController::legacyPlane).collect(Collectors.toList())); return copy;
     }
 
     private String actionKind(int actionKind) {
@@ -343,58 +323,33 @@ public class AirBaseController extends FeatureUiV1.Window {
      */
     private void plane(ObservableValue<? extends TreeItem<AreaTable>> observable,
             TreeItem<AreaTable> oldValue, TreeItem<AreaTable> value) {
-        this.planes.clear();
-        this.info.getChildren().clear();
-
-        if (value == null) {
-            return;
-        }
-
-        AreaTable row = value.getValue();
-        if (row != null && row.getAirBase() != null) {
-            this.planes.addAll(row.getPlanes());
-
-            int seiku = AirBases.airSuperiority(row.getAirBase());
-
-            this.seikuTotal.setText(Integer.toString(seiku));
-
-            this.lesser.setText(String.valueOf(seiku * 3));
-            this.equal.setText(String.valueOf((int) (seiku * (3D / 2D))));
-            this.superior.setText(String.valueOf((int) (seiku * (2D / 3D))));
-            this.greater.setText(String.valueOf((int) (seiku * (1D / 3D))));
-
-            boolean lowsupply = row.getAirBase().getPlaneInfo().stream()
-                    .filter(info -> info.getState() == 1)
-                    .filter(info -> Objects.nonNull(info.getCount()))
-                    .anyMatch(info -> !info.getMaxCount().equals(info.getCount()));
-            if (lowsupply) {
-                Button button = new Button("補給不足");
-                HBox.setMargin(button, new Insets(1));
-                this.info.getChildren().add(button);
-            }
-            boolean cond = row.getAirBase().getPlaneInfo().stream()
-                    .filter(info -> info.getState() == 1)
-                    .filter(info -> Objects.nonNull(info.getCond()))
-                    .anyMatch(info -> info.getCond() != 1);
-            if (cond) {
-                Button button = new Button("疲労");
-                HBox.setMargin(button, new Insets(1));
-                this.info.getChildren().add(button);
-            }
-            boolean change = row.getAirBase().getPlaneInfo().stream()
-                    .anyMatch(info -> info.getState() == 2);
-            if (change) {
-                Button button = new Button("配置転換中");
-                HBox.setMargin(button, new Insets(1));
-                this.info.getChildren().add(button);
-            }
+        this.planes.clear(); this.info.getChildren().clear();
+        this.seikuTotal.setText("—"); this.lesser.setText("—"); this.equal.setText("—");
+        this.superior.setText("—"); this.greater.setText("—");
+        if (this.snapshot != null && !this.snapshot.warnings().isEmpty()) notice("状態未確定", this.snapshot.warnings());
+        if (value == null || value.getValue() == null || value.getValue().view == null) return;
+        AreaTable row = value.getValue(); BaseView base = row.view; this.planes.addAll(row.getPlanes());
+        Integer power = base.airPower(); this.seikuTotal.setText(AirBaseStatusV1.metric(power));
+        if (power == null) {
+            this.lesser.setText("未記録"); this.equal.setText("未記録");
+            this.superior.setText("未記録"); this.greater.setText("未記録");
         } else {
-            this.seikuTotal.setText("0");
-            this.lesser.setText("0");
-            this.equal.setText("0");
-            this.superior.setText("0");
-            this.greater.setText("0");
+            // Same threshold display, with long intermediates instead of overflowing int multiplication.
+            this.lesser.setText(String.valueOf((long)power * 3));
+            this.equal.setText(String.valueOf((long)(power * (3D / 2D))));
+            this.superior.setText(String.valueOf((long)(power * (2D / 3D))));
+            this.greater.setText(String.valueOf((long)(power * (1D / 3D))));
         }
+        if (base.lowSupply()) notice("補給不足", List.of());
+        if (base.fatigued()) notice("疲労", List.of());
+        if (base.relocating()) notice("配置転換中", List.of());
+        if (!base.warnings().isEmpty()) notice("情報不足", base.warnings());
+    }
+
+    private void notice(String title, List<String> messages) {
+        Button button = new Button(title); HBox.setMargin(button, new Insets(1));
+        if (!messages.isEmpty()) button.setTooltip(new javafx.scene.control.Tooltip(String.join("\n", messages)));
+        this.info.getChildren().add(button);
     }
 
     /**
@@ -431,6 +386,8 @@ public class AirBaseController extends FeatureUiV1.Window {
 
         /** 基地航空隊 */
         private AirBase airBase;
+        private BaseView view;
+        private String selectionKey;
 
         /**
          * 基地航空隊を設定します。
@@ -550,13 +507,14 @@ public class AirBaseController extends FeatureUiV1.Window {
 
         /** 中隊 */
         private PlaneInfo planeInfo;
+        private PlaneView view;
 
         /**
          * スロットを設定します。
          * @param slot スロット
          */
         public void setSlot(Integer slot) {
-            this.slot = new SimpleIntegerProperty(slot);
+            this.slot = slot == null ? null : new SimpleIntegerProperty(slot);
         }
 
         /**
@@ -636,6 +594,9 @@ public class AirBaseController extends FeatureUiV1.Window {
 
         @Override
         public String toString() {
+            if (this.view != null) return new StringJoiner("\t").add(this.view.name())
+                    .add(AirBaseStatusV1.metric(this.view.count())).add(AirBaseStatusV1.metric(this.view.maxCount()))
+                    .add(AirBaseStatusV1.metric(this.view.condition())).toString();
             Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
                     .getSlotitemMap();
             return new StringJoiner("\t")
@@ -658,6 +619,14 @@ public class AirBaseController extends FeatureUiV1.Window {
 
             this.getStyleClass().removeAll("change");
 
+            Plane captured = getTableRow() == null ? null : getTableRow().getItem();
+            if (!empty && captured != null && captured.view != null) {
+                PlaneView data = captured.view;
+                this.setText(data.name());
+                this.setGraphic(data.masterId() == null ? null : new ImageView(EquipmentImagesV1.item(data.masterId())));
+                if (data.state() != null && data.state() != 1) this.getStyleClass().add("change");
+                return;
+            }
             if (!empty) {
                 Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
                         .getSlotitemMap();
@@ -736,6 +705,7 @@ public class AirBaseController extends FeatureUiV1.Window {
             super.updateItem(cond, empty);
 
             this.getStyleClass().removeAll("cond0", "cond1", "cond2", "cond3");
+            this.setGraphic(null);
 
             if (!empty) {
                 if (cond != null) {
