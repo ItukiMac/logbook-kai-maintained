@@ -98,6 +98,20 @@ def equipment_ui_required_entries():
             | {'logbook/gui/' + resource + '.fxml' for resource in EQUIPMENT_UI_RESOURCES})
 
 
+SHIP_STATISTICS_PROFILE = 'ship-statistics-in-charts-v1'
+SHIP_STATISTICS_API = 'logbook/plugin/api/ShipStatisticsV1.class'
+
+
+def ship_statistics_entry(name):
+    stem = 'logbook/internal/gui/StatisticsPane'
+    return (name == 'logbook/gui/statistics.fxml' or name == stem + '.class'
+            or name.startswith(stem + '$') and name.endswith('.class'))
+
+
+def ship_statistics_required_entries():
+    return {'logbook/internal/gui/StatisticsPane.class', 'logbook/gui/statistics.fxml'}
+
+
 def required_entries(module_id):
     provider, controllers, resources = GROUPS[module_id]
     stems = ['logbook/features/' + provider]
@@ -145,6 +159,9 @@ def validate_manifest(report):
     """Validate the complete compatibility graph without opening files or Java."""
     if not isinstance(report, dict) or report.get('format') != FORMAT:
         raise ValueError('Versioned distribution manifest required; legacy v1 is not launchable')
+    statistics_profile = report.get('ship_statistics_profile')
+    if statistics_profile is not None and statistics_profile != SHIP_STATISTICS_PROFILE:
+        raise ValueError('Unsupported ship statistics packaging profile')
     equipment_profile = report.get('equipment_ui_profile')
     if equipment_profile is not None and equipment_profile != EQUIPMENT_UI_PROFILE:
         raise ValueError('Unsupported equipment UI packaging profile')
@@ -261,6 +278,7 @@ def manifest_attributes(raw):
 
 
 def verify_jars(root, report, catalog):
+    statistics_profile = report.get('ship_statistics_profile') == SHIP_STATISTICS_PROFILE
     equipment_profile = report.get('equipment_ui_profile') == EQUIPMENT_UI_PROFILE
     record_profile = report.get('record_ui_profile') == RECORD_UI_PROFILE
     classes, resources, total = set(), set(), 0
@@ -307,6 +325,10 @@ def verify_jars(root, report, catalog):
             if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':
                 raise ValueError('Multi-release feature JARs are not supported')
             if path == JARS[0]:
+                if (SHIP_STATISTICS_API in names) != statistics_profile:
+                    raise ValueError('Ship statistics API and packaging profile disagree')
+                if statistics_profile and any(ship_statistics_entry(name) for name in names):
+                    raise ValueError('Ship statistics UI remains in the host instead of charts')
                 if (EQUIPMENT_UI_API in names) != equipment_profile:
                     raise ValueError('Equipment data API and packaging profile disagree')
                 if equipment_profile and any(equipment_ui_entry(name) for name in names):
@@ -325,6 +347,11 @@ def verify_jars(root, report, catalog):
                 continue
             module = next(m for m in catalog.values() if m['path'] == path)
             required = required_entries(module['id'])
+            if statistics_profile:
+                if module['id'] == 'charts':
+                    required |= ship_statistics_required_entries()
+                elif any(ship_statistics_entry(name) for name in names):
+                    raise ValueError('Ship statistics UI belongs to the charts module')
             if equipment_profile:
                 if module['id'] == 'status':
                     required |= equipment_ui_required_entries()

@@ -82,7 +82,15 @@ assert not ship_labels['production_accessed']
 label_suites=[s for s in suites if s.get('name') in {'logbook.core.ShipLabelCommandTest','logbook.internal.gui.ShipLabelUiBoundaryTest'}]
 assert len(label_suites)==2 and all(int(s.get('skipped',0))==0 for s in label_suites)
 assert sum(int(s.get('tests',0)) for s in label_suites)>=23
-report={'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+statistics=[json.loads(f.read_text()) for f in p.glob('ship-statistics-fixture-*.json')]
+assert len(statistics)==1 and statistics[0]['result']=='passed'
+assert statistics[0]['product_distribution'] and statistics[0]['charts_rendered']==5
+assert statistics[0]['frozen_after_mutation'] and statistics[0]['source_jar_unchanged']
+assert not statistics[0]['production_accessed']
+statistics_suites=[s for s in suites if s.get('name') in {'logbook.core.ShipStatisticsContractTest','logbook.internal.gui.ShipStatisticsBoundaryTest'}]
+assert len(statistics_suites)==2 and all(int(s.get('skipped',0))==0 for s in statistics_suites)
+assert sum(int(s.get('tests',0)) for s in statistics_suites)>=21
+report={'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,

@@ -108,6 +108,11 @@ public final class FeatureUiV1 {
     public static final class Controls {
         private Controls() { }
 
+        /** Preserve the existing explicit save dialog and PNG output. Invoke only on user action. */
+        public static void storeSnapshot(javafx.scene.Node node, String title, javafx.stage.Window owner) {
+            FeatureUiBridgeV1.storeSnapshot(node, title, owner);
+        }
+
         /** Same modal confirmation and cancellation behavior as the host. Call on the FX thread. */
         public static java.util.Optional<javafx.scene.control.ButtonType> alert(
                 javafx.scene.control.Alert.AlertType type, String title, String message, Stage owner) {
