@@ -1,0 +1,490 @@
+{
+  "head": "546b196122a4f824c724e222927e9885f6bc451e",
+  "verified": true,
+  "native_mint_tested": false,
+  "artifacts": [
+    {
+      "run": 40645706844,
+      "name": "r3-evidence-java21",
+      "id": 12797566918,
+      "sha256": "sha256:8e3e38a5648191d0a572a00dd6ad69e509c46c8bbdb3bc65edd29134622d7425",
+      "created_at": "2026-10-28T06:53:42Z",
+      "java": {
+        "tests": 834,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "roster_tests": {
+        "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+        "version": "3.0.2",
+        "name": "logbook.core.ShipRosterContractTest",
+        "time": "0.015",
+        "tests": "11",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0",
+        "flakes": "0"
+      },
+      "python": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "summary": [
+            "Ran 1 test in 16.866s",
+            "OK",
+            "Ran 417 tests in 411.629s",
+            "OK (skipped=1)"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "summary": [
+            "Ran 25 tests in 0.087s",
+            "OK"
+          ]
+        }
+      ],
+      "integration": {
+        "checkout": "72f0db4a6f8c31f3a31a3a5923f2655783a49274",
+        "java_tests": {
+          "tests": 834,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1
+        },
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25,
+        "seasonal_retreat_integration_tests": 8,
+        "production_deployed": false
+      },
+      "equipment": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/equipment-ui-fixture-14kmcy0o",
+        "source_jar_sha256": "4b1223d51cfcafa9fada74cf65616ef37869f166ae75d612111eb2c0e791b39e",
+        "production_accessed": false,
+        "result": "passed",
+        "shared_host_gui_helpers_retained": true,
+        "atomic_writer_snapshot_claimed": false,
+        "product_distribution": true,
+        "equipment_ui_profile": "equipment-ui-in-status-v1",
+        "equipment_module": "status",
+        "tabs": 2,
+        "summaries": 2,
+        "owned_instances": 6,
+        "normal_and_expansion_owner": true,
+        "aircraft": 3,
+        "grouped_aircraft": 2,
+        "locked_export": 3,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "source_jar_unchanged": true,
+        "host_sha256": "e9fc6e0fc2e46f8e0ea42e5e40abdacf2e2067f4ebc04d387849000a8806b1b0",
+        "status_sha256": "f3c82e0438b41273cecae9afef596c067b5e31ec6fa1047643f6260a83d35c82"
+      },
+      "records": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-r83uhh43",
+        "source_jar_sha256": "4b1223d51cfcafa9fada74cf65616ef37869f166ae75d612111eb2c0e791b39e",
+        "production_accessed": false,
+        "new_distribution_format": false,
+        "legacy_missing_experience_bug_fixed": true,
+        "shared_legacy_row_models_retained_in_core": [
+          "BattleLogCollect",
+          "BattleLogDetail",
+          "MissionLogCollect",
+          "MissionLogDetail"
+        ],
+        "result": "passed",
+        "product_distribution": true,
+        "record_ui_profile": "record-ui-in-charts-v1",
+        "record_module": "charts",
+        "original_distribution_source_unchanged": true,
+        "windows": 3,
+        "battle_rows": 3,
+        "battle_exp": 60,
+        "mission_fuel": 75,
+        "development_rows": 2,
+        "nested_dialog": true,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "host_sha256": "e9fc6e0fc2e46f8e0ea42e5e40abdacf2e2067f4ebc04d387849000a8806b1b0",
+        "record_ui_sha256": "9818293f14f1e5bc5775f10bdefef6cd6910a850a2d3afd2ee8ef05dd6f27f6c",
+        "retained_fixture": true
+      }
+    },
+    {
+      "run": 40645706844,
+      "name": "r3-evidence-java25",
+      "id": 12798176220,
+      "sha256": "sha256:a11039557ccab38722dd92d25968ccf7e8f75425ac08a723da7de733b091200a",
+      "created_at": "2026-10-28T06:53:09Z",
+      "java": {
+        "tests": 834,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "roster_tests": {
+        "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+        "version": "3.0.2",
+        "name": "logbook.core.ShipRosterContractTest",
+        "time": "0.012",
+        "tests": "11",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0",
+        "flakes": "0"
+      },
+      "python": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "summary": [
+            "Ran 1 test in 16.799s",
+            "OK",
+            "Ran 417 tests in 393.322s",
+            "OK (skipped=1)"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "summary": [
+            "Ran 25 tests in 0.134s",
+            "OK"
+          ]
+        }
+      ],
+      "integration": {
+        "checkout": "72f0db4a6f8c31f3a31a3a5923f2655783a49274",
+        "java_tests": {
+          "tests": 834,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1
+        },
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25,
+        "seasonal_retreat_integration_tests": 8,
+        "production_deployed": false
+      },
+      "equipment": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/equipment-ui-fixture-vfcqj04h",
+        "source_jar_sha256": "72c9f365d54ce4a51d76ae40e17df2c6595bc6fe0bc34c0a73633bb88706fb1f",
+        "production_accessed": false,
+        "result": "passed",
+        "shared_host_gui_helpers_retained": true,
+        "atomic_writer_snapshot_claimed": false,
+        "product_distribution": true,
+        "equipment_ui_profile": "equipment-ui-in-status-v1",
+        "equipment_module": "status",
+        "tabs": 2,
+        "summaries": 2,
+        "owned_instances": 6,
+        "normal_and_expansion_owner": true,
+        "aircraft": 3,
+        "grouped_aircraft": 2,
+        "locked_export": 3,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "source_jar_unchanged": true,
+        "host_sha256": "c22820b7fb6a96d4b75a91eefd0fa894be4ab4cf5cab0a8c366020b0de6f91b6",
+        "status_sha256": "8faaeda6c195f162aad564ee77ef90b74967a27382ee774e51048ab8460b1056"
+      },
+      "records": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-ztpolh44",
+        "source_jar_sha256": "72c9f365d54ce4a51d76ae40e17df2c6595bc6fe0bc34c0a73633bb88706fb1f",
+        "production_accessed": false,
+        "new_distribution_format": false,
+        "legacy_missing_experience_bug_fixed": true,
+        "shared_legacy_row_models_retained_in_core": [
+          "BattleLogCollect",
+          "BattleLogDetail",
+          "MissionLogCollect",
+          "MissionLogDetail"
+        ],
+        "result": "passed",
+        "product_distribution": true,
+        "record_ui_profile": "record-ui-in-charts-v1",
+        "record_module": "charts",
+        "original_distribution_source_unchanged": true,
+        "windows": 3,
+        "battle_rows": 3,
+        "battle_exp": 60,
+        "mission_fuel": 75,
+        "development_rows": 2,
+        "nested_dialog": true,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "host_sha256": "c22820b7fb6a96d4b75a91eefd0fa894be4ab4cf5cab0a8c366020b0de6f91b6",
+        "record_ui_sha256": "a0b60c2e48e5cb33dba22e420b4dea97a9280cec3ee0ee827c44241ae6d2ef6f",
+        "retained_fixture": true
+      }
+    },
+    {
+      "run": 40645706919,
+      "name": "modern-runtime-evidence-java25",
+      "id": 12797596450,
+      "sha256": "sha256:238c8f9fc8f38ba620fcaecd018aaca67c57335bb2fa19fe4c5cfc692e183998",
+      "created_at": "2026-10-28T06:50:57Z",
+      "java": {
+        "tests": 834,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "roster_tests": {
+        "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+        "version": "3.0.2",
+        "name": "logbook.core.ShipRosterContractTest",
+        "time": "0.008",
+        "tests": "11",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0",
+        "flakes": "0"
+      },
+      "python": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "summary": [
+            "Ran 1 test in 11.645s",
+            "OK",
+            "Ran 417 tests in 284.508s",
+            "OK (skipped=1)"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "summary": [
+            "Ran 25 tests in 0.077s",
+            "OK"
+          ]
+        }
+      ],
+      "integration": {
+        "checkout": "72f0db4a6f8c31f3a31a3a5923f2655783a49274",
+        "java_tests": {
+          "tests": 834,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1
+        },
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25,
+        "seasonal_retreat_integration_tests": 8,
+        "production_deployed": false
+      },
+      "equipment": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/equipment-ui-fixture-fjsw1vy5",
+        "source_jar_sha256": "11728acf978e12942dced903d12873a6818edc74c2b12df02196a6e370c39be0",
+        "production_accessed": false,
+        "result": "passed",
+        "shared_host_gui_helpers_retained": true,
+        "atomic_writer_snapshot_claimed": false,
+        "product_distribution": true,
+        "equipment_ui_profile": "equipment-ui-in-status-v1",
+        "equipment_module": "status",
+        "tabs": 2,
+        "summaries": 2,
+        "owned_instances": 6,
+        "normal_and_expansion_owner": true,
+        "aircraft": 3,
+        "grouped_aircraft": 2,
+        "locked_export": 3,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "source_jar_unchanged": true,
+        "host_sha256": "47f2161a0d354d6e161a5f2b01d25d572e662fa8ca65d06e0da332107ea1a465",
+        "status_sha256": "58eda31ca5f016cd7ad50dbdeb83aaf570211719ae04801186d8a22a5beb1ef8"
+      },
+      "records": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/record-ui-fixture-gj425v0r",
+        "source_jar_sha256": "11728acf978e12942dced903d12873a6818edc74c2b12df02196a6e370c39be0",
+        "production_accessed": false,
+        "new_distribution_format": false,
+        "legacy_missing_experience_bug_fixed": true,
+        "shared_legacy_row_models_retained_in_core": [
+          "BattleLogCollect",
+          "BattleLogDetail",
+          "MissionLogCollect",
+          "MissionLogDetail"
+        ],
+        "result": "passed",
+        "product_distribution": true,
+        "record_ui_profile": "record-ui-in-charts-v1",
+        "record_module": "charts",
+        "original_distribution_source_unchanged": true,
+        "windows": 3,
+        "battle_rows": 3,
+        "battle_exp": 60,
+        "mission_fuel": 75,
+        "development_rows": 2,
+        "nested_dialog": true,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "host_sha256": "47f2161a0d354d6e161a5f2b01d25d572e662fa8ca65d06e0da332107ea1a465",
+        "record_ui_sha256": "c9bcdfa51363a0dfae2a26f417d4d5e4e86a1fa664f1b3741bee01ac124ff5b3",
+        "retained_fixture": true
+      }
+    },
+    {
+      "run": 40645706735,
+      "name": "runtime-migration-java21",
+      "id": 12802873375,
+      "sha256": "sha256:da62aa3b824abd7298f9220842fd8aa5512d1bcc31ceb3614683539514d4bffa",
+      "created_at": "2026-10-28T08:50:10Z",
+      "migration": {
+        "discovered": 5,
+        "executed": 5,
+        "successful": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "native_mint_tested": false,
+        "production_applied": false
+      },
+      "markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true"
+      ]
+    },
+    {
+      "run": 40645706735,
+      "name": "runtime-migration-java25",
+      "id": 12798180576,
+      "sha256": "sha256:aaccff58796c01b7e3bd7d28918095b2b89564a0f3604fa212c77ed6c0e0fdb2",
+      "created_at": "2026-10-28T06:49:38Z",
+      "migration": {
+        "discovered": 5,
+        "executed": 5,
+        "successful": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "native_mint_tested": false,
+        "production_applied": false
+      },
+      "markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true"
+      ]
+    }
+  ],
+  "initial_failure": {
+    "run": 40645706735,
+    "job": 122673904258,
+    "artifact": 12798340272,
+    "cause": "2-second FX FutureTask wait timed out; original inputs unchanged; no test conditions changed before rerun"
+  },
+  "pr": {
+    "number": 61,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "merge_commit_sha": "72f0db4a6f8c31f3a31a3a5923f2655783a49274"
+  },
+  "runs": [
+    {
+      "id": 40645706854,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706864,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706749,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706774,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706796,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706824,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706806,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706810,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706902,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706830,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706836,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706844,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706919,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40645706735,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "546b196122a4f824c724e222927e9885f6bc451e",
+      "conclusion": "success",
+      "run_attempt": 2
+    }
+  ],
+  "tested_tree": "827b312d71406e6c9f497bc43e0e6c4b487ea3c5"
+}
