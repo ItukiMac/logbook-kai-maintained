@@ -1,0 +1,36 @@
+name: Ship list dependency inventory (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-list-worker-20261028']
+    paths: ['.github/workflows/ship-list-inventory.yml']
+permissions:
+  contents: write
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          names=['ShipController','ShipTablePane','ShipItem','ShipFilter','ParameterFilterPane','DeckBuilder','PublicAutoCompletion','SuggestSupport']
+          out={'base':'30d9c17e25adb9bdcffdf41c6ac71841a6f240ed','references':{},'sources':{},'test_references':{}}
+          for top,key in [('src/main','references'),('scripts','test_references'),('src/test','test_references')]:
+              for p in Path(top).rglob('*'):
+                  if p.suffix not in ('.java','.fxml','.py','.sh'):continue
+                  text=p.read_text();hits=[f'{i+1}: {line}' for i,line in enumerate(text.splitlines()) if any(re.search(r'\b'+n+r'\b',line) for n in names)]
+                  if hits:out[key][str(p)]=hits
+          for name in ('DeckBuilder','PublicAutoCompletion','SuggestSupport'):
+              p=Path('src/main/java/logbook/internal/gui')/(name+'.java')
+              if p.exists():out['sources'][str(p)]=p.read_text()
+          Path('.maintenance-evidence').mkdir(exist_ok=True)
+          Path('.maintenance-evidence/ship-list-inventory.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          print('SHIP_LIST_INVENTORY_OK read_only_product=true')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/ship-list-inventory.json
+          git commit -m 'Preserve ship UI dependency inventory without product changes'
+          git push origin HEAD:refs/heads/maintenance/ship-list-worker-20261028
