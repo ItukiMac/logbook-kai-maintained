@@ -1,0 +1,135 @@
+name: Quest document confirmation target checks (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-document-worker-20261029']
+    paths: ['.github/workflows/quest-document-selection.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      EXPECTED: 392ca39bf576c4de9411d195958fd4654d49d130
+      TARGET: maintenance/quest-document-commands-20261029
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 392ca39bf576c4de9411d195958fd4654d49d130
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Guard selected target before mutation; cancellation uses the original issuing session
+        working-directory: candidate
+        run: |
+          mkdir ../evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/main/java/logbook/internal/gui/QuestConditionEditController.java');raw=p.read_bytes();ending='\r\n' if b'\r\n' in raw else '\n';s=raw.decode().replace('\r\n','\n')
+          old='        var result = this.documentSession.apply(plan, true);'
+          assert s.count(old)==1
+          s=s.replace(old,'''        var selected = this.questSelector.getSelectionModel().getSelectedItem();
+                  if (selected == null || selected.getQuest() == null || this.documentSession == null
+                          || selected.getQuest().getNo() == null || selected.getQuest().getNo() != plan.questId()
+                          || this.documentSession.document().questId() != plan.questId())
+                      throw new java.io.IOException("確認中に選択対象が変わりました。退避せず、対象を再確認してください。");
+          '''.replace('          ','')+old)
+          old='            var plan = this.prepareRetirementDocument();';assert s.count(old)==1
+          s=s.replace(old,old+'\n            var preparedSession = this.documentSession;')
+          old='                    this.documentSession.apply(plan, false);';assert s.count(old)==1
+          s=s.replace(old,'                    preparedSession.apply(plan, false);')
+          p.write_bytes(s.replace('\n',ending).encode())
+          p=Path('src/test/java/logbook/internal/gui/QuestDocumentCommandsGuiTest.java');s=p.read_text()
+          extra='''    @Test void clearedSelectionDuringConfirmationDoesNotRetireTheOldTarget()throws Exception{
+                  Files.writeString(root.resolve("10001.json"),ORIGINAL,StandardOpenOption.CREATE_NEW);
+                  fx(()->{try(var v=open()){
+                      dialogs(()->v.editor().remove(null),()->v.selector().getSelectionModel().clearSelection(),true,true);
+                      assertEquals(ORIGINAL,Files.readString(root.resolve("10001.json")));assertNull(v.selector().getValue());
+                      try(var p=Files.list(root)){assertEquals(1,p.count());}
+                  }return null;});
+              }
+              @Test void cancellingAfterSelectionChangesDoesNotRunTheOldOrNewCommand()throws Exception{
+                  Files.writeString(root.resolve("10001.json"),ORIGINAL,StandardOpenOption.CREATE_NEW);
+                  Files.writeString(root.resolve("10002.json"),ORIGINAL,StandardOpenOption.CREATE_NEW);
+                  fx(()->{try(var v=open()){
+                      dialogs(()->v.editor().remove(null),()->v.selector().getSelectionModel().select(1),false);
+                      assertEquals(ORIGINAL,Files.readString(root.resolve("10001.json")));assertEquals(ORIGINAL,Files.readString(root.resolve("10002.json")));
+                      assertEquals(10002,v.selector().getValue().getNo());try(var p=Files.list(root)){assertEquals(2,p.count());}
+                  }return null;});
+              }
+          '''.replace('          ','')
+          index=s.rfind('}');p.write_text(s[:index]+extra+s[index:])
+          p=Path('scripts/verify_r3.sh');s=p.read_text()
+          assert s.count('assert document_test_count>=35')==1;s=s.replace('assert document_test_count>=35','assert document_test_count>=37')
+          old="int(document_gui[0].get('tests',0))>=5";assert s.count(old)==1;s=s.replace(old,"int(document_gui[0].get('tests',0))>=7")
+          p.write_text(s)
+          p=Path('docs/maintenance/quest-document-commands-20261029.md');s=p.read_text();assert 'モーダルGUI5件' in s
+          s=s.replace('モーダルGUI5件','モーダルGUI7件')
+          s+='\n## 確認中の選択解除・キャンセルも検証\n\n選択が別任務へ変わる場合だけでなく、選択解除でも退避前に拒否する。\n確認を取り消した場合は発行元Sessionへ取消を伝え、変更先のSessionで古いPlanを実行しない。\n対象切替後の取消でエラー画面を出したり、古い定義を退避したりしないことを実モーダル試験へ追加した。\n'
+          p.write_text(s)
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Execute every new case and retained arrival-editor tests without skips
+        working-directory: candidate
+        run: |
+          xvfb-run -a mvn -B -ntp -Dlogbook.gui.tests=true -Dtest=QuestDocumentCommandsTest,QuestDocumentCommandsBoundaryTest,QuestDocumentCommandsGuiTest,ArrivalConditionEditorGuiTest test > ../evidence/tests.log 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json
+          rows={}
+          for name,count in {'logbook.core.QuestDocumentCommandsTest':28,'logbook.internal.gui.QuestDocumentCommandsBoundaryTest':2,'logbook.internal.gui.QuestDocumentCommandsGuiTest':7,'logbook.internal.gui.ArrivalConditionEditorGuiTest':12}.items():
+              root=E.parse(Path('target/surefire-reports')/('TEST-'+name+'.xml')).getroot()
+              values={k:int(root.get(k,0)) for k in ('tests','failures','errors','skipped')}
+              assert values=={'tests':count,'failures':0,'errors':0,'skipped':0},(name,values)
+              rows[name]=values
+          Path('../evidence/tests.json').write_text(json.dumps(rows,indent=2))
+          PY
+          test "$(git hash-object src/main/java/logbook/internal/util/QuestDocumentStore.java)" = 2482dd2bc0002af9cd14d3ef9ff9b23472211944
+      - name: Preserve tested incremental fix with original history
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$EXPECTED"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main/java/logbook/internal/gui/QuestConditionEditController.java src/test/java/logbook/internal/gui/QuestDocumentCommandsGuiTest.java scripts/verify_r3.sh docs/maintenance/quest-document-commands-20261029.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 4
+          git commit -m 'Refuse retirement after selection clears and keep cancellation bound to the original session'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/head.txt
+      - name: Keep exact focused results including any incomplete outcome
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import json,os,xml.etree.ElementTree as E
+          from pathlib import Path
+          result={'base':'392ca39bf576c4de9411d195958fd4654d49d130','full_ci_verified':False,'production_accessed':False,'files':{},'suites':[]}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix=='.json':result['files'][p.name]=json.loads(p.read_text())
+              else:result['files'][p.name]=p.read_text(errors='replace')[-20000:]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*QuestDocumentCommands*.xml'):
+              result['suites'].append(E.parse(p).getroot().attrib)
+          Path('.maintenance-evidence/quest-documents-selection-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-documents-selection-*.json
+          git commit -m 'Retain selected-target and cancelled-retirement GUI regression outcome'
+          git push origin HEAD:refs/heads/maintenance/quest-document-worker-20261029
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: quest-document-selection-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+          retention-days: 14
