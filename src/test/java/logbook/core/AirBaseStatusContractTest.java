@@ -11,8 +11,19 @@ import org.junit.jupiter.api.Test;
 
 /** Pure synthetic inputs; never loads the default runtime or writes a user file. */
 class AirBaseStatusContractTest {
-    @org.junit.jupiter.api.BeforeAll static void initResourceReader() throws Exception { LogBookCoreServices.init(List.of()); }
-    @org.junit.jupiter.api.AfterAll static void closeResourceReader() throws Exception { LogBookCoreServices.closeContainer(); }
+    /** Load actual classpath resources without owning the suite's core container.
+     * The short-lived static resource adapter is closed before tests run;
+     * calculations, inputs and expected values are not mocked.
+     */
+    @org.junit.jupiter.api.BeforeAll static void loadCalculationResources() throws Exception {
+        ClassLoader loader = AirBaseStatusContractTest.class.getClassLoader();
+        try (var resources = org.mockito.Mockito.mockStatic(LogBookCoreServices.class)) {
+            resources.when(LogBookCoreServices::getClassLoader).thenReturn(loader);
+            resources.when(() -> LogBookCoreServices.getResourceAsStream(org.mockito.Mockito.anyString()))
+                    .thenAnswer(call -> loader.getResourceAsStream(call.getArgument(0, String.class)));
+            Class.forName("logbook.internal.kancolle.Ships", true, loader);
+        }
+    }
     @Test void reconnaissanceKeepsExistingMaximumMultiplierAndRounding() {
         Fixture f=new Fixture();SlotItem item=new SlotItem();item.setId(102);item.setSlotitemId(1002);item.setAlv(0);item.setLevel(0);
         SlotitemMst recon=new SlotitemMst();recon.setId(1002);recon.setName("recon");recon.setType(List.of(0,0,49,49));
