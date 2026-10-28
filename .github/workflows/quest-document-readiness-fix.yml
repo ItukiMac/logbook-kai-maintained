@@ -1,0 +1,114 @@
+name: Fix migration readiness polling without weaker gates (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-document-worker-20261029']
+    paths: ['.github/workflows/quest-document-readiness-fix.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPECTED: 26241fc003c1dfeeaba81c77ae983830def3d5ba
+      TARGET: maintenance/quest-document-commands-20261029
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: candidate
+          ref: 26241fc003c1dfeeaba81c77ae983830def3d5ba
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Retain actual original failures and hashes, not just a rewritten summary
+        working-directory: tooling
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import json,urllib.request,os,hashlib,zipfile,io,re
+          from pathlib import Path
+          artifacts={12832526286:'63b7e75fb8e9be420c09c9cbdb6ec782035f5e86af803b92b8186073a8aa8a8f',12831747866:'3f658506e4f1339cf55364030292459221d80261d604d837c794c8d81314400d'}
+          report={'source':'26241fc003c1dfeeaba81c77ae983830def3d5ba','run':40723905576,'artifacts':[],'native_mint_tested':False}
+          for aid,digest in artifacts.items():
+              req=urllib.request.Request('https://api.github.com/repos/ItukiMac/logbook-kai-maintained/actions/artifacts/'+str(aid)+'/zip')
+              req.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(req,timeout=45) as response:data=response.read(1000001)
+              assert len(data)<=1000000 and hashlib.sha256(data).hexdigest()==digest
+              archive=zipfile.ZipFile(io.BytesIO(data));assert sum(i.file_size for i in archive.infolist())<2000000 and archive.testzip() is None
+              logs=[n for n in archive.namelist() if n.endswith('runtime-migration.log')];assert len(logs)==1
+              text=archive.read(logs[0]).decode('utf8');assert 'FAILED (' in text
+              target=Path('.maintenance-evidence')/('pr68-first-migration-'+str(aid)+'.log');assert not target.exists();target.write_text(text)
+              report['artifacts'].append({'id':aid,'sha256':digest,'log':str(target),'timeout_exception':'TimeoutException' in text,
+                  'source_unchanged_markers':'"originals_unchanged": true' in text,'summary':[l for l in text.splitlines() if l.startswith(('RUNTIME_MIGRATION_TEST_SUMMARY','FAILED','Ran '))],
+                  'failure_details':[l for l in text.splitlines() if 'RuntimeMigrationProbe.java:' in l or 'AssertionError:' in l or '"stderr"' in l or '"changed_inputs"' in l or '"external_write_events"' in l]})
+          Path('.maintenance-evidence/pr68-first-migration-failures.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(report,ensure_ascii=False))
+          PY
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Repair only bounded observation polling and add deterministic rejection tests
+        working-directory: candidate
+        run: |
+          mkdir ../evidence
+          python3 ../tooling/.maintenance-tools/repair_migration_wait.py > ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Require polling regression AND actual Launcher mutation and restoration
+        working-directory: candidate
+        run: |
+          xvfb-run -a python3 -m unittest scripts.tests.test_runtime_migration_readiness scripts.tests.test_runtime_migration_java.RuntimeMigrationJavaTest.test_actual_launcher_start_change_restore_with_external_write_monitor -v > ../evidence/readiness-and-launcher.log 2>&1
+          grep 'MIGRATION_READINESS_POLL_OK' ../evidence/readiness-and-launcher.log
+          grep 'real_launcher=true.*source_unchanged=true.*external_unchanged=true.*old_state_restored=true' ../evidence/readiness-and-launcher.log
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('../evidence/readiness-and-launcher.log').read_text()
+          assert 'Ran 2 tests' in s and '\nOK\n' in s and 'skipped' not in s
+          assert 'overall_deadline_seconds=25' in s or '"overall_deadline_seconds": 25' in s
+          PY
+      - name: Preserve incremental tested change, keeping initial failed source history
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$EXPECTED"
+          test "$(git hash-object src/main/java/logbook/internal/util/QuestDocumentStore.java)" = 2482dd2bc0002af9cd14d3ef9ff9b23472211944
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/java/RuntimeMigrationProbe.java scripts/java/RuntimeMigrationReadinessProbe.java scripts/tests/test_runtime_migration_readiness.py scripts/verify_r3.sh docs/maintenance/quest-document-commands-20261029.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 5
+          git commit -m 'Handle pending migration GUI observations inside the original total deadline; preserve actual readiness assertions'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/head.txt
+      - name: Retain repair evidence and both original failed logs without altering product/master
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          result={'source_before':'26241fc003c1dfeeaba81c77ae983830def3d5ba','production_accessed':False,'full_ci_verified':False,'logs':{},'readiness':[]}
+          for p in Path('../evidence').glob('*'):result['logs'][p.name]=p.read_text(errors='replace')[-25000:]
+          for p in Path('../candidate/target/r3-verification').glob('migration-readiness-fixture-*.json'):result['readiness'].append(json.loads(p.read_text()))
+          Path('.maintenance-evidence/pr68-readiness-repair-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/pr68-*
+          git commit -m 'Retain original migration timeouts and exact bounded-readiness repair results'
+          git push origin HEAD:refs/heads/maintenance/quest-document-worker-20261029
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: pr68-readiness-repair-evidence
+          path: |
+            evidence/
+            tooling/.maintenance-evidence/pr68-*
+          include-hidden-files: true
+          retention-days: 14
