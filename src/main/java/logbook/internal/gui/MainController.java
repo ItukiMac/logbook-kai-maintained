@@ -85,7 +85,9 @@ public class MainController extends WindowController {
     private long ndockHashCode;
 
     /** 任務コレクションのハッシュ・コード */
-    private long questHashCode;
+    private logbook.plugin.api.QuestListV1.Listing displayedQuests;
+    private java.util.List<Boolean> displayedCustomFiles;
+    private boolean displayedQuestVisibility;
 
     /** 戦果のハッシュ・コード */
     private long achievementHashCode;
@@ -526,24 +528,16 @@ public class MainController extends WindowController {
      * 任務の更新
      */
     private void quest() {
-        // コレクション内の不完全なカスタム任務データの残骸を完全にクリア
-        if (AppQuestCollection.get().getQuest().keySet().removeIf(no -> no >= 10001 && no <= 10005)) {
-            logbook.internal.Config.getDefault().store();
-        }
-
-        Map<Integer, AppQuest> questMap = AppQuestCollection.get()
-                .getQuest();
+        // Capture once for both refresh comparison and rendering; drawing must not mutate saved quests.
+        var listing = logbook.plugin.api.QuestListV1.snapshot();
         boolean show = AppConfig.get().isShowQuest();
-        long newHashCode = hashCode(questMap, show);
-        
-        // カスタム任務ファイルの存在有無をハッシュコードに追加して変化を監視する
+        var customFiles = new java.util.ArrayList<Boolean>(5);
         for (int no = 10001; no <= 10005; no++) {
-            newHashCode *= 63;
-            boolean exists = java.nio.file.Files.exists(java.nio.file.Paths.get("./customquest/" + no + ".json"));
-            newHashCode += Boolean.hashCode(exists);
+            customFiles.add(java.nio.file.Files.exists(java.nio.file.Paths.get("./customquest/" + no + ".json")));
         }
-
-        if (this.questHashCode != newHashCode) {
+        // Full value equality avoids silent missed refreshes from colliding Java hash codes.
+        if (!listing.equals(this.displayedQuests) || !customFiles.equals(this.displayedCustomFiles)
+                || show != this.displayedQuestVisibility) {
             this.questPane.setVisible(show);
             this.questPane.setManaged(show);
             // ハッシュ・コードが変わっている場合任務の更新
@@ -551,10 +545,8 @@ public class MainController extends WindowController {
             quest.clear();
             
             // 1. 受領中の任務を追加
-            questMap.values()
-                    .stream()
-                    .filter(aq -> aq.getNo() < 10001 || aq.getNo() > 10005)
-                    .filter(AppQuest::isActive)
+            listing.quests().stream()
+                    .filter(logbook.plugin.api.QuestListV1.Quest::active)
                     .map(QuestPane::new)
                     .forEach(quest::add);
 
@@ -593,15 +585,15 @@ public class MainController extends WindowController {
             }
 
             // 3. 非受領の任務を追加
-            questMap.values()
-                    .stream()
-                    .filter(aq -> aq.getNo() < 10001 || aq.getNo() > 10005)
-                    .filter(aq -> !aq.isActive())
+            listing.quests().stream()
+                    .filter(aq -> !aq.active())
                     .map(QuestPane::new)
                     .forEach(quest::add);
 
             // ハッシュ・コードの更新
-            this.questHashCode = newHashCode;
+            this.displayedQuests = listing;
+            this.displayedCustomFiles = java.util.List.copyOf(customFiles);
+            this.displayedQuestVisibility = show;
         }
     }
 
