@@ -119,7 +119,16 @@ assert quest_list['product_distribution'] and not quest_list['production_accesse
 assert not quest_list['explicit_remove_executed'] and not quest_list['atomic_with_all_writers_claimed']
 quest_suites=[s for s in suites if s.get('name')=='logbook.core.QuestListReadContractTest']
 assert len(quest_suites)==1 and int(quest_suites[0].get('tests',0))>=17 and int(quest_suites[0].get('skipped',0))==0
-report={'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+# Non-destructive quest visibility: actual confirmations, restoration and source preservation are mandatory.
+visibility_reports=[json.loads(f.read_text()) for f in p.glob('quest-visibility-fixture-*.json')]
+assert len(visibility_reports)==1 and visibility_reports[0]['result']=='passed'
+quest_visibility=visibility_reports[0]
+assert all(quest_visibility[k] for k in ('product_distribution','confirm_cancel','hide_restore_all','stale_rejected','originals_unchanged','acceptance_unchanged','custom_slot_retained','session_reset_in_new_process','source_jar_unchanged'))
+assert not any(quest_visibility[k] for k in ('production_accessed','persisted_hide_state','physical_module_added'))
+visibility_suites=[s for s in suites if s.get('name') in {'logbook.core.QuestVisibilityCommandTest','logbook.internal.gui.QuestVisibilityBoundaryTest'}]
+assert len(visibility_suites)==2 and sum(int(s.get('tests',0)) for s in visibility_suites)>=23
+assert all(int(s.get(k,0))==0 for s in visibility_suites for k in ('failures','errors','skipped'))
+report={'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,

@@ -18,7 +18,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Arc;
 import javafx.stage.Stage;
 import logbook.bean.AppQuest;
-import logbook.bean.AppQuestCollection;
 import logbook.plugin.api.QuestListV1.Quest;
 import logbook.core.QuestListReadService;
 import logbook.core.LogBookCoreServices;
@@ -206,25 +205,17 @@ public class QuestPane extends HBox {
 
     @FXML
     void remove(ActionEvent event) {
-        int no = this.display.no();
-        if (no >= 10001 && no <= 10005) {
-            try {
-                java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + no + ".json");
-                java.nio.file.Files.deleteIfExists(file);
-            } catch (Exception e) {
-                LoggerHolder.get().warn("カスタム任務ファイルの削除に失敗しました", e);
-            }
-        }
-        AppQuestCollection.get()
-                .getQuest()
-                .remove(this.display.no());
+        QuestVisibilityUi.hide(this, java.util.List.of(this.display));
     }
 
     @FXML
     void removeAll(ActionEvent event) {
-        AppQuestCollection.get()
-                .getQuest()
-                .clear();
+        // Capture only the displayed rows. Do not clear the underlying quest collection.
+        var parent = getParent();
+        var rows = parent == null ? java.util.List.of(this.display)
+                : parent.getChildrenUnmodifiable().stream().filter(QuestPane.class::isInstance)
+                    .map(QuestPane.class::cast).map(row -> row.display).toList();
+        QuestVisibilityUi.hide(this, rows);
     }
 
     @FXML
@@ -266,7 +257,7 @@ public class QuestPane extends HBox {
     }
 
     private void showContextMenu(ContextMenuEvent event) {
-        MenuItem item = new MenuItem("全て除去");
+        MenuItem item = new MenuItem("表示中の任務をすべて非表示（この起動中）");
         item.setOnAction(this::removeAll);
         ContextMenu contextMenu = new ContextMenu(item);
         contextMenu.show(this.getScene().getWindow(), event.getScreenX(), event.getScreenY());
