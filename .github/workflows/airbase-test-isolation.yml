@@ -27,7 +27,7 @@ jobs:
           cache: maven
           cache-dependency-path: candidate/pom.xml
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
-      - name: Retain exact checked-out source and reproduce the inter-test sequence
+      - name: Record pinned source and the unchanged interacting test sequence
         working-directory: candidate
         shell: bash
         run: |
@@ -35,10 +35,9 @@ jobs:
           test "$(git rev-parse HEAD)" = "$BASE"
           python3 - <<'PY'
           from pathlib import Path
-          import hashlib,json
-          paths=['src/main/java/logbook/core/LogBookCoreServices.java','src/test/java/logbook/core/RuntimeDataPathsTest.java','src/test/java/logbook/core/EquipmentDataContractTest.java','src/test/java/logbook/internal/gui/EquipmentProjectionTest.java','src/test/java/logbook/core/AirBaseStatusContractTest.java']
-          data={p:{'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest(),'source':Path(p).read_text()} for p in paths}
-          Path('../evidence/checked-out-sources.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          import json,hashlib
+          names=['src/main/java/logbook/core/LogBookCoreServices.java','src/test/java/logbook/core/RuntimeDataPathsTest.java','src/test/java/logbook/core/EquipmentDataContractTest.java','src/test/java/logbook/internal/gui/EquipmentProjectionTest.java']
+          Path('../evidence/exact-sources.json').write_text(json.dumps({p:{'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest(),'source':Path(p).read_text()} for p in names},ensure_ascii=False,indent=2)+'\n')
           PY
           set +e
           mvn -B -ntp -Dsurefire.runOrder=alphabetical -Dtest=AirBaseStatusContractTest,AirBaseStatusBoundaryTest,RuntimeDataPathsTest,EquipmentDataContractTest,EquipmentProjectionTest test > ../evidence/before.log 2>&1
@@ -47,57 +46,29 @@ jobs:
           printf '%s\n' "$rc" > ../evidence/before-exit.txt
           python3 - <<'PY'
           from pathlib import Path
-          import json,xml.etree.ElementTree as E
+          import xml.etree.ElementTree as E,json
           suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
-          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
-          Path('../evidence/before-summary.json').write_text(json.dumps(totals,indent=2)+'\n')
-          # Preserve failure or non-reproduction honestly; the full CI already failed.
-          print('BEFORE_SEQUENCE',totals)
+          Path('../evidence/before-summary.json').write_text(json.dumps({k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')},indent=2)+'\n')
           PY
-      - name: Replace only the test-owned resource setup, without touching global lifecycle
+      - name: Correct test-owned resource lifecycle only
         working-directory: candidate
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('src/test/java/logbook/core/AirBaseStatusContractTest.java');s=p.read_text()
-          old='    @org.junit.jupiter.api.BeforeAll static void initResourceReader() throws Exception { LogBookCoreServices.init(List.of()); }\n    @org.junit.jupiter.api.AfterAll static void closeResourceReader() throws Exception { LogBookCoreServices.closeContainer(); }'
-          assert s.count(old)==1
-          replacement='''    /** Initialize legacy static constants from real classpath resources only.
-     * This fixture must not initialize, replace or close the suite-owned container.
-     * The short-lived static mock is closed before any test method runs; no
-     * calculation, input value or expected result is mocked.
-     */
-    @org.junit.jupiter.api.BeforeAll static void loadCalculationResources() throws Exception {
-        ClassLoader loader = AirBaseStatusContractTest.class.getClassLoader();
-        try (var resources = org.mockito.Mockito.mockStatic(LogBookCoreServices.class)) {
-            resources.when(LogBookCoreServices::getClassLoader).thenReturn(loader);
-            resources.when(() -> LogBookCoreServices.getResourceAsStream(org.mockito.Mockito.anyString()))
-                    .thenAnswer(call -> loader.getResourceAsStream(call.getArgument(0, String.class)));
-            Class.forName("logbook.internal.kancolle.Ships", true, loader);
-        }
-    }'''
-          p.write_text(s.replace(old,replacement))
-          doc=Path('docs/maintenance/airbase-status-boundary-20261028.md')
-          doc.write_text(doc.read_text()+'''\n## 全体試験で検出した試験ライフサイクルの干渉\n\n初回の最終head `5e84aebe91b08c3b364fdf5d57949ad7b015bda3` は、個別試験23件が成功しても全体CIで失敗した。\n追加試験が@BeforeAllで共用コアを初期化し、@AfterAllで閉じたため、後続の設定パス/装備試験へ影響した。\n初回全体CIの失敗記録は保持し、再実行成功へ上書きしない。\n\n修正は試験の資源読込だけに限定した。短いスコープ内で実クラスパス資源を提供して既存Shipsの静的定数を読み込み、\nそのスコープを各試験の前に閉じる。共用コアのinit/closeや製品側の計算を呼び換えず、数式・入力値・期待値もモックしない。\n関連試験を同じJVM・明示した順序でまとめて実行し、修正後の個別GUIも再確認する。\n最終的な全体CIの再検証結果は修正後のheadに対して別途確認する。\n''')
-          PY
+          python3 ../tooling/.maintenance-tools/fix_airbase_test_isolation.py > ../evidence/apply.log 2>&1
           git -c core.whitespace=cr-at-eol diff --check
-      - name: Require unchanged assertions in the previously interacting test sequence
-        working-directory: candidate
-        run: |
           mvn -B -ntp -Dsurefire.runOrder=alphabetical -Dtest=AirBaseStatusContractTest,AirBaseStatusBoundaryTest,RuntimeDataPathsTest,EquipmentDataContractTest,EquipmentProjectionTest test > ../evidence/after.log 2>&1
           mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
           python3 -m unittest discover -s scripts/tests -p test_airbase_status_ui.py -v > ../evidence/gui.log 2>&1
-      - name: Preserve just the passing test-isolation and evidence-note fixes
+      - name: Non-force commit only verified test and documentation fixes
         working-directory: candidate
         run: |
           test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add src/test/java/logbook/core/AirBaseStatusContractTest.java docs/maintenance/airbase-status-boundary-20261028.md
-          git commit -m 'Isolate airbase test resource loading from shared core lifecycle; preserve all calculation and GUI assertions'
+          git commit -m 'Isolate airbase test resource loading from shared core lifecycle without changing formulas or expected values'
           git push origin "HEAD:refs/heads/$TARGET"
           git rev-parse HEAD > ../evidence/source-commit.txt
-      - name: Retain exact execution and original failure evidence
+      - name: Retain exact outcome without deleting old failures
         if: always()
         working-directory: tooling
         run: |
@@ -107,7 +78,7 @@ jobs:
           r={'base':os.environ['BASE'],'production_accessed':False,'logs':{},'suites':[],'reports':{}}
           for p in Path('../evidence').glob('*'):
               if p.suffix=='.json':r[p.name]=json.loads(p.read_text())
-              elif p.suffix in ('.log','.txt'):r['logs'][p.name]=p.read_text(errors='replace')[-20000:]
+              elif p.suffix in ('.log','.txt'):r['logs'][p.name]=p.read_text(errors='replace')[-18000:]
           for p in Path('../candidate/target/surefire-reports').glob('TEST-*.xml'):r['suites'].append(E.parse(p).getroot().attrib)
           for p in Path('../candidate/target/r3-verification').glob('airbase-status-fixture-*'):
               if p.suffix=='.json':r['reports'][p.name]=json.loads(p.read_text())
@@ -117,7 +88,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add .maintenance-evidence/airbase-isolation-*.json
-          git commit -m 'Retain exact airbase inter-test isolation evidence, including failed first final head'
+          git commit -m 'Retain combined airbase regression and original failure evidence'
           git push origin HEAD:refs/heads/maintenance/airbase-status-worker-20261028
       - uses: actions/upload-artifact@v7.0.2
         if: always()
