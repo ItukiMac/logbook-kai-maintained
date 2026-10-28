@@ -1,0 +1,611 @@
+{
+  "head": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+  "source_tree": "d12e75884e9a9f2ef7d09b467c18f45ecb697229",
+  "verified": true,
+  "product_changes": false,
+  "artifact_code_executed": false,
+  "production_accessed": false,
+  "runs": [
+    {
+      "id": 40703778833,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778987,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778784,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778894,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703779042,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778936,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703779116,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778848,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703779015,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778831,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778855,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778786,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703779077,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778818,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40703778913,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "d0c48c37d683079e33f30e4cfbf36d4f8bf6c742",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 2
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 12824470040,
+      "name": "r3-evidence-java21",
+      "run": 40703778786,
+      "digest": "sha256:dd5f70631a3bdfa7c2511d7a777c9fbef3e2ee1be89d66734c796e7153b9529e",
+      "java": {
+        "tests": 922,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "focused_java": {
+        "logbook.core.AirBaseStatusContractTest": {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.core.QuestListReadContractTest": {
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.AirBaseStatusBoundaryTest": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "python": {
+        "python-scripts.log": {
+          "outer": {
+            "discovered": 440,
+            "skipped": 1,
+            "successful": 439
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 440,
+              "skipped": 1,
+              "successful": 439
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ]
+        },
+        "python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ]
+        }
+      },
+      "checkouts": [
+        "e8096e910ab1b078e203266fafae519332f81542"
+      ],
+      "proofs": {
+        "airbase_status": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/airbase-status-fixture-rr2tvcyx",
+          "result": "passed",
+          "production_accessed": false,
+          "product_status_jar": true,
+          "frozen_selection": true,
+          "identity_preserved": true,
+          "captured_power": 40,
+          "refresh_power": 60,
+          "sorted_planes": true,
+          "unknown_visible": true,
+          "stale_values_cleared": true,
+          "legacy_export": true,
+          "timeline_stopped": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "quest_list_read": {
+          "source_jar_sha256": "3956d6505d8c4b6f78bec12829be6c1e10f5658669bb695b3d5c0742700a0704",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "parallel_integration": {
+          "fixture_root": "/tmp/logbook-parallel-integration-nqi1di41",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-apz9ipai.log"
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152
+      },
+      "skipped_java": [
+        "logbook.core.PublicDataReleaseIntegrationTest"
+      ]
+    },
+    {
+      "id": 12823188804,
+      "name": "r3-evidence-java25",
+      "run": 40703778786,
+      "digest": "sha256:898517896a07430384d92f1225a9f4a5f7ed0708793a9a28d7dd90ea3e67517f",
+      "java": {
+        "tests": 922,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "focused_java": {
+        "logbook.core.AirBaseStatusContractTest": {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.core.QuestListReadContractTest": {
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.AirBaseStatusBoundaryTest": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "python": {
+        "python-scripts.log": {
+          "outer": {
+            "discovered": 440,
+            "skipped": 1,
+            "successful": 439
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 440,
+              "skipped": 1,
+              "successful": 439
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ]
+        },
+        "python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ]
+        }
+      },
+      "checkouts": [
+        "e8096e910ab1b078e203266fafae519332f81542"
+      ],
+      "proofs": {
+        "airbase_status": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/airbase-status-fixture-fdxjx_b7",
+          "result": "passed",
+          "production_accessed": false,
+          "product_status_jar": true,
+          "frozen_selection": true,
+          "identity_preserved": true,
+          "captured_power": 40,
+          "refresh_power": 60,
+          "sorted_planes": true,
+          "unknown_visible": true,
+          "stale_values_cleared": true,
+          "legacy_export": true,
+          "timeline_stopped": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "quest_list_read": {
+          "source_jar_sha256": "da52544d169e0854c5741b62fcca46b45f724d2d42254a26da0eb5da706f723b",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "parallel_integration": {
+          "fixture_root": "/tmp/logbook-parallel-integration-6mmtfqd4",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-ram7bwcy.log"
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152
+      },
+      "skipped_java": [
+        "logbook.core.PublicDataReleaseIntegrationTest"
+      ]
+    },
+    {
+      "id": 12822584262,
+      "name": "modern-runtime-evidence-java25",
+      "run": 40703779077,
+      "digest": "sha256:d6e10357d497b60273c75995f3bce2b618a856163d81f9e28a40079fb949c61e",
+      "java": {
+        "tests": 922,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "focused_java": {
+        "logbook.core.AirBaseStatusContractTest": {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.core.QuestListReadContractTest": {
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.AirBaseStatusBoundaryTest": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "python": {
+        "python-scripts.log": {
+          "outer": {
+            "discovered": 440,
+            "skipped": 1,
+            "successful": 439
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 440,
+              "skipped": 1,
+              "successful": 439
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ]
+        },
+        "python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ]
+        }
+      },
+      "checkouts": [
+        "e8096e910ab1b078e203266fafae519332f81542"
+      ],
+      "proofs": {
+        "airbase_status": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/airbase-status-fixture-_rpfyvcg",
+          "result": "passed",
+          "production_accessed": false,
+          "product_status_jar": true,
+          "frozen_selection": true,
+          "identity_preserved": true,
+          "captured_power": 40,
+          "refresh_power": 60,
+          "sorted_planes": true,
+          "unknown_visible": true,
+          "stale_values_cleared": true,
+          "legacy_export": true,
+          "timeline_stopped": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "quest_list_read": {
+          "source_jar_sha256": "b5a21da4af3910fb285b9c36c68873ab26701701b5d04f68fa0dee05cd8603ed",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "parallel_integration": {
+          "fixture_root": "/tmp/logbook-parallel-integration-bl2madnw",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-fvwwzuht.log"
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152
+      },
+      "skipped_java": [
+        "logbook.core.PublicDataReleaseIntegrationTest"
+      ],
+      "modern_runtime": {
+        "checkout": "e8096e910ab1b078e203266fafae519332f81542",
+        "jdk_baseline": 25,
+        "javafx": "27.0.1",
+        "openjfx_components": [
+          "org.openjfx:javafx-base",
+          "org.openjfx:javafx-controls",
+          "org.openjfx:javafx-fxml",
+          "org.openjfx:javafx-graphics",
+          "org.openjfx:javafx-media",
+          "org.openjfx:javafx-swing",
+          "org.openjfx:javafx-web",
+          "org.openjfx:jdk-jsobject"
+        ],
+        "jackson_host": "3.2.4",
+        "classfile_major": 69,
+        "json_compatibility_tests": 14,
+        "legacy_plugin_bridge_retained": true,
+        "native_mint_tested": false,
+        "production_applied": false
+      }
+    },
+    {
+      "id": 12824217224,
+      "name": "runtime-migration-java21",
+      "run": 40703778913,
+      "digest": "sha256:cdce432b46f40129194e2243ff5cdc42e385da136b7952f732bb66d9b37bde3d",
+      "java": {},
+      "focused_java": {},
+      "python": {},
+      "checkouts": [],
+      "proofs": {},
+      "skipped_java": [],
+      "migration_counts": {
+        "discovered": 5,
+        "skipped": 0,
+        "successful": 5
+      },
+      "migration_markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ]
+    },
+    {
+      "id": 12823461634,
+      "name": "runtime-migration-java25",
+      "run": 40703778913,
+      "digest": "sha256:d34a70e5a536e1d628fd29ed79fd0a039e7bf096be0f82d2e9e1d60c16dda951",
+      "java": {},
+      "focused_java": {},
+      "python": {},
+      "checkouts": [],
+      "proofs": {},
+      "skipped_java": [],
+      "migration_counts": {
+        "discovered": 5,
+        "skipped": 0,
+        "successful": 5
+      },
+      "migration_markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ]
+    }
+  ],
+  "initial_failure": {
+    "run": 40703778913,
+    "job": 122870303484,
+    "artifact": 12823926092,
+    "digest": "sha256:924a922427cdcc65b895b07f2d12cf858d1c1c6b45db4e22f581259490d21b65",
+    "kind": "two-second FX readiness FutureTask timeout",
+    "originals_unchanged": true,
+    "external_write_events": [],
+    "persistent_cause_fixed": false,
+    "retained_log": ".maintenance-evidence/pr65-first-java21-migration-failure.log"
+  },
+  "pr_state": {
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "merge_commit_sha": "e8096e910ab1b078e203266fafae519332f81542"
+  },
+  "master_at_inspection": "70f70a1873a4af4e42c27196d91bc808dcfbb143"
+}
