@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +78,7 @@ abstract class ParameterFilterPane<T> extends GridPane {
     protected ParameterFilterPane(List<IntegerParameter<T>> items) {
         this.items = items;
         try {
-            FXMLLoader loader = InternalFXMLLoader.load("logbook/gui/param_filter_pane.fxml");
+            FXMLLoader loader = FeatureUiV1.componentLoader(ParameterFilterPane.class, "/logbook/gui/param_filter_pane.fxml");
             loader.setRoot(this);
             loader.setController(this);
             loader.load();

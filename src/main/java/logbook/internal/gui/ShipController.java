@@ -1,5 +1,7 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -35,7 +37,7 @@ import logbook.internal.logger.LoggerHolder;
  * 所有艦娘一覧のコントローラ
  *
  */
-public class ShipController extends WindowController {
+public class ShipController extends FeatureUiV1.Window {
 
     @FXML
     private TabPane tab;
