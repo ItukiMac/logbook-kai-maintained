@@ -1,0 +1,91 @@
+name: Airbase captured-status implementation (tooling only)
+on:
+  push:
+    branches: ['maintenance/airbase-status-worker-20261028']
+    paths: ['.github/workflows/airbase-status-implementation.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: a273c6a4d2a70e0d5c9e84e0ae11308312c33b6f
+      TARGET: maintenance/airbase-status-api-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: a273c6a4d2a70e0d5c9e84e0ae11308312c33b6f
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Apply narrow changes to the pinned source only
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          python3 ../tooling/.maintenance-tools/apply_airbase_status.py > ../evidence/apply.log 2>&1
+          python3 ../tooling/.maintenance-tools/apply_airbase_ui.py >> ../evidence/apply.log 2>&1
+          python3 ../tooling/.maintenance-tools/airbase_tests.py >> ../evidence/apply.log 2>&1
+          python3 ../tooling/.maintenance-tools/airbase_gui_test.py >> ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Compile and execute immutable-data and compatibility regressions
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=AirBaseStatusContractTest,AirBaseStatusBoundaryTest test > ../evidence/unit.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Require the actual status-JAR GUI, calculation consistency and no original changes
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_airbase_status_ui.py -v > ../evidence/gui.log 2>&1
+      - name: Preserve only passing product sources on the candidate branch
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main/java/logbook/plugin/api/AirBaseStatusV1.java src/main/java/logbook/core/AirBaseStatusService.java src/main/java/logbook/internal/kancolle/AirBases.java src/main/java/logbook/internal/gui/AirBaseController.java src/test/java/logbook/core/AirBaseStatusContractTest.java src/test/java/logbook/internal/gui/AirBaseStatusBoundaryTest.java scripts/java/AirBaseStatusGuiProbe.java scripts/tests/test_airbase_status_ui.py scripts/verify_r3.sh
+          git commit -m 'Capture immutable airbase status once for tree and details; retain formulas, display unknowns and preserve selection identity'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git diff-tree --no-commit-id --name-only -r HEAD > ../evidence/changed-files.txt
+      - name: Keep exact success or failure evidence separate from product source
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import json,os,xml.etree.ElementTree as E
+          from pathlib import Path
+          r={'base':os.environ['BASE'],'production_accessed':False,'logs':{},'suites':[],'reports':{}}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):r['logs'][p.name]=p.read_text(errors='replace')[-18000:]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*AirBaseStatus*.xml'):
+              x=E.parse(p).getroot();r['suites'].append(x.attrib)
+          for p in Path('../candidate/target/r3-verification').glob('airbase-status-fixture-*'):
+              if p.suffix=='.json':r['reports'][p.name]=json.loads(p.read_text())
+              elif p.suffix=='.log':r['logs'][p.name]=p.read_text(errors='replace')[-22000:]
+          name='airbase-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json'
+          Path('.maintenance-evidence',name).write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/airbase-*.json
+          git commit -m 'Retain exact airbase focused regression outcome without claiming full integration'
+          git push origin HEAD:refs/heads/maintenance/airbase-status-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: airbase-focused-evidence
+          path: |
+            evidence/
+            candidate/target/r3-verification/airbase-status-fixture-*
+            candidate/target/surefire-reports/TEST-*AirBaseStatus*.xml
+          retention-days: 14
