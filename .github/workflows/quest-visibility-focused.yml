@@ -1,0 +1,182 @@
+name: Quest visibility source and before-after verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-visibility-worker-20261029']
+    paths: ['.github/workflows/quest-visibility-focused.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: b87d0139d3c25db63ab29035df4762d80b55a92e
+      TARGET: maintenance/quest-visibility-20261029
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: b87d0139d3c25db63ab29035df4762d80b55a92e
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Test inputs are new synthetic files only, never user data
+        working-directory: candidate
+        run: |
+          set -eu
+          mkdir ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test ! -e scripts/java/QuestVisibilityProbe.java
+          test ! -e scripts/tests/test_quest_visibility_ui.py
+          cp ../tooling/.maintenance-tools/QuestVisibilityProbe.java scripts/java/QuestVisibilityProbe.java
+          cp ../tooling/.maintenance-tools/test_quest_visibility_ui.py scripts/tests/test_quest_visibility_ui.py
+          mvn -B -ntp -DskipTests package > ../evidence/baseline-package.log 2>&1
+      - name: Reproduce the current remove handler losing the synthetic definition
+        working-directory: candidate
+        shell: bash
+        run: |
+          set +e
+          python3 -m unittest discover -s scripts/tests -p test_quest_visibility_ui.py -v > ../evidence/before.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          grep 'QUEST_REMOVE_LOST_ORIGINAL custom_file_and_cached_quest_must_be_retained' ../evidence/before.log
+      - name: Apply narrow source changes and pure visibility/boundary tests
+        working-directory: candidate
+        run: |
+          python3 ../tooling/.maintenance-tools/quest_visibility.py > ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          mvn -B -ntp -Dtest=QuestVisibilityCommandTest,QuestVisibilityBoundaryTest test > ../evidence/unit.log 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*QuestVisibility*.xml')]
+          totals={key:sum(int(s.get(key,0)) for s in suites) for key in ('tests','failures','errors','skipped')}
+          assert len(suites)==2 and totals=={'tests':23,'failures':0,'errors':0,'skipped':0},totals
+          PY
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Actual confirm/cancel/conflict/restore paths and new-process reset
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_quest_visibility_ui.py -v > ../evidence/after.log 2>&1
+      - name: Preserve previous verification and require new command and GUI checks
+        working-directory: candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/verify_r3.sh');s=p.read_text();marker="report={'airbase_status':airbase[0],"
+          assert s.count(marker)==1
+          extra="""# Non-destructive quest visibility: actual confirmations, restoration and source preservation are mandatory.
+          visibility_reports=[json.loads(f.read_text()) for f in p.glob('quest-visibility-fixture-*.json')]
+          assert len(visibility_reports)==1 and visibility_reports[0]['result']=='passed'
+          quest_visibility=visibility_reports[0]
+          assert all(quest_visibility[k] for k in ('product_distribution','confirm_cancel','hide_restore_all','stale_rejected','originals_unchanged','acceptance_unchanged','custom_slot_retained','session_reset_in_new_process','source_jar_unchanged'))
+          assert not any(quest_visibility[k] for k in ('production_accessed','persisted_hide_state','physical_module_added'))
+          visibility_suites=[s for s in suites if s.get('name') in {'logbook.core.QuestVisibilityCommandTest','logbook.internal.gui.QuestVisibilityBoundaryTest'}]
+          assert len(visibility_suites)==2 and sum(int(s.get('tests',0)) for s in visibility_suites)>=23
+          assert all(int(s.get(k,0))==0 for s in visibility_suites for k in ('failures','errors','skipped'))
+          """
+          p.write_text(s.replace(marker,extra+"report={'quest_visibility':quest_visibility,'airbase_status':airbase[0],"))
+          doc=Path('docs/maintenance/quest-visibility-20261029.md');assert not doc.exists()
+          doc.write_text('''# 任務表示操作の非破壊コマンド化 — 2026-10-29
+
+          基点: b87d0139d3c25db63ab29035df4762d80b55a92e（PR65統合済み）。
+          本変更は任務の表示操作だけを分離する。定義編集・永続削除・任務UI全体のJAR化ではない。
+
+          ## 明示した仕様変更
+          旧「除去」は観測キャッシュを削除し、カスタム任務ではJSONを直接削除していた。
+          新「非表示」はこのJVMの起動中だけIDを非表示にする。旧remove/removeAllハンドラー名はFXML互換で保持するが、
+          意味は明示的に非破壊表示操作へ変更する。定義・元キャッシュ・受諾履歴・JSON・設定を消さない。
+          カスタム任務枠は解放されない。永続削除と誤解しないよう、確認画面と復帰バナーに説明する。
+          非表示中に同じIDのゲーム進捗が変わっても、この起動中の非表示設定は維持する。
+          再表示または新しいJVM起動で全て見える状態へ戻る。設定ファイルや新保存形式は追加しない。
+
+          ## 構造
+          QuestVisibilityV1のState/Plan/Resultは防御コピーされた不変値。
+          QuestVisibilityServiceが表示状態だけを所有し、prepareで対象IDと表示世代を固定する。
+          確認がキャンセルされたら無変更。確認中に他コマンドが入った場合は全体をCONFLICTとして拒否し、勝手に再試行しない。
+          applyは同サービスのlock内で世代と対象を反映する。表示コマンド同士の整合性であり、ゲームwriter全体の同期ではない。
+          confirmed引数は呼出し契約であり、本人認証や外部プラグイン権限の安全境界ではない。
+          型上限超過・不正ID・重複対象は副作用前に検査。操作のリストにファイルパスを持たない。
+
+          QuestPaneのremove/removeAllはQuestVisibilityUiへ委譲。ファイル削除やAppQuestCollection変更を行わない。
+          実確認ダイアログには対象ID/任務名・この起動中だけ・原本保持・カスタム枠維持を表示する。
+          全件非表示後も再表示バナーを残し、操作後は既存MainController描画へイベント通知する。
+          読取用QuestListV1そのものは全観測を引き続き返す。画面投影だけで隠すので既存プラグインのデータを削らない。
+          受諾中/カスタム/非受諾の順序、既存保存形式、任務達成条件、期限計算、観測時刻は変更しない。
+
+          ## 検証
+          修正前の実removeを隔離した合成JSON/キャッシュへ実行し、同じ原本保持試験で失敗を確認。
+          新コマンド21件とGUI境界2件は独立Sessionを使い、global coreのinit/closeをしない。
+          実split製品JARの別JVMで、確認・キャンセル・全件非表示・再表示・全件非表示後の復帰入口・
+          確認中競合と再試行しないこと・元設定/未知フィールド/コメント/受諾状態/キャッシュを保持することを確認する。
+          さらに別のJVMで非表示状態が持ち越されないことを検査する。
+          verify_r3の既存全条件に追加し、新GUIのskipだけでは完了できない。
+          最終全体CIとmergeの実績はPRへ記録する。個別合格を未来の合格に転用しない。
+
+          ## 残件
+          定義編集・明示的な永続退避/削除・編集対象の内容ハッシュ照合、同名カスタム定義の変更監視、
+          任務UI全体の機能JAR化、工廠備考の読取分離、全writer同期、残るP1/P3は未完了。
+          既存の他画面からの編集・削除経路まで今回一括変更したわけではない。
+          非表示の変更不能データを、原子的なゲーム状態snapshotと取り違えない。
+          全148任務の意味照合、未知形式変換、Issues無効の原稿移管、Mint/本人データ/公開も別に保持する。
+
+          ## 運用
+          実行は合成データだけの隔離GitHub runner。local container起動は失敗しておりローカル実行済みとしない。
+          Mint/OS/現用JAR/auto.sh/本人の設定・履歴・プラグイン・バックアップは変更しない。
+          元環境削除、forcepush、Release/タグ公開、有料AI呼出し、KQS別repo変更を行わない。
+          '''.replace('          ',''),encoding='utf8')
+          PY
+      - name: Commit tested product files to dedicated branch, no force and no master update
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git -c core.whitespace=cr-at-eol diff --check
+          git add src/main/java/logbook/plugin/api/QuestVisibilityV1.java src/main/java/logbook/core/QuestVisibilityService.java src/main/java/logbook/internal/gui/QuestVisibilityUi.java src/main/java/logbook/internal/gui/QuestPane.java src/main/java/logbook/internal/gui/MainController.java src/main/resources/logbook/gui/quest.fxml src/test/java/logbook/core/QuestVisibilityCommandTest.java src/test/java/logbook/internal/gui/QuestVisibilityBoundaryTest.java scripts/java/QuestVisibilityProbe.java scripts/tests/test_quest_visibility_ui.py scripts/verify_r3.sh docs/maintenance/quest-visibility-20261029.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 12
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Replace destructive quest removal with confirmed reversible session visibility commands'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Retain exact outcomes including any failure outside product source
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import json,os,xml.etree.ElementTree as E
+          from pathlib import Path
+          report={'base':'b87d0139d3c25db63ab29035df4762d80b55a92e','production_accessed':False,'logs':{},'suites':[],'gui':[]}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):
+                  text=p.read_text(errors='replace');lines=text.splitlines()
+                  report['logs'][p.name]={'tail':lines[-80:],'errors':[l for l in lines if '[ERROR]' in l or 'QUEST_REMOVE_LOST_ORIGINAL' in l][-30:]}
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*QuestVisibility*.xml'):report['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('quest-visibility-fixture-*'):
+              if p.suffix=='.json':report['gui'].append(json.loads(p.read_text()))
+              elif p.suffix=='.log':report['logs'][p.name]=p.read_text(errors='replace')[-20000:]
+          Path('.maintenance-evidence/quest-visibility-focused-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-visibility-focused-*.json
+          git commit -m 'Retain actual quest visibility before-after evidence, not a full-completion claim'
+          git push origin HEAD:refs/heads/maintenance/quest-visibility-worker-20261029
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: quest-visibility-focused-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/quest-visibility-fixture-*
+          retention-days: 14
