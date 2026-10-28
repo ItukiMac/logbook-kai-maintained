@@ -1,0 +1,437 @@
+{
+  "head": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+  "expected_tree": "1e4602a1b30b399ab02263d8e3767df7c89d34fd",
+  "verified": true,
+  "production_accessed": false,
+  "artifacts": [
+    {
+      "run": 40661240645,
+      "name": "r3-evidence-java21",
+      "id": 12804926074,
+      "sha256": "sha256:07fa0a98245099fa168dc72fae16eb6ecc2ee9e9ebf034fe31b0c02d9f8a27ee",
+      "created_at": "2026-10-28T09:11:44Z",
+      "java": {
+        "tests": 857,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_and_roster_suites": {
+        "logbook.core.ShipLabelCommandTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipLabelCommandTest",
+          "time": "0.049",
+          "tests": "22",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.internal.gui.ShipLabelUiBoundaryTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.internal.gui.ShipLabelUiBoundaryTest",
+          "time": "0.008",
+          "tests": "1",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.core.ShipRosterContractTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipRosterContractTest",
+          "time": "0.013",
+          "tests": "11",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        }
+      },
+      "python": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "summary": [
+            "Ran 1 test in 16.901s",
+            "OK",
+            "Ran 418 tests in 405.671s",
+            "OK (skipped=1)"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "summary": [
+            "Ran 25 tests in 0.135s",
+            "OK"
+          ]
+        }
+      ],
+      "ship_labels": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-label-fixture-8chw_88f",
+        "production_accessed": false,
+        "result": "passed",
+        "dialog_cancel_no_change": true,
+        "dialog_confirm_add_remove": true,
+        "stale_batch_rejected": true,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "source_jar_unchanged": true
+      },
+      "checkout": "8ba18665eb367d152f34ba86f1e6388bda313793",
+      "existing_regressions": {
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25,
+        "seasonal_retreat_integration_tests": 8,
+        "production_deployed": false
+      }
+    },
+    {
+      "run": 40661240645,
+      "name": "r3-evidence-java25",
+      "id": 12804761846,
+      "sha256": "sha256:b73602e2eba7ed70da5b7daa3e9258e58c667518b5975cd81e86766b455be8d1",
+      "created_at": "2026-10-28T09:11:50Z",
+      "java": {
+        "tests": 857,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_and_roster_suites": {
+        "logbook.core.ShipLabelCommandTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipLabelCommandTest",
+          "time": "0.039",
+          "tests": "22",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.internal.gui.ShipLabelUiBoundaryTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.internal.gui.ShipLabelUiBoundaryTest",
+          "time": "0.002",
+          "tests": "1",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.core.ShipRosterContractTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipRosterContractTest",
+          "time": "0.012",
+          "tests": "11",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        }
+      },
+      "python": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "summary": [
+            "Ran 1 test in 16.653s",
+            "OK",
+            "Ran 418 tests in 400.313s",
+            "OK (skipped=1)"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "summary": [
+            "Ran 25 tests in 0.148s",
+            "OK"
+          ]
+        }
+      ],
+      "ship_labels": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-label-fixture-fgtpga6v",
+        "production_accessed": false,
+        "result": "passed",
+        "dialog_cancel_no_change": true,
+        "dialog_confirm_add_remove": true,
+        "stale_batch_rejected": true,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "source_jar_unchanged": true
+      },
+      "checkout": "8ba18665eb367d152f34ba86f1e6388bda313793",
+      "existing_regressions": {
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25,
+        "seasonal_retreat_integration_tests": 8,
+        "production_deployed": false
+      }
+    },
+    {
+      "run": 40661240756,
+      "name": "modern-runtime-evidence-java25",
+      "id": 12804756678,
+      "sha256": "sha256:2bb6e0e0c6aecdf4d8c9594a052fa77a767febbf5c69072421b6a9d2d13f6693",
+      "created_at": "2026-10-28T09:12:08Z",
+      "java": {
+        "tests": 857,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_and_roster_suites": {
+        "logbook.core.ShipLabelCommandTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipLabelCommandTest",
+          "time": "0.049",
+          "tests": "22",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.internal.gui.ShipLabelUiBoundaryTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.internal.gui.ShipLabelUiBoundaryTest",
+          "time": "0.005",
+          "tests": "1",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.core.ShipRosterContractTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipRosterContractTest",
+          "time": "0.011",
+          "tests": "11",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        }
+      },
+      "python": [
+        {
+          "path": "r3-verification/python-scripts.log",
+          "summary": [
+            "Ran 1 test in 17.106s",
+            "OK",
+            "Ran 418 tests in 409.331s",
+            "OK (skipped=1)"
+          ]
+        },
+        {
+          "path": "r3-verification/python-tools.log",
+          "summary": [
+            "Ran 25 tests in 0.129s",
+            "OK"
+          ]
+        }
+      ],
+      "ship_labels": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-label-fixture-symjwecp",
+        "production_accessed": false,
+        "result": "passed",
+        "dialog_cancel_no_change": true,
+        "dialog_confirm_add_remove": true,
+        "stale_batch_rejected": true,
+        "settings_reread": true,
+        "original_history_unchanged": true,
+        "source_jar_unchanged": true
+      },
+      "checkout": "8ba18665eb367d152f34ba86f1e6388bda313793",
+      "existing_regressions": {
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25,
+        "seasonal_retreat_integration_tests": 8,
+        "production_deployed": false
+      }
+    },
+    {
+      "run": 40661240692,
+      "name": "runtime-migration-java21",
+      "id": 12804221619,
+      "sha256": "sha256:c946a865c4d486689d31b9d455e6dedc5d98552c0eb4eeef8e6e71c1f4015f27",
+      "created_at": "2026-10-28T09:07:06Z",
+      "migration": {
+        "discovered": 5,
+        "executed": 5,
+        "successful": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "native_mint_tested": false,
+        "production_applied": false
+      },
+      "markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true"
+      ]
+    },
+    {
+      "run": 40661240692,
+      "name": "runtime-migration-java25",
+      "id": 12804481707,
+      "sha256": "sha256:f894dc293f597ec30ed63ff8bc1aeca345658ad3f9eecb019089ca012b08c7af",
+      "created_at": "2026-10-28T09:08:42Z",
+      "migration": {
+        "discovered": 5,
+        "executed": 5,
+        "successful": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "native_mint_tested": false,
+        "production_applied": false
+      },
+      "markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true"
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "id": 40661240336,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240441,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240349,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240406,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240484,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240573,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240340,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240499,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240412,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240401,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240380,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240692,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240565,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240756,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40661240645,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "cd6f5af9f0e4ee8dc1ce8f0c1c97cd306085558c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "pr": {
+    "number": 62,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "merge_commit_sha": "8ba18665eb367d152f34ba86f1e6388bda313793"
+  }
+}
