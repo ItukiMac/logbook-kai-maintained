@@ -1,0 +1,125 @@
+name: Ship manual-label command and real-dialog verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-label-worker-20261028']
+    paths: ['.github/workflows/ship-label-boundary-worker.yml']
+permissions:
+  contents: write
+concurrency:
+  group: ship-label-worker-20261028
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 546b196122a4f824c724e222927e9885f6bc451e
+      TARGET: maintenance/ship-label-commands-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 546b196122a4f824c724e222927e9885f6bc451e
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - name: Copy only proposed source and apply exact UI anchors in a fresh checkout
+        working-directory: candidate
+        run: |
+          set -eu
+          mkdir ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,shutil
+          paths=['src/main/java/logbook/plugin/api/ShipLabelsV1.java',
+                 'src/main/java/logbook/core/ShipLabelService.java',
+                 'src/test/java/logbook/core/ShipLabelCommandTest.java',
+                 'src/test/java/logbook/internal/gui/ShipLabelUiBoundaryTest.java',
+                 'scripts/java/ShipLabelGuiProbe.java','scripts/tests/test_ship_label_ui_integration.py',
+                 'docs/maintenance/ship-label-command-boundary-20261028.md']
+          for name in paths:
+              path=Path(name);assert not path.exists(),name
+              path.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copyfile(Path('../tooling')/name,path)
+          paths.extend(['src/main/java/logbook/internal/gui/ShipTablePane.java','scripts/verify_r3.sh'])
+          Path('../evidence/product-paths.json').write_text(json.dumps(paths))
+          PY
+          python3 ../tooling/.maintenance-tools/apply_ship_label_ui.py > ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Require new command, bytecode and existing roster contracts
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=ShipLabelCommandTest,ShipLabelUiBoundaryTest,ShipRosterContractTest test > ../evidence/unit.log 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*.xml')]
+          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          assert totals=={'tests':34,'failures':0,'errors':0,'skipped':0},totals
+          print('SHIP_LABEL_UNIT_OK',totals)
+          PY
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Execute the real confirmation and cancellation dialogs against synthetic data
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_ship_label_ui_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Preserve tested product files on the dedicated branch without force
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,subprocess
+          paths=json.loads(Path('../evidence/product-paths.json').read_text())
+          subprocess.run(['git','add','--',*paths],check=True)
+          assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())==set(paths)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Move confirmed manual ship-label edits behind a conflict-checked host command API'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Retain test evidence separately from product and previous attempts
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,json,xml.etree.ElementTree as E
+          result={'base':os.environ['BASE'],'production_accessed':False,'logs':{},'reports':{},'suites':[]}
+          for path in Path('../evidence').glob('*'):
+              if path.suffix in ('.log','.txt'):result['logs'][path.name]=path.read_text(errors='replace')[-22000:]
+          for path in Path('../candidate/target/r3-verification').glob('ship-label-fixture-*'):
+              if path.suffix=='.json':result['reports'][path.name]=json.loads(path.read_text())
+              elif path.suffix=='.log':result['logs'][path.name]=path.read_text(errors='replace')[-20000:]
+          for path in Path('../candidate/target/surefire-reports').glob('TEST-*.xml'):
+              result['suites'].append(E.parse(path).getroot().attrib)
+          name='ship-label-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json'
+          Path('.maintenance-evidence',name).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/ship-label-*.json
+          git commit -m 'Retain ship-label command and dialog evidence without claiming unrun full CI'
+          git push origin HEAD:refs/heads/maintenance/ship-label-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: ship-label-focused-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/ship-label-fixture-*
+          retention-days: 14
+          if-no-files-found: error
