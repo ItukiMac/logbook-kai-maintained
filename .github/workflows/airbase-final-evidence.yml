@@ -1,0 +1,123 @@
+name: Airbase final evidence inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/airbase-status-evidence-20261028']
+    paths: ['.github/workflows/airbase-final-evidence.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Inspect bounded artifact bytes, not artifact executables
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import os,json,urllib.request,time,hashlib,zipfile,io,re,xml.etree.ElementTree as E
+          from pathlib import Path,PurePosixPath
+          head='5e84aebe91b08c3b364fdf5d57949ad7b015bda3'
+          api='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          out=Path('.maintenance-evidence','airbase-final-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json')
+          report={'head':head,'verified':False,'production_accessed':False,'runs':[],'artifacts':[]}
+          def save():out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          def get(path):
+              request=urllib.request.Request(api+path,headers={'Accept':'application/vnd.github+json'})
+              request.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(request,timeout=60) as response:raw=response.read(8*1024*1024+1)
+              assert len(raw)<=8*1024*1024,'Response limit exceeded';return raw
+          def obj(path):return json.loads(get(path))
+          try:
+              expected_names={'R3 split features, source review and isolated candidate validation',
+                  'Explicit JDK25 JavaFX27 runtime verification (no publish)',
+                  'Runtime migration declared versions (no publish)',
+                  'Integrated maintenance verification (no publish)'}
+              for attempt in range(30):
+                  runs=obj('/actions/runs?head_sha='+head+'&event=pull_request&per_page=100')['workflow_runs']
+                  report['runs']=[{k:r[k] for k in ('id','name','head_sha','status','conclusion','run_attempt')} for r in runs];save()
+                  if expected_names<={r['name'] for r in runs} and all(r['status']=='completed' for r in runs):break
+                  time.sleep(25)
+              assert expected_names<={r['name'] for r in runs},'Missing complete verification workflow'
+              assert len(runs)>=14 and all(r['head_sha']==head and r['status']=='completed' and r['conclusion']=='success' for r in runs),'Final CI not all successful'
+              source=obj('/git/commits/'+head);tree=source['tree']['sha'];report['tree']=tree
+              wanted={'r3-evidence-java21','r3-evidence-java25','modern-runtime-evidence-java25','runtime-migration-java21','runtime-migration-java25'}
+              selected=[r for r in runs if r['name'] in expected_names and not r['name'].startswith('Integrated')]
+              found=set()
+              for run in selected:
+                  artifacts=obj('/actions/runs/'+str(run['id'])+'/artifacts')['artifacts']
+                  for artifact in artifacts:
+                      if artifact['name'] not in wanted:continue
+                      assert artifact['name'] not in found and not artifact['expired']
+                      assert artifact['size_in_bytes']<8*1024*1024
+                      raw=get('/actions/artifacts/'+str(artifact['id'])+'/zip');digest='sha256:'+hashlib.sha256(raw).hexdigest()
+                      assert digest==artifact['digest'],'Artifact digest mismatch'
+                      z=zipfile.ZipFile(io.BytesIO(raw));infos=z.infolist()
+                      assert sum(x.file_size for x in infos)<=80*1024*1024 and len(infos)<=5000
+                      for x in infos:
+                          path=PurePosixPath(x.filename)
+                          assert not path.is_absolute() and '..' not in path.parts and '\\' not in x.filename
+                          assert ((x.external_attr>>16)&0o170000)!=0o120000
+                      assert z.testzip() is None
+                      item={'run':run['id'],'id':artifact['id'],'name':artifact['name'],'sha256':digest,'created_at':artifact['created_at']}
+                      if artifact['name'].startswith('runtime-migration'):
+                          logs='\n'.join(z.read(n).decode('utf8',errors='replace') for n in z.namelist() if n.endswith('.log'))
+                          markers=[line for line in logs.splitlines() if line.startswith(('MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK','RUNTIME_MIGRATION_'))]
+                          summaries=[line.split('RUNTIME_MIGRATION_TEST_SUMMARY ',1)[1] for line in logs.splitlines() if line.startswith('RUNTIME_MIGRATION_TEST_SUMMARY ')]
+                          assert summaries,'Missing actual migration execution summary'
+                          migration=json.loads(summaries[-1]);assert migration['successful']==migration['executed']==migration['discovered']==5
+                          assert all(migration[k]==0 for k in ('failures','errors','skipped'))
+                          assert not migration['native_mint_tested'] and not migration['production_applied']
+                          assert any('source_unchanged=true' in line and 'external_unchanged=true' in line and 'old_state_restored=true' in line for line in markers)
+                          item.update(migration=migration,markers=markers)
+                      else:
+                          totals={k:0 for k in ('tests','failures','errors','skipped')};suites={};gui=[];summaries=[];python=[]
+                          for name in z.namelist():
+                              if name.endswith('.xml') and '/TEST-' in '/'+name:
+                                  xml=z.read(name);assert b'<!DOCTYPE' not in xml.upper();s=E.fromstring(xml)
+                                  for k in totals:totals[k]+=int(s.get(k,0))
+                                  if 'AirBaseStatus' in s.get('name',''):suites[s.get('name')]=s.attrib
+                              elif name.endswith('.json') and 'airbase-status-fixture-' in name:gui.append(json.loads(z.read(name)))
+                              elif name.endswith('summary.json'):
+                                  summary=json.loads(z.read(name))
+                                  if 'airbase_status' in summary:summaries.append(summary)
+                              elif name.endswith(('python-scripts.log','python-tools.log')):
+                                  lines=z.read(name).decode('utf8',errors='replace').splitlines()
+                                  runlines=[line for line in lines if re.match(r'^Ran [0-9]+ tests? in ',line)]
+                                  outcomes=[line for line in lines if line.startswith(('OK','FAILED'))]
+                                  assert runlines and outcomes and outcomes[-1].startswith('OK')
+                                  python.append({'path':name,'discovered':int(re.search(r'Ran ([0-9]+)',runlines[-1]).group(1)),
+                                      'last_result':[runlines[-1],outcomes[-1]]})
+                          assert totals['tests']>=905 and totals['failures']==totals['errors']==0 and totals['skipped']==1,totals
+                          assert len(suites)==2 and sum(int(s['tests']) for s in suites.values())==23
+                          assert all(int(s[k])==0 for s in suites.values() for k in ('failures','errors','skipped'))
+                          assert len(gui)==1 and gui[0]['result']=='passed';proof=gui[0]
+                          assert proof['captured_power']==40 and proof['refresh_power']==60
+                          assert all(proof[k] for k in ('product_status_jar','frozen_selection','identity_preserved','sorted_planes','unknown_visible','stale_values_cleared','legacy_export','timeline_stopped','original_history_unchanged','source_jar_unchanged'))
+                          assert not proof['production_accessed']
+                          assert len(summaries)==1 and len(python)==2
+                          summary=summaries[0];checkout=summary['checkout'];assert obj('/git/commits/'+checkout)['tree']['sha']==tree
+                          for key in ('ship_list_ui','ship_statistics','ship_label_editing','parallel_integration'):
+                              assert summary[key]['result']=='passed',key
+                          assert summary['parallel_integration']['calculations']==[10,15,10]
+                          assert not summary['production_deployed']
+                          item.update(java=totals,new_suites=suites,airbase=proof,checkout=checkout,python=python,
+                                      preserved_regressions={k:summary[k] for k in ('ship_list_ui','ship_statistics','ship_label_editing','parallel_integration')})
+                      report['artifacts'].append(item);found.add(artifact['name']);save()
+              assert found==wanted,found
+              pr=obj('/pulls/65');assert pr['head']['sha']==head
+              report['pr_state']={k:pr[k] for k in ('number','state','draft','merged','merge_commit_sha')}
+              report['verified']=True;save();print('AIRBASE_FINAL_EVIDENCE_OK workflows='+str(len(runs))+' artifacts=5 native_mint=false')
+          except Exception as error:report['error']=str(error);save();raise
+          PY
+      - name: Retain inspection result only, including any failure
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/airbase-final-*.json
+          git commit -m 'Retain independently checked PR65 artifact and source-identity evidence'
+          git push origin HEAD:refs/heads/maintenance/airbase-status-evidence-20261028
