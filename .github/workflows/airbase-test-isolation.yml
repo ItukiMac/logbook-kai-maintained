@@ -27,7 +27,7 @@ jobs:
           cache: maven
           cache-dependency-path: candidate/pom.xml
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
-      - name: Record pinned source and the unchanged interacting test sequence
+      - name: Record actual checked-out test inventory and unchanged test sequence
         working-directory: candidate
         shell: bash
         run: |
@@ -36,8 +36,9 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import json,hashlib
-          names=['src/main/java/logbook/core/LogBookCoreServices.java','src/test/java/logbook/core/RuntimeDataPathsTest.java','src/test/java/logbook/core/EquipmentDataContractTest.java','src/test/java/logbook/internal/gui/EquipmentProjectionTest.java']
-          Path('../evidence/exact-sources.json').write_text(json.dumps({p:{'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest(),'source':Path(p).read_text()} for p in names},ensure_ascii=False,indent=2)+'\n')
+          tests=sorted(Path('src/test/java').rglob('*.java'))
+          picked=[Path('src/main/java/logbook/core/LogBookCoreServices.java')]+[p for p in tests if any(k in p.name for k in ('RuntimeData','EquipmentDataContract','EquipmentProjection','AirBaseStatus','TestSupport'))]
+          Path('../evidence/exact-sources.json').write_text(json.dumps({'test_inventory':[str(p) for p in tests],'selected':{str(p):{'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'source':p.read_text()} for p in picked}},ensure_ascii=False,indent=2)+'\n')
           PY
           set +e
           mvn -B -ntp -Dsurefire.runOrder=alphabetical -Dtest=AirBaseStatusContractTest,AirBaseStatusBoundaryTest,RuntimeDataPathsTest,EquipmentDataContractTest,EquipmentProjectionTest test > ../evidence/before.log 2>&1
