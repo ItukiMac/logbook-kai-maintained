@@ -1,0 +1,139 @@
+name: Quest-list final evidence inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-list-read-worker-20261028']
+    paths: ['.github/workflows/quest-list-final-evidence.yml']
+permissions:
+  actions: read
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: true
+      - name: Verify source identity, all triggered runs, artifact bytes and actual test execution
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import hashlib,io,json,os,re,time,urllib.request,zipfile,xml.etree.ElementTree as E
+          from pathlib import Path,PurePosixPath
+          head='54f14abe4a63b8f10ac71a91c384c34a66660f5d'
+          api='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          output=Path('.maintenance-evidence/quest-list-final-'+os.environ['GITHUB_RUN_ID']+'.json')
+          report={'head':head,'pr':66,'verified':False,'artifact_code_executed':False,'production_accessed':False,'runs':[],'artifacts':[]}
+          def save():output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          def fetch(path,limit=8*1024*1024):
+              req=urllib.request.Request(api+path,headers={'Accept':'application/vnd.github+json'})
+              req.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(req,timeout=60) as response:data=response.read(limit+1)
+              assert len(data)<=limit,'Bounded response exceeded'
+              return data
+          def obj(path):return json.loads(fetch(path))
+          expected={40690328157,40690328250,40690328363,40690327933,40690328112,40690328254,40690328058,
+                    40690328071,40690327999,40690328206,40690328142,40690328222,40690328216,40690328074,40690328177}
+          selected={40690328254:{'r3-evidence-java21','r3-evidence-java25'},
+                    40690327933:{'modern-runtime-evidence-java25'},
+                    40690327999:{'runtime-migration-java21','runtime-migration-java25'}}
+          trees={}
+          def tree(revision):
+              if revision not in trees:trees[revision]=obj('/git/commits/'+revision)['tree']['sha']
+              return trees[revision]
+          def counts(log):
+              found=re.findall(r'^Ran (\d+) tests? in .+$',log,re.M)
+              okay=re.findall(r'^OK(?: \(skipped=(\d+)\))?\s*$',log,re.M)
+              assert found and okay and not re.search(r'^FAILED \(',log,re.M),'Incomplete Python summary'
+              total=int(found[-1]);skipped=int(okay[-1] or 0)
+              return {'discovered':total,'skipped':skipped,'successful':total-skipped}
+          try:
+              for attempt in range(48):
+                  runs=obj('/actions/runs?event=pull_request&head_sha='+head+'&per_page=100')['workflow_runs']
+                  assert expected.issubset({r['id'] for r in runs}),'Missing expected workflow'
+                  assert all(r['head_sha']==head for r in runs)
+                  report['runs']=[{k:r[k] for k in ('id','name','head_sha','status','conclusion','run_attempt')} for r in runs]
+                  save()
+                  if all(r['status']=='completed' for r in runs):break
+                  time.sleep(15)
+              assert all(r['status']=='completed' and r['conclusion']=='success' for r in runs),report['runs']
+              pr=obj('/pulls/66');assert pr['head']['sha']==head
+              report['pr_state']={k:pr[k] for k in ('state','draft','merged','merge_commit_sha')}
+              report['source_tree']=tree(head)
+              wanted=set().union(*selected.values());found=set()
+              for runid,names in selected.items():
+                  for artifact in obj('/actions/runs/'+str(runid)+'/artifacts?per_page=100')['artifacts']:
+                      if artifact['name'] not in names:continue
+                      assert not artifact['expired'] and artifact['size_in_bytes']<=8*1024*1024
+                      raw=fetch('/actions/artifacts/'+str(artifact['id'])+'/zip')
+                      digest='sha256:'+hashlib.sha256(raw).hexdigest()
+                      assert digest==artifact['digest'],'Artifact digest mismatch'
+                      archive=zipfile.ZipFile(io.BytesIO(raw))
+                      infos=archive.infolist()
+                      assert len(infos)==len({i.filename for i in infos})
+                      assert sum(i.file_size for i in infos)<=80*1024*1024
+                      for info in infos:
+                          p=PurePosixPath(info.filename)
+                          assert not p.is_absolute() and '..' not in p.parts and '\\' not in info.filename
+                      assert archive.testzip() is None
+                      item={'id':artifact['id'],'name':artifact['name'],'run':runid,'digest':digest,
+                            'java':{},'new_java':{},'json':{},'python':{},'checkouts':[],'migration_markers':[]}
+                      for name in archive.namelist():
+                          if name.endswith('.xml') and '/TEST-' in '/'+name:
+                              suite=E.fromstring(archive.read(name))
+                              values={k:int(suite.get(k,0)) for k in ('tests','failures','errors','skipped')}
+                              for k,v in values.items():item['java'][k]=item['java'].get(k,0)+v
+                              if suite.get('name')=='logbook.core.QuestListReadContractTest':item['new_java']=values
+                          elif name.endswith('.json') and archive.getinfo(name).file_size<100000:
+                              item['json'][name]=json.loads(archive.read(name))
+                          elif name.endswith('checkout.txt'):
+                              revision=archive.read(name).decode().strip()
+                              assert re.fullmatch('[a-f0-9]{40}',revision)
+                              assert tree(revision)==report['source_tree'],'Tested/source trees differ'
+                              item['checkouts'].append(revision)
+                          elif name.endswith(('python-scripts.log','python-tools.log')):
+                              item['python'][name]=counts(archive.read(name).decode('utf8',errors='replace'))
+                          elif name.endswith('runtime-migration.log'):
+                              log=archive.read(name).decode('utf8',errors='replace')
+                              item['migration_counts']=counts(log)
+                              item['migration_markers']=[line for line in log.splitlines() if line.startswith(('MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK','RUNTIME_MIGRATION_DECLARED_VERSIONS_OK','RUNTIME_MIGRATION_JAVA_OK'))]
+                      if artifact['name'].startswith('runtime-migration'):
+                          assert item['migration_counts']=={'discovered':5,'skipped':0,'successful':5}
+                          assert any('DECLARED_VERSIONS_OK' in line and 'real_launcher=true' in line for line in item['migration_markers'])
+                          assert any('source_unchanged=true' in line and 'external_unchanged=true' in line for line in item['migration_markers'])
+                      else:
+                          assert item['java']['failures']==item['java']['errors']==0 and item['java']['skipped']==1
+                          assert item['new_java']=={'tests':17,'failures':0,'errors':0,'skipped':0}
+                          summaries=[value for value in item['json'].values() if isinstance(value,dict) and 'quest_list_read' in value and 'java_tests' in value]
+                          assert len(summaries)==1
+                          summary=summaries[0];assert summary['java_tests']==item['java']
+                          proof=summary['quest_list_read']
+                          assert proof['result']=='passed' and proof['cached_custom_preserved'] and proof['persisted_files_unchanged']
+                          assert proof['hash_collision_refresh'] and proof['observed_at_preserved'] and proof['active_custom_inactive_order']
+                          assert proof['unchanged_rows_reused'] and proof['visibility_refresh'] and proof['product_distribution']
+                          assert not proof['production_accessed'] and not proof['explicit_remove_executed']
+                          assert not proof['new_physical_module'] and not proof['atomic_with_all_writers_claimed']
+                          assert summary['parallel_integration']['calculations']==[10,15,10]
+                          assert summary['parallel_integration']['original_unchanged']
+                          assert summary['seasonal_retreat_integration_tests']==8 and summary['isolated_typed_definitions']==152
+                          assert summary['ship_list_ui']['result']=='passed' and summary['equipment_ui_packaging']['result']=='passed'
+                          assert len(item['python'])==2
+                          checkout=summary['checkout'];assert tree(checkout)==report['source_tree']
+                          if checkout not in item['checkouts']:item['checkouts'].append(checkout)
+                      found.add(artifact['name']);report['artifacts'].append(item);save()
+              assert found==wanted,(found,wanted)
+              report['verified']=True;save()
+              print('QUEST_LIST_FINAL_EVIDENCE_OK',json.dumps({'head':head,'tree':report['source_tree'],'artifacts':len(found),'workflows':len(runs),'merged':pr['merged']}))
+          except Exception as error:
+              report['error']=type(error).__name__+': '+str(error);save();raise
+          PY
+      - name: Commit inspection evidence only, including an unsuccessful result
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-list-final-*.json
+          git commit -m 'Retain exact-head quest-list artifact inspection outcome'
+          git push origin HEAD:refs/heads/maintenance/quest-list-read-worker-20261028
