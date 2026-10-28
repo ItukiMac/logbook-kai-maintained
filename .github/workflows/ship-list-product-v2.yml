@@ -1,0 +1,97 @@
+name: Product ship-list corrected integration (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-list-worker-20261028']
+    paths: ['.github/workflows/ship-list-product-v2.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      BASE: 30d9c17e25adb9bdcffdf41c6ac71841a6f240ed
+      TARGET: maintenance/ship-list-product-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 30d9c17e25adb9bdcffdf41c6ac71841a6f240ed
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Apply source edits on an unchanged pinned checkout
+        working-directory: candidate
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          python3 ../tooling/.maintenance-tools/ship_list_apply.py apply > ../evidence/apply.log 2>&1
+          python3 ../tooling/.maintenance-tools/finish_ship_list.py >> ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Execute public boundary and legacy-new packaging regressions
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=ShipListUiBoundaryTest,ShipListUiContractTest test > ../evidence/unit.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_ship_list_packaging.py -v > ../evidence/packaging.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Actual product ship window plus shared controls and previous GUI regressions
+        working-directory: candidate
+        run: |
+          python3 -m unittest discover -s scripts/tests -p test_ship_list_ui_integration.py -v > ../evidence/ship-gui.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_ship_label_ui_integration.py -v > ../evidence/label-gui.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p 'test_ship_statistics*.py' -v > ../evidence/statistics-gui.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p 'test_equipment*.py' -v > ../evidence/equipment-gui.log 2>&1
+          grep 'SHIP_LIST_PRODUCT_GUI_OK' ../evidence/ship-gui.log
+          grep 'SHIP_LABEL_GUI_OK' ../evidence/label-gui.log
+          grep 'SHIP_STATISTICS_GUI_OK' ../evidence/statistics-gui.log
+          grep 'EQUIPMENT_PRODUCT_GUI_OK' ../evidence/equipment-gui.log
+      - name: Preserve passing product source, no force push or publication
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main/java/logbook/plugin/api/ShipListUiV1.java src/main/java/logbook/internal/gui/ShipController.java src/main/java/logbook/internal/gui/ShipTablePane.java src/main/java/logbook/internal/gui/ParameterFilterPane.java scripts/run_feature_distribution.py scripts/build_feature_distribution.py src/test/java/logbook/internal/gui/ShipListUiBoundaryTest.java src/test/java/logbook/internal/gui/ShipListUiContractTest.java scripts/tests/test_ship_list_packaging.py scripts/tests/test_ship_list_ui_integration.py scripts/java/ShipListGuiProbe.java scripts/verify_r3.sh
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git commit -m 'Ship owned-ship window and numeric filters in status module with explicit profile and public GUI contract'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Preserve exact outcome and any failure without overwriting earlier evidence
+        if: always()
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,os,xml.etree.ElementTree as E
+          r={'base':os.environ['BASE'],'production_accessed':False,'logs':{},'suites':[],'reports':{}}
+          for p in Path('../evidence').glob('*'):r['logs'][p.name]=p.read_text(errors='replace')[-20000:]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*ShipList*.xml'):r['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('*fixture*'):
+              if p.suffix=='.json':r['reports'][p.name]=json.loads(p.read_text())
+              elif p.suffix=='.log':r['logs'][p.name]=p.read_text(errors='replace')[-22000:]
+          Path('.maintenance-evidence').mkdir(exist_ok=True)
+          Path('.maintenance-evidence/ship-list-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/ship-list-*.json
+          git commit -m 'Retain exact ship-list candidate evidence including failures'
+          git push origin HEAD:refs/heads/maintenance/ship-list-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: ship-list-focused-v2-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/*fixture*
+          retention-days: 14
