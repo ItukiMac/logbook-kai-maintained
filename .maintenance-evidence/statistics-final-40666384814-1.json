@@ -1,0 +1,514 @@
+{
+  "head": "e5477925d65042f48b8b3b972ab669d45375553d",
+  "expected_tree": "1802ec7ba460e52a2a1817aa6811432715f8f088",
+  "verified": true,
+  "production_accessed": false,
+  "artifacts": [
+    {
+      "run": 40666075064,
+      "id": 12805699409,
+      "name": "r3-evidence-java25",
+      "sha256": "sha256:ffa8c81754b2aa6cfa8111ae0086a96b537dcdb1e7d11c0a432cdc1fece11f74",
+      "created_at": "2026-10-28T09:49:21Z",
+      "java": {
+        "tests": 878,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_statistics_tests": {
+        "logbook.core.ShipStatisticsContractTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipStatisticsContractTest",
+          "time": "0.05",
+          "tests": "20",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.internal.gui.ShipStatisticsBoundaryTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.internal.gui.ShipStatisticsBoundaryTest",
+          "time": "0.002",
+          "tests": "1",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        }
+      },
+      "statistics": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-statistics-fixture-698o9hv0",
+        "result": "passed",
+        "production_accessed": false,
+        "product_distribution": true,
+        "charts_rendered": 5,
+        "actual_ship_tab": true,
+        "frozen_after_mutation": true,
+        "unknown_values_visible": true,
+        "source_jar_unchanged": true,
+        "original_history_unchanged": true,
+        "image_snapshot": true,
+        "core_sha256": "1d19ff98376616269d4aa31e4c6a138a2601bed55048e6ad8bb74f963757f51e",
+        "charts_sha256": "7eeeb5460a29349c310f62264403c9537046db2261a3f0813c420e6a07ab6df3"
+      },
+      "checkout": "ad484c482ba88be2582c7024a472e87ba1e17b79",
+      "python": {
+        "script_discovered": 428,
+        "script_successful": 427,
+        "script_skipped": 1,
+        "tools_successful": 25,
+        "successful_total": 452
+      },
+      "existing": {
+        "ship_label_editing": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-label-fixture-zj47v_q0",
+          "production_accessed": false,
+          "result": "passed",
+          "dialog_cancel_no_change": true,
+          "dialog_confirm_add_remove": true,
+          "stale_batch_rejected": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "parallel_integration": {
+          "fixture_root": "/tmp/logbook-parallel-integration-m9q1kq69",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-csea5glp.log"
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25
+      }
+    },
+    {
+      "run": 40666075064,
+      "id": 12806945365,
+      "name": "r3-evidence-java21",
+      "sha256": "sha256:2a26ccdd1bb68de2687f6cad97303f1ab0463d441f8920136723c62071d02cc8",
+      "created_at": "2026-10-28T09:49:49Z",
+      "java": {
+        "tests": 878,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_statistics_tests": {
+        "logbook.core.ShipStatisticsContractTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipStatisticsContractTest",
+          "time": "0.044",
+          "tests": "20",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.internal.gui.ShipStatisticsBoundaryTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.internal.gui.ShipStatisticsBoundaryTest",
+          "time": "0.001",
+          "tests": "1",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        }
+      },
+      "statistics": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-statistics-fixture-quttd76b",
+        "result": "passed",
+        "production_accessed": false,
+        "product_distribution": true,
+        "charts_rendered": 5,
+        "actual_ship_tab": true,
+        "frozen_after_mutation": true,
+        "unknown_values_visible": true,
+        "source_jar_unchanged": true,
+        "original_history_unchanged": true,
+        "image_snapshot": true,
+        "core_sha256": "3ef7326399808dd345a5d34655a0b43c8619d860876356aea68c8f949ea8600c",
+        "charts_sha256": "664231ffd9196dd75c24900cbc765e8a941bc74a2de43e708b3ba9f608262fcb"
+      },
+      "checkout": "ad484c482ba88be2582c7024a472e87ba1e17b79",
+      "python": {
+        "script_discovered": 428,
+        "script_successful": 427,
+        "script_skipped": 1,
+        "tools_successful": 25,
+        "successful_total": 452
+      },
+      "existing": {
+        "ship_label_editing": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-label-fixture-7_fh6nqa",
+          "production_accessed": false,
+          "result": "passed",
+          "dialog_cancel_no_change": true,
+          "dialog_confirm_add_remove": true,
+          "stale_batch_rejected": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "parallel_integration": {
+          "fixture_root": "/tmp/logbook-parallel-integration-jyjd7o6l",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-yv3t_5zc.log"
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25
+      }
+    },
+    {
+      "run": 40666074963,
+      "id": 12805694660,
+      "name": "modern-runtime-evidence-java25",
+      "sha256": "sha256:696ab3d17e90e246551d6719e605ab99c84a3ad97b4ce9b8f0dcfab957b0efb9",
+      "created_at": "2026-10-28T09:48:30Z",
+      "java": {
+        "tests": 878,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_statistics_tests": {
+        "logbook.core.ShipStatisticsContractTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.core.ShipStatisticsContractTest",
+          "time": "0.039",
+          "tests": "20",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        },
+        "logbook.internal.gui.ShipStatisticsBoundaryTest": {
+          "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd",
+          "version": "3.0.2",
+          "name": "logbook.internal.gui.ShipStatisticsBoundaryTest",
+          "time": "0.002",
+          "tests": "1",
+          "errors": "0",
+          "skipped": "0",
+          "failures": "0",
+          "flakes": "0"
+        }
+      },
+      "statistics": {
+        "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-statistics-fixture-ouy3tx9q",
+        "result": "passed",
+        "production_accessed": false,
+        "product_distribution": true,
+        "charts_rendered": 5,
+        "actual_ship_tab": true,
+        "frozen_after_mutation": true,
+        "unknown_values_visible": true,
+        "source_jar_unchanged": true,
+        "original_history_unchanged": true,
+        "image_snapshot": true,
+        "core_sha256": "4049d428ea16ccec8d1b15cdc9e99582a567f3e262ac67587b7d5374fbbbd495",
+        "charts_sha256": "1c0ca89805430096b8b0ad28c4a2fa52c7cba11887977bb0040a21c5ac16aa15"
+      },
+      "checkout": "ad484c482ba88be2582c7024a472e87ba1e17b79",
+      "python": {
+        "script_discovered": 428,
+        "script_successful": 427,
+        "script_skipped": 1,
+        "tools_successful": 25,
+        "successful_total": 452
+      },
+      "existing": {
+        "ship_label_editing": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/ship-label-fixture-5yzwj3_w",
+          "production_accessed": false,
+          "result": "passed",
+          "dialog_cancel_no_change": true,
+          "dialog_confirm_add_remove": true,
+          "stale_batch_rejected": true,
+          "settings_reread": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "parallel_integration": {
+          "fixture_root": "/tmp/logbook-parallel-integration-fsaqfu2e",
+          "production_accessed": false,
+          "result": "passed",
+          "calculations": [
+            10,
+            15,
+            10
+          ],
+          "actual_launcher_runs": 3,
+          "tracking_checkpoints": 4,
+          "arrival_records": 1,
+          "retired_original_slot": 2,
+          "original_unchanged": true,
+          "whole_store_restored_to_new_copy": true,
+          "pending_stage_preserved": true,
+          "live_mint_tested": false,
+          "log": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/r3-verification/parallel-integration-90rvenqf.log"
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "equipment_data_contract_tests": 28,
+        "record_data_contract_tests": 25
+      }
+    },
+    {
+      "run": 40666075024,
+      "id": 12805718922,
+      "name": "runtime-migration-java25",
+      "sha256": "sha256:f2d3696201f0a26ca0ca244b27d53d6fd8e67b2cc05f9f2bdbdd032d9c92f035",
+      "created_at": "2026-10-28T09:44:26Z",
+      "migration": {
+        "discovered": 5,
+        "executed": 5,
+        "successful": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "native_mint_tested": false,
+        "production_applied": false
+      },
+      "markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ],
+      "historical_sources": [
+        {
+          "source_commit": "a094771d73ce420f2bd2ddf237e0c69cf2005067",
+          "jar_sha256": "9d3b44fe132662f13be013a2d4e7169b7c67b884cfa91c7e65d437d0d4d4ef88",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        },
+        {
+          "source_commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+          "jar_sha256": "01172e8573305a3a4a4e78c78c5d931e521977207808612b045a7182cb8d5648",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        }
+      ]
+    },
+    {
+      "run": 40666075024,
+      "id": 12805159905,
+      "name": "runtime-migration-java21",
+      "sha256": "sha256:bf34cb884b263c6ef7013c6736940edc7cc78f171d5d9772c1a8591be9aa8d82",
+      "created_at": "2026-10-28T09:45:58Z",
+      "migration": {
+        "discovered": 5,
+        "executed": 5,
+        "successful": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "native_mint_tested": false,
+        "production_applied": false
+      },
+      "markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_MANAGED_JAVA_OK versions=2 whole_store_restored=true source_unchanged=true external_unchanged=true old_arrivals=3 old_accepted=2 new_arrivals=4 new_accepted=1 split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ],
+      "historical_sources": [
+        {
+          "source_commit": "a094771d73ce420f2bd2ddf237e0c69cf2005067",
+          "jar_sha256": "337db848104945f6244cbb5c60c804ef7466388e490d27be9e18aa3c7c3653c1",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        },
+        {
+          "source_commit": "06be3c9dd4137efbffa5d4f91800881dbc07a5ff",
+          "jar_sha256": "f342aa3f1b908ee53ffaa5d7ba842b1146e738f9f438ed0b909464332ff40016",
+          "tracked_source_unchanged": true,
+          "synthetic_user_data_only": true
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "id": 40666075151,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075047,
+      "name": "Build game-data JSON pack (no release)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666074999,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075106,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075013,
+      "name": "Validate and manually publish game-data pack",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075183,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075035,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075055,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075004,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075140,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075175,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666074966,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075052,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075024,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666074963,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075022,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40666075064,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "e5477925d65042f48b8b3b972ab669d45375553d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "tested_merge": "ad484c482ba88be2582c7024a472e87ba1e17b79"
+}
