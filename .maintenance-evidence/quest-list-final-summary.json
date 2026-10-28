@@ -1,0 +1,228 @@
+{
+  "head": "54f14abe4a63b8f10ac71a91c384c34a66660f5d",
+  "pr": 66,
+  "verified": true,
+  "source_tree": "f915853b6ed3acc4ca31a079b523d6c476fd292a",
+  "pr_state": {
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "merge_commit_sha": "df062254f2a669d46844eca96f1a7369b929c8bc"
+  },
+  "source_evidence_blob": "7d5c9025237a953b054ace9f234193de0ccbb7dd",
+  "successful_workflows": 15,
+  "artifacts": [
+    {
+      "id": 12816803504,
+      "name": "r3-evidence-java21",
+      "run": 40690328254,
+      "digest": "sha256:5f6bbbf4eae4bba5154a37e4780859b74d67ac879fc63a14ed6674b4dbdfc193",
+      "java": {
+        "tests": 899,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_java": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "python": {
+        "r3-verification/python-scripts.log": {
+          "discovered": 1,
+          "skipped": 0,
+          "successful": 1
+        },
+        "r3-verification/python-tools.log": {
+          "discovered": 25,
+          "skipped": 0,
+          "successful": 25
+        }
+      },
+      "checkouts": [
+        "df062254f2a669d46844eca96f1a7369b929c8bc"
+      ],
+      "migration_markers": [],
+      "proof": {
+        "quest_list_read": {
+          "source_jar_sha256": "dd2514dc1a218a2d11ddb2376d26ab262eaccd14da8dcbc2525fae117042b2cb",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152,
+        "checkout": "df062254f2a669d46844eca96f1a7369b929c8bc"
+      }
+    },
+    {
+      "id": 12816339604,
+      "name": "r3-evidence-java25",
+      "run": 40690328254,
+      "digest": "sha256:bace06921abf9bbc10975ae4d2f35a947d39eebb0ae88e7d60d8a598b2b8d23a",
+      "java": {
+        "tests": 899,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_java": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "python": {
+        "r3-verification/python-scripts.log": {
+          "discovered": 1,
+          "skipped": 0,
+          "successful": 1
+        },
+        "r3-verification/python-tools.log": {
+          "discovered": 25,
+          "skipped": 0,
+          "successful": 25
+        }
+      },
+      "checkouts": [
+        "df062254f2a669d46844eca96f1a7369b929c8bc"
+      ],
+      "migration_markers": [],
+      "proof": {
+        "quest_list_read": {
+          "source_jar_sha256": "28df648fd04fd7b8eec20b87cedad3081f7d288ae148c10a0ccf212d80097687",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152,
+        "checkout": "df062254f2a669d46844eca96f1a7369b929c8bc"
+      }
+    },
+    {
+      "id": 12816503925,
+      "name": "modern-runtime-evidence-java25",
+      "run": 40690327933,
+      "digest": "sha256:98821ac5a5d9713fa4319deed669e93a59e13bfa56038a1ef9c4a8854c56bd14",
+      "java": {
+        "tests": 899,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "new_java": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "python": {
+        "r3-verification/python-scripts.log": {
+          "discovered": 1,
+          "skipped": 0,
+          "successful": 1
+        },
+        "r3-verification/python-tools.log": {
+          "discovered": 25,
+          "skipped": 0,
+          "successful": 25
+        }
+      },
+      "checkouts": [
+        "df062254f2a669d46844eca96f1a7369b929c8bc"
+      ],
+      "migration_markers": [],
+      "proof": {
+        "quest_list_read": {
+          "source_jar_sha256": "b3155155b06b3af8d81b5d3d0a91c936a66bc449553b1e77cea8f052a94dbd45",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152,
+        "checkout": "df062254f2a669d46844eca96f1a7369b929c8bc"
+      }
+    },
+    {
+      "id": 12816992533,
+      "name": "runtime-migration-java21",
+      "run": 40690327999,
+      "digest": "sha256:cd828683ffdb4fc88183a1d65e452818bc2d5bf688f37e09c14e793ed95b5b22",
+      "java": {},
+      "new_java": {},
+      "python": {},
+      "checkouts": [],
+      "migration_markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true"
+      ],
+      "migration_counts": {
+        "discovered": 5,
+        "skipped": 0,
+        "successful": 5
+      }
+    },
+    {
+      "id": 12816394025,
+      "name": "runtime-migration-java25",
+      "run": 40690327999,
+      "digest": "sha256:1bb86805e847ab5b5780b7d553945f8902421ddc577b70a8215b6bb71107ab7f",
+      "java": {},
+      "new_java": {},
+      "python": {},
+      "checkouts": [],
+      "migration_markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true"
+      ],
+      "migration_counts": {
+        "discovered": 5,
+        "skipped": 0,
+        "successful": 5
+      }
+    }
+  ]
+}
