@@ -1,0 +1,28 @@
+name: Quest visibility final artifact audit (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-visibility-audit-20261029']
+    paths: ['.github/workflows/quest-visibility-final-audit.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PRODUCT_HEAD: eb88ec570de656e9f8344a85e85b1fc9ac7c962d
+      PRODUCT_PR: '67'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Inspect exact workflow identity, actual report bytes, tests and combined GUI evidence
+        run: python3 .maintenance-tools/inspect_visibility.py
+      - name: Retain the audit result even when incomplete, without editing product source
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-visibility-final-*.json
+          git commit -m 'Preserve actual PR67 evidence inspection outcome'
+          git push origin HEAD:refs/heads/maintenance/quest-visibility-audit-20261029
