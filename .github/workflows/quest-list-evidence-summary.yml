@@ -1,0 +1,39 @@
+name: Summarize verified quest-list evidence (read only)
+on:
+  push:
+    branches: ['maintenance/quest-list-read-worker-20261028']
+    paths: ['.github/workflows/quest-list-evidence-summary.yml']
+permissions:
+  contents: write
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - run: |
+          test "$(git hash-object .maintenance-evidence/quest-list-final-40690660126.json)" = "7d5c9025237a953b054ace9f234193de0ccbb7dd"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          source=Path('.maintenance-evidence/quest-list-final-40690660126.json')
+          data=json.loads(source.read_text());assert data['verified']
+          result={k:data[k] for k in ('head','pr','verified','source_tree','pr_state')}
+          result['source_evidence_blob']='7d5c9025237a953b054ace9f234193de0ccbb7dd'
+          result['successful_workflows']=len(data['runs'])
+          result['artifacts']=[]
+          for item in data['artifacts']:
+              row={k:item[k] for k in ('id','name','run','digest','java','new_java','python','checkouts','migration_markers')}
+              if 'migration_counts' in item:row['migration_counts']=item['migration_counts']
+              for value in item['json'].values():
+                  if isinstance(value,dict) and 'quest_list_read' in value:
+                      row['proof']={k:value[k] for k in ('quest_list_read','seasonal_retreat_integration_tests','isolated_typed_definitions','checkout')}
+              result['artifacts'].append(row)
+          Path('.maintenance-evidence/quest-list-final-summary.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(result,ensure_ascii=False))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-list-final-summary.json
+          git commit -m 'Keep compact read-only view of verified PR66 evidence'
+          git push origin HEAD:refs/heads/maintenance/quest-list-read-worker-20261028
