@@ -67,6 +67,11 @@ public final class FeatureUiV1 {
     public static final class Tables {
         private Tables() { }
 
+        /** Same explicit save dialog/CSV behavior as the host table tool. */
+        public static void store(TableView<?> table, String title, Stage owner) throws IOException {
+            FeatureUiBridgeV1.storeTable(table, title, owner);
+        }
+
         public static String columnName(TableColumn<?, ?> column) {
             return FeatureUiBridgeV1.columnName(column);
         }
@@ -107,6 +112,11 @@ public final class FeatureUiV1 {
         public static java.util.Optional<javafx.scene.control.ButtonType> alert(
                 javafx.scene.control.Alert.AlertType type, String title, String message, Stage owner) {
             return FeatureUiBridgeV1.alert(type, title, message, owner);
+        }
+
+        public static void bindChildCheckBoxes(javafx.scene.control.CheckBox parent,
+                java.util.List<javafx.scene.control.CheckBox> children) {
+            FeatureUiBridgeV1.bindChildCheckBoxes(parent, children);
         }
 
         public static void setSplitWidth(SplitPane pane, String key) {

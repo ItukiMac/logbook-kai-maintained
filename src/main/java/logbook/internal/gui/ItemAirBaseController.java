@@ -1,5 +1,9 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+import logbook.plugin.api.EquipmentDataV1;
+import logbook.plugin.api.EquipmentImagesV1;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
@@ -31,19 +35,15 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import logbook.bean.AppItemTableConfig;
-import logbook.bean.SlotItemCollection;
-import logbook.bean.SlotitemMst;
-import logbook.bean.SlotitemMstCollection;
 import logbook.common.Messages;
 import logbook.core.LogBookCoreServices;
-import logbook.internal.kancolle.Items;
 import logbook.internal.logger.LoggerHolder;
 
 /**
  * 基地航空隊一覧のUIコントローラー
  *
  */
-public class ItemAirBaseController extends WindowController {
+public class ItemAirBaseController extends FeatureUiV1.Window {
 
     // フィルター
     @FXML
@@ -149,7 +149,7 @@ public class ItemAirBaseController extends WindowController {
     @FXML
     void initialize() {
         try {
-            TableTool.setVisible(this.itemTable, this.getClass().toString() + "#" + "airBaseItemTable");
+            FeatureUiV1.Tables.setVisible(this.itemTable, this.getClass().toString() + "#" + "airBaseItemTable");
             
             this.filter.expandedProperty().addListener((ob, o, n) -> saveConfig());
 
@@ -182,7 +182,7 @@ public class ItemAirBaseController extends WindowController {
             this.saku.setCellValueFactory(new PropertyValueFactory<>("saku"));
 
             this.itemTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.itemTable.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.itemTable.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
             this.disableGrouping.selectedProperty().addListener((ob, o, n) -> {
                 setItems();
                 saveConfig();
@@ -206,11 +206,7 @@ public class ItemAirBaseController extends WindowController {
      */
     private void setItems() {
         // 一覧を作る
-        Stream<AirBaseItem> listItems = SlotItemCollection.get()
-                .getSlotitemMap()
-                .values().stream()
-                .filter(AirBaseItem::isTarget)
-                .map(AirBaseItem::toAirBaseItem);
+        Stream<AirBaseItem> listItems = EquipmentDataV1.aircraft().stream().map(EquipmentProjection::aircraft);
         
         if (!this.disableGrouping.isSelected()) {
             listItems = listItems
@@ -268,14 +264,9 @@ public class ItemAirBaseController extends WindowController {
         protected void updateItem(Integer itemId, boolean empty) {
             super.updateItem(itemId, empty);
             if (!empty) {
-                SlotitemMst mst = SlotitemMstCollection.get()
-                        .getSlotitemMap()
-                        .get(itemId);
-
-                if (mst != null) {
-                    this.setGraphic(Tools.Controls.zoomImage(new ImageView(Items.itemImage(mst))));
-                    this.setText(mst.getName());
-                }
+                this.setGraphic(itemId == null ? null : FeatureUiV1.Controls.zoomImage(
+                        new ImageView(EquipmentImagesV1.item(itemId))));
+                this.setText(itemId == null ? null : EquipmentDataV1.itemName(itemId));
             } else {
                 this.setGraphic(null);
                 this.setText(null);
@@ -331,7 +322,7 @@ public class ItemAirBaseController extends WindowController {
      */
     @FXML
     void copyAirBase() {
-        TableTool.selectionCopy(this.itemTable);
+        FeatureUiV1.Tables.selectionCopy(this.itemTable);
     }
 
     /**
@@ -339,7 +330,7 @@ public class ItemAirBaseController extends WindowController {
      */
     @FXML
     void selectAllAirBase() {
-        TableTool.selectAll(this.itemTable);
+        FeatureUiV1.Tables.selectAll(this.itemTable);
     }
 
     /**
@@ -348,7 +339,7 @@ public class ItemAirBaseController extends WindowController {
     @FXML
     void storeAirBase() {
         try {
-            TableTool.store(this.itemTable, "所有装備一覧_基地航空隊", this.getWindow());
+            FeatureUiV1.Tables.store(this.itemTable, "所有装備一覧_基地航空隊", this.getWindow());
         } catch (IOException e) {
             LoggerHolder.get().error("CSVファイルとして保存に失敗しました", e);
         }
@@ -368,7 +359,7 @@ public class ItemAirBaseController extends WindowController {
     @FXML
     void columnVisibleAirBase() {
         try {
-            TableTool.showVisibleSetting(this.itemTable, this.getClass().toString() + "#" + "airBaseItemTable",
+            FeatureUiV1.Tables.showVisibleSetting(this.itemTable, this.getClass().toString() + "#" + "airBaseItemTable",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);

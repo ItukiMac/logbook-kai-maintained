@@ -1,5 +1,9 @@
 package logbook.internal.gui;
 
+import logbook.plugin.api.FeatureUiV1;
+import logbook.plugin.api.EquipmentDataV1;
+import logbook.plugin.api.EquipmentImagesV1;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -60,16 +64,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import logbook.bean.AppItemTableConfig;
-import logbook.bean.Ship;
-import logbook.bean.SlotItem;
-import logbook.bean.SlotItemCollection;
-import logbook.bean.SlotitemEquiptype;
-import logbook.bean.SlotitemMst;
-import logbook.bean.SlotitemMstCollection;
+import logbook.plugin.api.EquipmentDataV1.Category;
 import logbook.common.Messages;
 import logbook.core.LogBookCoreServices;
-import logbook.internal.kancolle.Items;
-import logbook.internal.kancolle.Ships;
 import logbook.internal.logger.LoggerHolder;
 
 import lombok.Data;
@@ -80,7 +77,7 @@ import lombok.Setter;
  * 所有装備一覧のUIコントローラー
  *
  */
-public class ItemItemController extends WindowController {
+public class ItemItemController extends FeatureUiV1.Window {
     private boolean refreshingDefinitions;
     private final List<CheckBox> categoryCheckBoxes = new ArrayList<>();
 
@@ -226,38 +223,50 @@ public class ItemItemController extends WindowController {
 
     /** 詳細・一覧 */
     @FXML
-    private TableView<DetailItem> detailTable;
+    private TableView<EquipmentDetailItem> detailTable;
 
     /** 熟練 */
     @FXML
-    private TableColumn<DetailItem, Integer> alv;
+    private TableColumn<EquipmentDetailItem, Integer> alv;
 
     /** 改修 */
     @FXML
-    private TableColumn<DetailItem, Integer> level;
+    private TableColumn<EquipmentDetailItem, Integer> level;
 
     /** 所持 */
     @FXML
-    private TableColumn<DetailItem, Ship> ship;
+    private TableColumn<EquipmentDetailItem, EquipmentDataV1.Owner> ship;
 
     /** 一覧 */
     private FilteredList<Item> types;
 
     /** 詳細一覧 */
-    private ObservableList<DetailItem> details = FXCollections.observableArrayList();
+    private ObservableList<EquipmentDetailItem> details = FXCollections.observableArrayList();
 
     /** フィルターの更新停止 */
     private boolean disableFilterUpdate;
 
+    /** Read the unchanged arsenal wire schema; retain entries before a malformed later row. */
+    static void readRemodelDays(java.io.InputStream input, Map<String, Collection<String>> destination) {
+        try (JsonReader reader = Json.createReader(input)) {
+            for (JsonValue value : reader.readArray()) {
+                JsonObject object = (JsonObject) value;
+                String name = object.getString("SlotItem", null);
+                JsonArray days = object.getJsonArray("AllAvailableDays");
+                if (name != null && days != null) destination.put(name, JsonHelper.toStringList(days));
+            }
+        }
+    }
+
     @FXML
     void initialize() {
         try {
-            TableTool.setVisible(this.typeTable, this.getClass().toString() + "#" + "typeTable");
-            TableTool.setVisible(this.detailTable, this.getClass().toString() + "#" + "detailTable");
+            FeatureUiV1.Tables.setVisible(this.typeTable, this.getClass().toString() + "#" + "typeTable");
+            FeatureUiV1.Tables.setVisible(this.detailTable, this.getClass().toString() + "#" + "detailTable");
             // SplitPaneの分割サイズ
             Timeline x = new Timeline();
             x.getKeyFrames().add(new KeyFrame(Duration.millis(1), (e) -> {
-                Tools.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
+                FeatureUiV1.Controls.setSplitWidth(this.splitPane, this.getClass() + "#" + "splitPane");
             }));
             x.play();
             this.filter.expandedProperty().addListener((ob, o, n) -> saveConfig());
@@ -312,30 +321,18 @@ public class ItemItemController extends WindowController {
             this.ship.setCellFactory(p -> new ShipImageCell());
 
             this.typeTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.typeTable.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.typeTable.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
             this.detailTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            this.detailTable.setOnKeyPressed(TableTool::defaultOnKeyPressedHandler);
+            this.detailTable.setOnKeyPressed(FeatureUiV1.Tables::defaultOnKeyPressedHandler);
             // 行を作る
             Map<String, Collection<String>> kousyouMap = new HashMap<>();
-            try (JsonReader reader = Json
-                    .createReader(LogBookCoreServices.getResourceAsStream("logbook/kousyou/kousyou.json"))) {
-                JsonArray array = reader.readArray();
-                for (JsonValue val : array) {
-                    JsonObject obj = (JsonObject) val;
-                    String name = obj.getString("SlotItem", null);
-                    JsonArray days = obj.getJsonArray("AllAvailableDays");
-                    if (name != null && days != null) {
-                        kousyouMap.put(name, JsonHelper.toStringList(days));
-                    }
-                }
+            try {
+                readRemodelDays(LogBookCoreServices.getResourceAsStream("logbook/kousyou/kousyou.json"), kousyouMap);
             } catch (Exception e) {
                 LoggerHolder.get().error("kousyou.jsonの読み込みに失敗しました", e);
             }
 
-            ObservableList<Item> items = SlotitemMstCollection.get()
-                    .getSlotitemMap()
-                    .values()
-                    .stream()
+            ObservableList<Item> items = EquipmentDataV1.inventory().definitions().stream()
                     .map(mst -> (Item) RemodelItem.toRemodelItem(mst, kousyouMap))
                     .filter(e -> e.getCount() > 0)
                     .sorted(Comparator.comparing(Item::getType3).thenComparing(Comparator.comparing(Item::getName)))
@@ -350,7 +347,7 @@ public class ItemItemController extends WindowController {
             remodelDays.add(this.remodelDayThu);
             remodelDays.add(this.remodelDayFri);
             remodelDays.add(this.remodelDaySat);
-            Tools.Controls.bindChildCheckBoxes(this.remodelDayAll, remodelDays);
+            FeatureUiV1.Controls.bindChildCheckBoxes(this.remodelDayAll, remodelDays);
             this.remodelFilter.selectedProperty().addListener(this::filterAction);
             this.allAvailableDays.expandedProperty().addListener((ob, o, n) -> saveConfig());
             remodelDays.forEach(cb -> cb.selectedProperty().addListener(this::filterAction));
@@ -374,7 +371,7 @@ public class ItemItemController extends WindowController {
             this.typeTable.setItems(sortedListTypes);
             sortedListTypes.comparatorProperty().bind(this.typeTable.comparatorProperty());
             // 装備一覧(所持) 最初は空のリスト
-            SortedList<DetailItem> sortedListDetail = new SortedList<>(this.details);
+            SortedList<EquipmentDetailItem> sortedListDetail = new SortedList<>(this.details);
             this.detailTable.setItems(sortedListDetail);
             sortedListDetail.comparatorProperty().bind(this.detailTable.comparatorProperty());
 
@@ -414,13 +411,9 @@ public class ItemItemController extends WindowController {
                 Integer row = javafx.scene.layout.GridPane.getRowIndex(node);
                 return row != null && row > 0;
             });
-            Map<Integer, SlotitemMst> slotitemMap = SlotitemMstCollection.get().getSlotitemMap();
-            Set<Integer> existingTypes = SlotItemCollection.get().getSlotitemMap().values().stream()
-                    .map(SlotItem::getSlotitemId)
-                    .map(slotitemMap::get)
-                    .map(mst -> mst.getType().get(2))
-                    .collect(Collectors.toSet());
-            Map<String, List<SlotitemEquiptype>> categories = Items.getCategories();
+            Set<Integer> existingTypes = EquipmentDataV1.inventory().definitions().stream()
+                    .map(EquipmentDataV1.Definition::type2).collect(Collectors.toSet());
+            Map<String, List<Category>> categories = EquipmentDataV1.categories();
             final AtomicInteger row = new AtomicInteger(1);
             categoryCheckBoxes.clear();
             categories.forEach((name, equipTypes) -> {
@@ -550,19 +543,16 @@ public class ItemItemController extends WindowController {
             // 選択
             this.detailName.setText(value.getName());
             // 行を作る
-            List<DetailItem> items = SlotItemCollection.get()
-                    .getSlotitemMap()
-                    .values()
-                    .stream()
-                    .filter(e -> e.getSlotitemId().equals(value.idProperty().get()))
-                    .sorted(Comparator.comparing(SlotItem::getAlv,
+            List<EquipmentDetailItem> items = EquipmentDataV1.inventory().owned().stream()
+                    .filter(e -> e.masterId() == value.idProperty().get())
+                    .sorted(Comparator.comparing(EquipmentDataV1.Owned::getAlv,
                             Comparator.nullsFirst(Comparator.naturalOrder()))
                             .reversed())
-                    .sorted(Comparator.comparing(SlotItem::getLevel,
+                    .sorted(Comparator.comparing(EquipmentDataV1.Owned::getLevel,
                             Comparator.nullsFirst(Comparator.naturalOrder()))
                             .reversed())
-                    .map(DetailItem::toDetailItem)
-                    .sorted(Comparator.comparing(DetailItem::getShipId,
+                    .map(EquipmentDetailItem::toDetailItem)
+                    .sorted(Comparator.comparing(EquipmentDetailItem::getShipId,
                             Comparator.nullsFirst(Comparator.naturalOrder())))
                     .collect(Collectors.toList());
             this.details.addAll(items);
@@ -580,14 +570,9 @@ public class ItemItemController extends WindowController {
         protected void updateItem(Integer itemId, boolean empty) {
             super.updateItem(itemId, empty);
             if (!empty) {
-                SlotitemMst mst = SlotitemMstCollection.get()
-                        .getSlotitemMap()
-                        .get(itemId);
-
-                if (mst != null) {
-                    this.setGraphic(Tools.Controls.zoomImage(new ImageView(Items.itemImage(mst))));
-                    this.setText(mst.getName());
-                }
+                this.setGraphic(itemId == null ? null : FeatureUiV1.Controls.zoomImage(
+                        new ImageView(EquipmentImagesV1.item(itemId))));
+                this.setText(itemId == null ? null : EquipmentDataV1.itemName(itemId));
             } else {
                 this.setGraphic(null);
                 this.setText(null);
@@ -641,14 +626,14 @@ public class ItemItemController extends WindowController {
     /**
      * 艦娘を表示するセル
      */
-    private static class ShipImageCell extends TableCell<DetailItem, Ship> {
+    private static class ShipImageCell extends TableCell<EquipmentDetailItem, EquipmentDataV1.Owner> {
         @Override
-        protected void updateItem(Ship ship, boolean empty) {
+        protected void updateItem(EquipmentDataV1.Owner ship, boolean empty) {
             super.updateItem(ship, empty);
             if (!empty) {
-                this.setGraphic(Tools.Controls.zoomImage(new ImageView(Ships.shipWithItemImage(ship))));
+                this.setGraphic(FeatureUiV1.Controls.zoomImage(new ImageView(EquipmentImagesV1.owner(ship == null ? null : ship.id()))));
                 if (ship != null) {
-                    this.setText(Ships.toName(ship));
+                    this.setText(ship.displayName());
                 } else {
                     this.setText("未装備");
                 }
@@ -664,7 +649,7 @@ public class ItemItemController extends WindowController {
      */
     @FXML
     void copyType() {
-        TableTool.selectionCopy(this.typeTable);
+        FeatureUiV1.Tables.selectionCopy(this.typeTable);
     }
 
     /**
@@ -672,7 +657,7 @@ public class ItemItemController extends WindowController {
      */
     @FXML
     void selectAllType() {
-        TableTool.selectAll(this.typeTable);
+        FeatureUiV1.Tables.selectAll(this.typeTable);
     }
 
     /**
@@ -681,7 +666,7 @@ public class ItemItemController extends WindowController {
     @FXML
     void storeType() {
         try {
-            TableTool.store(this.typeTable, "所有装備一覧", this.getWindow());
+            FeatureUiV1.Tables.store(this.typeTable, "所有装備一覧", this.getWindow());
         } catch (IOException e) {
             LoggerHolder.get().error("CSVファイルとして保存に失敗しました", e);
         }
@@ -693,7 +678,7 @@ public class ItemItemController extends WindowController {
     @FXML
     void kancolleFleetanalysis() {
         try {
-            List<KancolleFleetanalysisItem> list = SlotItemCollection.get().getSlotitemMap().values().stream()
+            List<KancolleFleetanalysisItem> list = EquipmentDataV1.inventory().owned().stream()
                     .filter(item -> item.getLocked())
                     .map(KancolleFleetanalysisItem::toItem)
                     .sorted(Comparator.comparing(KancolleFleetanalysisItem::getId)
@@ -716,7 +701,7 @@ public class ItemItemController extends WindowController {
     @FXML
     void columnVisibleType() {
         try {
-            TableTool.showVisibleSetting(this.typeTable, this.getClass().toString() + "#" + "typeTable",
+            FeatureUiV1.Tables.showVisibleSetting(this.typeTable, this.getClass().toString() + "#" + "typeTable",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
@@ -728,7 +713,7 @@ public class ItemItemController extends WindowController {
      */
     @FXML
     void copyDetail() {
-        TableTool.selectionCopy(this.detailTable);
+        FeatureUiV1.Tables.selectionCopy(this.detailTable);
     }
 
     /**
@@ -736,7 +721,7 @@ public class ItemItemController extends WindowController {
      */
     @FXML
     void selectAllDetail() {
-        TableTool.selectAll(this.detailTable);
+        FeatureUiV1.Tables.selectAll(this.detailTable);
     }
 
     /**
@@ -745,7 +730,7 @@ public class ItemItemController extends WindowController {
     @FXML
     void columnVisibleDetail() {
         try {
-            TableTool.showVisibleSetting(this.detailTable, this.getClass().toString() + "#" + "detailTable",
+            FeatureUiV1.Tables.showVisibleSetting(this.detailTable, this.getClass().toString() + "#" + "detailTable",
                     this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
@@ -822,7 +807,7 @@ public class ItemItemController extends WindowController {
         @JsonProperty("api_level")
         private int lv;
 
-        public static KancolleFleetanalysisItem toItem(SlotItem item) {
+        public static KancolleFleetanalysisItem toItem(EquipmentDataV1.Owned item) {
             KancolleFleetanalysisItem kfi = new KancolleFleetanalysisItem();
             kfi.id = item.getSlotitemId();
             kfi.lv = item.getLevel();
@@ -835,8 +820,8 @@ public class ItemItemController extends WindowController {
         @Setter
         private Set<String> remodelDays = new java.util.HashSet<>();
 
-        public static RemodelItem toRemodelItem(SlotitemMst slotitem, Map<String, Collection<String>> kousyouMap) {
-            Item item = Item.toItem(slotitem);
+        public static RemodelItem toRemodelItem(EquipmentDataV1.Definition slotitem, Map<String, Collection<String>> kousyouMap) {
+            Item item = EquipmentProjection.item(slotitem);
             RemodelItem remodelItem = new RemodelItem();
             // Copy properties
             remodelItem.setId(item.getId());

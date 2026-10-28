@@ -79,6 +79,25 @@ def record_ui_required_entries():
             'logbook/gui/' + value + '.fxml' for value in RECORD_UI_RESOURCES}
 
 
+EQUIPMENT_UI_PROFILE = 'equipment-ui-in-status-v1'
+EQUIPMENT_UI_API = 'logbook/plugin/api/EquipmentDataV1.class'
+EQUIPMENT_UI_FAMILIES = ('ItemController', 'ItemItemController', 'ItemAirBaseController',
+                         'EquipmentProjection', 'EquipmentDetailItem')
+EQUIPMENT_UI_RESOURCES = ('item', 'item_item', 'item_airbase')
+
+
+def equipment_ui_entry(name):
+    return (name in {'logbook/gui/' + resource + '.fxml' for resource in EQUIPMENT_UI_RESOURCES}
+            or any(name == 'logbook/internal/gui/' + family + '.class'
+                   or name.startswith('logbook/internal/gui/' + family + '$') and name.endswith('.class')
+                   for family in EQUIPMENT_UI_FAMILIES))
+
+
+def equipment_ui_required_entries():
+    return ({'logbook/internal/gui/' + family + '.class' for family in EQUIPMENT_UI_FAMILIES}
+            | {'logbook/gui/' + resource + '.fxml' for resource in EQUIPMENT_UI_RESOURCES})
+
+
 def required_entries(module_id):
     provider, controllers, resources = GROUPS[module_id]
     stems = ['logbook/features/' + provider]
@@ -126,6 +145,9 @@ def validate_manifest(report):
     """Validate the complete compatibility graph without opening files or Java."""
     if not isinstance(report, dict) or report.get('format') != FORMAT:
         raise ValueError('Versioned distribution manifest required; legacy v1 is not launchable')
+    equipment_profile = report.get('equipment_ui_profile')
+    if equipment_profile is not None and equipment_profile != EQUIPMENT_UI_PROFILE:
+        raise ValueError('Unsupported equipment UI packaging profile')
     profile = report.get('record_ui_profile')
     if profile is not None and profile != RECORD_UI_PROFILE:
         raise ValueError('Unsupported record UI packaging profile')
@@ -239,6 +261,7 @@ def manifest_attributes(raw):
 
 
 def verify_jars(root, report, catalog):
+    equipment_profile = report.get('equipment_ui_profile') == EQUIPMENT_UI_PROFILE
     record_profile = report.get('record_ui_profile') == RECORD_UI_PROFILE
     classes, resources, total = set(), set(), 0
     for path in JARS:
@@ -284,6 +307,10 @@ def verify_jars(root, report, catalog):
             if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':
                 raise ValueError('Multi-release feature JARs are not supported')
             if path == JARS[0]:
+                if (EQUIPMENT_UI_API in names) != equipment_profile:
+                    raise ValueError('Equipment data API and packaging profile disagree')
+                if equipment_profile and any(equipment_ui_entry(name) for name in names):
+                    raise ValueError('Equipment UI remains in the host instead of status')
                 if (RECORD_UI_API in names) != record_profile:
                     raise ValueError('Record data API and packaging profile disagree')
                 if record_profile and any(record_ui_entry(name) for name in names):
@@ -298,6 +325,11 @@ def verify_jars(root, report, catalog):
                 continue
             module = next(m for m in catalog.values() if m['path'] == path)
             required = required_entries(module['id'])
+            if equipment_profile:
+                if module['id'] == 'status':
+                    required |= equipment_ui_required_entries()
+                elif any(equipment_ui_entry(name) for name in names):
+                    raise ValueError('Equipment UI belongs to the status module')
             if record_profile:
                 if module['id'] == 'charts':
                     required |= record_ui_required_entries()

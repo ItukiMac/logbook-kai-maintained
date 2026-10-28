@@ -46,6 +46,15 @@ public final class FeatureUiBridgeV1 {
         TreeTableTool.setVisible(table, key);
     }
 
+    public static void storeTable(TableView<?> table, String title, Stage owner) throws IOException {
+        TableTool.store(table, title, owner);
+    }
+
+    public static void bindChildCheckBoxes(javafx.scene.control.CheckBox parent,
+            java.util.List<javafx.scene.control.CheckBox> children) {
+        Tools.Controls.bindChildCheckBoxes(parent, children);
+    }
+
     public static String columnName(TableColumn<?, ?> column) { return Tools.Tables.getColumnName(column); }
 
     public static java.util.Optional<javafx.scene.control.ButtonType> alert(
