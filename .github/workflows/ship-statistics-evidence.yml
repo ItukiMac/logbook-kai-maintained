@@ -1,0 +1,117 @@
+name: Ship statistics final artifact verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-statistics-evidence-20261028']
+    paths: ['.github/workflows/ship-statistics-evidence.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Inspect exact workflow head, hashed ZIPs and actual test records
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import os,json,urllib.request,hashlib,zipfile,io,re,time,xml.etree.ElementTree as E
+          from pathlib import Path
+          head='e5477925d65042f48b8b3b972ab669d45375553d';tree='1802ec7ba460e52a2a1817aa6811432715f8f088'
+          base='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          report={'head':head,'expected_tree':tree,'verified':False,'production_accessed':False,'artifacts':[]}
+          output=Path('.maintenance-evidence/statistics-final-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json')
+          def save():output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          def raw(path):
+              q=urllib.request.Request(base+path,headers={'Accept':'application/vnd.github+json'})
+              q.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(q,timeout=60) as r:data=r.read(12*1024*1024+1)
+              assert len(data)<=12*1024*1024,'Response too large'
+              return data
+          def get(path):return json.loads(raw(path))
+          ids={40666074966,40666074963,40666075183,40666075035,40666075024,40666075151,
+               40666075175,40666075052,40666075140,40666075064,40666074999,40666075022,
+               40666075106,40666075013,40666075047,40666075055,40666075004}
+          wanted={'r3-evidence-java21','r3-evidence-java25','modern-runtime-evidence-java25',
+                  'runtime-migration-java21','runtime-migration-java25'}
+          try:
+              for attempt in range(32):
+                  runs=get('/actions/runs?head_sha='+head+'&event=pull_request&per_page=100')['workflow_runs']
+                  assert ids <= {r['id'] for r in runs},'Expected workflows absent'
+                  report['runs']=[{k:r[k] for k in ('id','name','head_sha','status','conclusion','run_attempt')} for r in runs];save()
+                  if all(r['status']=='completed' for r in runs):break
+                  time.sleep(15)
+              assert all(r['head_sha']==head and r['status']=='completed' and r['conclusion']=='success' for r in runs),report['runs']
+              assert get('/git/commits/'+head)['tree']['sha']==tree
+              pr=get('/pulls/63');assert pr['head']['sha']==head
+              assert get('/git/commits/'+pr['merge_commit_sha'])['tree']['sha']==tree
+              report['tested_merge']=pr['merge_commit_sha'];found=set()
+              for run in (40666075064,40666074963,40666075024):
+                  all_artifacts=get('/actions/runs/'+str(run)+'/artifacts')['artifacts'];latest={}
+                  for a in sorted(all_artifacts,key=lambda a:a['created_at']):
+                      if a['name'] in wanted:latest[a['name']]=a
+                  for a in latest.values():
+                      assert a['workflow_run']['head_sha']==head and not a['expired']
+                      data=raw('/actions/artifacts/'+str(a['id'])+'/zip');digest='sha256:'+hashlib.sha256(data).hexdigest()
+                      assert digest==a['digest']
+                      z=zipfile.ZipFile(io.BytesIO(data));assert sum(i.file_size for i in z.infolist())<128*1024*1024
+                      assert z.testzip() is None
+                      row={'run':run,'id':a['id'],'name':a['name'],'sha256':digest,'created_at':a['created_at']}
+                      if a['name'].startswith('runtime-migration-'):
+                          paths=[n for n in z.namelist() if n.endswith('runtime-migration.log')];assert len(paths)==1
+                          text=z.read(paths[0]).decode();match=re.search(r'^RUNTIME_MIGRATION_TEST_SUMMARY (.+)$',text,re.M);assert match
+                          counts=json.loads(match.group(1));assert all(counts[k]==v for k,v in {'discovered':5,'executed':5,'successful':5,'failures':0,'errors':0,'skipped':0,'native_mint_tested':False,'production_applied':False}.items())
+                          assert 'MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true' in text
+                          assert 'RUNTIME_MIGRATION_DECLARED_VERSIONS_OK' in text and 'real_launcher=true' in text
+                          row['migration']=counts;row['markers']=[l for l in text.splitlines() if l.startswith(('RUNTIME_MIGRATION_', 'MIGRATION_CURRENT'))]
+                          provenance=[]
+                          for n in z.namelist():
+                              if n.endswith('source-provenance.json'):
+                                  p=json.loads(z.read(n));assert p['tracked_source_unchanged'] and p['synthetic_user_data_only'];provenance.append(p)
+                          assert {p['source_commit'] for p in provenance}=={'a094771d73ce420f2bd2ddf237e0c69cf2005067','06be3c9dd4137efbffa5d4f91800881dbc07a5ff'}
+                          row['historical_sources']=provenance
+                      else:
+                          totals={k:0 for k in ('tests','failures','errors','skipped')};new={};proof=[];summary=None;script_log=None;tool_log=None
+                          for n in z.namelist():
+                              if n.endswith('.xml') and '/TEST-' in '/'+n:
+                                  xml=z.read(n);assert b'<!DOCTYPE' not in xml.upper();s=E.fromstring(xml)
+                                  for k in totals:totals[k]+=int(s.get(k,0))
+                                  if s.get('name') in {'logbook.core.ShipStatisticsContractTest','logbook.internal.gui.ShipStatisticsBoundaryTest'}:new[s.get('name')]=s.attrib
+                              elif n.endswith('.json') and 'ship-statistics-fixture-' in n:proof.append(json.loads(z.read(n)))
+                              elif n.endswith('r3-verification/summary.json') or n=='summary.json':summary=json.loads(z.read(n))
+                              elif n.endswith('python-scripts.log'):script_log=z.read(n).decode()
+                              elif n.endswith('python-tools.log'):tool_log=z.read(n).decode()
+                          assert totals=={'tests':878,'failures':0,'errors':0,'skipped':1},totals
+                          assert len(new)==2 and sum(int(s['tests']) for s in new.values())==21
+                          assert all(int(s[k])==0 for s in new.values() for k in ('failures','errors','skipped'))
+                          assert len(proof)==1 and proof[0]['result']=='passed' and proof[0]['charts_rendered']==5
+                          for flag in ('product_distribution','actual_ship_tab','frozen_after_mutation','unknown_values_visible','source_jar_unchanged','original_history_unchanged','image_snapshot'):assert proof[0][flag] is True,flag
+                          assert proof[0]['production_accessed'] is False
+                          assert script_log and tool_log
+                          assert re.search(r'^Ran 428 tests in ',script_log,re.M) and 'OK (skipped=1)' in script_log
+                          assert re.search(r'^Ran 25 tests in ',tool_log,re.M)
+                          assert summary and summary['production_deployed'] is False
+                          assert summary['ship_statistics']['result']=='passed'
+                          assert summary['ship_label_editing']['result']=='passed'
+                          assert summary['equipment_ui_packaging']['result']=='passed'
+                          assert summary['record_ui_packaging']['result']=='passed'
+                          row.update(java=totals,new_statistics_tests=new,statistics=proof[0],checkout=summary['checkout'],
+                              python={'script_discovered':428,'script_successful':427,'script_skipped':1,'tools_successful':25,'successful_total':452},
+                              existing={k:summary[k] for k in ('ship_label_editing','parallel_integration','seasonal_retreat_integration_tests','equipment_data_contract_tests','record_data_contract_tests')})
+                      report['artifacts'].append(row);found.add(a['name']);save()
+              assert found==wanted,found
+              report['verified']=True;save();print('SHIP_STATISTICS_FINAL_VERIFIED',head,'workflows',len(runs),'artifacts',len(found))
+          except Exception as error:
+              report['error']=type(error).__name__+': '+str(error);save();raise
+          PY
+      - name: Retain inspection result only, including any failure; never modify product or master
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/
+          git commit -m 'Retain exact ship-statistics PR artifact verification result'
+          git push origin HEAD:refs/heads/maintenance/ship-statistics-evidence-20261028
