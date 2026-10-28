@@ -1,0 +1,585 @@
+{
+  "head": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+  "pr": 67,
+  "verified": true,
+  "artifact_code_executed": false,
+  "production_accessed": false,
+  "runs": [
+    {
+      "id": 40718508635,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718509358,
+      "name": "Validate and manually publish game-data pack",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508734,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508714,
+      "name": "Build game-data JSON pack (no release)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508831,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718509204,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718509251,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718509127,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508563,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508846,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508943,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718509285,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508800,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718509171,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508814,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508796,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40718508608,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "eb88ec570de656e9f8344a85e85b1fc9ac7c962d",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 12830256675,
+      "name": "modern-runtime-evidence-java25",
+      "run": 40718509204,
+      "digest": "sha256:0d9eb2a5d7dfe9d5b5af7438386440957a29d278a624a87a938d302bf87281f3",
+      "java": {
+        "tests": 945,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "focused": {
+        "logbook.core.QuestVisibilityCommandTest": {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.QuestVisibilityBoundaryTest": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "python": {
+        "python-scripts.log": {
+          "outer": {
+            "discovered": 441,
+            "skipped": 1,
+            "successful": 440
+          },
+          "all_summaries": [
+            {
+              "discovered": 441,
+              "skipped": 1,
+              "successful": 440
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ]
+        },
+        "python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ]
+        }
+      },
+      "proofs": {
+        "quest_visibility": {
+          "result": "passed",
+          "production_accessed": false,
+          "persisted_hide_state": false,
+          "physical_module_added": false,
+          "product_distribution": true,
+          "confirm_cancel": true,
+          "hide_restore_all": true,
+          "stale_rejected": true,
+          "originals_unchanged": true,
+          "acceptance_unchanged": true,
+          "custom_slot_retained": true,
+          "session_reset_in_new_process": true,
+          "source_jar_unchanged": true
+        },
+        "airbase_status": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/airbase-status-fixture-aplco0mn",
+          "result": "passed",
+          "production_accessed": false,
+          "product_status_jar": true,
+          "frozen_selection": true,
+          "identity_preserved": true,
+          "captured_power": 40,
+          "refresh_power": 60,
+          "sorted_planes": true,
+          "unknown_visible": true,
+          "stale_values_cleared": true,
+          "legacy_export": true,
+          "timeline_stopped": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "quest_list_read": {
+          "source_jar_sha256": "70f7ca8b84856d6c6f0e8e0284fd72b914e75ae2f859408f38a6b6237ffaa285",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152
+      },
+      "tested_checkout": "55dbf441bf4cbb0262bd4d73a8c3bf3b6967dace",
+      "modern_runtime": {
+        "checkout": "55dbf441bf4cbb0262bd4d73a8c3bf3b6967dace",
+        "jdk_baseline": 25,
+        "javafx": "27.0.1",
+        "openjfx_components": [
+          "org.openjfx:javafx-base",
+          "org.openjfx:javafx-controls",
+          "org.openjfx:javafx-fxml",
+          "org.openjfx:javafx-graphics",
+          "org.openjfx:javafx-media",
+          "org.openjfx:javafx-swing",
+          "org.openjfx:javafx-web",
+          "org.openjfx:jdk-jsobject"
+        ],
+        "jackson_host": "3.2.4",
+        "classfile_major": 69,
+        "json_compatibility_tests": 14,
+        "legacy_plugin_bridge_retained": true,
+        "native_mint_tested": false,
+        "production_applied": false
+      }
+    },
+    {
+      "id": 12828959245,
+      "name": "runtime-migration-java21",
+      "run": 40718508814,
+      "digest": "sha256:80c6466fd911ea5a445567b6943f582e66534fa3bbe27da2d22c852bebf09643",
+      "java": {},
+      "focused": {},
+      "python": {},
+      "proofs": {},
+      "migration": {
+        "outer": {
+          "discovered": 5,
+          "skipped": 0,
+          "successful": 5
+        },
+        "all_summaries": [
+          {
+            "discovered": 5,
+            "skipped": 0,
+            "successful": 5
+          }
+        ]
+      },
+      "migration_markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ]
+    },
+    {
+      "id": 12827949961,
+      "name": "runtime-migration-java25",
+      "run": 40718508814,
+      "digest": "sha256:b0844a448b6611c85be4eeb19acb5189cdf59a85d99c5e5bf428a9def3184766",
+      "java": {},
+      "focused": {},
+      "python": {},
+      "proofs": {},
+      "migration": {
+        "outer": {
+          "discovered": 5,
+          "skipped": 0,
+          "successful": 5
+        },
+        "all_summaries": [
+          {
+            "discovered": 5,
+            "skipped": 0,
+            "successful": 5
+          }
+        ]
+      },
+      "migration_markers": [
+        "MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=true source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=true real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=a094771d73ce420f2bd2ddf237e0c69cf2005067 new=06be3c9dd4137efbffa5d4f91800881dbc07a5ff schema_conversion=false old_reader_new_writer_old_reader=true real_launcher=true split_bundle_launch_validated=false",
+        "RUNTIME_MIGRATION_JAVA_OK backup_only=false real_launcher=false source_unchanged=true external_unchanged=true old_state_restored=true",
+        "RUNTIME_MIGRATION_TEST_SUMMARY {\"discovered\": 5, \"executed\": 5, \"successful\": 5, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"native_mint_tested\": false, \"production_applied\": false}"
+      ]
+    },
+    {
+      "id": 12830261715,
+      "name": "r3-evidence-java25",
+      "run": 40718508796,
+      "digest": "sha256:d7838b928195b59df4a8ce0fedf6157325351604ee7f21329643676196dd3c5f",
+      "java": {
+        "tests": 945,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "focused": {
+        "logbook.core.QuestVisibilityCommandTest": {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.QuestVisibilityBoundaryTest": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "python": {
+        "python-scripts.log": {
+          "outer": {
+            "discovered": 441,
+            "skipped": 1,
+            "successful": 440
+          },
+          "all_summaries": [
+            {
+              "discovered": 441,
+              "skipped": 1,
+              "successful": 440
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ]
+        },
+        "python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ]
+        }
+      },
+      "proofs": {
+        "quest_visibility": {
+          "result": "passed",
+          "production_accessed": false,
+          "persisted_hide_state": false,
+          "physical_module_added": false,
+          "product_distribution": true,
+          "confirm_cancel": true,
+          "hide_restore_all": true,
+          "stale_rejected": true,
+          "originals_unchanged": true,
+          "acceptance_unchanged": true,
+          "custom_slot_retained": true,
+          "session_reset_in_new_process": true,
+          "source_jar_unchanged": true
+        },
+        "airbase_status": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/airbase-status-fixture-r_oekfcu",
+          "result": "passed",
+          "production_accessed": false,
+          "product_status_jar": true,
+          "frozen_selection": true,
+          "identity_preserved": true,
+          "captured_power": 40,
+          "refresh_power": 60,
+          "sorted_planes": true,
+          "unknown_visible": true,
+          "stale_values_cleared": true,
+          "legacy_export": true,
+          "timeline_stopped": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "quest_list_read": {
+          "source_jar_sha256": "a15b33210dd7d69f2131973c1441800e4674a8a8f819ff866d8ac7685470468c",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152
+      },
+      "tested_checkout": "55dbf441bf4cbb0262bd4d73a8c3bf3b6967dace"
+    },
+    {
+      "id": 12829472675,
+      "name": "r3-evidence-java21",
+      "run": 40718508796,
+      "digest": "sha256:0acd5c00b293b50735a3bf1d2b512a136476e59d1c96a45f46e374fc1e0c3f2c",
+      "java": {
+        "tests": 945,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "focused": {
+        "logbook.core.QuestVisibilityCommandTest": {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "logbook.internal.gui.QuestVisibilityBoundaryTest": {
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "python": {
+        "python-scripts.log": {
+          "outer": {
+            "discovered": 441,
+            "skipped": 1,
+            "successful": 440
+          },
+          "all_summaries": [
+            {
+              "discovered": 441,
+              "skipped": 1,
+              "successful": 440
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ]
+        },
+        "python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ]
+        }
+      },
+      "proofs": {
+        "quest_visibility": {
+          "result": "passed",
+          "production_accessed": false,
+          "persisted_hide_state": false,
+          "physical_module_added": false,
+          "product_distribution": true,
+          "confirm_cancel": true,
+          "hide_restore_all": true,
+          "stale_rejected": true,
+          "originals_unchanged": true,
+          "acceptance_unchanged": true,
+          "custom_slot_retained": true,
+          "session_reset_in_new_process": true,
+          "source_jar_unchanged": true
+        },
+        "airbase_status": {
+          "fixture": "/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/target/airbase-status-fixture-4kh3wsi0",
+          "result": "passed",
+          "production_accessed": false,
+          "product_status_jar": true,
+          "frozen_selection": true,
+          "identity_preserved": true,
+          "captured_power": 40,
+          "refresh_power": 60,
+          "sorted_planes": true,
+          "unknown_visible": true,
+          "stale_values_cleared": true,
+          "legacy_export": true,
+          "timeline_stopped": true,
+          "original_history_unchanged": true,
+          "source_jar_unchanged": true
+        },
+        "quest_list_read": {
+          "source_jar_sha256": "b6b023db3506ffc3233011e0fca58a32796a584deb959a28ff936c28fe6a6dd1",
+          "result": "passed",
+          "production_accessed": false,
+          "new_physical_module": false,
+          "atomic_with_all_writers_claimed": false,
+          "explicit_remove_executed": false,
+          "product_distribution": true,
+          "cached_custom_preserved": true,
+          "persisted_files_unchanged": true,
+          "hash_collision_refresh": true,
+          "active_custom_inactive_order": true,
+          "observed_at_preserved": true,
+          "unchanged_rows_reused": true,
+          "visibility_refresh": true,
+          "source_jar_unchanged": true
+        },
+        "seasonal_retreat_integration_tests": 8,
+        "isolated_typed_definitions": 152
+      },
+      "tested_checkout": "55dbf441bf4cbb0262bd4d73a8c3bf3b6967dace"
+    }
+  ],
+  "source_tree": "c6504911c88966e6736a4d47c79c8c5573e87556",
+  "pr_state": {
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "merge_commit_sha": "55dbf441bf4cbb0262bd4d73a8c3bf3b6967dace"
+  },
+  "master_at_inspection": "b87d0139d3c25db63ab29035df4762d80b55a92e"
+}
