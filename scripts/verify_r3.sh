@@ -72,10 +72,20 @@ equipment_suites=[s for s in suites if s.get('name') in {'logbook.core.Equipment
 assert len(equipment_suites)==3 and all(int(s.get('skipped',0))==0 for s in equipment_suites)
 equipment_test_count=sum(int(s.get('tests',0)) for s in equipment_suites)
 assert equipment_test_count>=28
+# User-confirmed label edits must execute the real GUI and command checks.
+ship_label_reports=[json.loads(f.read_text()) for f in p.glob('ship-label-fixture-*.json')]
+assert len(ship_label_reports)==1 and ship_label_reports[0]['result']=='passed'
+ship_labels=ship_label_reports[0]
+assert ship_labels['dialog_cancel_no_change'] and ship_labels['dialog_confirm_add_remove']
+assert ship_labels['stale_batch_rejected'] and ship_labels['settings_reread'] and ship_labels['original_history_unchanged']
+assert not ship_labels['production_accessed']
+label_suites=[s for s in suites if s.get('name') in {'logbook.core.ShipLabelCommandTest','logbook.internal.gui.ShipLabelUiBoundaryTest'}]
+assert len(label_suites)==2 and all(int(s.get('skipped',0))==0 for s in label_suites)
+assert sum(int(s.get('tests',0)) for s in label_suites)>=23
 report={'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
-        'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,
+        'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,
         'review_ledger':{k:v for k,v in review.items() if k!='entries'},'production_deployed':False}
 (p/'summary.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(report,ensure_ascii=False))
