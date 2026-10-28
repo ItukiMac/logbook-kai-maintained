@@ -64,7 +64,7 @@ import logbook.bean.DeckPort;
 import logbook.bean.DeckPortCollection;
 import logbook.bean.Ship;
 import logbook.bean.ShipCollection;
-import logbook.bean.ShipLabelCollection;
+import logbook.plugin.api.ShipLabelsV1;
 import logbook.bean.ShipMst;
 import logbook.bean.ShipMstCollection;
 import logbook.bean.SlotItem;
@@ -722,108 +722,87 @@ public class ShipTablePane extends VBox {
         }
     }
 
-    @FXML
-    void addLabel() {
-        if (this.table.getSelectionModel()
-                .getSelectedItems()
-                .isEmpty()) {
-            Tools.Controls.alert(AlertType.INFORMATION,
-                    "艦娘が選ばれていません",
-                    "ラベルを追加する艦娘を選択してください",
+    /** Capture the exact confirmed ships and manual labels before opening a modal dialog. */
+    private List<ShipLabelsV1.Target> labelTargets() {
+        try {
+            return ShipLabelsV1.capture(this.table.getSelectionModel().getSelectedItems().stream()
+                    .map(ShipItem::getId).collect(Collectors.toList()));
+        } catch (IllegalArgumentException | IllegalStateException changed) {
+            Tools.Controls.alert(AlertType.WARNING, "艦娘の状態が変わりました",
+                    "ラベルを変更していません。対象を選び直して再実行してください。",
                     this.getScene().getWindow());
-            return;
+            return null;
         }
-        String shipNames = this.table.getSelectionModel()
-                .getSelectedItems()
-                .stream()
-                .map(ship -> Ships.shipMst(ship.getShip()).map(ShipMst::getName).orElse(""))
-                .collect(Collectors.joining(","));
-        if (shipNames.length() > 50) {
-            shipNames = shipNames.substring(0, 50) + "...";
-        }
+    }
 
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.initOwner(this.getScene().getWindow());
-        dialog.setTitle("艦娘にラベルを追加");
-        dialog.setHeaderText(shipNames + "にラベルを追加します");
-
-        PublicAutoCompletion.bindAutoCompletion(dialog.getEditor(), new SuggestSupport(this.labelValue.getItems()));
-
-        val result = dialog.showAndWait();
-        if (result.isPresent()) {
-            String label = result.get();
-            if (!label.isEmpty()) {
-                val labelMap = ShipLabelCollection.get()
-                        .getLabels();
-                val selections = this.table.getSelectionModel()
-                        .getSelectedItems();
-                for (ShipItem ship : selections) {
-                    ship.labelProperty().get()
-                            .add(label);
-                    val labels = labelMap.computeIfAbsent(ship.getId(), k -> new LinkedHashSet<>());
-                    labels.add(label);
-                }
-                this.updateLabel();
-                this.updateFilter();
-                this.table.refresh();
+    /** Real post-confirmation path, also exercised by the isolated GUI probe. */
+    ShipLabelsV1.Result applyLabelEdit(List<ShipLabelsV1.Target> targets, String label, boolean add) {
+        ShipLabelsV1.Result result = add ? ShipLabelsV1.add(targets, label) : ShipLabelsV1.remove(targets, label);
+        if (result.accepted()) {
+            for (ShipItem row : this.shipItems) {
+                Set<String> values = result.displayLabels().get(row.getId());
+                if (values != null) row.setLabel(FXCollections.observableSet(new LinkedHashSet<>(values)));
             }
+            this.updateLabel();
+            this.updateFilter();
+            this.table.refresh();
+        }
+        return result;
+    }
+
+    private void confirmedLabelEdit(List<ShipLabelsV1.Target> targets, String label, boolean add) {
+        if (!applyLabelEdit(targets, label, add).accepted()) {
+            Tools.Controls.alert(AlertType.WARNING, "ラベルを変更できませんでした",
+                    "確認中に艦娘またはラベルの状態が変わりました。変更していません。対象を選び直してください。",
+                    this.getScene().getWindow());
         }
     }
 
     @FXML
-    void removeLabel() {
-        if (this.table.getSelectionModel()
-                .getSelectedItems()
-                .isEmpty()) {
-            Tools.Controls.alert(AlertType.INFORMATION,
-                    "艦娘が選ばれていません",
-                    "ラベルを除去する艦娘を選択してください",
-                    this.getScene().getWindow());
+    void addLabel() {
+        if (this.table.getSelectionModel().getSelectedItems().isEmpty()) {
+            Tools.Controls.alert(AlertType.INFORMATION, "艦娘が選ばれていません",
+                    "ラベルを追加する艦娘を選択してください", this.getScene().getWindow());
             return;
         }
-        String shipNames = this.table.getSelectionModel()
-                .getSelectedItems()
-                .stream()
+        List<ShipLabelsV1.Target> targets = labelTargets();
+        if (targets == null) return;
+        String shipNames = this.table.getSelectionModel().getSelectedItems().stream()
                 .map(ship -> Ships.shipMst(ship.getShip()).map(ShipMst::getName).orElse(""))
                 .collect(Collectors.joining(","));
-        if (shipNames.length() > 50) {
-            shipNames = shipNames.substring(0, 50) + "...";
-        }
+        if (shipNames.length() > 50) shipNames = shipNames.substring(0, 50) + "...";
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.initOwner(this.getScene().getWindow());
+        dialog.setTitle("艦娘にラベルを追加");
+        dialog.setHeaderText(shipNames + "にラベルを追加します");
+        PublicAutoCompletion.bindAutoCompletion(dialog.getEditor(), new SuggestSupport(this.labelValue.getItems()));
+        var result = dialog.showAndWait();
+        if (result.isPresent() && !result.get().isEmpty()) confirmedLabelEdit(targets, result.get(), true);
+    }
 
+    @FXML
+    void removeLabel() {
+        if (this.table.getSelectionModel().getSelectedItems().isEmpty()) {
+            Tools.Controls.alert(AlertType.INFORMATION, "艦娘が選ばれていません",
+                    "ラベルを除去する艦娘を選択してください", this.getScene().getWindow());
+            return;
+        }
+        List<ShipLabelsV1.Target> targets = labelTargets();
+        if (targets == null) return;
+        String shipNames = this.table.getSelectionModel().getSelectedItems().stream()
+                .map(ship -> Ships.shipMst(ship.getShip()).map(ShipMst::getName).orElse(""))
+                .collect(Collectors.joining(","));
+        if (shipNames.length() > 50) shipNames = shipNames.substring(0, 50) + "...";
+        // Event tags are game-owned and must not be offered as editable manual labels.
         Set<String> labels = new TreeSet<>();
-        val selections = this.table.getSelectionModel()
-                .getSelectedItems();
-        for (ShipItem ship : selections) {
-            labels.addAll(ship.getLabel());
-        }
-
+        targets.forEach(target -> labels.addAll(target.expectedLabels()));
         ChoiceDialog<String> dialog = new ChoiceDialog<>();
         dialog.initOwner(this.getScene().getWindow());
         dialog.getItems().addAll(labels);
         dialog.setTitle("艦娘からラベルを除去");
         dialog.setHeaderText(shipNames + "からラベルを除去");
-
-        val result = dialog.showAndWait();
-        if (result.isPresent()) {
-            String label = result.get();
-            if (!label.isEmpty()) {
-                val labelMap = ShipLabelCollection.get()
-                        .getLabels();
-                for (ShipItem ship : selections) {
-                    ship.labelProperty().get()
-                            .remove(label);
-                    labelMap.computeIfPresent(ship.getId(), (k, v) -> {
-                        v.remove(label);
-                        if (v.isEmpty())
-                            return null;
-                        return v;
-                    });
-                }
-                this.updateLabel();
-                this.updateFilter();
-                this.table.refresh();
-            }
-        }
+        var result = dialog.showAndWait();
+        if (result.isPresent() && !result.get().isEmpty()) confirmedLabelEdit(targets, result.get(), false);
     }
 
     /**
