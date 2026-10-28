@@ -1,0 +1,70 @@
+name: Quest-list outer Python counts (read-only evidence)
+on:
+  push:
+    branches: ['maintenance/quest-list-read-worker-20261028']
+    paths: ['.github/workflows/quest-list-python-counts.yml']
+permissions:
+  actions: read
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Count only complete outer summaries, retaining child summaries separately
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import hashlib,io,json,os,re,urllib.request,zipfile
+          from pathlib import Path
+          api='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          expected={12816803504:'5f6bbbf4eae4bba5154a37e4780859b74d67ac879fc63a14ed6674b4dbdfc193',
+                    12816339604:'bace06921abf9bbc10975ae4d2f35a947d39eebb0ae88e7d60d8a598b2b8d23a',
+                    12816503925:'98821ac5a5d9713fa4319deed669e93a59e13bfa56038a1ef9c4a8854c56bd14'}
+          report={'head':'54f14abe4a63b8f10ac71a91c384c34a66660f5d','verified':False,'artifact_code_executed':False,
+                  'note':'Earlier inspection selected the last embedded child summary. This supplements only Python counts; original evidence retained.','artifacts':[]}
+          out=Path('.maintenance-evidence/quest-list-python-counts.json')
+          def save():out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          try:
+              for artifact,digest in expected.items():
+                  req=urllib.request.Request(api+'/actions/artifacts/'+str(artifact)+'/zip')
+                  req.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+                  with urllib.request.urlopen(req,timeout=60) as response:raw=response.read(8*1024*1024+1)
+                  assert len(raw)<=8*1024*1024 and hashlib.sha256(raw).hexdigest()==digest
+                  archive=zipfile.ZipFile(io.BytesIO(raw));assert archive.testzip() is None
+                  item={'id':artifact,'sha256':digest,'logs':{}}
+                  for name in archive.namelist():
+                      if not name.endswith(('python-scripts.log','python-tools.log')):continue
+                      text=archive.read(name).decode('utf8',errors='strict')
+                      matches=re.findall(r'^Ran (\d+) tests? in [^\n]*\n\s*\n?OK(?: \(skipped=(\d+)\))?\s*$',text,re.M)
+                      assert matches,'No complete successful summary'
+                      totals=[{'discovered':int(n),'skipped':int(s or 0),'successful':int(n)-int(s or 0)} for n,s in matches]
+                      outer=max(totals,key=lambda v:v['discovered'])
+                      assert sum(v['discovered']==outer['discovered'] for v in totals)==1,'Ambiguous outer suite'
+                      case_lines=re.findall(r'^(test_\S+ \([^\n]+\) \.\.\. [^\n]+)',text,re.M)
+                      if name.endswith('python-scripts.log'):
+                          assert outer['discovered']>400 and outer['skipped']==1
+                          assert 'test_actual_renderer_keeps_saved_quests_and_refreshes_colliding_titles' in text
+                      else:
+                          assert outer['discovered']==25 and outer['skipped']==0
+                      item['logs'][name]={'outer':outer,'all_complete_summaries':totals,'verbose_case_line_count':len(case_lines),
+                                         'summary_context':[text[max(0,m.start()-80):m.end()+100] for m in re.finditer(r'^Ran \d+ tests? in [^\n]*',text,re.M)]}
+                  assert len(item['logs'])==2
+                  report['artifacts'].append(item);save()
+              signatures=[sorted((name.split('/')[-1],v['outer']['discovered'],v['outer']['skipped']) for name,v in item['logs'].items()) for item in report['artifacts']]
+              assert signatures[0]==signatures[1]==signatures[2]
+              report['verified']=True;save();print(json.dumps(report))
+          except Exception as error:
+              report['error']=str(error);save();raise
+          PY
+      - name: Keep supplemental results without overwriting original evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-list-python-counts.json
+          git commit -m 'Retain outer-suite Python counts separately from embedded subprocess output'
+          git push origin HEAD:refs/heads/maintenance/quest-list-read-worker-20261028
