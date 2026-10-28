@@ -81,6 +81,10 @@ public final class AirBaseStatusGuiProbe {
             require("未記録".equals(((Label)field(c,"lesser")).getText()),"Old thresholds survived unknown power");
             stage.getScene().getRoot().applyCss();stage.getScene().getRoot().layout();
             require(stage.getScene().getRoot().snapshot(null,null).getWidth()>0,"Actual rendering failed");
+            var group=areas.getRoot().getChildren().getFirst();areas.getSelectionModel().select(group);
+            base.setName("renamed");c.update(null);
+            require(areas.getSelectionModel().getSelectedItem()!=null && "通常海域".equals(areas.getSelectionModel().getSelectedItem().getValue().nameProperty().get()),"Group selection was lost on refresh");
+            select(areas,6,1);
             Mapinfo.get().getAirBase().clear();c.update(null);
             require(planes.getItems().isEmpty() && "—".equals(((Label)field(c,"seikuTotal")).getText()),"Deleted selection retained stale details");
         } finally {timer.play();stage.close();}

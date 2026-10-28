@@ -107,7 +107,7 @@ assert all(airbase[0][k] for k in ('frozen_selection','identity_preserved','sort
 assert not airbase[0]['production_accessed']
 airbase_suites=[s for s in suites if s.get('name') in {'logbook.core.AirBaseStatusContractTest','logbook.internal.gui.AirBaseStatusBoundaryTest'}]
 assert len(airbase_suites)==2 and all(int(s.get('skipped',0))==0 for s in airbase_suites)
-assert sum(int(s.get('tests',0)) for s in airbase_suites)>=22
+assert sum(int(s.get('tests',0)) for s in airbase_suites)>=23
 report={'airbase_status':airbase[0],'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,

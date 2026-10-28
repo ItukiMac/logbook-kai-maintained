@@ -11,6 +11,20 @@ import org.junit.jupiter.api.Test;
 
 /** Pure synthetic inputs; never loads the default runtime or writes a user file. */
 class AirBaseStatusContractTest {
+    @org.junit.jupiter.api.BeforeAll static void initResourceReader() throws Exception { LogBookCoreServices.init(List.of()); }
+    @org.junit.jupiter.api.AfterAll static void closeResourceReader() throws Exception { LogBookCoreServices.closeContainer(); }
+    @Test void reconnaissanceKeepsExistingMaximumMultiplierAndRounding() {
+        Fixture f=new Fixture();SlotItem item=new SlotItem();item.setId(102);item.setSlotitemId(1002);item.setAlv(0);item.setLevel(0);
+        SlotitemMst recon=new SlotitemMst();recon.setId(1002);recon.setName("recon");recon.setType(List.of(0,0,49,49));
+        recon.setTyku(0);recon.setHouk(0);recon.setHoum(0);recon.setSaku(9);
+        PlaneInfo p=new PlaneInfo();p.setSquadronId(2);p.setSlotid(102);p.setCount(4);p.setMaxCount(4);p.setCond(1);p.setState(1);f.base.getPlaneInfo().add(p);
+        var items=Map.of(101,f.item,102,item);var masters=Map.of(1001,f.master,1002,recon);
+        var sortie=AirBaseStatusService.snapshot(List.of(f.base),Map.of(6,f.area),items,masters).bases().getFirst();
+        assertEquals(46,sortie.airPower());
+        f.base.setActionKind(2);
+        var defense=AirBaseStatusService.snapshot(List.of(f.base),Map.of(6,f.area),items,masters).bases().getFirst();
+        assertEquals(47,defense.airPower());assertEquals(46,sortie.airPower());
+    }
     private static final class Fixture {
         AirBase base=new AirBase();PlaneInfo plane=new PlaneInfo();SlotItem item=new SlotItem();SlotitemMst master=new SlotitemMst();Maparea area=new Maparea();
         Fixture() {

@@ -242,11 +242,11 @@ public class AirBaseController extends FeatureUiV1.Window {
     /** One captured value set feeds the tree, details, warnings and copy text. */
     private void render(AirBaseStatusV1.Snapshot next) {
         TreeItem<AreaTable> selected = this.areaTable.getSelectionModel().getSelectedItem();
-        BaseView before = selected == null || selected.getValue() == null ? null : selected.getValue().view;
+        String selection = selected == null || selected.getValue() == null ? null : selected.getValue().selectionKey;
         this.snapshot = next;
         TreeItem<AreaTable> root = new TreeItem<>(new AreaTable());
         this.areaTable.setRoot(root);
-        var normal = group("通常海域"); var event = group("イベント海域"); var unknown = group("不明海域");
+        var normal = group("通常海域", "normal"); var event = group("イベント海域", "event"); var unknown = group("不明海域", "unknown");
         root.getChildren().addAll(normal, event);
         Map<String,TreeItem<AreaTable>> areas = new java.util.LinkedHashMap<>();
         TreeItem<AreaTable> restore = null;
@@ -254,10 +254,10 @@ public class AirBaseController extends FeatureUiV1.Window {
             String areaKey = value.key().areaId() + ":" + value.areaType();
             TreeItem<AreaTable> sea = areas.get(areaKey);
             if (sea == null) {
-                sea = group(value.areaName()); areas.put(areaKey, sea);
+                sea = group(value.areaName(), "area:" + areaKey); areas.put(areaKey, sea);
                 (value.areaType() == null ? unknown : value.areaType() == 0 ? normal : event).getChildren().add(sea);
             }
-            AreaTable row = new AreaTable(); row.view = value;
+            AreaTable row = new AreaTable(); row.view = value; row.selectionKey = "base:" + value.key();
             row.setName(value.name()); row.setActionKind(value.actionText());
             row.setSeiku(AirBaseStatusV1.metric(value.airPower())); row.setDistance(AirBaseStatusV1.metric(value.distance()));
             // Legacy public bean getters return detached copies, never the live communication state.
@@ -268,15 +268,21 @@ public class AirBaseController extends FeatureUiV1.Window {
                 item.setPlaneInfo(legacyPlane(plane)); row.getPlanes().add(item);
             }
             TreeItem<AreaTable> leaf = new TreeItem<>(row); sea.getChildren().add(leaf);
-            if (before != null && before.key().equals(value.key())) restore = leaf;
         }
         if (!unknown.getChildren().isEmpty()) root.getChildren().add(unknown);
+        if (selection != null) {
+            var queue = new java.util.ArrayDeque<TreeItem<AreaTable>>(); queue.add(root);
+            while (!queue.isEmpty()) {
+                var item = queue.removeFirst(); queue.addAll(item.getChildren());
+                if (selection.equals(item.getValue().selectionKey)) { restore = item; break; }
+            }
+        }
         if (restore != null) this.areaTable.getSelectionModel().select(restore);
         else plane(null, null, null);
     }
 
-    private static TreeItem<AreaTable> group(String name) {
-        AreaTable value = new AreaTable(); value.setName(name);
+    private static TreeItem<AreaTable> group(String name, String key) {
+        AreaTable value = new AreaTable(); value.setName(name); value.selectionKey = key;
         TreeItem<AreaTable> item = new TreeItem<>(value); item.setExpanded(true); return item;
     }
 
@@ -381,6 +387,7 @@ public class AirBaseController extends FeatureUiV1.Window {
         /** 基地航空隊 */
         private AirBase airBase;
         private BaseView view;
+        private String selectionKey;
 
         /**
          * 基地航空隊を設定します。
