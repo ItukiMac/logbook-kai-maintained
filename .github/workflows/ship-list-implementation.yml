@@ -1,0 +1,147 @@
+name: Product ship-list implementation (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-list-worker-20261028']
+    paths: ['.github/workflows/ship-list-implementation.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      BASE: 30d9c17e25adb9bdcffdf41c6ac71841a6f240ed
+      TARGET: maintenance/ship-list-product-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 30d9c17e25adb9bdcffdf41c6ac71841a6f240ed
+          path: before
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 30d9c17e25adb9bdcffdf41c6ac71841a6f240ed
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Reproduce existing direct private-GUI dependency
+        working-directory: before
+        shell: bash
+        run: |
+          mkdir -p ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          python3 ../tooling/.maintenance-tools/ship_list_apply.py baseline
+          set +e
+          mvn -B -ntp -Dtest=ShipListUiBoundaryTest test > ../evidence/before.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json
+          s=E.parse('target/surefire-reports/TEST-logbook.internal.gui.ShipListUiBoundaryTest.xml').getroot()
+          assert s.get('tests')=='1' and s.get('errors')=='0' and s.get('failures')=='1',s.attrib
+          failure=s.find('testcase/failure');assert 'links private host GUI' in failure.get('message','')
+          Path('../evidence/before.json').write_text(json.dumps({'tests':1,'failures':1,'errors':0,'expected_failure':failure.get('message')}))
+          PY
+      - name: Apply additive product changes and require their real GUI in comprehensive verification
+        working-directory: candidate
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          python3 ../tooling/.maintenance-tools/ship_list_apply.py apply > ../evidence/apply.log 2>&1
+          test ! -e scripts/java/ShipListGuiProbe.java
+          test ! -e scripts/tests/test_ship_list_ui_integration.py
+          cp ../tooling/.maintenance-tools/ShipListGuiProbe.java scripts/java/ShipListGuiProbe.java
+          cp ../tooling/.maintenance-tools/test_ship_list_ui_integration.py scripts/tests/test_ship_list_ui_integration.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/verify_r3.sh');s=p.read_text()
+          anchor="report={'parallel_integration':combined[0]"
+          assert s.count(anchor)==1
+          added="""ship_list_reports=[json.loads(f.read_text()) for f in p.glob('ship-list-fixture-*.json')]
+          assert len(ship_list_reports)==1 and ship_list_reports[0]['result']=='passed'
+          ship_list=ship_list_reports[0]
+          assert ship_list['product_status_jar'] and ship_list['all_rows']==2 and ship_list['filters']==6
+          assert ship_list['numeric_controls'] and ship_list['ordered_fleet'] and ship_list['label_tabs']
+          assert ship_list['sorted_copy'] and ship_list['deck_export'] and ship_list['settings_reread']
+          assert ship_list['timeline_stopped'] and ship_list['original_history_unchanged'] and not ship_list['production_accessed']
+          list_suites=[s for s in suites if s.get('name') in {'logbook.internal.gui.ShipListUiBoundaryTest','logbook.internal.gui.ShipListUiContractTest'}]
+          assert len(list_suites)==2 and all(int(s.get('skipped',0))==0 for s in list_suites)
+          assert sum(int(s.get('tests',0)) for s in list_suites)>=4
+          """
+          s=s.replace(anchor,added+"report={'ship_list_ui':ship_list,'parallel_integration':combined[0]")
+          p.write_text(s)
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+      - name: Compile and test public contracts and new-old packaging ownership
+        working-directory: candidate
+        run: |
+          mvn -B -ntp -Dtest=ShipListUiBoundaryTest,ShipListUiContractTest test > ../evidence/unit.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_ship_list_packaging.py -v > ../evidence/packaging.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Actual product ship window and existing equipment-label-statistics GUI regressions
+        working-directory: candidate
+        run: |
+          python3 -m unittest discover -s scripts/tests -p test_ship_list_ui_integration.py -v > ../evidence/ship-gui.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_ship_label_ui_integration.py -v > ../evidence/label-gui.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_ship_statistics_ui_integration.py -v > ../evidence/statistics-gui.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_equipment_ui_integration.py -v > ../evidence/equipment-gui.log 2>&1
+          grep 'SHIP_LIST_PRODUCT_GUI_OK' ../evidence/ship-gui.log
+          grep 'SHIP_LABEL_GUI_OK' ../evidence/label-gui.log
+      - name: Commit only the passing product changes onto the dedicated candidate branch
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main/java/logbook/plugin/api/ShipListUiV1.java src/main/java/logbook/internal/gui/ShipController.java src/main/java/logbook/internal/gui/ShipTablePane.java src/main/java/logbook/internal/gui/ParameterFilterPane.java scripts/run_feature_distribution.py scripts/build_feature_distribution.py src/test/java/logbook/internal/gui/ShipListUiBoundaryTest.java src/test/java/logbook/internal/gui/ShipListUiContractTest.java scripts/tests/test_ship_list_packaging.py scripts/tests/test_ship_list_ui_integration.py scripts/java/ShipListGuiProbe.java scripts/verify_r3.sh
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git commit -m 'Ship owned-ship window and numeric filters in status module with explicit profile and public GUI contract'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Preserve exact outcomes and failed fixtures separately from product files
+        if: always()
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,os,xml.etree.ElementTree as E
+          r={'base':os.environ['BASE'],'production_accessed':False,'logs':{},'suites':[],'reports':{}}
+          for p in Path('../evidence').glob('*'):
+              r['logs'][p.name]=p.read_text(errors='replace')[-20000:]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*ShipList*.xml'):
+              r['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('*fixture*'):
+              if p.suffix=='.json':r['reports'][p.name]=json.loads(p.read_text())
+              elif p.suffix=='.log':r['logs'][p.name]=p.read_text(errors='replace')[-22000:]
+          for name in ('scripts/tests/test_ship_list_packaging.py','scripts/verify_r3.sh'):
+              p=Path('../candidate')/name
+              if p.exists():r[name]=p.read_text()
+          Path('.maintenance-evidence').mkdir(exist_ok=True)
+          Path('.maintenance-evidence/ship-list-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/ship-list-*.json
+          git commit -m 'Preserve exact ship-list focused evidence, including any failed fixture'
+          git push origin HEAD:refs/heads/maintenance/ship-list-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: ship-list-focused-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/*fixture*
+          retention-days: 14
