@@ -1,0 +1,112 @@
+name: Ship-list product module and real GUI verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-ui-module-worker-20261028']
+    paths: ['.maintenance-tools/ship-ui/**', '.github/workflows/ship-ui-module-worker.yml']
+permissions:
+  contents: write
+concurrency:
+  group: ship-ui-module-worker-20261028
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'ItukiMac/logbook-kai-maintained'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE: 30d9c17e25adb9bdcffdf41c6ac71841a6f240ed
+      TARGET: maintenance/ship-ui-module-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: candidate
+          ref: 30d9c17e25adb9bdcffdf41c6ac71841a6f240ed
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Prepare bounded source changes in a fresh checkout
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          mkdir -p ../evidence
+          python3 ../tooling/.maintenance-tools/ship-ui/apply.py ../tooling/.maintenance-tools/ship-ui > ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          git diff --stat > ../evidence/diff-stat.txt
+          git diff > ../evidence/source.diff
+      - name: Compile and run new boundary and existing command contracts
+        working-directory: candidate
+        run: mvn -B -ntp -Dtest=ShipUiModuleBoundaryTest,ShipRosterContractTest,ShipLabelCommandTest,ShipLabelUiBoundaryTest test > ../evidence/unit.log 2>&1
+      - name: Reject invalid archives, preserve old bundles and build real candidate
+        working-directory: candidate
+        run: |
+          python3 -m unittest discover -s scripts/tests -p test_ship_ui_packaging.py -v > ../evidence/packaging.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Open actual ship list, statistics and confirmed-label dialogs from product JARs
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          for suite in test_ship_list_ui.py test_ship_label_ui_integration.py test_ship_statistics_ui.py; do
+            python3 -m unittest discover -s scripts/tests -p "$suite" -v > "../evidence/$suite.log" 2>&1
+          done
+      - name: Preserve tested source only on the dedicated new branch
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          paths=json.loads(Path('../ship-ui-paths.json').read_text())
+          assert len(paths)==14 and len(set(paths))==14,paths
+          assert all(p.startswith(('src/','scripts/','docs/')) and '..' not in Path(p).parts for p in paths)
+          subprocess.run(['git','add','--',*paths],check=True)
+          assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())==set(paths)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Ship the owned-ship window and table in the status module with public GUI bridges and real product regressions'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Retain every outcome, including failures, outside product source
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import json,os,xml.etree.ElementTree as E
+          from pathlib import Path
+          result={'base':os.environ['BASE'],'run':os.environ['GITHUB_RUN_ID'],'attempt':os.environ['GITHUB_RUN_ATTEMPT'],
+                  'production_accessed':False,'logs':{},'reports':{},'suites':[]}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):result['logs'][p.name]=p.read_text(errors='replace')[-20000:]
+          for p in Path('../candidate/target/r3-verification').glob('*'):
+              if p.suffix=='.json' and p.name.startswith(('ship-list-','ship-label-','ship-statistics-')):result['reports'][p.name]=json.loads(p.read_text())
+              elif p.suffix=='.log' and p.name.startswith(('ship-list-','ship-label-','ship-statistics-')):result['logs'][p.name]=p.read_text(errors='replace')[-24000:]
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*Ship*.xml'):
+              result['suites'].append(E.parse(p).getroot().attrib)
+          out=Path('.maintenance-evidence')/('ship-ui-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json')
+          out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/ship-ui-*.json
+          git commit -m 'Retain isolated product ship UI build and GUI evidence, including any failures'
+          git push origin HEAD:refs/heads/maintenance/ship-ui-module-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: ship-ui-module-worker-evidence
+          path: |
+            evidence/
+            candidate/target/r3-verification/ship-*
+            candidate/target/surefire-reports/TEST-*Ship*.xml
+          retention-days: 14
+          if-no-files-found: error
