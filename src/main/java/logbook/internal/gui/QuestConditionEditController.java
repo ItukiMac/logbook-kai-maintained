@@ -64,6 +64,7 @@ public class QuestConditionEditController extends WindowController {
     private tools.jackson.databind.JsonNode originalDocument;
     private tools.jackson.databind.JsonNode loadedForm;
     private byte[] loadedBytes;
+    private logbook.plugin.api.QuestDocumentsV1.Session documentSession;
     private boolean loadFailed;
     private boolean arrivalAreaConflict;
 
@@ -176,6 +177,7 @@ public class QuestConditionEditController extends WindowController {
             this.originalDocument = null;
             this.loadedForm = null;
             this.loadedBytes = null;
+            this.documentSession = null;
             this.loadFailed = false;
             this.editNotice.setText("艦隊番号は1～4をカンマ区切り。空欄は制限なし。保存前のファイルは別名で保持します。");
             this.fleetConditionsBox.getChildren().clear();
@@ -191,9 +193,9 @@ public class QuestConditionEditController extends WindowController {
 
     @SuppressWarnings("unchecked")
     private void loadQuestData(Quest quest) {
-        java.nio.file.Path file = this.questDirectory().resolve(quest.getNo() + ".json");
         try {
-            this.loadedBytes = logbook.internal.util.QuestDocumentStore.read(file);
+            this.documentSession = logbook.plugin.api.QuestDocumentsV1.at(this.questDirectory()).open(quest.getNo());
+            this.loadedBytes = this.documentSession.document().bytes();
             if (this.loadedBytes == null) return;
             tools.jackson.databind.ObjectMapper mapper = QuestEditorDocument.mapper();
             this.originalDocument = QuestEditorDocument.parse(this.loadedBytes);
@@ -1026,12 +1028,15 @@ public class QuestConditionEditController extends WindowController {
                 : QuestEditorDocument.merge(this.originalDocument, this.loadedForm, currentForm);
         QuestEditorDocument.validate(output);
         var appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        var file = this.questDirectory().resolve(appQuest.getQuest().getNo() + ".json");
+        if (this.documentSession == null || this.documentSession.document().questId() != appQuest.getQuest().getNo())
+            throw new java.io.IOException("読込時と保存対象が異なります。対象を再読込してください。");
         // Exact no-edit saves retain comments/formatting as well as all unrepresented fields.
         byte[] bytes = this.originalDocument != null && output.equals(this.originalDocument)
                 ? this.loadedBytes
                 : formMapper().writerWithDefaultPrettyPrinter().writeValueAsBytes(output);
-        var backup = logbook.internal.util.QuestDocumentStore.save(file, this.loadedBytes, bytes);
+        var plan = this.documentSession.prepareSave(bytes);
+        // Explicit Save button / package-local test hook. The session owns the exact captured target.
+        var backup = this.documentSession.apply(plan, true).retained();
         this.loadedBytes = bytes.clone();
         this.originalDocument = output.deepCopy();
         this.loadedForm = currentForm.deepCopy();
@@ -1108,19 +1113,27 @@ public class QuestConditionEditController extends WindowController {
         }
     }
 
-    java.nio.file.Path removeDocument() throws java.io.IOException {
+    private logbook.plugin.api.QuestDocumentsV1.Plan prepareRetirementDocument() throws java.io.IOException {
         AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (appQuest == null || appQuest.getQuest() == null
-                || appQuest.getQuest().getNo() < 10001 || appQuest.getQuest().getNo() > 10005)
-            throw new java.io.IOException("カスタム任務が選択されていません。");
-        java.nio.file.Path retained = logbook.internal.util.QuestDocumentStore.remove(
-                this.questDirectory().resolve(appQuest.getQuest().getNo() + ".json"), this.loadedBytes);
-        if (retained != null) {
-            // Reset snapshots AND all controls only after our own successful removal.
-            this.setQuestData(appQuest);
+        if (appQuest == null || appQuest.getQuest() == null || this.documentSession == null
+                || this.documentSession.document().questId() != appQuest.getQuest().getNo())
+            throw new java.io.IOException("読込時と退避対象が異なります。対象を再読込してください。");
+        return this.documentSession.prepareRetirement();
+    }
+
+    private java.nio.file.Path applyRetirementDocument(logbook.plugin.api.QuestDocumentsV1.Plan plan)
+            throws java.io.IOException {
+        var result = this.documentSession.apply(plan, true);
+        if (result.retained() != null) {
+            this.setQuestData(this.questSelector.getSelectionModel().getSelectedItem());
             this.removeBtn.setDisable(true);
         }
-        return retained;
+        return result.retained();
+    }
+
+    // Retained explicit package-local test hook; user-facing retirement confirms the captured plan below.
+    java.nio.file.Path removeDocument() throws java.io.IOException {
+        return applyRetirementDocument(prepareRetirementDocument());
     }
 
     @FXML
@@ -1135,7 +1148,23 @@ public class QuestConditionEditController extends WindowController {
         }
 
         try {
-            java.nio.file.Path retained = this.removeDocument();
+            var plan = this.prepareRetirementDocument();
+            if (plan.existing()) {
+                var proceed = new javafx.scene.control.ButtonType("原本を保持して退避", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+                var confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION,
+                        "対象: " + plan.target() + "\n読込時SHA-256: " + plan.expectedSha256()
+                        + "\n\n有効な定義名から外し、同じフォルダーへ別名で原本と検証済みコピーを残します。"
+                        + "\nこのカスタム枠は空きます。受諾履歴・到達記録・他の設定は変更しません。"
+                        + "\nファイルが読込後に変更されていた場合は退避を中止します。",
+                        proceed, javafx.scene.control.ButtonType.CANCEL);
+                confirm.initOwner(this.questSelector.getScene().getWindow());
+                confirm.setTitle("カスタム任務の退避確認"); confirm.setHeaderText("完全削除ではなく、復旧可能な別名退避です");
+                if (confirm.showAndWait().filter(proceed::equals).isEmpty()) {
+                    this.documentSession.apply(plan, false);
+                    return;
+                }
+            }
+            java.nio.file.Path retained = this.applyRetirementDocument(plan);
             
             if (retained != null) {
                 
