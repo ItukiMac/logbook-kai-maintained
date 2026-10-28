@@ -1,0 +1,11 @@
+{
+  "base": "30d9c17e25adb9bdcffdf41c6ac71841a6f240ed",
+  "run": "40673164759",
+  "attempt": "1",
+  "production_accessed": false,
+  "logs": {
+    "apply.log": "Traceback (most recent call last):\n  File \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/../tooling/.maintenance-tools/ship-ui/apply.py\", line 138, in <module>\n    edit('scripts/verify_r3.sh',verify)\n  File \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/../tooling/.maintenance-tools/ship-ui/apply.py\", line 13, in edit\n    after=fn(s);assert after!=s,path\n          ^^^^^\n  File \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/../tooling/.maintenance-tools/ship-ui/apply.py\", line 127, in verify\n    return one(s,\"report={'parallel_integration':combined[0]\",'''# A skipped GUI test is not proof of product ship-list extraction.\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/logbook-kai-maintained/logbook-kai-maintained/candidate/../tooling/.maintenance-tools/ship-ui/apply.py\", line 16, in one\n    assert s.count(old)==1,(old,s.count(old));return s.replace(old,new)\n           ^^^^^^^^^^^^^^^\nAssertionError: (\"report={'parallel_integration':combined[0]\", 0)\n"
+  },
+  "reports": {},
+  "suites": []
+}
