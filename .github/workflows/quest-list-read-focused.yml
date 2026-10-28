@@ -1,0 +1,176 @@
+name: Quest-list read boundary before-after verification (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-list-read-worker-20261028']
+    paths: ['.github/workflows/quest-list-read-focused.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: a273c6a4d2a70e0d5c9e84e0ae11308312c33b6f
+      TARGET: maintenance/quest-list-read-api-20261028
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: a273c6a4d2a70e0d5c9e84e0ae11308312c33b6f
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Prepare synthetic probe only, with no original or existing output replacement
+        working-directory: candidate
+        run: |
+          set -eu
+          mkdir ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test ! -e scripts/java/QuestListReadProbe.java
+          test ! -e scripts/tests/test_quest_list_read_integration.py
+          cp ../tooling/.maintenance-tools/QuestListReadProbe.java scripts/java/QuestListReadProbe.java
+          cp ../tooling/.maintenance-tools/test_quest_list_read_integration.py scripts/tests/test_quest_list_read_integration.py
+          mvn -B -ntp -DskipTests package > ../evidence/baseline-package.log 2>&1
+      - name: Reproduce rendering mutation with the same actual GUI assertion
+        working-directory: candidate
+        shell: bash
+        run: |
+          set +e
+          python3 -m unittest discover -s scripts/tests -p test_quest_list_read_integration.py -v > ../evidence/before.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          grep 'QUEST_RENDER_MUTATED_SOURCE cacheRetained=false persistedBytesUnchanged=false' ../evidence/before.log
+      - name: Apply guarded source changes and execute pure data tests
+        working-directory: candidate
+        run: |
+          python3 ../tooling/.maintenance-tools/quest_list_read.py > ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          mvn -B -ntp -Dtest=QuestListReadContractTest test > ../evidence/unit.log 2>&1
+          python3 - <<'PY'
+          import xml.etree.ElementTree as E
+          r=E.parse('target/surefire-reports/TEST-logbook.core.QuestListReadContractTest.xml').getroot()
+          assert {k:int(r.get(k,0)) for k in ('tests','failures','errors','skipped')}=={'tests':17,'failures':0,'errors':0,'skipped':0},r.attrib
+          PY
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Require same GUI assertion plus immutable data, order and hash-collision refresh
+        working-directory: candidate
+        run: python3 -m unittest discover -s scripts/tests -p test_quest_list_read_integration.py -v > ../evidence/after.log 2>&1
+      - name: Make actual GUI and all new contracts mandatory in comprehensive verification
+        working-directory: candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/verify_r3.sh');s=p.read_text()
+          old="report={'ship_list_ui':ship_list"
+          assert s.count(old)==1
+          addition="""# Quest list reads cannot silently mutate cached state or pass with a skipped GUI probe.
+          quest_reports=[json.loads(f.read_text()) for f in p.glob('quest-list-read-fixture-*.json')]
+          assert len(quest_reports)==1 and quest_reports[0]['result']=='passed'
+          quest_list=quest_reports[0]
+          assert quest_list['cached_custom_preserved'] and quest_list['persisted_files_unchanged']
+          assert quest_list['hash_collision_refresh'] and quest_list['active_custom_inactive_order']
+          assert quest_list['observed_at_preserved'] and quest_list['unchanged_rows_reused']
+          assert quest_list['product_distribution'] and not quest_list['production_accessed']
+          assert not quest_list['explicit_remove_executed'] and not quest_list['atomic_with_all_writers_claimed']
+          quest_suites=[s for s in suites if s.get('name')=='logbook.core.QuestListReadContractTest']
+          assert len(quest_suites)==1 and int(quest_suites[0].get('tests',0))>=17 and int(quest_suites[0].get('skipped',0))==0
+          """
+          s=s.replace(old,addition+"report={'quest_list_read':quest_list,'ship_list_ui':ship_list")
+          p.write_text(s)
+          doc=Path('docs/maintenance/quest-list-read-boundary-20261028.md');assert not doc.exists()
+          doc.write_text('''# 任務一覧の読取り専用境界 — 2026-10-28
+
+          基点はPR64統合 a273c6a4d2a70e0d5c9e84e0ae11308312c33b6f。
+          基地の未統合PR65とは別の、任務一覧に限定した変更である。
+
+          ## 実装
+          QuestListV1は観測済み任務の表示用値と一覧を不変コピーで返す。
+          ID整合性、任務名・説明、カテゴリ・種別・状態・進捗・報酬・受諾フラグ・保存済み期限を保持する。
+          observedAtは実際の受信時刻をそのままコピーする。取得時刻で置換せず、復元データのnullを新しい観測にしない。
+          旧進捗画面への変換は毎回新しいbean/listを返す。既存QuestPane(AppQuest)コンストラクタも維持する。
+          QuestPaneは表示と検索・進捗を同じ不変値から開始する。進捗画面のその後の実観測更新・季節版判定は従来処理のまま。
+
+          MainController.questは一度だけ取得した一覧を比較と描画に使う。
+          描画によるカスタム任務キャッシュの削除とConfig.store呼出しを除去した。
+          ID10001〜10005のキャッシュは観測済み一覧から隠すだけで、原本・保存済み設定は保持する。
+          実ファイルのカスタム任務は従来どおり受諾中と非受諾の間に表示する。
+          ハッシュだけの比較を値の等価比較へ変更し、Aa/BB等のハッシュ衝突でも表示変更を見逃さない。
+          同じ内容なら既存コントロールを再利用し、表示設定変更を反映する。
+          欠損した表示文字列やカテゴリは表示時だけ安全に扱い、元のnullを書換えない。
+
+          ## 実検証と範囲
+          読取契約17件の単体試験は合成入力のみ。グローバルcore初期化や終了で他試験を汚染しない。
+          実MainController.questとQuestPaneを製品split JARから独立プロセスで起動する。
+          元の描画処理がキャッシュと設定を書き換えることを同じGUI試験で再現してから修正する。
+          修正後はキャッシュの保持、設定とカスタムJSONのバイト不変、受諾/カスタム/非受諾の順序、
+          50/80%表示、展開、ハッシュ衝突、無変更時の再利用、観測時刻、非表示、旧コンストラクタを確認する。
+          ブラウザ、メインinitialize、プロキシ、明示削除メニューは呼ばない。
+          全CIの最終head・試験実績・統合結果はPRの証跡を参照する。個別合格を全体合格へ転用しない。
+
+          ## 未完了として維持するもの
+          任務UIの物理的な機能JAR化、編集・削除コマンドの安全な公開契約化、工廠備考とカスタムファイルの読取分離は未完了。
+          今回は新しい機能JAR、配布プロファイル、保存形式を作らない。任務判定条件と期限計算も変更しない。
+          元からある明示的なremove/removeAll操作は変更しておらず、その安全性の全面認証は今回の範囲外。
+          既存のカスタム任務監視は存在有無が基準であり、同名ファイルの内容だけの変更検知は後続課題。
+          非同期の全legacy writerや外部プラグインと完全に原子的なスナップショットとは主張しない。
+          残るP1/P3、全148任務意味照合、未知形式移行、Issue無効による移管待ち、Mint/本人データ/公開も保持する。
+
+          元環境・旧版・バックアップを保持。Mint/OS/現用JAR/auto.sh/本人データへのアクセス、削除、
+          forcepush、Release/タグ公開、有料AI/API実行、KQS別repo変更は行わない。
+          '''.replace('          ',''),encoding='utf8')
+          PY
+      - name: Retain only tested source on a new branch without force or automatic merge
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git -c core.whitespace=cr-at-eol diff --check
+          git add src/main/java/logbook/plugin/api/QuestListV1.java src/main/java/logbook/core/QuestListReadService.java src/main/java/logbook/internal/gui/MainController.java src/main/java/logbook/internal/gui/QuestPane.java src/test/java/logbook/core/QuestListReadContractTest.java scripts/java/QuestListReadProbe.java scripts/tests/test_quest_list_read_integration.py scripts/verify_r3.sh docs/maintenance/quest-list-read-boundary-20261028.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 9
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Make quest list rendering read-only with immutable observed values and collision-safe refresh'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Preserve before and after failures/results outside product source
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,xml.etree.ElementTree as E
+          result={'base':'a273c6a4d2a70e0d5c9e84e0ae11308312c33b6f','native_mint_tested':False,'full_ci_claimed':False,'logs':{},'suites':[],'gui':[]}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix in ('.log','.txt'):
+                  lines=p.read_text(errors='replace').splitlines()
+                  result['logs'][p.name]={'tail':lines[-90:],'errors':[s for s in lines if '[ERROR]' in s or 'QUEST_RENDER_MUTATED_SOURCE' in s][-30:]}
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*QuestListRead*.xml'):
+              result['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('quest-list-read-fixture-*.json'):
+              result['gui'].append(json.loads(p.read_text()))
+          Path('.maintenance-evidence/quest-list-read-focused.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-list-read-focused.json
+          git commit -m 'Keep actual quest rendering before-after evidence, including incomplete outcomes'
+          git push origin HEAD:refs/heads/maintenance/quest-list-read-worker-20261028
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: quest-list-read-focused-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/quest-list-read-fixture-*
+          retention-days: 14
