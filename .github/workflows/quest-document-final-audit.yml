@@ -1,0 +1,29 @@
+name: Quest document final audit (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-document-audit-20261029']
+    paths: ['.github/workflows/quest-document-final-audit.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_HEAD: 26241fc003c1dfeeaba81c77ae983830def3d5ba
+      SOURCE_PR: '68'
+      EXPECTED_RUN_IDS: '40723905533,40723905457,40723905296,40723905552,40723905532,40723905484,40723905358,40723905576,40723905577,40723905598,40723905389,40723905391,40723905493,40723905345,40723905401'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Match exact source and all five downloaded test artifacts
+        run: python3 .maintenance-tools/inspect_quest_documents.py
+      - name: Retain the outcome including any failed or incomplete audit
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-documents-final-*.json
+          git commit -m 'Retain exact-head quest editor command audit without source or master changes'
+          git push origin HEAD:refs/heads/maintenance/quest-document-audit-20261029
