@@ -1,0 +1,152 @@
+{
+  "head": "54f14abe4a63b8f10ac71a91c384c34a66660f5d",
+  "verified": true,
+  "artifact_code_executed": false,
+  "note": "Earlier inspection selected the last embedded child summary. This supplements only Python counts; original evidence retained.",
+  "artifacts": [
+    {
+      "id": 12816803504,
+      "sha256": "5f6bbbf4eae4bba5154a37e4780859b74d67ac879fc63a14ed6674b4dbdfc193",
+      "logs": {
+        "r3-verification/python-scripts.log": {
+          "outer": {
+            "discovered": 439,
+            "skipped": 1,
+            "successful": 438
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 439,
+              "skipped": 1,
+              "successful": 438
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ],
+          "verbose_case_line_count": 440,
+          "summary_context": [
+            " ... ok\n\n----------------------------------------------------------------------\nRan 439 tests in 471.513s\n\nOK (skipped=1)\n\ntest_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tes",
+            " ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 17.692s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION"
+          ]
+        },
+        "r3-verification/python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ],
+          "verbose_case_line_count": 25,
+          "summary_context": [
+            " ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.132s\n\nOK\n"
+          ]
+        }
+      }
+    },
+    {
+      "id": 12816339604,
+      "sha256": "bace06921abf9bbc10975ae4d2f35a947d39eebb0ae88e7d60d8a598b2b8d23a",
+      "logs": {
+        "r3-verification/python-scripts.log": {
+          "outer": {
+            "discovered": 439,
+            "skipped": 1,
+            "successful": 438
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 439,
+              "skipped": 1,
+              "successful": 438
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ],
+          "verbose_case_line_count": 440,
+          "summary_context": [
+            " ... ok\n\n----------------------------------------------------------------------\nRan 439 tests in 436.793s\n\nOK (skipped=1)\n\ntest_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tes",
+            " ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 15.962s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION"
+          ]
+        },
+        "r3-verification/python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ],
+          "verbose_case_line_count": 25,
+          "summary_context": [
+            " ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.093s\n\nOK\n"
+          ]
+        }
+      }
+    },
+    {
+      "id": 12816503925,
+      "sha256": "98821ac5a5d9713fa4319deed669e93a59e13bfa56038a1ef9c4a8854c56bd14",
+      "logs": {
+        "r3-verification/python-scripts.log": {
+          "outer": {
+            "discovered": 439,
+            "skipped": 1,
+            "successful": 438
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 439,
+              "skipped": 1,
+              "successful": 438
+            },
+            {
+              "discovered": 1,
+              "skipped": 0,
+              "successful": 1
+            }
+          ],
+          "verbose_case_line_count": 440,
+          "summary_context": [
+            " ... ok\n\n----------------------------------------------------------------------\nRan 439 tests in 392.977s\n\nOK (skipped=1)\n\ntest_actual_launcher_start_change_restore_with_external_write_monitor (scripts.tes",
+            " ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 14.135s\n\nOK\nMIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true\nRUNTIME_MIGRATION"
+          ]
+        },
+        "r3-verification/python-tools.log": {
+          "outer": {
+            "discovered": 25,
+            "skipped": 0,
+            "successful": 25
+          },
+          "all_complete_summaries": [
+            {
+              "discovered": 25,
+              "skipped": 0,
+              "successful": 25
+            }
+          ],
+          "verbose_case_line_count": 25,
+          "summary_context": [
+            " ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.093s\n\nOK\n"
+          ]
+        }
+      }
+    }
+  ]
+}
