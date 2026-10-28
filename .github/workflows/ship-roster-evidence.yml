@@ -1,0 +1,96 @@
+name: Ship roster exact-head evidence inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/ship-roster-evidence-20261028']
+    paths: ['.github/workflows/ship-roster-evidence.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Verify actual source, successful runs, archive digests and executed tests
+        run: |
+          python3 - <<'PY'
+          import urllib.request,os,json,io,zipfile,hashlib,xml.etree.ElementTree as E,re
+          from pathlib import Path
+          head='546b196122a4f824c724e222927e9885f6bc451e'
+          api='https://api.github.com/repos/ItukiMac/logbook-kai-maintained'
+          result={'head':head,'verified':False,'native_mint_tested':False,'artifacts':[],'initial_failure':{'run':40645706735,'job':122673904258,'artifact':12798340272,'cause':'2-second FX FutureTask wait timed out; original inputs unchanged; no test conditions changed before rerun'}}
+          target=Path('.maintenance-evidence/ship-roster-verified.json');target.parent.mkdir(exist_ok=True)
+          def save():target.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          def raw(path):
+              req=urllib.request.Request(api+path,headers={'Accept':'application/vnd.github+json'})
+              req.add_unredirected_header('Authorization','Bearer '+os.environ['GH_TOKEN'])
+              with urllib.request.urlopen(req,timeout=45) as response:data=response.read(12*1024*1024+1)
+              assert len(data)<=12*1024*1024
+              return data
+          def get(path):return json.loads(raw(path))
+          try:
+              pr=get('/pulls/61');assert pr['head']['sha']==head
+              result['pr']={k:pr[k] for k in ('number','state','draft','merged','merge_commit_sha')}
+              runs=get('/actions/runs?head_sha='+head+'&event=pull_request&per_page=100')['workflow_runs']
+              assert len(runs)==14 and all(r['status']=='completed' and r['conclusion']=='success' for r in runs)
+              result['runs']=[{k:r[k] for k in ('id','name','head_sha','conclusion','run_attempt')} for r in runs]
+              headTree=get('/git/commits/'+head)['tree']['sha']
+              mergeTree=get('/git/commits/'+pr['merge_commit_sha'])['tree']['sha']
+              assert headTree==mergeTree=='827b312d71406e6c9f497bc43e0e6c4b487ea3c5'
+              result['tested_tree']=headTree
+              expected={40645706844:['r3-evidence-java21','r3-evidence-java25'],
+                        40645706919:['modern-runtime-evidence-java25'],
+                        40645706735:['runtime-migration-java21','runtime-migration-java25']}
+              for run,names in expected.items():
+                  artifacts=get('/actions/runs/'+str(run)+'/artifacts?per_page=100')['artifacts']
+                  for name in names:
+                      choices=sorted((a for a in artifacts if a['name']==name and not a['expired']),key=lambda a:a['created_at'])
+                      assert choices,(run,name)
+                      a=choices[-1];data=raw('/actions/artifacts/'+str(a['id'])+'/zip')
+                      digest='sha256:'+hashlib.sha256(data).hexdigest();assert digest==a['digest']
+                      z=zipfile.ZipFile(io.BytesIO(data));assert sum(i.file_size for i in z.infolist())<64*1024*1024
+                      assert z.testzip() is None
+                      record={'run':run,'name':name,'id':a['id'],'sha256':digest,'created_at':a['created_at']}
+                      if name.startswith('runtime-migration'):
+                          logs=[z.read(n).decode() for n in z.namelist() if n.endswith('runtime-migration.log')]
+                          assert len(logs)==1 and 'Ran 5 tests' in logs[0] and 'FAILED' not in logs[0]
+                          summary=re.findall(r'RUNTIME_MIGRATION_TEST_SUMMARY (\{[^\n]+\})',logs[0])
+                          assert len(summary)==1
+                          record['migration']=json.loads(summary[0])
+                          assert record['migration']['successful']==5 and record['migration']['skipped']==0
+                          record['markers']=[line for line in logs[0].splitlines() if line.startswith(('MIGRATION_CURRENT_SPLIT','RUNTIME_MIGRATION_DECLARED','RUNTIME_MIGRATION_JAVA_OK'))]
+                      else:
+                          suites=[E.fromstring(z.read(n)) for n in z.namelist() if n.endswith('.xml') and '/TEST-' in '/'+n]
+                          record['java']={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+                          assert record['java']=={'tests':834,'failures':0,'errors':0,'skipped':1},record['java']
+                          roster=[s for s in suites if s.get('name')=='logbook.core.ShipRosterContractTest']
+                          assert len(roster)==1 and int(roster[0].get('tests'))==11 and int(roster[0].get('skipped'))==0
+                          record['roster_tests']=roster[0].attrib
+                          record['python']=[]
+                          for n in z.namelist():
+                              if n.endswith(('python-scripts.log','python-tools.log')):
+                                  lines=z.read(n).decode(errors='replace').splitlines()
+                                  record['python'].append({'path':n,'summary':[line for line in lines if line.startswith(('Ran ','OK','FAILED'))]})
+                          assert len(record['python'])==2
+                          summaries=[json.loads(z.read(n)) for n in z.namelist() if n.endswith('r3-verification/summary.json')]
+                          assert len(summaries)==1
+                          s=summaries[0];assert s['checkout']==pr['merge_commit_sha']
+                          record['integration']={k:s[k] for k in ('checkout','java_tests','equipment_data_contract_tests','record_data_contract_tests','seasonal_retreat_integration_tests','production_deployed')}
+                          record['equipment']=s['equipment_ui_packaging'];record['records']=s['record_ui_packaging']
+                          assert s['parallel_integration']['result']=='passed' and s['parallel_integration']['original_unchanged']
+                      result['artifacts'].append(record);save()
+              result['verified']=True;save()
+              print('SHIP_ROSTER_EVIDENCE_OK workflows=14 java=833passed+1networkskip each_profile=true new_tests=11 historical_migration=5each')
+          except Exception as error:result['error']=repr(error);save();raise
+          PY
+      - name: Keep evidence only; never change master or production
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/ship-roster-verified.json
+          git commit -m 'Retain exact-head ship roster evidence and original failed-attempt provenance'
+          git push origin HEAD:refs/heads/maintenance/ship-roster-evidence-20261028
