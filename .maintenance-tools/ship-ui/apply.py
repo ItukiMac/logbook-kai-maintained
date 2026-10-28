@@ -101,7 +101,6 @@ def ship_ui_required_entries():
 ''')
 edit('scripts/run_feature_distribution.py',runner)
 def builder(s):
-    s=one(s,'ship_statistics_profile_missing_anchor','') if False else s
     s=one(s,'                                     SHIP_STATISTICS_PROFILE, ship_statistics_entry, ship_statistics_required_entries)',
        '                                     SHIP_STATISTICS_PROFILE, ship_statistics_entry, ship_statistics_required_entries,\n                                     SHIP_UI_API, SHIP_UI_PROFILE, ship_ui_entry, ship_ui_required_entries)')
     s=one(s,'def owner(name: str, record_ui: bool = False, equipment_ui: bool = False, statistics_ui: bool = False) -> str | None:',
@@ -124,7 +123,7 @@ new('scripts/java/ShipListGuiProbe.java',(PAYLOAD/'ShipListGuiProbe.java').read_
 new('scripts/tests/test_ship_list_ui.py',(PAYLOAD/'test_ship_list_ui.py').read_text())
 new('docs/maintenance/ship-ui-module-20261028.md',(PAYLOAD/'notes.md').read_text())
 def verify(s):
-    return one(s,"report={'parallel_integration':combined[0]",'''# A skipped GUI test is not proof of product ship-list extraction.
+    return one(s,"report={'ship_statistics':statistics[0]",'''# A skipped GUI test is not proof of product ship-list extraction.
 ship_ui_reports=[json.loads(f.read_text()) for f in p.glob('ship-list-fixture-*.json')]
 assert len(ship_ui_reports)==1 and ship_ui_reports[0]['result']=='passed'
 ship_ui=ship_ui_reports[0]
@@ -134,7 +133,7 @@ assert ship_ui['settings_reread'] and ship_ui['original_history_unchanged']
 assert ship_ui['timeline_stopped'] and not ship_ui['production_accessed']
 ship_suite=[s for s in suites if s.get('name')=='logbook.internal.gui.ShipUiModuleBoundaryTest']
 assert len(ship_suite)==1 and int(ship_suite[0].get('tests'))>=4 and int(ship_suite[0].get('skipped'))==0
-report={'ship_ui_packaging':ship_ui,'parallel_integration':combined[0]''')
+report={'ship_ui_packaging':ship_ui,'ship_statistics':statistics[0]''')
 edit('scripts/verify_r3.sh',verify)
 Path('../ship-ui-paths.json').write_text(json.dumps(changed))
 print('SHIP_UI_PATCH_READY files='+str(len(changed))+' no_runtime_data_changed=true')
