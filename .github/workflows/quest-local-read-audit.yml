@@ -1,0 +1,32 @@
+name: Local quest read final artifact inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-local-read-audit-20261029']
+    paths: ['.github/workflows/quest-local-read-audit.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_HEAD: 143902cac478cbbace2f2d96ea49686419dedc13
+      SOURCE_PR: '69'
+      EXPECTED_RUN_IDS: '40849845902,40849846028,40849846142,40849846103,40849845858,40849845898,40849845939,40849846091,40849845981,40849846053,40849845925,40849846109,40849846127,40849845946,40849845894'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Inspect exact source and actual downloaded report bytes without executing artifact code
+        run: python3 .maintenance-tools/inspect_local_quests.py
+      - name: Retain outcome including failure separately from product source
+        if: always()
+        run: |
+          set -eu
+          report=".maintenance-evidence/local-quest-final-${GITHUB_RUN_ID}.json"
+          test -f "$report"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$report"
+          git commit -m 'Retain exact-head local quest final artifact inspection outcome'
+          git push origin HEAD:refs/heads/maintenance/quest-local-read-audit-20261029
