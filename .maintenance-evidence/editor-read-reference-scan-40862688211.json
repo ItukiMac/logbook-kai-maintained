@@ -1,0 +1,92 @@
+{
+  "head": "48b5fdf914aba12b30a94591d6e97b52edf5a802",
+  "test_fixture_only_commit": true,
+  "all_original_behavior_assertions_retained": true,
+  "matched_files": {
+    "scripts/tests/test_runtime_migration_java.py": [
+      "260: self.assertNotEqual(old.read('logbook/internal/gui/QuestConditionEditController.class'),",
+      "261: new.read('logbook/internal/gui/QuestConditionEditController.class'))"
+    ],
+    "src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java": [
+      "34: public class ArsenalQuestConditionEditController extends WindowController {",
+      "37: private ComboBox<AppQuest> questSelector;",
+      "51: this.questSelector.setConverter(new StringConverter<AppQuest>() {",
+      "69: this.questSelector.setCellFactory(lv -> new ListCell<AppQuest>() {",
+      "93: this.questSelector.setButtonCell(this.questSelector.getCellFactory().call(null));",
+      "112: this.questSelector.setItems(FXCollections.observableArrayList(quests));",
+      "114: this.questSelector.getSelectionModel().selectedItemProperty().addListener((ob, o, n) -> {",
+      "152: AppQuest quest = this.questSelector.getSelectionModel().getSelectedItem();"
+    ],
+    "src/main/java/logbook/internal/gui/MainMenuController.java": [
+      "372: InternalFXMLLoader.showWindow(\"logbook/gui/quest_condition_edit.fxml\", this.parentController.getWindow(), \"戦闘任務条件編集\");",
+      "386: InternalFXMLLoader.showWindow(\"logbook/gui/arsenal_quest_condition_edit.fxml\","
+    ],
+    "src/main/java/logbook/internal/gui/QuestConditionEditController.java": [
+      "29: public class QuestConditionEditController extends WindowController {",
+      "32: private ComboBox<Choice> questSelector;",
+      "79: this.questSelector.setConverter(new StringConverter<Choice>() {",
+      "92: this.questSelector.setVisibleRowCount(20);",
+      "105: this.questSelector.getSelectionModel().selectedItemProperty().addListener((ob, o, n) -> {",
+      "399: Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();",
+      "671: alert.initOwner(this.questSelector.getScene().getWindow());",
+      "682: Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();",
+      "964: var appQuest = this.questSelector.getSelectionModel().getSelectedItem();",
+      "985: Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();",
+      "992: alert.initOwner(this.questSelector.getScene().getWindow());",
+      "1003: alert.initOwner(this.questSelector.getScene().getWindow());",
+      "1016: this.questSelector.setItems(FXCollections.observableArrayList(selection.choices()));",
+      "1017: this.questSelector.getSelectionModel().clearSelection();",
+      "1024: Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();",
+      "1033: var selected = this.questSelector.getSelectionModel().getSelectedItem();",
+      "1040: this.setQuestData(this.questSelector.getSelectionModel().getSelectedItem());",
+      "1053: Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();",
+      "1073: confirm.initOwner(this.questSelector.getScene().getWindow());",
+      "1086: alert.initOwner(this.questSelector.getScene().getWindow());",
+      "1094: alert.initOwner(this.questSelector.getScene().getWindow());",
+      "1104: alert.initOwner(this.questSelector.getScene().getWindow());"
+    ],
+    "src/main/resources/logbook/gui/arsenal_quest_condition_edit.fxml": [
+      "12: <VBox prefHeight=\"400.0\" prefWidth=\"600.0\" spacing=\"10.0\" xmlns=\"http://javafx.com/javafx/8.0.171\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"logbook.internal.gui.ArsenalQuestConditionEditController\">",
+      "17: <ComboBox fx:id=\"questSelector\" prefWidth=\"550.0\" />"
+    ],
+    "src/main/resources/logbook/gui/quest_condition_edit.fxml": [
+      "13: <VBox prefHeight=\"600.0\" prefWidth=\"750.0\" spacing=\"10.0\" xmlns=\"http://javafx.com/javafx/8.0.171\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"logbook.internal.gui.QuestConditionEditController\">",
+      "28: <ComboBox fx:id=\"questSelector\" prefWidth=\"550.0\" />"
+    ],
+    "src/test/java/logbook/internal/gui/ArrivalConditionEditorGuiTest.java": [
+      "38: final class IsolatedController extends QuestConditionEditController {",
+      "41: record Window(Stage stage, Parent pane, QuestConditionEditController controller) implements AutoCloseable {",
+      "42: @SuppressWarnings(\"unchecked\") ComboBox<Choice> quests() { return (ComboBox<Choice>) pane.lookup(\"#questSelector\"); }",
+      "52: var loader = new FXMLLoader(getClass().getResource(\"/logbook/gui/quest_condition_edit.fxml\"));"
+    ],
+    "src/test/java/logbook/internal/gui/QuestConditionEditorGuiTest.java": [
+      "33: final class IsolatedController extends QuestConditionEditController {",
+      "36: record Window(Stage stage, Parent pane, QuestConditionEditController controller) implements AutoCloseable {",
+      "37: @SuppressWarnings(\"unchecked\") ComboBox<Choice> quests() { return (ComboBox<Choice>) pane.lookup(\"#questSelector\"); }",
+      "43: var loader = new FXMLLoader(getClass().getResource(\"/logbook/gui/quest_condition_edit.fxml\"));"
+    ],
+    "src/test/java/logbook/internal/gui/QuestDocumentCommandsBoundaryTest.java": [
+      "12: var text=symbols(QuestConditionEditController.class);"
+    ],
+    "src/test/java/logbook/internal/gui/QuestDocumentCommandsGuiTest.java": [
+      "36: final class Editor extends QuestConditionEditController{@Override Path questDirectory(){return root;}}",
+      "37: record View(Stage stage,Parent pane,QuestConditionEditController editor) implements AutoCloseable {",
+      "38: @SuppressWarnings(\"unchecked\") ComboBox<Choice> selector(){return (ComboBox<Choice>)pane.lookup(\"#questSelector\");}",
+      "43: var loader=new FXMLLoader(getClass().getResource(\"/logbook/gui/quest_condition_edit.fxml\"));loader.setControllerFactory(t->new Editor());"
+    ],
+    "src/test/java/logbook/internal/gui/QuestEditorReadBoundaryTest.java": [
+      "9: try(var in=QuestConditionEditController.class.getResourceAsStream(\"QuestConditionEditController.class\")) {",
+      "16: String source=Files.readString(Path.of(\"src/main/java/logbook/internal/gui/QuestConditionEditController.java\"));"
+    ],
+    "src/test/java/logbook/internal/gui/QuestEditorReadGuiTest.java": [
+      "33: final class Editor extends QuestConditionEditController {",
+      "47: record View(Stage stage,Parent pane,QuestConditionEditController editor)implements AutoCloseable {",
+      "48: @SuppressWarnings(\"unchecked\") ComboBox<Choice> selector(){return (ComboBox<Choice>)pane.lookup(\"#questSelector\");}",
+      "55: var loader=new FXMLLoader(getClass().getResource(\"/logbook/gui/quest_condition_edit.fxml\"));loader.setControllerFactory(t->new Editor());"
+    ]
+  },
+  "remaining_old_editor_casts": [
+    "src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java"
+  ],
+  "production_accessed": false
+}
