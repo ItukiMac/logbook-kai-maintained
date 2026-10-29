@@ -10,7 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import logbook.bean.AppQuest;
+import logbook.plugin.api.QuestEditorDataV1.Choice;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -34,7 +34,7 @@ class QuestConditionEditorGuiTest {
         @Override Path questDirectory() { return root; }
     }
     record Window(Stage stage, Parent pane, QuestConditionEditController controller) implements AutoCloseable {
-        @SuppressWarnings("unchecked") ComboBox<AppQuest> quests() { return (ComboBox<AppQuest>) pane.lookup("#questSelector"); }
+        @SuppressWarnings("unchecked") ComboBox<Choice> quests() { return (ComboBox<Choice>) pane.lookup("#questSelector"); }
         TextField text(String name) { return (TextField) pane.lookup("#" + name); }
         CheckBox noRetreat() { return (CheckBox) pane.lookup("#filterNoRetreat"); }
         public void close() { stage.close(); }
@@ -94,7 +94,7 @@ class QuestConditionEditorGuiTest {
             try (Window window = open()) {
                 Path retained = window.controller().removeDocument();
                 assertFalse(Files.exists(file)); assertEquals(source(), Files.readString(retained));
-                assertEquals(10001, window.quests().getValue().getQuest().getNo());
+                assertEquals(10001, window.quests().getValue().id());
                 assertEquals("", window.text("filterDeckIds").getText()); assertFalse(window.noRetreat().isSelected());
                 window.text("customNameField").setText("recreated");
                 assertNull(window.controller().saveDocument());
