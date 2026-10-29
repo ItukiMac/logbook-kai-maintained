@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import logbook.bean.AppQuest;
+import logbook.plugin.api.QuestEditorDataV1.Choice;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -39,7 +39,7 @@ class ArrivalConditionEditorGuiTest {
         @Override Path questDirectory() { return root; }
     }
     record Window(Stage stage, Parent pane, QuestConditionEditController controller) implements AutoCloseable {
-        @SuppressWarnings("unchecked") ComboBox<AppQuest> quests() { return (ComboBox<AppQuest>) pane.lookup("#questSelector"); }
+        @SuppressWarnings("unchecked") ComboBox<Choice> quests() { return (ComboBox<Choice>) pane.lookup("#questSelector"); }
         TextField text(String id) { return (TextField) pane.lookup("#" + id); }
         HBox row(int index) { return (HBox) ((VBox) pane.lookup("#conditionsBox")).getChildren().get(index); }
         CheckBox arrival(int index) { return (CheckBox) row(index).lookup("#arrivalMode"); }
@@ -195,9 +195,7 @@ class ArrivalConditionEditorGuiTest {
         Path file = root.resolve("905.json"); Files.writeString(file, source(true));
         fx(() -> {
             try (var w = open()) {
-                var quest = new logbook.bean.QuestList.Quest();
-                quest.setNo(905); quest.setCategory(2); quest.setType(4); quest.setTitle("fixture");
-                var appQuest = new AppQuest(); appQuest.setNo(905); appQuest.setQuest(quest);
+                var appQuest = new Choice(905,2,4,"fixture");
                 w.quests().getItems().setAll(appQuest); w.quests().getSelectionModel().select(0);
                 assertTrue(w.arrival(0).isSelected());
                 assertTrue(w.row(0).getChildren().get(1) instanceof CheckBox);

@@ -19,12 +19,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
 import javafx.util.StringConverter;
-import logbook.constants.StatisticsShipTypeGroup;
-import logbook.bean.AppQuest;
-import logbook.bean.AppQuestCollection;
-import logbook.bean.QuestList.Quest;
-import logbook.core.LogBookCoreServices;
 import logbook.internal.logger.LoggerHolder;
+import logbook.plugin.api.QuestEditorDataV1;
+import logbook.plugin.api.QuestEditorDataV1.Choice;
 
 /**
  * 任務達成条件編集コントローラー
@@ -32,7 +29,7 @@ import logbook.internal.logger.LoggerHolder;
 public class QuestConditionEditController extends WindowController {
 
     @FXML
-    private ComboBox<AppQuest> questSelector;
+    private ComboBox<Choice> questSelector;
 
     @FXML
     private javafx.scene.control.RadioButton normalQuestRadio;
@@ -79,20 +76,14 @@ public class QuestConditionEditController extends WindowController {
     @FXML
     void initialize() {
         try {
-            this.questSelector.setConverter(new StringConverter<AppQuest>() {
+            this.questSelector.setConverter(new StringConverter<Choice>() {
                 @Override
-                public String toString(AppQuest object) {
-                    if (object != null) {
-                        Quest quest = object.getQuest();
-                        if (quest != null) {
-                            return String.format("%d: %s", quest.getNo(), quest.getTitle());
-                        }
-                    }
-                    return null;
+                public String toString(Choice object) {
+                    return object == null ? null : object.label();
                 }
 
                 @Override
-                public AppQuest fromString(String string) {
+                public Choice fromString(String string) {
                     return null;
                 }
             });
@@ -108,12 +99,11 @@ public class QuestConditionEditController extends WindowController {
             this.updateQuestList();
 
             // ResetType初期化
-            this.resetType.setItems(FXCollections.observableArrayList(
-                    "デイリー", "ウィークリー", "マンスリー", "単発", "クオータリー", "イヤリー"));
+            this.resetType.setItems(FXCollections.observableArrayList(QuestEditorDataV1.resetTypes()));
 
             // 任務選択時の動作
             this.questSelector.getSelectionModel().selectedItemProperty().addListener((ob, o, n) -> {
-                if (n != null && n.getQuest() != null) {
+                if (n != null) {
                     this.setQuestData(n);
                 }
             });
@@ -136,36 +126,18 @@ public class QuestConditionEditController extends WindowController {
         }
     }
 
-    private void setQuestData(AppQuest appQuest) {
-        Quest quest = appQuest.getQuest();
+    private void setQuestData(Choice appQuest) {
+        Choice quest = appQuest;
         if (quest != null) {
             // 除去ボタンの活性制御
-            boolean isCustom = quest.getNo() >= 10001 && quest.getNo() <= 10005;
+            boolean isCustom = quest.id() >= 10001 && quest.id() <= 10005;
             this.removeBtn.setDisable(!isCustom);
 
             // Type
-            this.questType.setText(this.getCategoryName(quest.getCategory()));
+            this.questType.setText(quest.categoryName());
 
-            // ResetType (推定)
-            String type = "単発";
-            switch (quest.getType()) {
-                case 1:
-                    type = "デイリー";
-                    break;
-                case 2:
-                    type = "ウィークリー";
-                    break;
-                case 3:
-                    type = "マンスリー";
-                    break;
-                case 4:
-                    type = "単発";
-                    break;
-                case 5:
-                    type = "クオータリー";
-                    break; // 他、だが一旦クォータリーとみなす
-            }
-            this.resetType.getSelectionModel().select(type);
+            // Captured metadata supplies defaults; the stored definition still overrides them.
+            this.resetType.getSelectionModel().select(quest.defaultResetType());
             this.yearlyResetMonth.setText("");
 
             // Filter / Conditions Clear (do not carry arrival-mode guards into another quest).
@@ -192,46 +164,35 @@ public class QuestConditionEditController extends WindowController {
     }
 
     @SuppressWarnings("unchecked")
-    private void loadQuestData(Quest quest) {
+    private void loadQuestData(Choice quest) {
         try {
-            this.documentSession = logbook.plugin.api.QuestDocumentsV1.at(this.questDirectory()).open(quest.getNo());
+            this.documentSession = logbook.plugin.api.QuestDocumentsV1.at(this.questDirectory()).open(quest.id());
             this.loadedBytes = this.documentSession.document().bytes();
             if (this.loadedBytes == null) return;
-            tools.jackson.databind.ObjectMapper mapper = QuestEditorDocument.mapper();
             this.originalDocument = QuestEditorDocument.parse(this.loadedBytes);
-            QuestEditorDocument.validate(this.originalDocument);
-            mapper = mapper.rebuild().disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).build();
-
-            // Register MixIns to safely ignore unknown properties or handle specific fields
-            // if necessary
-            // Note: The MixIns defined in this class are abstract and used for writing.
-            // For reading, standard mapping should suffice if the JSON matches the bean
-            // structure.
-
-            logbook.bean.AppQuestCondition condition = mapper.treeToValue(this.originalDocument,
-                    logbook.bean.AppQuestCondition.class);
+            var condition = QuestEditorDataV1.form(this.loadedBytes);
 
             if (condition != null) {
                 // ResetType
-                if (condition.getResetType() != null) {
-                    this.resetType.getSelectionModel().select(condition.getResetType());
+                if (condition.resetType() != null) {
+                    this.resetType.getSelectionModel().select(condition.resetType());
                 }
-                if (condition.getYearlyResetMonth() != null) {
-                    this.yearlyResetMonth.setText(String.valueOf(condition.getYearlyResetMonth()));
-                }
-
-                if (condition.getCustomName() != null) {
-                    this.customNameField.setText(condition.getCustomName());
-                }
-                if (condition.getStartDate() != null) {
-                    this.customStartDateField.setText(condition.getStartDate());
+                if (condition.yearlyResetMonth() != null) {
+                    this.yearlyResetMonth.setText(String.valueOf(condition.yearlyResetMonth()));
                 }
 
-                if (condition.getFilter() != null) {
-                    if (condition.getFilter().getDeckIds() != null)
-                        this.filterDeckIds.setText(condition.getFilter().getDeckIds().stream()
+                if (condition.customName() != null) {
+                    this.customNameField.setText(condition.customName());
+                }
+                if (condition.startDate() != null) {
+                    this.customStartDateField.setText(condition.startDate());
+                }
+
+                if (condition.filter() != null) {
+                    if (condition.filter().deckIds() != null)
+                        this.filterDeckIds.setText(condition.filter().deckIds().stream()
                                 .sorted().map(String::valueOf).collect(Collectors.joining(",")));
-                    this.filterNoRetreat.setSelected(Boolean.TRUE.equals(condition.getFilter().getNoRetreat()));
+                    this.filterNoRetreat.setSelected(Boolean.TRUE.equals(condition.filter().noRetreat()));
                 }
 
                 // Filter Area
@@ -241,37 +202,37 @@ public class QuestConditionEditController extends WindowController {
                 // case if no achievement conditions exist.
 
                 // Reconstruct Filter Text from Achievement Conditions to support 7-2-1 etc.
-                if (condition.getConditions() != null) {
+                if (condition.conditions() != null) {
                     List<String> areas = new java.util.ArrayList<>();
-                    for (logbook.bean.AppQuestCondition.Condition cond : condition.getConditions()) {
-                        if (cond.getArea() != null && !cond.getArea().isEmpty()) {
-                            String area = cond.getArea().iterator().next();
+                    for (QuestEditorDataV1.Goal cond : condition.conditions()) {
+                        if (cond.area() != null && !cond.area().isEmpty()) {
+                            String area = cond.area().iterator().next();
                             if ("5-6".equals(area)) {
-                                if ("G".equals(cond.getCell())) {
+                                if ("G".equals(cond.cell())) {
                                     area = "5-6-1";
-                                } else if ("N".equals(cond.getCell())) {
+                                } else if ("N".equals(cond.cell())) {
                                     area = "5-6-2";
-                                } else if ("Z".equals(cond.getCell())) {
+                                } else if ("Z".equals(cond.cell())) {
                                     area = "5-6-3";
                                 }
                             } else if ("7-2".equals(area)) {
-                                if ("G".equals(cond.getCell())) {
+                                if ("G".equals(cond.cell())) {
                                     area = "7-2-1";
-                                } else if ("M".equals(cond.getCell())) {
+                                } else if ("M".equals(cond.cell())) {
                                     area = "7-2-2";
                                 }
                             } else if ("7-3".equals(area)) {
-                                if ("E".equals(cond.getCell())) {
+                                if ("E".equals(cond.cell())) {
                                     area = "7-3-1";
-                                } else if ("P".equals(cond.getCell())) {
+                                } else if ("P".equals(cond.cell())) {
                                     area = "7-3-2";
                                 }
                             } else if ("7-5".equals(area)) {
-                                if ("K".equals(cond.getCell())) {
+                                if ("K".equals(cond.cell())) {
                                     area = "7-5-1";
-                                } else if ("Q".equals(cond.getCell())) {
+                                } else if ("Q".equals(cond.cell())) {
                                     area = "7-5-2";
-                                } else if ("T".equals(cond.getCell())) {
+                                } else if ("T".equals(cond.cell())) {
                                     area = "7-5-3";
                                 }
                             }
@@ -283,18 +244,18 @@ public class QuestConditionEditController extends WindowController {
                 }
 
                 // If filterArea is empty but filter.area exists (no conditions case?)
-                if (this.filterArea.getText().isEmpty() && condition.getFilter() != null
-                        && condition.getFilter().getArea() != null) {
-                    this.filterArea.setText(String.join(",", condition.getFilter().getArea()));
+                if (this.filterArea.getText().isEmpty() && condition.filter() != null
+                        && condition.filter().area() != null) {
+                    this.filterArea.setText(String.join(",", condition.filter().area()));
                 }
 
                 // Fleet Conditions
-                if (condition.getFilter() != null && condition.getFilter().getFleet() != null) {
-                    logbook.bean.AppQuestCondition.FleetCondition fleet = condition.getFilter().getFleet();
-                    String globalOp = fleet.getOperator(); // AND or OR
+                if (condition.filter() != null && condition.filter().fleet() != null) {
+                    QuestEditorDataV1.Fleet fleet = condition.filter().fleet();
+                    String globalOp = fleet.operator(); // AND or OR
 
-                    if (fleet.getConditions() != null) {
-                        for (logbook.bean.AppQuestCondition.FleetCondition sub : fleet.getConditions()) {
+                    if (fleet.conditions() != null) {
+                        for (QuestEditorDataV1.Fleet sub : fleet.conditions()) {
                             this.addFleetCondition(null);
                             HBox row = (HBox) this.fleetConditionsBox.getChildren()
                                     .get(this.fleetConditionsBox.getChildren().size() - 1);
@@ -308,42 +269,42 @@ public class QuestConditionEditController extends WindowController {
 
                             // Type/Name
                             ComboBox<String> typeCombo = (ComboBox<String>) row.getChildren().get(idx++);
-                            boolean isStype = sub.getStype() != null && !sub.getStype().isEmpty();
+                            boolean isStype = sub.stype() != null && !sub.stype().isEmpty();
                             typeCombo.getSelectionModel().select(isStype ? "艦種" : "艦名");
 
                             // Text
                             TextField tf = (TextField) row.getChildren().get(idx++);
                             if (isStype) {
-                                tf.setText(String.join(",", sub.getStype()));
-                            } else if (sub.getName() != null) {
-                                tf.setText(String.join(",", sub.getName()));
+                                tf.setText(String.join(",", sub.stype()));
+                            } else if (sub.name() != null) {
+                                tf.setText(String.join(",", sub.name()));
                             }
 
                             // Flagship / Second Ship
                             if (this.fleetConditionsBox.getChildren().size() == 1) {
                                 CheckBox fs = (CheckBox) row.getChildren().get(idx++);
-                                fs.setSelected(sub.getOrder() != null && sub.getOrder() == 1);
+                                fs.setSelected(sub.order() != null && sub.order() == 1);
                             } else if (this.fleetConditionsBox.getChildren().size() == 2) {
                                 // 2行目で、かつ要素数が足りてる(チェックボックスがある)場合
                                 // Flagshipチェックボックスを追加するかどうかの判定は addFleetCondition で行われているので
                                 // ここでは単に取得してセットする
                                 if (idx < row.getChildren().size() && row.getChildren().get(idx) instanceof CheckBox) {
                                     CheckBox ss = (CheckBox) row.getChildren().get(idx++);
-                                    ss.setSelected(sub.getOrder() != null && sub.getOrder() == 2);
+                                    ss.setSelected(sub.order() != null && sub.order() == 2);
                                 }
                             }
 
                             // Count
                             TextField cf = (TextField) row.getChildren().get(idx++);
-                            if (sub.getCount() != null) {
-                                cf.setText(String.valueOf(sub.getCount()));
+                            if (sub.count() != null) {
+                                cf.setText(String.valueOf(sub.count()));
                             }
                             idx++; // Unit
 
                             // Compare
                             ComboBox<String> opCombo = (ComboBox<String>) row.getChildren().get(idx++);
-                            if (sub.getOperator() != null) {
-                                switch (sub.getOperator()) {
+                            if (sub.operator() != null) {
+                                switch (sub.operator()) {
                                     case "GE":
                                         opCombo.getSelectionModel().select("以上");
                                         break;
@@ -360,12 +321,12 @@ public class QuestConditionEditController extends WindowController {
                 }
 
                 // Achievement Conditions (Rows are already created by filterArea listener)
-                if (condition.getConditions() != null) {
-                    for (int i = 0; i < condition.getConditions().size(); i++) {
+                if (condition.conditions() != null) {
+                    for (int i = 0; i < condition.conditions().size(); i++) {
                         if (i >= this.conditionsBox.getChildren().size())
                             break;
 
-                        logbook.bean.AppQuestCondition.Condition cond = condition.getConditions().get(i);
+                        QuestEditorDataV1.Goal cond = condition.conditions().get(i);
                         HBox row = (HBox) this.conditionsBox.getChildren().get(i);
 
                         // row children: Label(Area), (Label, TextField)?, S, A, B, Count, Label
@@ -374,10 +335,10 @@ public class QuestConditionEditController extends WindowController {
                         if (hasCellField(row)) {
                             idx++; // Label("マス")
                             TextField cellField = (TextField) row.getChildren().get(idx++);
-                            if (cond.getCell() != null) {
-                                cellField.setText(cond.getCell());
-                            } else if (cond.getCells() != null && !cond.getCells().isEmpty()) {
-                                cellField.setText(String.join(",", cond.getCells()));
+                            if (cond.cell() != null) {
+                                cellField.setText(cond.cell());
+                            } else if (cond.cells() != null && !cond.cells().isEmpty()) {
+                                cellField.setText(String.join(",", cond.cells()));
                             }
                         }
 
@@ -386,14 +347,14 @@ public class QuestConditionEditController extends WindowController {
                         CheckBox b = (CheckBox) row.getChildren().get(idx++);
                         TextField countField = (TextField) row.getChildren().get(idx++);
 
-                        if (cond.getRank() != null) {
-                            s.setSelected(cond.getRank().contains("S"));
-                            a.setSelected(cond.getRank().contains("A"));
-                            b.setSelected(cond.getRank().contains("B"));
+                        if (cond.rank() != null) {
+                            s.setSelected(cond.rank().contains("S"));
+                            a.setSelected(cond.rank().contains("A"));
+                            b.setSelected(cond.rank().contains("B"));
                         }
-                        countField.setText(String.valueOf(cond.getCount()));
+                        countField.setText(String.valueOf(cond.count()));
                         CheckBox arrival = arrivalControl(row);
-                        if (arrival != null) arrival.setSelected(cond.isArrival());
+                        if (arrival != null) arrival.setSelected(cond.arrival());
                     }
                 }
             }
@@ -435,10 +396,10 @@ public class QuestConditionEditController extends WindowController {
         }
 
         // 選択されているクエストがカスタム任務かチェック
-        AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();
         boolean isCustom = false;
-        if (appQuest != null && appQuest.getQuest() != null) {
-            int no = appQuest.getQuest().getNo();
+        if (appQuest != null) {
+            int no = appQuest.id();
             isCustom = no >= 10001 && no <= 10005;
         }
 
@@ -526,33 +487,6 @@ public class QuestConditionEditController extends WindowController {
 
     private static CheckBox arrivalControl(HBox row) {
         return (CheckBox) row.getProperties().get("arrivalControl");
-    }
-
-    private String getCategoryName(int category) {
-        switch (category) {
-            case 1:
-                return "編成";
-            case 2:
-                return "出撃";
-            case 3:
-                return "演習";
-            case 4:
-                return "遠征";
-            case 5:
-                return "補給/入渠";
-            case 6:
-                return "工廠";
-            case 7:
-                return "改装";
-            case 8:
-                return "出撃(2)";
-            case 9:
-                return "出撃(3)";
-            case 10:
-                return "出撃(4)";
-            default:
-                return "その他";
-        }
     }
 
     /**
@@ -729,8 +663,8 @@ public class QuestConditionEditController extends WindowController {
     @FXML
     void showShipTypeList(javafx.event.ActionEvent e) {
         StringBuilder sb = new StringBuilder();
-        for (StatisticsShipTypeGroup group : StatisticsShipTypeGroup.values()) {
-            sb.append(String.join(", ", group.getGroup())).append("\n");
+        for (var group : QuestEditorDataV1.shipTypeGroups()) {
+            sb.append(String.join(", ", group)).append("\n");
         }
 
         Alert alert = new Alert(AlertType.INFORMATION);
@@ -745,14 +679,14 @@ public class QuestConditionEditController extends WindowController {
     logbook.bean.AppQuestCondition readForm() {
         if (this.arrivalAreaConflict)
             throw new IllegalArgumentException("港到達を解除してから1-6を削除・変更してください。");
-        AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (appQuest == null || appQuest.getQuest() == null)
+        Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        if (appQuest == null)
             throw new IllegalStateException("任務が選択されていません。");
             // Root Object
             logbook.bean.AppQuestCondition condition = new logbook.bean.AppQuestCondition();
 
             // Type & ResetType
-            int category = appQuest.getQuest().getCategory();
+            int category = appQuest.category();
             condition.setType(
                     category == 4 ? logbook.bean.AppQuestCondition.Type.遠征 : logbook.bean.AppQuestCondition.Type.出撃);
             condition.setResetType(this.resetType.getSelectionModel().getSelectedItem());
@@ -891,7 +825,7 @@ public class QuestConditionEditController extends WindowController {
             // Custom Name
             String customName = this.customNameField.getText();
             if (customName == null || customName.trim().isEmpty()) {
-                int no = appQuest.getQuest().getNo();
+                int no = appQuest.id();
                 if (no >= 10001 && no <= 10005) {
                     customName = "カスタム任務" + (no - 10000);
                 }
@@ -1028,7 +962,7 @@ public class QuestConditionEditController extends WindowController {
                 : QuestEditorDocument.merge(this.originalDocument, this.loadedForm, currentForm);
         QuestEditorDocument.validate(output);
         var appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (this.documentSession == null || this.documentSession.document().questId() != appQuest.getQuest().getNo())
+        if (this.documentSession == null || this.documentSession.document().questId() != appQuest.id())
             throw new java.io.IOException("読込時と保存対象が異なります。対象を再読込してください。");
         // Exact no-edit saves retain comments/formatting as well as all unrepresented fields.
         byte[] bytes = this.originalDocument != null && output.equals(this.originalDocument)
@@ -1048,8 +982,8 @@ public class QuestConditionEditController extends WindowController {
 
     @FXML
     void save(javafx.event.ActionEvent e) {
-        AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (appQuest == null || appQuest.getQuest() == null) return;
+        Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        if (appQuest == null) return;
         try {
             java.nio.file.Path backup = this.saveDocument();
             // Show Alert
@@ -1058,7 +992,7 @@ public class QuestConditionEditController extends WindowController {
             alert.initOwner(this.questSelector.getScene().getWindow());
             alert.setTitle("保存成功");
             alert.setHeaderText(null);
-            alert.setContentText("./customquest/" + appQuest.getQuest().getNo() + ".jsonを出力しました。"
+            alert.setContentText("./customquest/" + appQuest.id() + ".jsonを出力しました。"
                     + (backup == null ? "" : "\n変更前の保存先: " + backup));
             alert.showAndWait();
 
@@ -1074,49 +1008,22 @@ public class QuestConditionEditController extends WindowController {
         }
     }
 
-    private void updateQuestList() {
-        if (this.normalQuestRadio.isSelected()) {
-            // 通常任務
-            List<Integer> targetCategories = Arrays.asList(2, 8, 9, 10);
-            List<AppQuest> quests = AppQuestCollection.get().getQuest().values().stream()
-                    .filter(q -> q.getQuest() != null)
-                    .filter(q -> targetCategories.contains(q.getQuest().getCategory()))
-                    .filter(q -> LogBookCoreServices.getQuestResource(q.getNo(), true) == null) // 恒常任務
-                    .collect(Collectors.toList());
-            this.questSelector.setItems(FXCollections.observableArrayList(quests));
-        } else {
-            // カスタム任務
-            List<AppQuest> quests = new java.util.ArrayList<>();
-            for (int i = 1; i <= 5; i++) {
-                int no = 10000 + i;
-                Quest q = new Quest();
-                q.setNo(no);
-                q.setCategory(2); // 出撃をデフォルトとする
-                q.setType(4); // 単発をデフォルトとする
-                q.setTitle("カスタム任務" + i);
-                q.setDetail("カスタム任務" + i);
-                q.setState(2); // 受注状態
-                q.setProgressFlag(0);
+    // Isolated FXML tests may supply synthetic choices without altering global collections.
+    QuestEditorDataV1.Selection editorChoices(boolean custom) { return QuestEditorDataV1.choices(custom); }
 
-                AppQuest aq = new AppQuest();
-                aq.setNo(no);
-                aq.setQuest(q);
-                aq.setActive(true);
-                quests.add(aq);
-            }
-            this.questSelector.setItems(FXCollections.observableArrayList(quests));
-        }
-        // 選択をクリア
+    private void updateQuestList() {
+        var selection = this.editorChoices(!this.normalQuestRadio.isSelected());
+        this.questSelector.setItems(FXCollections.observableArrayList(selection.choices()));
         this.questSelector.getSelectionModel().clearSelection();
-        if (this.removeBtn != null) {
-            this.removeBtn.setDisable(true);
-        }
+        if (this.removeBtn != null) this.removeBtn.setDisable(true);
+        if (this.editNotice != null && !selection.diagnostics().isEmpty())
+            this.editNotice.setText(String.join("\n", selection.diagnostics()));
     }
 
     private logbook.plugin.api.QuestDocumentsV1.Plan prepareRetirementDocument() throws java.io.IOException {
-        AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (appQuest == null || appQuest.getQuest() == null || this.documentSession == null
-                || this.documentSession.document().questId() != appQuest.getQuest().getNo())
+        Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        if (appQuest == null || this.documentSession == null
+                || this.documentSession.document().questId() != appQuest.id())
             throw new java.io.IOException("読込時と退避対象が異なります。対象を再読込してください。");
         return this.documentSession.prepareRetirement();
     }
@@ -1124,8 +1031,8 @@ public class QuestConditionEditController extends WindowController {
     private java.nio.file.Path applyRetirementDocument(logbook.plugin.api.QuestDocumentsV1.Plan plan)
             throws java.io.IOException {
         var selected = this.questSelector.getSelectionModel().getSelectedItem();
-        if (selected == null || selected.getQuest() == null || this.documentSession == null
-      || selected.getQuest().getNo() == null || selected.getQuest().getNo() != plan.questId()
+        if (selected == null || this.documentSession == null
+      || selected.id() != plan.questId()
       || this.documentSession.document().questId() != plan.questId())
   throw new java.io.IOException("確認中に選択対象が変わりました。退避せず、対象を再確認してください。");
         var result = this.documentSession.apply(plan, true);
@@ -1143,11 +1050,11 @@ public class QuestConditionEditController extends WindowController {
 
     @FXML
     void remove(javafx.event.ActionEvent e) {
-        AppQuest appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (appQuest == null || appQuest.getQuest() == null) {
+        Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+        if (appQuest == null) {
             return;
         }
-        int no = appQuest.getQuest().getNo();
+        int no = appQuest.id();
         if (no < 10001 || no > 10005) {
             return;
         }
