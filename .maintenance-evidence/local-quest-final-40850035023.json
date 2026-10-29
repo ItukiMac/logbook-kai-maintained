@@ -1,0 +1,131 @@
+{
+  "head": "143902cac478cbbace2f2d96ea49686419dedc13",
+  "pr": 69,
+  "verified": false,
+  "artifact_code_executed": false,
+  "production_accessed": false,
+  "runs": [
+    {
+      "id": 40849845925,
+      "name": "Generation-scoped KQS and KLB compatibility (no publish)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849845902,
+      "name": "Non-Mint ledger validation (not a completion or release approval)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849846103,
+      "name": "Read-only maintenance source inventory",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849846109,
+      "name": "Read-only complete game JSON syntax audit",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849846053,
+      "name": "Linux updater official-JAR to maintained-JAR integration",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849845894,
+      "name": "Baseline Maven build (Java 21)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849845981,
+      "name": "Application release candidate (artifact only, no publish)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849845939,
+      "name": "KLB and KQS plugin API compatibility (Java 21)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849846091,
+      "name": "Java 25 application compatibility (headless)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849845898,
+      "name": "Public JavaFX autocomplete integration",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849846127,
+      "name": "Offline game-data install integration (Java 21)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849846142,
+      "name": "Runtime migration declared versions (no publish)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849846028,
+      "name": "R3 split features, source review and isolated candidate validation",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849845946,
+      "name": "Integrated maintenance verification (no publish)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 40849845858,
+      "name": "Explicit JDK25 JavaFX27 runtime verification (no publish)",
+      "head_sha": "143902cac478cbbace2f2d96ea49686419dedc13",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "artifacts": [],
+  "error": "AssertionError: "
+}
