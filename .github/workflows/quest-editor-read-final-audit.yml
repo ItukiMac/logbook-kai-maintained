@@ -1,0 +1,32 @@
+name: Quest editor read final artifact inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-editor-read-audit-20261029']
+    paths: ['.github/workflows/quest-editor-read-final-audit.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_HEAD: b3bbb1bdb123e23ef5cc0e937076ad135ba7ce13
+      SOURCE_PR: '70'
+      EXPECTED_RUN_IDS: '40861635874,40861635944,40861635785,40861635886,40861635928,40861635969,40861635856,40861635906,40861635968,40861635889,40861635870,40861635791,40861635853,40861635950,40861635776'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Check exact head, source tree, executed suites and unchanged safety components
+        run: python3 .maintenance-tools/inspect_editor_read.py
+      - name: Retain outcome including incomplete checks separately from product code
+        if: always()
+        run: |
+          set -eu
+          report=".maintenance-evidence/editor-read-final-${GITHUB_RUN_ID}.json"
+          test -f "$report"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$report"
+          git commit -m 'Retain exact PR70 source and artifact verification without product or master changes'
+          git push origin HEAD:refs/heads/maintenance/quest-editor-read-audit-20261029
