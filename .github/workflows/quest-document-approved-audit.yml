@@ -21,9 +21,8 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import subprocess
-          # Reuse the exact existing inspector; no downloaded artifact code is executed.
-          source=subprocess.check_output(['git','show','ddcf0bac252cadb98f2606960a1889a8a264ddef:.maintenance-tools/inspect_quest_documents.py'],text=True)
+          # Read the retained inspector in this checkout; no artifact code is executed.
+          source=Path('.maintenance-tools/inspect_quest_documents.py').read_text(encoding='utf-8')
           needle="                item['tested_checkout']=summary['checkout'];assert tree(summary['checkout'])==report['source_tree']"
           extra="""                readiness=summary['migration_readiness']
                           assert readiness['result']=='passed' and readiness['cases']==10
@@ -32,7 +31,6 @@ jobs:
                           assert not readiness['production_accessed'] and not readiness['launcher_initialized']
                           item['proofs']['migration_readiness']=readiness
           """
-          # Align injected statements with the inspector's existing else block.
           extra='\n'.join('                '+line.strip() for line in extra.splitlines() if line.strip())+'\n'
           assert source.count(needle)==1
           source=source.replace(needle,extra+needle)
