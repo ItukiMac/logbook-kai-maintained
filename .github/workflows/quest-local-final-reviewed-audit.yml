@@ -1,0 +1,46 @@
+name: Final local quest read and reset artifact inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-local-read-final-audit-20261029']
+    paths: ['.github/workflows/quest-local-final-reviewed-audit.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_HEAD: 2a567ba963bdf6be08679fc3cbbe78c6e5891381
+      SOURCE_PR: '69'
+      EXPECTED_RUN_IDS: '40850795213,40850795088,40850795131,40850795092,40850795100,40850795079,40850795163,40850795189,40850795135,40850795286,40850795154,40850795301,40850795138,40850795422,40850795159'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Reuse bounded inspector with mandatory additional progress compatibility checks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('.maintenance-tools/inspect_local_quests.py').read_text()
+          old="if 'QuestLocalFiles' in s.get('name',''):item['new_java'][s.get('name')]=counts"
+          assert s.count(old)==1
+          s=s.replace(old,"if 'QuestLocalFiles' in s.get('name','') or s.get('name')=='logbook.core.QuestProgressInputTest':item['new_java'][s.get('name')]=counts")
+          old="expected={'logbook.core.QuestLocalFilesReadTest':24,'logbook.internal.gui.QuestLocalFilesBoundaryTest':2}"
+          assert s.count(old)==1
+          s=s.replace(old,"expected={'logbook.core.QuestLocalFilesReadTest':24,'logbook.internal.gui.QuestLocalFilesBoundaryTest':2,'logbook.core.QuestProgressInputTest':4}")
+          old="local=s['quest_local_files'];assert local['result']=='passed'"
+          assert s.count(old)==1
+          s=s.replace(old,old+";assert local['custom_reset_compatibility']==6")
+          exec(compile(s,'final-local-quest-inspector','exec'),{'__name__':'__main__'})
+          PY
+      - name: Preserve this outcome without replacing old reports or product code
+        if: always()
+        run: |
+          set -eu
+          report=".maintenance-evidence/local-quest-final-${GITHUB_RUN_ID}.json"
+          test -f "$report"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$report"
+          git commit -m 'Retain final exact-head local quest and progress compatibility evidence'
+          git push origin HEAD:refs/heads/maintenance/quest-local-read-final-audit-20261029
