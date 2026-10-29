@@ -1,0 +1,155 @@
+name: Local quest progress deadline compatibility (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-local-read-worker-20261029']
+    paths: ['.github/workflows/quest-local-progress-compatibility.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      BASE: 143902cac478cbbace2f2d96ea49686419dedc13
+      TARGET: maintenance/quest-local-progress-prepared-20261029
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 143902cac478cbbace2f2d96ea49686419dedc13
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Reuse the existing expiry resolver for local progress input only
+        working-directory: candidate
+        run: |
+          mkdir ../evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          def edit(path,old,new):
+              p=Path(path);raw=p.read_bytes();ending='\r\n' if b'\r\n' in raw else '\n';s=raw.decode().replace('\r\n','\n');assert s.count(old)==1,(path,old,s.count(old));p.write_bytes(s.replace(old,new).replace('\n',ending).encode())
+          edit('src/main/java/logbook/core/QuestListReadService.java','    public static AppQuest toLegacy(Quest row) {', '''    public static AppQuest toProgressInput(Quest row) {
+                  AppQuest copy = toLegacy(row);
+                  // Local custom presentation has no saved expiry. At progress opening only,
+                  // reuse the existing definition-aware reset calculation; never fabricate
+                  // observedAt, change the immutable row, or save this derived input.
+                  if (QuestListV1.isCustomId(row.no()) && row.expire() == null && row.observedAt() == null) {
+                      copy.setExpire(AppQuest.toAppQuest(copy.getQuest()).getExpire());
+                  }
+                  return copy;
+              }
+
+              public static AppQuest toLegacy(Quest row) {''')
+          edit('src/main/java/logbook/internal/gui/QuestPane.java','QuestListReadService.toLegacy(this.display)','QuestListReadService.toProgressInput(this.display)')
+          p=Path('src/test/java/logbook/core/QuestProgressInputTest.java');assert not p.exists()
+          p.write_text('''package logbook.core;
+          import static org.junit.jupiter.api.Assertions.*;
+          import java.time.Instant;
+          import java.util.List;
+          import logbook.plugin.api.QuestListV1;
+          import org.junit.jupiter.api.Test;
+          class QuestProgressInputTest {
+              private static QuestListV1.Quest row(int id,String expiry,Instant observed) {
+                  return new QuestListV1.Quest(id,2,4,2,"title","detail",List.of(1,2),0,0,0,observed,expiry,true);
+              }
+              @Test void actualObservedQuestKeepsItsSavedTiming() {
+                  var input=row(905,"saved",Instant.parse("2026-10-29T00:00:00Z"));
+                  assertEquals(input,QuestListReadService.copy(QuestListReadService.toProgressInput(input)));
+              }
+              @Test void unknownOrdinaryTimingIsNotInvented() {
+                  var result=QuestListReadService.toProgressInput(row(905,null,null));
+                  assertNull(result.getExpire());assertNull(result.getQuest().getObservedAt());
+              }
+              @Test void customWithSavedTimingDoesNotReloadOrReplaceIt() {
+                  var input=row(10001,"saved custom expiry",null);
+                  assertEquals(input,QuestListReadService.copy(QuestListReadService.toProgressInput(input)));
+              }
+              @Test void pureLegacyConversionStillPreservesNullCustomTiming() {
+                  var input=row(10001,null,null);var result=QuestListReadService.toLegacy(input);
+                  assertNull(result.getExpire());assertNull(result.getQuest().getObservedAt());
+                  result.getQuest().getGetMaterial().clear();assertEquals(List.of(1,2),input.materials());
+              }
+          }
+          '''.replace('          ',''))
+          edit('scripts/java/QuestLocalFilesProbe.java','                        check(map.size()==2&&map.get(10002)==cached', '''                        int resetCases = 0;
+                                  for (String reset : List.of("単発","デイリー","ウィークリー","マンスリー","クォータリー","イヤリー")) {
+                                      Files.writeString(custom,"{\\"customName\\":\\"reset fixture\\",\\"resetType\\":\\""+reset+"\\",\\"yearlyResetMonth\\":6,\\"conditions\\":[]}");
+                                      expected=tree();render.invoke(main);
+                                      var capturedRow=(logbook.plugin.api.QuestListV1.Quest)field(row(box,10001),"display");
+                                      var legacy=logbook.core.QuestListReadService.toLegacy(capturedRow);
+                                      var expectedProgress=AppQuest.toAppQuest(legacy.getQuest());
+                                      var actual=logbook.core.QuestListReadService.toProgressInput(capturedRow);
+                                      check(Objects.equals(expectedProgress.getExpire(),actual.getExpire()) && actual.getExpire()!=null,"Custom reset deadline changed: "+reset);
+                                      check(actual.getQuest().getObservedAt()==null && capturedRow.expire()==null && capturedRow.observedAt()==null,"Derived expiry contaminated local observation");
+                                      unchanged(expected);resetCases++;
+                                  }
+                                  check(resetCases==6,"Missing custom reset compatibility cases");
+                                  check(map.size()==2&&map.get(10002)==cached''')
+          edit('scripts/java/QuestLocalFilesProbe.java','QUEST_LOCAL_FILES_GUI_OK same_size_mtime_refresh=true','QUEST_LOCAL_FILES_GUI_OK custom_reset_compatibility=6 same_size_mtime_refresh=true')
+          edit('scripts/tests/test_quest_local_files_integration.py',"self.assertIn('QUEST_LOCAL_FILES_GUI_OK', run.stdout)","self.assertIn('QUEST_LOCAL_FILES_GUI_OK custom_reset_compatibility=6', run.stdout)")
+          edit('scripts/tests/test_quest_local_files_integration.py',"report.update(result='passed', product_distribution=True", "report.update(result='passed', custom_reset_compatibility=6, product_distribution=True")
+          edit('scripts/verify_r3.sh',"assert len(local_suites)==2 and sum(int(s.get('tests',0)) for s in local_suites)>=26", "assert len(local_suites)==2 and sum(int(s.get('tests',0)) for s in local_suites)>=26\nassert local_quests['custom_reset_compatibility']==6\nprogress_suites=[s for s in suites if s.get('name')=='logbook.core.QuestProgressInputTest']\nassert len(progress_suites)==1 and int(progress_suites[0].get('tests',0))>=4\nassert all(int(progress_suites[0].get(k,0))==0 for k in ('failures','errors','skipped'))")
+          p=Path('docs/maintenance/quest-local-read-20261029.md')
+          with p.open('a') as f:f.write('''
+          ## 進捗画面へ渡す期限の互換性
+          表示用のローカル行にゲーム観測日時や期限を生成しないことと、進捗画面の期限計算は別である。
+          進捗を開く際だけQuestListReadService.toProgressInputが既存AppQuest.toAppQuestの期限計算を再利用する。
+          単発・日次・週次・月次・四半期・年次の6区分を、同じ現行定義に対する旧計算結果と比較する。
+          再計算されるのは観測日時も保存期限もないローカルカスタムだけ。実観測や既存の保存期限は変更しない。
+          純粋なtoLegacyコピーは従来どおりで、表示値や設定を保存しない。計算式の重複実装はしない。
+          初期候補の読取26件と実画面成功だけではこの境界を保証できなかったため、自己確認で補った。
+          追加4Java件と実GUI内6区分を全体検証で必須とする。最終headの全CIを改めて確認する。
+          '''.replace('          ',''))
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          mvn -B -ntp -Dtest=QuestLocalFilesReadTest,QuestLocalFilesBoundaryTest,QuestProgressInputTest,QuestListReadContractTest test > ../evidence/unit.log 2>&1
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_quest_local_files_integration.py -v > ../evidence/gui.log 2>&1
+      - name: Preserve preparation separately, leaving PR and its CI source untouched
+        working-directory: candidate
+        run: |
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main/java/logbook/core/QuestListReadService.java src/main/java/logbook/internal/gui/QuestPane.java src/test/java/logbook/core/QuestProgressInputTest.java scripts/java/QuestLocalFilesProbe.java scripts/tests/test_quest_local_files_integration.py scripts/verify_r3.sh docs/maintenance/quest-local-read-20261029.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 7
+          git commit -m 'Preserve existing custom reset deadlines when opening progress from immutable local rows'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/head.txt
+          git rev-parse HEAD^{tree} > ../evidence/tree.txt
+      - name: Retain preparation results including failures
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,os,xml.etree.ElementTree as E
+          r={'base':'143902cac478cbbace2f2d96ea49686419dedc13','production_accessed':False,'pr_modified':False,'logs':{},'suites':[],'gui':[]}
+          for p in Path('../evidence').glob('*'):
+              lines=p.read_text(errors='replace').splitlines();r['logs'][p.name]={'tail':lines[-65:],'errors':[x for x in lines if '[ERROR]' in x][-30:]}
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*.xml'):r['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('quest-local-files-*.json'):r['gui'].append(json.loads(p.read_text()))
+          Path('.maintenance-evidence/quest-local-progress-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-local-progress-*.json
+          git commit -m 'Retain custom deadline compatibility evidence separately from initial candidate'
+          git push origin HEAD:refs/heads/maintenance/quest-local-read-worker-20261029
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: quest-local-progress-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/quest-local-files-*
+          retention-days: 14
