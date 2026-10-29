@@ -204,6 +204,26 @@ public final class RuntimeMigrationProbe {
         System.out.println("MIGRATION_REAL_JAVA_CHANGED records=4 accepted=1");
     }
 
+    /** A timed-out observation is not launcher failure before the existing overall deadline.
+     * Cancel queued stale observations without interrupting the FX application thread.
+     * Execution/interrupt/cancellation errors are not swallowed or reported as ready.
+     */
+    static boolean pollWindow(java.util.concurrent.Future<Boolean> window, long deadline)
+            throws InterruptedException, java.util.concurrent.ExecutionException {
+        long remaining = deadline - System.nanoTime();
+        if (remaining <= 0) {
+            window.cancel(false);
+            return false;
+        }
+        try {
+            return Boolean.TRUE.equals(window.get(Math.min(TimeUnit.SECONDS.toNanos(2), remaining),
+                    TimeUnit.NANOSECONDS));
+        } catch (java.util.concurrent.TimeoutException pendingObservation) {
+            window.cancel(false);
+            return false;
+        }
+    }
+
     private static void launcher(Path root) throws Exception {
         verify(root, false);
         if (!ManagedBundleMode.enabled()) throw new AssertionError("Managed updater guard is required");
@@ -222,7 +242,7 @@ public final class RuntimeMigrationProbe {
                     });
                     try {
                         Platform.runLater(window);
-                        if (window.get(2, TimeUnit.SECONDS)) {
+                        if (pollWindow(window, deadline)) {
                             try (Socket ignored = new Socket("127.0.0.1", AppConfig.get().getListenPort())) {
                                 ready = true;
                                 break;
