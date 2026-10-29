@@ -10,7 +10,11 @@ import logbook.plugin.api.QuestListV1;
 import logbook.plugin.api.QuestListV1.Listing;
 import logbook.plugin.api.QuestListV1.Quest;
 
-/** Host adapter only. Never calls AppQuest.toAppQuest, collection.update or Config.store. */
+/**
+ * Host adapter only. Snapshot/copy/toLegacy never recompute timing. Progress input
+ * may derive a local custom deadline through the existing resolver, without
+ * changing observations, collection membership or saved configuration.
+ */
 public final class QuestListReadService {
     private QuestListReadService() { }
 
@@ -63,6 +67,7 @@ public final class QuestListReadService {
         return copy;
     }
 
+    /** Pure detached compatibility copy; null timing remains null. */
     public static AppQuest toLegacy(Quest row) {
         Objects.requireNonNull(row, "quest snapshot");
         var raw = new logbook.bean.QuestList.Quest();
