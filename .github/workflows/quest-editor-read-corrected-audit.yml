@@ -41,20 +41,23 @@ jobs:
           new=(root/path).read_text()
           expected=old.replace('import logbook.bean.AppQuest;','import logbook.plugin.api.QuestEditorDataV1.Choice;').replace('ComboBox<AppQuest>','ComboBox<Choice>').replace('window.quests().getValue().getQuest().getNo()','window.quests().getValue().id()')
           assert expected==new,'Changes exceed fixture type/import/accessor adaptation'
-          hits={};bad=[]
+          hits={};bad=[];other_editors=[]
           for name in git('ls-files').splitlines():
               p=root/name
               if p.suffix not in ('.java','.py','.fxml','.sh'):continue
               s=p.read_text(encoding='utf8')
               if any(v in s for v in ('QuestConditionEditController','quest_condition_edit.fxml','#questSelector')):
                   matches=[f'{i+1}: {line.strip()}' for i,line in enumerate(s.splitlines()) if any(v in line for v in ('QuestConditionEditController','quest_condition_edit.fxml','questSelector','ComboBox<AppQuest>','ComboBox<Choice>'))]
-                  hits[name]=matches
-                  if re.search(r'ComboBox\s*<\s*(?:logbook\.bean\.)?AppQuest\s*>',s):bad.append(name)
-          report={'head':os.environ['SOURCE_HEAD'],'test_fixture_only_commit':True,'all_original_behavior_assertions_retained':True,'matched_files':hits,'remaining_old_editor_casts':bad,'production_accessed':False}
+                  exact=bool(re.search(r'\bQuestConditionEditController\b',s) or re.search(r'(?<![A-Za-z0-9_])quest_condition_edit\.fxml\b',s))
+                  hits[name]={'exact_battle_editor_reference':exact,'matches':matches}
+                  if re.search(r'ComboBox\s*<\s*(?:logbook\.bean\.)?AppQuest\s*>',s):
+                      (bad if exact else other_editors).append(name)
+          report={'head':os.environ['SOURCE_HEAD'],'test_fixture_only_commit':True,'all_original_behavior_assertions_retained':True,'matched_files':hits,'remaining_old_editor_casts':bad,'separate_unchanged_editor_casts':other_editors,'production_accessed':False}
           Path('.maintenance-evidence/editor-read-reference-scan-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
           assert not bad,bad
+          assert other_editors==['src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java'],other_editors
           subprocess.run(['git','diff','--exit-code'],cwd=root,check=True)
-          print('EDITOR_REFERENCE_SCAN_OK matched='+str(len(hits))+' original_assertions_retained=true')
+          print('EDITOR_REFERENCE_SCAN_OK matched='+str(len(hits))+' original_assertions_retained=true separate_arsenal_editor_still_pending=true')
           PY
       - name: Require all final CI, new suites and the previously missed four-case editor suite
         working-directory: tooling
