@@ -10,7 +10,11 @@ import logbook.plugin.api.QuestListV1;
 import logbook.plugin.api.QuestListV1.Listing;
 import logbook.plugin.api.QuestListV1.Quest;
 
-/** Host adapter only. Never calls AppQuest.toAppQuest, collection.update or Config.store. */
+/**
+ * Host adapter only. Snapshot/copy/toLegacy never recompute timing. Progress input
+ * may derive a local custom deadline through the existing resolver, without
+ * changing observations, collection membership or saved configuration.
+ */
 public final class QuestListReadService {
     private QuestListReadService() { }
 
@@ -52,6 +56,18 @@ public final class QuestListReadService {
     }
 
     /** Fresh private input for the legacy progress renderer; never creates a live observation. */
+    public static AppQuest toProgressInput(Quest row) {
+        AppQuest copy = toLegacy(row);
+        // Local custom presentation has no saved expiry. At progress opening only,
+        // reuse the existing definition-aware reset calculation; never fabricate
+        // observedAt, change the immutable row, or save this derived input.
+        if (QuestListV1.isCustomId(row.no()) && row.expire() == null && row.observedAt() == null) {
+            copy.setExpire(AppQuest.toAppQuest(copy.getQuest()).getExpire());
+        }
+        return copy;
+    }
+
+    /** Pure detached compatibility copy; null timing remains null. */
     public static AppQuest toLegacy(Quest row) {
         Objects.requireNonNull(row, "quest snapshot");
         var raw = new logbook.bean.QuestList.Quest();
