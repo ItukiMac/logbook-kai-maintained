@@ -31,6 +31,7 @@ import logbook.internal.logger.LoggerHolder;
 public class QuestPane extends HBox {
 
     private final Quest display;
+    private final logbook.plugin.api.QuestLocalFilesV1.Note localNote;
     private DefinitionUiBinding definitionBinding;
     private final javafx.beans.value.ChangeListener<javafx.stage.Window> definitionWindowListener = (o,a,b) -> attachDefinitionWindow(b);
     private void attachDefinitionWindow(javafx.stage.Window window) {
@@ -78,7 +79,15 @@ public class QuestPane extends HBox {
 
     /** Display an already captured immutable row; retain the legacy constructor above. */
     public QuestPane(Quest quest) {
+        this(quest, Integer.valueOf(6).equals(quest.category()) || Integer.valueOf(11).equals(quest.category())
+                ? logbook.plugin.api.QuestLocalFilesV1.note(quest.no()) : null);
+    }
+
+    /** Render the captured note; do not reopen its file during control construction. */
+    public QuestPane(Quest quest, logbook.plugin.api.QuestLocalFilesV1.Note note) {
         this.display = java.util.Objects.requireNonNull(quest);
+        if (note != null && note.questId() != quest.no()) throw new IllegalArgumentException("Note identity mismatch");
+        this.localNote = note;
         try {
             FXMLLoader loader = InternalFXMLLoader.load("logbook/gui/quest.fxml");
             loader.setRoot(this);
@@ -163,34 +172,20 @@ public class QuestPane extends HBox {
                 if (current != null) current.windowProperty().addListener(definitionWindowListener);
             });
 
-            // 工廠任務の備考を表示
-            int category = quest.category() == null ? 0 : quest.category();
-            if (category == 6 || category == 11) {
-                java.nio.file.Path path = java.nio.file.Paths.get("./arsenalquest/" + quest.no() + ".json");
-                if (java.nio.file.Files.exists(path)) {
-                    tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
-                    try {
-                        logbook.bean.ArsenalQuestSetting setting = mapper.readValue(path.toFile(),
-                                logbook.bean.ArsenalQuestSetting.class);
-                        String comment = setting.getComment();
-                        if (comment != null && !comment.isEmpty()) {
-                            Label commentLabel = new Label(comment);
-                            commentLabel.setWrapText(true);
-                            // 備考を少し目立たせる（赤色）
-                            commentLabel.setStyle("-fx-text-fill: red;");
-                            this.infomation.getChildren().add(commentLabel);
-                        }
-                        if (setting.isDiscard()) {
-                            // 背景色を赤系にする（原色の赤以外）
-                            this.setStyle("-fx-background-color: #ffe0e0;");
-                            // 文字色をグレーにする
-                            this.name.setOpacity(0.5);
-                            this.name.setStyle("-fx-text-fill: gray;");
-                        }
-                    } catch (tools.jackson.core.JacksonException e) {
-                        LoggerHolder.get().warn("工廠任務設定の読み込みに失敗しました", e);
-                    }
+            // Values and diagnostics come from the same bounded read as the refresh comparison.
+            if (this.localNote != null) {
+                if (!this.localNote.comment().isEmpty()) {
+                    Label commentLabel = new Label(this.localNote.comment());
+                    commentLabel.setWrapText(true);
+                    commentLabel.setStyle("-fx-text-fill: red;");
+                    this.infomation.getChildren().add(commentLabel);
                 }
+                if (this.localNote.discard()) {
+                    this.setStyle("-fx-background-color: #ffe0e0;");
+                    this.name.setOpacity(0.5);
+                    this.name.setStyle("-fx-text-fill: gray;");
+                }
+                if (this.localNote.file().problem()) showLocalDiagnostic(this.localNote.file().diagnostic());
             }
             // カスタム任務の場合、検索リンクを表示しない
             int no = quest.no();
@@ -201,6 +196,13 @@ public class QuestPane extends HBox {
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
+    }
+
+    void showLocalDiagnostic(String message) {
+        Label warning = new Label(message);
+        warning.setWrapText(true);
+        warning.getStyleClass().add("quest-local-read-warning");
+        this.infomation.getChildren().add(warning);
     }
 
     @FXML

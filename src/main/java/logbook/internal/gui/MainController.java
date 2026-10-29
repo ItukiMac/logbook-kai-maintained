@@ -86,7 +86,7 @@ public class MainController extends WindowController {
 
     /** 任務コレクションのハッシュ・コード */
     private logbook.plugin.api.QuestListV1.Listing displayedQuests;
-    private java.util.List<Boolean> displayedCustomFiles;
+    private logbook.plugin.api.QuestLocalFilesV1.Snapshot displayedLocalQuestFiles;
     private boolean displayedQuestVisibility;
     private logbook.plugin.api.QuestVisibilityV1.State displayedHiddenQuests;
     private boolean questVisibilityListenerInstalled;
@@ -538,12 +538,11 @@ public class MainController extends WindowController {
         // Capture once for both refresh comparison and rendering; drawing must not mutate saved quests.
         var listing = logbook.plugin.api.QuestListV1.snapshot();
         boolean show = AppConfig.get().isShowQuest();
-        var customFiles = new java.util.ArrayList<Boolean>(5);
-        for (int no = 10001; no <= 10005; no++) {
-            customFiles.add(java.nio.file.Files.exists(java.nio.file.Paths.get("./customquest/" + no + ".json")));
-        }
+        var localFiles = logbook.plugin.api.QuestLocalFilesV1.snapshot(listing.quests().stream()
+                .filter(row -> Integer.valueOf(6).equals(row.category()) || Integer.valueOf(11).equals(row.category()))
+                .map(logbook.plugin.api.QuestListV1.Quest::no).toList());
         // Full value equality avoids silent missed refreshes from colliding Java hash codes.
-        if (!listing.equals(this.displayedQuests) || !customFiles.equals(this.displayedCustomFiles)
+        if (!listing.equals(this.displayedQuests) || !localFiles.equals(this.displayedLocalQuestFiles)
                 || show != this.displayedQuestVisibility || !visibility.equals(this.displayedHiddenQuests)) {
             this.questPane.setVisible(show);
             this.questPane.setManaged(show);
@@ -555,52 +554,27 @@ public class MainController extends WindowController {
             // 1. 受領中の任務を追加
             listing.quests().stream().filter(row -> !visibility.hiddenIds().contains(row.no()))
                     .filter(logbook.plugin.api.QuestListV1.Quest::active)
-                    .map(QuestPane::new)
+                    .map(row -> new QuestPane(row, localFiles.notes().get(row.no())))
                     .forEach(quest::add);
 
-            // 2. カスタム任務を追加
-            for (int i = 1; i <= 5; i++) {
-                int no = 10000 + i;
-                java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + no + ".json");
-                if (java.nio.file.Files.exists(file) && !visibility.hiddenIds().contains(no)) {
-                    logbook.bean.QuestList.Quest q = new logbook.bean.QuestList.Quest();
-                    q.setNo(no);
-                    q.setCategory(2);
-                    q.setType(4);
-                    
-                    String title = "カスタム任務" + i;
-                    try {
-                        tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
-                        logbook.bean.AppQuestCondition cond = mapper.readValue(file.toFile(), logbook.bean.AppQuestCondition.class);
-                        if (cond != null && cond.getCustomName() != null && !cond.getCustomName().trim().isEmpty()) {
-                            title = cond.getCustomName();
-                        }
-                    } catch (Exception e) {
-                        LoggerHolder.get().warn("カスタム任務の名称読み込みに失敗しました", e);
-                    }
-                    q.setTitle(title);
-                    q.setDetail("カスタム任務" + i);
-                    q.setState(2);
-                    q.setProgressFlag(0);
-                    q.setBonusFlag(0);
-                    q.setInvalidFlag(0);
-                    q.setGetMaterial(java.util.Collections.emptyList());
-
-                    AppQuest aq = AppQuest.toAppQuest(q);
-
-                    quest.add(new QuestPane(aq));
+            // Local rows and notes are rendered from the same captured bytes used for comparison.
+            for (var custom : localFiles.customs()) {
+                if (custom.file().present() && !visibility.hiddenIds().contains(custom.questId())) {
+                    var pane = new QuestPane(custom.display(), null);
+                    if (custom.file().problem()) pane.showLocalDiagnostic(custom.file().diagnostic());
+                    quest.add(pane);
                 }
             }
 
             // 3. 非受領の任務を追加
             listing.quests().stream().filter(row -> !visibility.hiddenIds().contains(row.no()))
                     .filter(aq -> !aq.active())
-                    .map(QuestPane::new)
+                    .map(row -> new QuestPane(row, localFiles.notes().get(row.no())))
                     .forEach(quest::add);
 
             // ハッシュ・コードの更新
             this.displayedQuests = listing;
-            this.displayedCustomFiles = java.util.List.copyOf(customFiles);
+            this.displayedLocalQuestFiles = localFiles;
             this.displayedQuestVisibility = show;
             this.displayedHiddenQuests = visibility;
         }

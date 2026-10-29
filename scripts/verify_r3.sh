@@ -142,7 +142,16 @@ readiness=readiness_reports[0]
 assert readiness['cases']==10 and readiness['overall_deadline_seconds']==25 and readiness['poll_slice_seconds']==2
 assert readiness['errors_propagate'] and readiness['missing_window_rejected'] and readiness['source_jar_unchanged']
 assert not readiness['production_accessed'] and not readiness['launcher_initialized']
-report={'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+# Local presentation must detect content-only edits without mutating original files.
+local_reports=[json.loads(f.read_text()) for f in p.glob('quest-local-files-fixture-*.json')]
+assert len(local_reports)==1 and local_reports[0]['result']=='passed'
+local_quests=local_reports[0]
+assert all(local_quests[k] for k in ('product_distribution','same_size_mtime_refresh','custom_and_arsenal','unreadable_visible','external_bytes_preserved','immutable_capture','cached_quests_preserved','source_jar_unchanged'))
+assert not local_quests['production_accessed'] and not local_quests['explicit_remove_executed'] and not local_quests['new_physical_module']
+local_suites=[s for s in suites if s.get('name') in {'logbook.core.QuestLocalFilesReadTest','logbook.internal.gui.QuestLocalFilesBoundaryTest'}]
+assert len(local_suites)==2 and sum(int(s.get('tests',0)) for s in local_suites)>=26
+assert all(int(s.get(k,0))==0 for s in local_suites for k in ('failures','errors','skipped'))
+report={'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,
