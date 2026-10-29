@@ -1,0 +1,60 @@
+name: Approved PR68 final artifact inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-document-audit-20261029']
+    paths: ['.github/workflows/quest-document-approved-audit.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_HEAD: c3ee9498462c7a629f2e0b7ce66480d4fbf69489
+      SOURCE_PR: '68'
+      EXPECTED_RUN_IDS: '40726430911,40726430943,40726430966,40726430921,40726431022,40726430951,40726431023,40726431028,40726431009,40726431021,40726431014,40726431056,40726430924,40726430989,40726431091'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Reuse existing read-only inspector and additionally verify bounded readiness proof
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          # Reuse the exact existing inspector; no downloaded artifact code is executed.
+          source=subprocess.check_output(['git','show','ddcf0bac252cadb98f2606960a1889a8a264ddef:.maintenance-tools/inspect_quest_documents.py'],text=True)
+          needle="                item['tested_checkout']=summary['checkout'];assert tree(summary['checkout'])==report['source_tree']"
+          extra="""                readiness=summary['migration_readiness']
+                          assert readiness['result']=='passed' and readiness['cases']==10
+                          assert readiness['overall_deadline_seconds']==25 and readiness['poll_slice_seconds']==2
+                          assert readiness['errors_propagate'] and readiness['missing_window_rejected'] and readiness['source_jar_unchanged']
+                          assert not readiness['production_accessed'] and not readiness['launcher_initialized']
+                          item['proofs']['migration_readiness']=readiness
+          """
+          # Align injected statements with the inspector's existing else block.
+          extra='\n'.join('                '+line.strip() for line in extra.splitlines() if line.strip())+'\n'
+          assert source.count(needle)==1
+          source=source.replace(needle,extra+needle)
+          needle="    report['source_tree']=tree(HEAD)"
+          replacement="""    report['source_tree']=tree(HEAD)
+              store=obj('/contents/src/main/java/logbook/internal/util/QuestDocumentStore.java?ref='+HEAD)
+              assert store['sha']=='2482dd2bc0002af9cd14d3ef9ff9b23472211944'
+              report['existing_store_blob']=store['sha']
+          """
+          replacement='\n'.join('    '+line.strip() for line in replacement.splitlines() if line.strip())
+          assert source.count(needle)==1
+          source=source.replace(needle,replacement)
+          exec(compile(source,'approved-pr68-inspector','exec'),{'__name__':'__main__'})
+          PY
+      - name: Preserve new inspection outcome without replacing old evidence or product source
+        if: always()
+        run: |
+          set -eu
+          report=".maintenance-evidence/quest-documents-final-${GITHUB_RUN_ID}.json"
+          test -f "$report"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$report"
+          git commit -m 'Retain approved final PR68 source/test identity, artifact hashes and readiness verification'
+          git push origin HEAD:refs/heads/maintenance/quest-document-audit-20261029
