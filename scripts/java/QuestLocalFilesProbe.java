@@ -105,6 +105,19 @@ public final class QuestLocalFilesProbe {
                         var constructor=QuestPane.class.getConstructor(logbook.plugin.api.QuestListV1.Quest.class,captured.getClass());
                         var detached=(QuestPane)constructor.newInstance(logbook.core.QuestListReadService.copy(original),captured);
                         check(!notes(detached).contains("newer"),"Constructor reopened the local file instead of using capture");unchanged(expected);
+                        int resetCases = 0;
+                        for (String reset : List.of("単発","デイリー","ウィークリー","マンスリー","クォータリー","イヤリー")) {
+                            Files.writeString(custom,"{\"customName\":\"reset fixture\",\"resetType\":\""+reset+"\",\"yearlyResetMonth\":6,\"conditions\":[]}");
+                            expected=tree();render.invoke(main);
+                            var capturedRow=(logbook.plugin.api.QuestListV1.Quest)field(row(box,10001),"display");
+                            var legacy=logbook.core.QuestListReadService.toLegacy(capturedRow);
+                            var expectedProgress=AppQuest.toAppQuest(legacy.getQuest());
+                            var actual=logbook.core.QuestListReadService.toProgressInput(capturedRow);
+                            check(Objects.equals(expectedProgress.getExpire(),actual.getExpire()) && actual.getExpire()!=null,"Custom reset deadline changed: "+reset);
+                            check(actual.getQuest().getObservedAt()==null && capturedRow.expire()==null && capturedRow.observedAt()==null,"Derived expiry contaminated local observation");
+                            unchanged(expected);resetCases++;
+                        }
+                        check(resetCases==6,"Missing custom reset compatibility cases");
                         check(map.size()==2&&map.get(10002)==cached&&map.get(900001)==original,"Local read mutated acceptance/cache");
                         check(original.isActive()&&original.getQuest().getObservedAt().equals(Instant.parse("2026-10-29T00:00:00Z")),"Observed game state changed");
                         check(failures.isEmpty(),"Uncaught GUI errors: "+failures);
@@ -112,7 +125,7 @@ public final class QuestLocalFilesProbe {
                     finished.complete(null);
                 }catch(Throwable error){finished.completeExceptionally(error);}
             });finished.get(50,TimeUnit.SECONDS);
-            System.out.println("QUEST_LOCAL_FILES_GUI_OK same_size_mtime_refresh=true custom_and_arsenal=true unreadable_visible=true external_bytes_preserved=true immutable_capture=true cached_quests_preserved=true production_accessed=false");
+            System.out.println("QUEST_LOCAL_FILES_GUI_OK custom_reset_compatibility=6 same_size_mtime_refresh=true custom_and_arsenal=true unreadable_visible=true external_bytes_preserved=true immutable_capture=true cached_quests_preserved=true production_accessed=false");
         } finally {Platform.exit();}
     }
 }

@@ -150,6 +150,10 @@ assert all(local_quests[k] for k in ('product_distribution','same_size_mtime_ref
 assert not local_quests['production_accessed'] and not local_quests['explicit_remove_executed'] and not local_quests['new_physical_module']
 local_suites=[s for s in suites if s.get('name') in {'logbook.core.QuestLocalFilesReadTest','logbook.internal.gui.QuestLocalFilesBoundaryTest'}]
 assert len(local_suites)==2 and sum(int(s.get('tests',0)) for s in local_suites)>=26
+assert local_quests['custom_reset_compatibility']==6
+progress_suites=[s for s in suites if s.get('name')=='logbook.core.QuestProgressInputTest']
+assert len(progress_suites)==1 and int(progress_suites[0].get('tests',0))>=4
+assert all(int(progress_suites[0].get(k,0))==0 for k in ('failures','errors','skipped'))
 assert all(int(s.get(k,0))==0 for s in local_suites for k in ('failures','errors','skipped'))
 report={'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,

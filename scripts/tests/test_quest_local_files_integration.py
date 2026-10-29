@@ -48,10 +48,10 @@ class QuestLocalFilesIntegrationTest(unittest.TestCase):
                 cwd=runtime, env=env, capture_output=True, text=True, timeout=90)
             logs.append(run.stdout + run.stderr)
             self.assertEqual(0, run.returncode, logs[-1][-24000:])
-            self.assertIn('QUEST_LOCAL_FILES_GUI_OK', run.stdout)
+            self.assertIn('QUEST_LOCAL_FILES_GUI_OK custom_reset_compatibility=6', run.stdout)
             self.assertNotIn('FXMLの初期化に失敗しました', logs[-1])
             self.assertEqual(before, hashlib.sha256(source.read_bytes()).hexdigest())
-            report.update(result='passed', product_distribution=True, same_size_mtime_refresh=True,
+            report.update(result='passed', custom_reset_compatibility=6, product_distribution=True, same_size_mtime_refresh=True,
                 custom_and_arsenal=True, unreadable_visible=True, external_bytes_preserved=True,
                 immutable_capture=True, cached_quests_preserved=True, source_jar_unchanged=True)
         finally:

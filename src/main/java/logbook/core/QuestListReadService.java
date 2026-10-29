@@ -52,6 +52,17 @@ public final class QuestListReadService {
     }
 
     /** Fresh private input for the legacy progress renderer; never creates a live observation. */
+    public static AppQuest toProgressInput(Quest row) {
+        AppQuest copy = toLegacy(row);
+        // Local custom presentation has no saved expiry. At progress opening only,
+        // reuse the existing definition-aware reset calculation; never fabricate
+        // observedAt, change the immutable row, or save this derived input.
+        if (QuestListV1.isCustomId(row.no()) && row.expire() == null && row.observedAt() == null) {
+            copy.setExpire(AppQuest.toAppQuest(copy.getQuest()).getExpire());
+        }
+        return copy;
+    }
+
     public static AppQuest toLegacy(Quest row) {
         Objects.requireNonNull(row, "quest snapshot");
         var raw = new logbook.bean.QuestList.Quest();

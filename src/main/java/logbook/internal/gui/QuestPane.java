@@ -251,7 +251,7 @@ public class QuestPane extends HBox {
         try {
             InternalFXMLLoader.showWindow("logbook/gui/quest_progress.fxml", (Stage) this.getScene().getWindow(),
                     java.util.Objects.toString(this.display.title(), "任務 " + this.display.no()), c -> {
-                        ((QuestProgress) c).setQuest(QuestListReadService.toLegacy(this.display));
+                        ((QuestProgress) c).setQuest(QuestListReadService.toProgressInput(this.display));
                     }, null);
         } catch (IOException e) {
             LoggerHolder.get().warn("進捗を開けませんでした", e);
