@@ -1,0 +1,150 @@
+name: Local quest read before-after proof (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-local-read-worker-20261029']
+    paths: ['.github/workflows/quest-local-read-focused.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      BASE: 2f20fe3926e621d1cf1e7c13a2ec05088966a208
+      TARGET: maintenance/quest-local-read-20261029
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: tooling
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 2f20fe3926e621d1cf1e7c13a2ec05088966a208
+          path: candidate
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Add new synthetic probe, preserving all existing tests
+        working-directory: candidate
+        run: |
+          set -eu
+          mkdir ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test ! -e scripts/java/QuestLocalFilesProbe.java
+          cp ../tooling/.maintenance-tools/QuestLocalFilesProbe.java scripts/java/QuestLocalFilesProbe.java
+          python3 - <<'PY'
+          from pathlib import Path
+          source=Path('scripts/tests/test_quest_list_read_integration.py').read_text()
+          for old,new in [('QuestListReadIntegrationTest','QuestLocalFilesIntegrationTest'),('QuestListReadProbe','QuestLocalFilesProbe'),('quest-list-read-fixture-','quest-local-files-fixture-'),('synthetic-quest-list-only','synthetic-local-files-only'),('QUEST_LIST_READ_GUI_OK','QUEST_LOCAL_FILES_GUI_OK'),('test_actual_renderer_keeps_saved_quests_and_refreshes_colliding_titles','test_actual_renderer_refreshes_same_metadata_custom_and_arsenal_files')]:
+              assert old in source;source=source.replace(old,new)
+          a=source.index("            report.update(result='passed'")
+          b=source.index('        finally:',a)
+          source=source[:a]+"""            report.update(result='passed', product_distribution=True, same_size_mtime_refresh=True,
+                          custom_and_arsenal=True, unreadable_visible=True, external_bytes_preserved=True,
+                          immutable_capture=True, cached_quests_preserved=True, source_jar_unchanged=True)
+          """.rstrip()+'\n'+source[b:]
+          out=Path('scripts/tests/test_quest_local_files_integration.py');assert not out.exists();out.write_text(source)
+          PY
+          mvn -B -ntp -DskipTests package > ../evidence/before-package.log 2>&1
+      - name: Require exact stale-content failure on unchanged base
+        working-directory: candidate
+        shell: bash
+        run: |
+          set +e
+          python3 -m unittest discover -s scripts/tests -p test_quest_local_files_integration.py -v > ../evidence/before.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          grep 'LOCAL_CONTENT_CHANGE_NOT_RENDERED' ../evidence/before.log
+      - name: Apply narrow read-only implementation and execute all new Java cases
+        working-directory: candidate
+        run: |
+          python3 ../tooling/.maintenance-tools/quest_local_read.py > ../evidence/apply.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          test "$(git hash-object src/main/java/logbook/internal/util/QuestDocumentStore.java)" = 2482dd2bc0002af9cd14d3ef9ff9b23472211944
+          mvn -B -ntp -Dtest=QuestLocalFilesReadTest,QuestLocalFilesBoundaryTest test > ../evidence/unit.log 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as E,json
+          suites=[E.parse(p).getroot() for p in Path('target/surefire-reports').glob('TEST-*QuestLocalFiles*.xml')]
+          assert len(suites)==2
+          totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
+          assert totals=={'tests':26,'failures':0,'errors':0,'skipped':0},totals
+          Path('../evidence/unit-summary.json').write_text(json.dumps(totals))
+          PY
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Require same real GUI assertion and preserve existing quest list/visibility probes
+        working-directory: candidate
+        run: |
+          python3 -m unittest discover -s scripts/tests -p test_quest_local_files_integration.py -v > ../evidence/after.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p test_quest_list_read_integration.py -v > ../evidence/existing-read.log 2>&1
+          python3 -m unittest discover -s scripts/tests -p 'test_quest_visibility*.py' -v > ../evidence/existing-visibility.log 2>&1
+      - name: Add mandatory evidence gate without removing prior checks
+        working-directory: candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/verify_r3.sh');s=p.read_text();needle="report={'migration_readiness':readiness,"
+          assert s.count(needle)==1
+          gate="""# Local presentation must detect content-only edits without mutating original files.
+          local_reports=[json.loads(f.read_text()) for f in p.glob('quest-local-files-fixture-*.json')]
+          assert len(local_reports)==1 and local_reports[0]['result']=='passed'
+          local_quests=local_reports[0]
+          assert all(local_quests[k] for k in ('product_distribution','same_size_mtime_refresh','custom_and_arsenal','unreadable_visible','external_bytes_preserved','immutable_capture','cached_quests_preserved','source_jar_unchanged'))
+          assert not local_quests['production_accessed'] and not local_quests['explicit_remove_executed'] and not local_quests['new_physical_module']
+          local_suites=[s for s in suites if s.get('name') in {'logbook.core.QuestLocalFilesReadTest','logbook.internal.gui.QuestLocalFilesBoundaryTest'}]
+          assert len(local_suites)==2 and sum(int(s.get('tests',0)) for s in local_suites)>=26
+          assert all(int(s.get(k,0))==0 for s in local_suites for k in ('failures','errors','skipped'))
+          """
+          s=s.replace(needle,gate+"report={'quest_local_files':local_quests,'migration_readiness':readiness,")
+          p.write_text(s)
+          PY
+      - name: Preserve tested candidate on dedicated branch, no force or master change
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git -c core.whitespace=cr-at-eol diff --check
+          git add src/main/java/logbook/plugin/api/QuestLocalFilesV1.java src/main/java/logbook/core/QuestLocalFilesService.java src/main/java/logbook/internal/gui/MainController.java src/main/java/logbook/internal/gui/QuestPane.java src/test/java/logbook/core/QuestLocalFilesReadTest.java src/test/java/logbook/internal/gui/QuestLocalFilesBoundaryTest.java scripts/java/QuestLocalFilesProbe.java scripts/tests/test_quest_local_files_integration.py scripts/verify_r3.sh docs/maintenance/quest-local-read-20261029.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 10
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Capture local quest names and arsenal notes through read-only API; detect same-metadata content changes'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/head.txt
+          git rev-parse HEAD^{tree} > ../evidence/tree.txt
+      - name: Retain all outcomes including failed baseline separately from product
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,os,xml.etree.ElementTree as E
+          report={'base':'2f20fe3926e621d1cf1e7c13a2ec05088966a208','production_accessed':False,'full_ci_claimed':False,'logs':{},'suites':[],'gui':[]}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix=='.json':report[p.name]=json.loads(p.read_text())
+              elif p.suffix in ('.txt','.log'):
+                  lines=p.read_text(errors='replace').splitlines()
+                  report['logs'][p.name]={'tail':lines[-80:],'errors':[s for s in lines if '[ERROR]' in s or 'LOCAL_CONTENT_CHANGE_NOT_RENDERED' in s][-30:]}
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*QuestLocalFiles*.xml'):report['suites'].append(E.parse(p).getroot().attrib)
+          for p in Path('../candidate/target/r3-verification').glob('quest-local-files-fixture-*.json'):report['gui'].append(json.loads(p.read_text()))
+          Path('.maintenance-evidence/quest-local-read-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/quest-local-read-*.json
+          git commit -m 'Retain local quest content-refresh before-after evidence including failures'
+          git push origin HEAD:refs/heads/maintenance/quest-local-read-worker-20261029
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: quest-local-read-focused-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+            candidate/target/r3-verification/quest-local-files-*
+          retention-days: 14
