@@ -1,0 +1,82 @@
+name: Quest editor read corrected-head artifact inspection (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-editor-read-audit-20261029']
+    paths: ['.github/workflows/quest-editor-read-corrected-audit.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_HEAD: 48b5fdf914aba12b30a94591d6e97b52edf5a802
+      SOURCE_PR: '70'
+      EXPECTED_RUN_IDS: '40862470831,40862470706,40862470797,40862470747,40862470836,40862470739,40862470837,40862470867,40862470809,40862470806,40862470767,40862470709,40862470801,40862470719,40862470718'
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with: {path: tooling}
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 48b5fdf914aba12b30a94591d6e97b52edf5a802
+          path: source
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Verify exactly the intended fixture adaptation and scan all remaining editor references
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          import json,os,re,subprocess
+          from pathlib import Path
+          root=Path('../source')
+          def git(*args):return subprocess.check_output(['git',*args],cwd=root,text=True).strip()
+          assert git('rev-parse','HEAD')==os.environ['SOURCE_HEAD']
+          assert git('rev-parse','HEAD^')=='b3bbb1bdb123e23ef5cc0e937076ad135ba7ce13'
+          path='src/test/java/logbook/internal/gui/QuestConditionEditorGuiTest.java'
+          assert git('diff','--name-only','HEAD^','HEAD')==path
+          old=subprocess.check_output(['git','show','HEAD^:'+path],cwd=root,text=True)
+          new=(root/path).read_text()
+          expected=old.replace('import logbook.bean.AppQuest;','import logbook.plugin.api.QuestEditorDataV1.Choice;').replace('ComboBox<AppQuest>','ComboBox<Choice>').replace('window.quests().getValue().getQuest().getNo()','window.quests().getValue().id()')
+          assert expected==new,'Changes exceed fixture type/import/accessor adaptation'
+          hits={};bad=[]
+          for name in git('ls-files').splitlines():
+              p=root/name
+              if p.suffix not in ('.java','.py','.fxml','.sh'):continue
+              s=p.read_text(encoding='utf8')
+              if any(v in s for v in ('QuestConditionEditController','quest_condition_edit.fxml','#questSelector')):
+                  matches=[f'{i+1}: {line.strip()}' for i,line in enumerate(s.splitlines()) if any(v in line for v in ('QuestConditionEditController','quest_condition_edit.fxml','questSelector','ComboBox<AppQuest>','ComboBox<Choice>'))]
+                  hits[name]=matches
+                  if re.search(r'ComboBox\s*<\s*(?:logbook\.bean\.)?AppQuest\s*>',s):bad.append(name)
+          report={'head':os.environ['SOURCE_HEAD'],'test_fixture_only_commit':True,'all_original_behavior_assertions_retained':True,'matched_files':hits,'remaining_old_editor_casts':bad,'production_accessed':False}
+          Path('.maintenance-evidence/editor-read-reference-scan-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          assert not bad,bad
+          subprocess.run(['git','diff','--exit-code'],cwd=root,check=True)
+          print('EDITOR_REFERENCE_SCAN_OK matched='+str(len(hits))+' original_assertions_retained=true')
+          PY
+      - name: Require all final CI, new suites and the previously missed four-case editor suite
+        working-directory: tooling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          source=Path('.maintenance-tools/inspect_editor_read.py').read_text()
+          needle="'logbook.internal.gui.ArrivalConditionEditorGuiTest':12,"
+          assert source.count(needle)==1
+          source=source.replace(needle,"'logbook.internal.gui.QuestConditionEditorGuiTest':4,"+needle)
+          exec(compile(source,'final-editor-read-audit','exec'),{'__name__':'__main__'})
+          PY
+      - name: Preserve new evidence without replacing any previous result or product source
+        if: always()
+        working-directory: tooling
+        run: |
+          set -eu
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- .maintenance-evidence/editor-read-reference-scan-*.json
+          if test -f ".maintenance-evidence/editor-read-final-${GITHUB_RUN_ID}.json"; then
+            git add -- ".maintenance-evidence/editor-read-final-${GITHUB_RUN_ID}.json"
+          fi
+          git commit -m 'Keep exact final editor read artifact inspection and all-source selector reference scan'
+          git push origin HEAD:refs/heads/maintenance/quest-editor-read-audit-20261029
