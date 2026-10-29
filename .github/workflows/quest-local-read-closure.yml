@@ -1,0 +1,46 @@
+name: Frozen PR69 closure evidence (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-local-read-closure-20261029']
+    paths: ['.github/workflows/quest-local-read-closure.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_HEAD: dcda54c0e398760225e2eb9ea0afa5a92a62d365
+      SOURCE_PR: '69'
+      EXPECTED_RUN_IDS: '40851027843,40851027643,40851027800,40851027787,40851027748,40851027589,40851027575,40851028045,40851027777,40851028040,40851027756,40851027108,40851027043,40851027141,40851026979'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Match final source and all five report archives including custom reset compatibility
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('.maintenance-tools/inspect_local_quests.py').read_text()
+          edits={"if 'QuestLocalFiles' in s.get('name',''):item['new_java'][s.get('name')]=counts":
+                 "if 'QuestLocalFiles' in s.get('name','') or s.get('name')=='logbook.core.QuestProgressInputTest':item['new_java'][s.get('name')]=counts",
+                 "expected={'logbook.core.QuestLocalFilesReadTest':24,'logbook.internal.gui.QuestLocalFilesBoundaryTest':2}":
+                 "expected={'logbook.core.QuestLocalFilesReadTest':24,'logbook.internal.gui.QuestLocalFilesBoundaryTest':2,'logbook.core.QuestProgressInputTest':4}",
+                 "local=s['quest_local_files'];assert local['result']=='passed'":
+                 "local=s['quest_local_files'];assert local['result']=='passed';assert local['custom_reset_compatibility']==6"}
+          for old,new in edits.items():
+              assert s.count(old)==1
+              s=s.replace(old,new)
+          exec(compile(s,'frozen-local-quest-inspector','exec'),{'__name__':'__main__'})
+          PY
+      - name: Preserve final evidence separately from preliminary candidates and product source
+        if: always()
+        run: |
+          set -eu
+          report=".maintenance-evidence/local-quest-final-${GITHUB_RUN_ID}.json"
+          test -f "$report"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$report"
+          git commit -m 'Retain frozen final PR69 artifact and source identity evidence'
+          git push origin HEAD:refs/heads/maintenance/quest-local-read-closure-20261029
