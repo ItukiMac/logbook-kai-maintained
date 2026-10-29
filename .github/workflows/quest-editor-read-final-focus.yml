@@ -1,0 +1,113 @@
+name: Quest editor immutable inputs final focused proof (tooling only)
+on:
+  push:
+    branches: ['maintenance/quest-editor-read-worker-20261029']
+    paths: ['.github/workflows/quest-editor-read-final-focus.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 2aff776dc0112a36c65797dee7192a4a4d77f03e
+      TARGET: maintenance/quest-editor-read-20261029
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with: {path: tooling}
+      - uses: actions/checkout@v7.0.1
+        with: {ref: 2aff776dc0112a36c65797dee7192a4a4d77f03e, path: candidate}
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: candidate/pom.xml
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
+      - name: Prepare the same implementation and the corrected differential test oracle
+        working-directory: candidate
+        run: |
+          set -eu
+          mkdir ../evidence
+          test "$(git rev-parse HEAD)" = "$BASE"
+          python3 ../tooling/.maintenance-tools/quest_editor_read.py baseline
+          python3 ../tooling/.maintenance-tools/quest_editor_read_v2.py apply > ../evidence/apply.log 2>&1
+          python3 ../tooling/.maintenance-tools/quest_editor_read_tests_v3.py > ../evidence/add-tests.log 2>&1
+          git -c core.whitespace=cr-at-eol diff --check
+          git diff --exit-code -- src/main/java/logbook/core/QuestDocumentService.java src/main/java/logbook/core/QuestDocumentValidation.java src/main/java/logbook/internal/util/QuestDocumentStore.java src/main/java/logbook/internal/gui/QuestEditorDocument.java
+      - name: Require all 53 contracts and real editor cases, without skipped tests
+        working-directory: candidate
+        run: |
+          xvfb-run -a mvn -B -ntp -Dlogbook.gui.tests=true -Dtest=QuestEditorReadTest,QuestEditorReadBoundaryTest,QuestEditorReadGuiTest,ArrivalConditionEditorGuiTest,QuestDocumentCommandsGuiTest test > ../evidence/after.log 2>&1
+          python3 - <<'PY'
+          import json,xml.etree.ElementTree as E
+          from pathlib import Path
+          expected={'logbook.core.QuestEditorReadTest':26,'logbook.internal.gui.QuestEditorReadBoundaryTest':2,'logbook.internal.gui.QuestEditorReadGuiTest':6,'logbook.internal.gui.ArrivalConditionEditorGuiTest':12,'logbook.internal.gui.QuestDocumentCommandsGuiTest':7}
+          result={}
+          for name,n in expected.items():
+              r=E.parse('target/surefire-reports/TEST-'+name+'.xml').getroot()
+              counts={k:int(r.get(k,0)) for k in ('tests','failures','errors','skipped')}
+              assert counts==dict(tests=n,failures=0,errors=0,skipped=0),(name,counts);result[name]=counts
+          Path('../evidence/suites.json').write_text(json.dumps(result,indent=2))
+          PY
+          mvn -B -ntp -DskipTests package > ../evidence/package.log 2>&1
+      - name: Reuse the retained exact comprehensive-gate and documentation preparation
+        working-directory: candidate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess,textwrap
+          # Our own previously reviewed tooling block, not downloaded artifact code.
+          workflow=Path('../tooling/.github/workflows/quest-editor-read-focused-v2.yml').read_text()
+          start=workflow.index('      - name: Retain mandatory new-suite gates and document exact unfinished boundaries')
+          start=workflow.index('        run: |\n',start)+len('        run: |\n')
+          end=workflow.index('      - name: Commit tested source only',start)
+          command=textwrap.dedent(workflow[start:end]);assert command.startswith("python3 - <<'PY'")
+          subprocess.run(['bash','-e','-o','pipefail','-c',command],check=True)
+          p=Path('docs/maintenance/quest-editor-read-20261029.md')
+          with p.open('a',encoding='utf8') as f:
+              f.write('\n追記: 第2準備run40860883862は53件中52件成功。失敗1件は試験がJSONの配列順をSetの反復順と誤認したもの。\n製品処理を変えず、元の型付きデコーダーの同一入力結果と集合値・反復順を直接比較する試験へ修正した。\n旧失敗証拠を保持し、新しい最終headの全体CIを別途必須とする。\n')
+          PY
+      - name: Preserve tested source with a non-force update to the new candidate branch
+        working-directory: candidate
+        run: |
+          set -eu
+          test "$(git ls-remote origin refs/heads/$TARGET | cut -f1)" = "$BASE"
+          git -c core.whitespace=cr-at-eol diff --check
+          git add src/main/java/logbook/plugin/api/QuestEditorDataV1.java src/main/java/logbook/core/QuestEditorReadService.java src/main/java/logbook/internal/gui/QuestConditionEditController.java src/test/java/logbook/core/QuestEditorReadTest.java src/test/java/logbook/internal/gui/QuestEditorReadBoundaryTest.java src/test/java/logbook/internal/gui/QuestEditorReadGuiTest.java src/test/java/logbook/internal/gui/ArrivalConditionEditorGuiTest.java src/test/java/logbook/internal/gui/QuestDocumentCommandsGuiTest.java scripts/verify_r3.sh docs/maintenance/quest-editor-read-20261029.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 10
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Read immutable editor choices and form projections; retain original command and merge safety'
+          git push origin "HEAD:refs/heads/$TARGET"
+          git rev-parse HEAD > ../evidence/source-commit.txt
+          git rev-parse HEAD^{tree} > ../evidence/source-tree.txt
+      - name: Retain outcomes including any incomplete verification outside product source
+        if: always()
+        working-directory: tooling
+        run: |
+          mkdir -p .maintenance-evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,os,xml.etree.ElementTree as E
+          r={'base':'2aff776dc0112a36c65797dee7192a4a4d77f03e','full_ci_claimed':False,'production_accessed':False,'logs':{},'suites':[]}
+          for p in Path('../evidence').glob('*'):
+              if p.suffix=='.json':r[p.name]=json.loads(p.read_text())
+              elif p.suffix in ('.log','.txt'):
+                  lines=p.read_text(errors='replace').splitlines();r['logs'][p.name]={'tail':lines[-60:],'errors':[s for s in lines if '[ERROR]' in s][-30:]}
+          for p in Path('../candidate/target/surefire-reports').glob('TEST-*QuestEditorRead*.xml'):r['suites'].append(E.parse(p).getroot().attrib)
+          Path('.maintenance-evidence/editor-read-'+os.environ['GITHUB_RUN_ID']+'.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .maintenance-evidence/editor-read-*.json
+          git commit -m 'Retain final focused editor read evidence and keep prior preparation failures'
+          git push origin HEAD:refs/heads/maintenance/quest-editor-read-worker-20261029
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: quest-editor-read-final-focused-evidence
+          path: |
+            evidence/
+            candidate/target/surefire-reports/
+          retention-days: 14
