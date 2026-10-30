@@ -259,7 +259,35 @@ class RuntimeMigrationJavaTest(unittest.TestCase):
                 self.assertEqual(old.read(name), new.read(name), name)
             self.assertNotEqual(old.read('logbook/internal/gui/QuestConditionEditController.class'),
                                 new.read('logbook/internal/gui/QuestConditionEditController.class'))
-        self.exercise_managed_pair(old_jar, new_jar, declared_versions=True)
+        # Retained historical four-JAR applications must use their retained v2
+        # packaging tools, not be relabelled as a six-JAR kai2 distribution.
+        tools_root = Path(os.environ['LOGBOOK_LEGACY_SPLIT_TOOLS']).resolve()
+        pinned = '40cb99c46715715bafcb3f4322db39218f0af7f6'
+        actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=tools_root, text=True).strip()
+        self.assertEqual(pinned, actual)
+        subprocess.run(['git', 'diff', '--exit-code'], cwd=tools_root, check=True)
+        worker = """
+import sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+import run_feature_distribution, build_feature_distribution, feature_bundle_manager, runtime_managed_import
+assert run_feature_distribution.FORMAT == 'logbook-feature-distribution-v2'
+sys.path.insert(0, sys.argv[2])
+from scripts.tests.test_runtime_migration_java import RuntimeMigrationJavaTest
+case = RuntimeMigrationJavaTest()
+try:
+    case.setUp()
+    case.exercise_managed_pair(Path(sys.argv[3]), Path(sys.argv[4]), declared_versions=True)
+finally:
+    case.doCleanups()
+print('HISTORICAL_SPLIT_V2_TOOLS_OK')
+"""
+        checked = subprocess.run([sys.executable, '-c', worker, str(tools_root / 'scripts'),
+                                  str(ROOT), str(old_jar), str(new_jar)], cwd=ROOT,
+                                 env=self.environment, capture_output=True, text=True, timeout=240)
+        self.assertEqual(0, checked.returncode, checked.stdout + checked.stderr)
+        self.assertIn('HISTORICAL_SPLIT_V2_TOOLS_OK', checked.stdout)
+        print(checked.stdout, end='')
         print('RUNTIME_MIGRATION_DECLARED_VERSIONS_OK old=' + OLD_REVISION + ' new=' + NEW_REVISION
               + ' schema_conversion=false old_reader_new_writer_old_reader=true'
               + ' real_launcher=' + str(bool(os.environ.get('DISPLAY'))).lower()

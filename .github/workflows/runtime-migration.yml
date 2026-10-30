@@ -36,6 +36,11 @@ jobs:
           ref: 06be3c9dd4137efbffa5d4f91800881dbc07a5ff
           path: fixtures/new
           persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: 40cb99c46715715bafcb3f4322db39218f0af7f6
+          path: fixtures/v2-tools
+          persist-credentials: false
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
@@ -72,6 +77,7 @@ jobs:
         working-directory: candidate
         shell: bash
         env:
+          LOGBOOK_LEGACY_SPLIT_TOOLS: '${{ github.workspace }}/fixtures/v2-tools'
           LOGBOOK_MIGRATION_OLD_JAR: '${{ github.workspace }}/fixtures/old/target/logbook-kai.jar'
           LOGBOOK_MIGRATION_NEW_JAR: '${{ github.workspace }}/fixtures/new/target/logbook-kai.jar'
         run: |
