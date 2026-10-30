@@ -3,6 +3,7 @@ name: Validate and explicitly publish maintained application prerelease
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - '.github/workflows/manual-app-release.yml'
   workflow_dispatch:
     inputs:
@@ -29,8 +30,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '25'
+          java-version: '25.0.5+8'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: JDK 25 headless tests
         run: mvn --batch-mode --no-transfer-progress verify
 
@@ -44,8 +46,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '21.0.13+9'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Build application and run all Java21 unit tests
         run: mvn --batch-mode --no-transfer-progress verify
       - name: Audit candidate ZIP, app identity and bundled launcher helper

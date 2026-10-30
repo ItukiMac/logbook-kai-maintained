@@ -3,6 +3,7 @@ name: Live public JSON Release isolated Java integration
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'src/main/java/logbook/core/DataPackReleaseClient.java'
       - 'src/main/java/logbook/core/DefinitionPackInstaller.java'
       - 'src/main/java/logbook/core/ExternalQuestDefinitions.java'
@@ -33,8 +34,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: ${{ matrix.java }}
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Verify public release via production Java downloader
         run: |
           mvn --batch-mode --no-transfer-progress \

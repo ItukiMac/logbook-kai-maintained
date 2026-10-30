@@ -2,6 +2,7 @@ name: Audited dependency resolution (no publish)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'pom.xml'
       - '.github/workflows/dependency-resolution.yml'
   workflow_dispatch:
@@ -22,8 +23,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '${{ matrix.java }}'
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Record actual Maven resolution, not just version declarations
         shell: bash
         run: |
@@ -58,6 +60,11 @@ jobs:
           plugins={p.findtext('m:artifactId',namespaces=ns):p.findtext('m:version',namespaces=ns)
                    for p in pom.findall('m:build/m:plugins/m:plugin',ns)}
           assert plugins['maven-surefire-plugin']=='3.6.1'
+          pinned={'maven-clean-plugin': '3.5.0', 'maven-resources-plugin': '3.5.0', 'maven-jar-plugin': '3.5.1', 'maven-install-plugin': '3.2.0', 'maven-deploy-plugin': '3.2.0', 'maven-site-plugin': '3.22.0', 'maven-help-plugin': '3.5.2', 'maven-dependency-plugin': '3.11.0'}
+          effective={p.findtext('m:artifactId',namespaces=ns):p.findtext('m:version',namespaces=ns)
+                     for p in pom.findall('m:build/m:pluginManagement/m:plugins/m:plugin',ns)}
+          for key,value in pinned.items():
+              assert effective.get(key)==value,(key,effective.get(key),value)
           javafx={key:values for key,values in rows.items() if key.startswith('org.openjfx:')}
           assert len(javafx)==7 and all(version=='21.0.13' for values in javafx.values() for version,_ in values)
           assert pom.findtext('m:properties/m:java.version',namespaces=ns)=='21'

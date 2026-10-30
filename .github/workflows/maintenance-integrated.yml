@@ -2,6 +2,7 @@ name: Integrated maintenance verification (no publish)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'pom.xml'
       - 'src/**'
       - 'scripts/**'
@@ -26,8 +27,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '${{ matrix.java }}'
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
       - name: Generate the complete real game data pack in the isolated runner
         run: python3 tools/build_data_pack.py --source-sha "$GITHUB_SHA"

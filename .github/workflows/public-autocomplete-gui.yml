@@ -2,6 +2,7 @@ name: Public JavaFX autocomplete integration
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'src/main/java/logbook/internal/gui/**'
       - 'src/test/java/logbook/internal/gui/**'
       - '.github/workflows/public-autocomplete-gui.yml'
@@ -23,8 +24,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '${{ matrix.java }}'
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
       - name: Check actual call sites have migrated
         run: |

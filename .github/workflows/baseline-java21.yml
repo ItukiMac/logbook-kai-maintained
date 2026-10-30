@@ -3,6 +3,7 @@ name: Baseline Maven build (Java 21)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'pom.xml'
       - 'src/**'
       - '.github/workflows/baseline-java21.yml'
@@ -25,8 +26,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '21.0.13+9'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Record environment
         run: |
           java -version

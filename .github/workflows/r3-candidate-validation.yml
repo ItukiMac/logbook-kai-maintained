@@ -20,8 +20,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '${{ matrix.java }}'
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
       - run: bash scripts/verify_r3.sh
       - uses: actions/upload-artifact@v7.0.2

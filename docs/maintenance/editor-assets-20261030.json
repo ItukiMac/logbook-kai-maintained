@@ -1,0 +1,57 @@
+{
+  "package": "ace-builds",
+  "version": "1.45.2",
+  "license": "BSD-3-Clause",
+  "source": "https://github.com/ajaxorg/ace-builds/tree/v1.45.2",
+  "bundled_modes": [
+    "text",
+    "json",
+    "javascript"
+  ],
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "850f545c5254e8c08204edb2a6d50bbb72727c38a82982c17a84bebf6064cdf8"
+    },
+    {
+      "path": "ace.js",
+      "sha256": "6430923a29a3d30f94eb321700a56ec12cb8060270831632087d166bbac7aca9"
+    },
+    {
+      "path": "ext-language_tools.js",
+      "sha256": "799e3a3746f74240d7fbb1a38e525fa01b9718a207f3a50a2550111e11b3a560"
+    },
+    {
+      "path": "mode-javascript.js",
+      "sha256": "6d0f956ad8f0c3b629b5adf5448a4d9fa1685c38ef0169ea0bbd1381c5cf8fea"
+    },
+    {
+      "path": "mode-json.js",
+      "sha256": "010feab73fd75cfcdee30cdc71bdcc868e4f914465a59a7141c5ee4983a8afec"
+    },
+    {
+      "path": "mode-text.js",
+      "sha256": "075a664f8a886a947294bb56ae32b8a9908bf8716f600ec2710213c60db5de19"
+    },
+    {
+      "path": "snippets/javascript.js",
+      "sha256": "6287a6b820c8707a0cd7b9e4545bcb023a8b9228569cfd21be6635d1409aabf4"
+    },
+    {
+      "path": "snippets/json.js",
+      "sha256": "238a0bd54eb1b4c1a0801bdedd2ea4eb0c28b6987bf4311b9eccaaba3bd776d1"
+    },
+    {
+      "path": "theme-chrome.js",
+      "sha256": "2131ded9bfd8835cab931b89f67f0d1cea4f7abf4b67515a9b069f74231354ce"
+    },
+    {
+      "path": "worker-javascript.js",
+      "sha256": "d14cd1905179ab98dcc37e47023352421617f10a081899c29f17fb1e3fc53535"
+    },
+    {
+      "path": "worker-json.js",
+      "sha256": "f6e9f93c4cd97034553b8cb29e70e6ecac3396cba4ae90831687907568435443"
+    }
+  ]
+}
