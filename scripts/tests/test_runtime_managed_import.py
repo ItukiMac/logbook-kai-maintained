@@ -77,6 +77,8 @@ class RuntimeManagedImportTest(unittest.TestCase):
         for module_id in PROVIDERS:
             for name in required_entries(module_id):
                 entries[name] = ('inert fixture ' + label + ':' + name).encode()
+        for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
+            entries['META-INF/services/' + service] = b'local.kancolle.bridge.KancolleBridgeStartUp\nlocal.kancolle.kqs.KqsLogbookPlugin\n'
         with ZipFile(source, 'x') as archive:
             for name, content in entries.items():
                 archive.writestr(name, content)

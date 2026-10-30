@@ -2,6 +2,10 @@ name: Generation-scoped KQS and KLB compatibility (no publish)
 on:
   pull_request:
     paths:
+      - 'modules/**'
+      - 'scripts/verify_bundled_plugins.sh'
+      - 'scripts/java/BundledPluginWiringProbe.java'
+      - 'scripts/*feature*distribution.py'
       - '.github/actions/pinned-maven/**'
       - 'src/**'
       - 'pom.xml'
