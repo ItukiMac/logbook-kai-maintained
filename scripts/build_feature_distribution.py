@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a NEW, experimental core + three feature-JAR directory. Never install/update.
+"""Build a NEW, experimental core + five feature-JAR directory. Never install/update.
 
 The legacy fat JAR is not changed. Features share the application's class loader;
 each versioned module is pinned to the exact core it was built against.
@@ -157,7 +157,7 @@ def build(source: Path, output: Path, revision: str) -> dict:
             groups[group][name] = (provider + '\n').encode()
         core[name] = ('\n'.join(line for line in lines if line not in plugin_providers.values()) + '\n').encode()
 
-    # The managed launcher supplies an explicit four-JAR class path. Retain all
+    # The managed launcher supplies an explicit six-JAR class path. Retain all
     # other legacy attributes but never let Class-Path silently add other JARs.
     core['META-INF/MANIFEST.MF'] = explicit_classpath_manifest(core['META-INF/MANIFEST.MF'])
     core[HOST_METADATA] = (json.dumps({'api': HOST_API, 'version': HOST_VERSION},

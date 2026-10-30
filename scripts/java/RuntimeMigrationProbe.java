@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import logbook.bean.AppConfig;
 import logbook.bean.AppQuest;
@@ -33,6 +32,19 @@ import logbook.internal.updatecheck.ManagedBundleMode;
  * original-tree write monitoring, timeouts and immutable source verification.
  */
 public final class RuntimeMigrationProbe {
+    /** Test-only adapter: run the same fixture on retained Jackson2 and kai2 hosts. */
+    private static byte[] jsonBytes(Object value) throws Exception {
+        Object mapper;
+        try {
+            Class<?> type = Class.forName("tools.jackson.databind.json.JsonMapper");
+            Object builder = type.getMethod("builderWithJackson2Defaults").invoke(null);
+            mapper = builder.getClass().getMethod("build").invoke(builder);
+        } catch (ClassNotFoundException legacy) {
+            mapper = Class.forName("com.fasterxml.jackson.databind.ObjectMapper").getConstructor().newInstance();
+        }
+        return (byte[]) mapper.getClass().getMethod("writeValueAsBytes", Object.class).invoke(mapper, value);
+    }
+
     private static final String EXPIRY = "2025-06-01 05:00:00";
     private static final String CUSTOM = "// retained synthetic comment\r\n{\"startDate\":\"2025-05-10 09:00:00\"}\r\n";
     private static final String PLUGIN = "opaque fixture bytes; not loaded by any probe\n";
@@ -96,7 +108,7 @@ public final class RuntimeMigrationProbe {
         settings.put("useToast", false);
         settings.put("useNotification", false);
         settings.put("soundLevel", 85);
-        byte[] config = new ObjectMapper().writeValueAsBytes(settings);
+        byte[] config = jsonBytes(settings);
         String configName = "config/logbook.bean.AppConfig.json";
         if (!backupOnly) Files.write(root.resolve(configName), config, StandardOpenOption.CREATE_NEW);
         Files.write(root.resolve(configName + ".backup"), config, StandardOpenOption.CREATE_NEW);
@@ -110,7 +122,7 @@ public final class RuntimeMigrationProbe {
         duration.setFrom("2025-05-10 09:00:00");
         duration.setTo("2025-05-11 00:00:00");
         periods.getMap().put(EXPIRY, Map.of(905, List.of(duration)));
-        new ObjectMapper().writeValue(root.resolve("config/logbook.bean.AppQuestDuration.json").toFile(), periods);
+        Files.write(root.resolve("config/logbook.bean.AppQuestDuration.json"), jsonBytes(periods), java.nio.file.StandardOpenOption.CREATE_NEW);
         PortArrivalStore journal = new PortArrivalStore(root.resolve("sortie-arrivals-v1"));
         for (PortArrival record : originals()) journal.append(record);
         System.out.println("MIGRATION_FIXTURE_SEEDED records=3 accepted=2 backup_only=" + backupOnly);

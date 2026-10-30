@@ -65,7 +65,7 @@ FILES = ('logbook-core.jar', 'features/logbook-feature-calculators.jar',
 JARS = tuple(name for name in FILES if name.endswith('.jar'))
 
 
-# Additive v2 packaging profile: existing three modules/classpath are retained.
+# Additive v2 packaging profile: existing GUI profiles are retained alongside KLB/KQS.
 # Presence of the immutable data API in the host is the profile discriminator.
 RECORD_UI_PROFILE = 'record-ui-in-charts-v1'
 RECORD_UI_API = 'logbook/plugin/api/RecordDataV1.class'
