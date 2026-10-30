@@ -132,6 +132,25 @@ def ship_list_ui_required_entries():
                ('IntegerParameter', 'ShipItemParameterFilterPane', 'ItemParameterFilterPane', 'AirBaseParameterFilterPane')})
 
 
+QUEST_UI_PROFILE = 'quest-ui-in-status-v1'
+QUEST_UI_API = 'logbook/plugin/api/QuestUiV1.class'
+QUEST_UI_FAMILIES = ('QuestPane', 'QuestProgress', 'QuestConditionEditController',
+                     'ArsenalQuestConditionEditController', 'QuestEditorDocument', 'QuestObservationUiBinding')
+QUEST_UI_RESOURCES = ('quest', 'quest_progress', 'quest_condition_edit', 'arsenal_quest_condition_edit')
+
+
+def quest_ui_entry(name):
+    return (name in {'logbook/gui/' + resource + '.fxml' for resource in QUEST_UI_RESOURCES}
+            or any(name == 'logbook/internal/gui/' + family + '.class'
+                   or name.startswith('logbook/internal/gui/' + family + '$') and name.endswith('.class')
+                   for family in QUEST_UI_FAMILIES))
+
+
+def quest_ui_required_entries():
+    return ({'logbook/internal/gui/' + family + '.class' for family in QUEST_UI_FAMILIES}
+            | {'logbook/gui/' + resource + '.fxml' for resource in QUEST_UI_RESOURCES})
+
+
 def required_entries(module_id):
     provider, controllers, resources = GROUPS[module_id]
     stems = ['logbook/features/' + provider]
@@ -179,6 +198,9 @@ def validate_manifest(report):
     """Validate the complete compatibility graph without opening files or Java."""
     if not isinstance(report, dict) or report.get('format') != FORMAT:
         raise ValueError('Versioned distribution manifest required; legacy v1 is not launchable')
+    quest_profile = report.get('quest_ui_profile')
+    if quest_profile is not None and quest_profile != QUEST_UI_PROFILE:
+        raise ValueError('Unsupported quest UI packaging profile')
     ship_list_profile = report.get('ship_list_ui_profile')
     if ship_list_profile is not None and ship_list_profile != SHIP_LIST_UI_PROFILE:
         raise ValueError('Unsupported ship list UI packaging profile')
@@ -301,6 +323,7 @@ def manifest_attributes(raw):
 
 
 def verify_jars(root, report, catalog):
+    quest_profile = report.get('quest_ui_profile') == QUEST_UI_PROFILE
     ship_list_profile = report.get('ship_list_ui_profile') == SHIP_LIST_UI_PROFILE
     statistics_profile = report.get('ship_statistics_profile') == SHIP_STATISTICS_PROFILE
     equipment_profile = report.get('equipment_ui_profile') == EQUIPMENT_UI_PROFILE
@@ -349,6 +372,10 @@ def verify_jars(root, report, catalog):
             if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':
                 raise ValueError('Multi-release feature JARs are not supported')
             if path == JARS[0]:
+                if (QUEST_UI_API in names) != quest_profile:
+                    raise ValueError('Quest UI API and packaging profile disagree')
+                if quest_profile and any(quest_ui_entry(name) for name in names):
+                    raise ValueError('Quest UI remains in the host instead of status')
                 if (SHIP_LIST_UI_API in names) != ship_list_profile:
                     raise ValueError('Ship list UI API and packaging profile disagree')
                 if ship_list_profile and any(ship_list_ui_entry(name) for name in names):
@@ -375,6 +402,11 @@ def verify_jars(root, report, catalog):
                 continue
             module = next(m for m in catalog.values() if m['path'] == path)
             required = required_entries(module['id'])
+            if quest_profile:
+                if module['id'] == 'status':
+                    required |= quest_ui_required_entries()
+                elif any(quest_ui_entry(name) for name in names):
+                    raise ValueError('Quest UI belongs to the status module')
             if ship_list_profile:
                 if module['id'] == 'status':
                     required |= ship_list_ui_required_entries()

@@ -18,7 +18,8 @@ from run_feature_distribution import (FORMAT, HOST_API, HOST_VERSION, FEATURES,
                                      record_ui_entry, record_ui_required_entries, EQUIPMENT_UI_API, EQUIPMENT_UI_PROFILE,
                                      equipment_ui_entry, equipment_ui_required_entries, SHIP_STATISTICS_API,
                                      SHIP_STATISTICS_PROFILE, ship_statistics_entry, ship_statistics_required_entries,
-                                     SHIP_LIST_UI_API, SHIP_LIST_UI_PROFILE, ship_list_ui_entry, ship_list_ui_required_entries)
+                                     SHIP_LIST_UI_API, SHIP_LIST_UI_PROFILE, ship_list_ui_entry, ship_list_ui_required_entries, QUEST_UI_API, QUEST_UI_PROFILE,
+                                     quest_ui_entry, quest_ui_required_entries)
 
 SERVICE = 'META-INF/services/logbook.plugin.api.FeatureModule'
 STAMP = (2020, 1, 1, 0, 0, 0)
@@ -36,7 +37,9 @@ def new_directory(path: Path) -> None:
     path.mkdir(parents=False, exist_ok=False)
 
 
-def owner(name: str, record_ui: bool = False, equipment_ui: bool = False, statistics_ui: bool = False, ship_list_ui: bool = False) -> str | None:
+def owner(name: str, record_ui: bool = False, equipment_ui: bool = False, statistics_ui: bool = False, ship_list_ui: bool = False, quest_ui: bool = False) -> str | None:
+    if quest_ui and quest_ui_entry(name):
+        return 'status'
     if ship_list_ui and ship_list_ui_entry(name):
         return 'status'
     if statistics_ui and ship_statistics_entry(name):
@@ -101,6 +104,11 @@ def build(source: Path, output: Path, revision: str) -> dict:
     expected = {'logbook.features.' + values[0] for values in GROUPS.values()}
     if providers != expected:
         raise ValueError('Feature service list changed; update the extraction contract')
+    quest_ui = QUEST_UI_API in entries
+    if quest_ui:
+        missing = quest_ui_required_entries() - entries.keys()
+        if missing:
+            raise ValueError('Missing quest UI input: ' + sorted(missing)[0])
     ship_list_ui = SHIP_LIST_UI_API in entries
     if ship_list_ui:
         missing = ship_list_ui_required_entries() - entries.keys()
@@ -130,7 +138,7 @@ def build(source: Path, output: Path, revision: str) -> dict:
     groups = {g: {} for g in GROUPS}
     core = {}
     for name, data in entries.items():
-        group = owner(name, record_ui, equipment_ui, statistics_ui, ship_list_ui)
+        group = owner(name, record_ui, equipment_ui, statistics_ui, ship_list_ui, quest_ui)
         if group:
             groups[group][name] = data
         elif name != SERVICE:
@@ -175,7 +183,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
                          'path': 'logbook-core.jar', 'sha256': host_hash},
                 'modules': modules,
                 'files': {n: sha((output / n).read_bytes()) for n in files},
-                'extracted': {g: sorted(n for n in entries if owner(n, record_ui, equipment_ui, statistics_ui, ship_list_ui) == g) for g in GROUPS}}
+                'extracted': {g: sorted(n for n in entries if owner(n, record_ui, equipment_ui, statistics_ui, ship_list_ui, quest_ui) == g) for g in GROUPS}}
+    if quest_ui:
+        manifest['quest_ui_profile'] = QUEST_UI_PROFILE
     if ship_list_ui:
         manifest['ship_list_ui_profile'] = SHIP_LIST_UI_PROFILE
     if statistics_ui:

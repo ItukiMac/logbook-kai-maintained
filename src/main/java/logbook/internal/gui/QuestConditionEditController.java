@@ -26,7 +26,7 @@ import logbook.plugin.api.QuestEditorDataV1.Choice;
 /**
  * 任務達成条件編集コントローラー
  */
-public class QuestConditionEditController extends WindowController {
+public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1.Window {
 
     @FXML
     private ComboBox<Choice> questSelector;

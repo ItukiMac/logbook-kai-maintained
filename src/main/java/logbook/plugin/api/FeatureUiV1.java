@@ -63,6 +63,12 @@ public final class FeatureUiV1 {
         }
     }
 
+    /** Window-lifetime definition observation. Closing is idempotent on the FX thread. */
+    public interface Binding extends AutoCloseable { @Override void close(); }
+    public static Binding observeDefinitions(javafx.stage.Window window, Runnable refresh) {
+        return FeatureUiBridgeV1.observeDefinitions(window, refresh);
+    }
+
     /** Table helpers keep the existing persisted keys and shortcuts. */
     public static final class Tables {
         private Tables() { }
