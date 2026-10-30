@@ -57,6 +57,32 @@ class PublisherGuardTest(unittest.TestCase):
         with patch.object(pub,'gh_json',return_value=release),patch.object(pub,'gh_write',return_value={}) as write:
             result=pub.withdraw(f.out,context=context);self.assertTrue(result['withdrawn_to_retained_draft']);write.assert_called_once_with('PATCH','repos/'+pub.REPO+'/releases/17',{'draft':True,'make_latest':'false'})
         with self.assertRaises(ValueError):pub.withdraw(f.out,context=dict(context,GITHUB_RUN_ID='10'))
+    def test_writer_draft_upload_hash_check_and_publish_order_without_network(self):
+        f,r=self.fixture();events=[];assets=[];actual_git=w.git
+        context={'GITHUB_REPOSITORY':pub.REPO,'GITHUB_REF':'refs/heads/master','GITHUB_EVENT_NAME':'push','GITHUB_RUN_NUMBER':'7','GITHUB_RUN_ID':'91','RUNNER_TEMP':str(f.base)}
+        def git(root,*args,**kwargs):
+            if 'push' in args:
+                self.assertNotIn('--force',args);self.assertEqual(r['candidate_revision']+':refs/heads/master',args[-1]);events.append('push');return b''
+            return actual_git(root,*args,**kwargs)
+        def read(endpoint):
+            if endpoint.endswith('/git/ref/heads/master'):return {'object':{'sha':r['base_revision']}}
+            if endpoint.endswith('/assets'):return assets
+            return []
+        def write(method,endpoint,data):
+            events.append(method)
+            if method=='POST':self.assertTrue(data['draft'])
+            else:self.assertFalse(data['draft']);self.assertEqual('false',data['make_latest'])
+            return {'id':17,'html_url':'https://github.com/'+pub.REPO+'/releases/tag/data-v2026.10.30.7','draft':method=='POST','prerelease':False,'tag_name':'data-v2026.10.30.7'}
+        def upload(args):
+            events.append('upload');files=[Path(name) for name in args[3:-2]]
+            self.assertEqual({'logbook-data-pack.zip','routine-numeric-receipt.json','SHA256SUMS-data.txt'},{file.name for file in files})
+            assets.extend({'name':file.name,'digest':'sha256:'+w.digest(file.read_bytes())} for file in files)
+        with patch.object(w,'git',side_effect=git),patch.object(pub,'gh_json',side_effect=read),patch.object(pub,'latest_data_release',return_value=r['baseline']),patch.object(pub,'gh_write',side_effect=write),patch.object(pub,'run_gh',side_effect=upload):
+            result=pub.publish(f.root,f.out,context=context,now=f.now)
+        self.assertEqual(['push','POST','upload','PATCH'],events);self.assertTrue(result['published']);self.assertFalse(result['consumer_verified']);self.assertTrue((f.out/'publication-draft.json').exists())
+    def test_observations_outside_reconciled_scope_stop(self):
+        f,r=self.fixture();r['observed_values']['src/main/resources/logbook/mission/9/99.json']={'flagship_min_level':1};self.save(f,r)
+        with self.assertRaisesRegex(ValueError,'outside reconciled scope'):pub.verify_transfer(f.root,f.out,now=f.now)
     def test_no_owned_release_is_a_preserving_noop(self):
         f=Fixture(self)
         with patch.object(pub,'gh_json') as read:

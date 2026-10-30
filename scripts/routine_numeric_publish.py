@@ -60,6 +60,8 @@ def verify_transfer(root,artifact,*,now=None):
     if not paths or not paths<=allowed or paths!=set(receipt['changed_source_paths']) or paths!=set(receipt['candidate_files']):raise ValueError('Candidate changed executable/unapproved paths')
     for path in paths:
         w.relative(path)
+        entry=w.git(root,'ls-tree',revision,'--',path).decode().split()
+        if len(entry)!=4 or entry[:2]!=['100644','blob']:raise ValueError('Candidate JSON must remain a regular nonexecutable file')
         if w.digest(w.git(root,'show',revision+':'+path))!=receipt['candidate_files'][path]:raise ValueError('Candidate blob mismatch')
     new_facts=json.loads(w.git(root,'show',revision+':'+p.FACTS),object_pairs_hook=w.unique)
     if set(new_facts)!=set(base_facts) or new_facts.get('format')!=base_facts['format'] or new_facts.get('whole_rule_verified') is not False or set(new_facts['definitions'])!=set(base_facts['definitions']):raise ValueError('Facts schema/scope changed')
@@ -78,6 +80,9 @@ def verify_transfer(root,artifact,*,now=None):
     if changed!=set(receipt['changed_public_definitions']) or not changed<=set(numeric):raise ValueError('Non-numeric public payload changed')
     reconciled=set(receipt['reconciled_definitions'])
     if not changed<=reconciled or not reconciled<=set(numeric) or not 0<len(reconciled)<=policy['max_changed_definitions']:raise ValueError('Reconciled scope/budget invalid')
+    if (paths & set(numeric))-reconciled or set(receipt['observed_values'])!=reconciled:raise ValueError('Source changes/observations outside reconciled scope')
+    for path in set(numeric)-reconciled:
+        if new_facts['definitions'][path]!=base_facts['definitions'][path]:raise ValueError('Unselected facts changed')
     new_records={r['path']:r for r in pack_manifest['files']};old_records={r['path']:r for r in old_manifest['files']}
     for name,row in new_records.items():
         path=p.PREFIX+name[len('definitions/'):]
