@@ -2,6 +2,7 @@ name: Generation-scoped KQS and KLB compatibility (no publish)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'src/**'
       - 'pom.xml'
       - '.github/workflows/generation-plugin-compatibility.yml'
@@ -48,8 +49,9 @@ jobs:
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
-          java-version: '${{ matrix.java }}'
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Build current and two pinned isolated prior host JARs
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package

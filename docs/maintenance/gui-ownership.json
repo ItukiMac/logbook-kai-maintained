@@ -1,0 +1,986 @@
+{
+  "format": "logbook-gui-ownership-v1",
+  "scope": "Every top-level internal GUI Java source; grouped contract tests and packaged probes, not per-class behavior certification.",
+  "components": [
+    {
+      "path": "src/main/java/logbook/internal/gui/AirBaseController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/AirBaseItem.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/AkashiTimerPane.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleDetail.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleDetailPhase.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleDetailPhaseShip.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleDetailPhaseStage1.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleDetailPhaseStage1AirBase.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleDetailPhaseStage2.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleDetailViewData.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleLogCollect.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleLogController.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleLogDetail.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleLogDetailAggregate.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleRecordCollect.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/BattleRecordDetail.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/CalcExpController.java",
+      "owner": "calculators",
+      "category": "extracted-calculators",
+      "reason": "Feature controller/model is physically packaged in the calculators module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/CalcExpSeaAreaEditorController.java",
+      "owner": "calculators",
+      "category": "extracted-calculators",
+      "reason": "Feature controller/model is physically packaged in the calculators module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/CaptureController.java",
+      "owner": "host",
+      "category": "desktop-capture",
+      "reason": "Host owns desktop Robot, capture process and destination chooser lifecycle; pure image operations are tested without desktop access.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/ScreenCaptureImageTest.java",
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/CaptureSaveController.java",
+      "owner": "host",
+      "category": "desktop-capture",
+      "reason": "Host owns desktop Robot, capture process and destination chooser lifecycle; pure image operations are tested without desktop access.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/ScreenCaptureImageTest.java",
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ColumnVisibleController.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ConfigController.java",
+      "owner": "host",
+      "category": "global-configuration",
+      "reason": "Host owns global settings, legacy plugin inspection and application update lifecycle; feature installation must not replace these controls.",
+      "verification": [
+        "scripts/tests/test_runtime_migration_java.py",
+        "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/CreateItemController.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/Deck.java",
+      "owner": "host",
+      "category": "saved-formation",
+      "reason": "Host owns personal formation editing and the existing shared persistence collection; extraction requires a separate write-command contract.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java",
+        "src/test/java/logbook/core/ShipRosterContractTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/DeckBuilder.java",
+      "owner": "host",
+      "category": "saved-formation",
+      "reason": "Host owns personal formation editing and the existing shared persistence collection; extraction requires a separate write-command contract.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java",
+        "src/test/java/logbook/core/ShipRosterContractTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/DeckFleetPane.java",
+      "owner": "host",
+      "category": "saved-formation",
+      "reason": "Host owns personal formation editing and the existing shared persistence collection; extraction requires a separate write-command contract.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java",
+        "src/test/java/logbook/core/ShipRosterContractTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/DeckShipPane.java",
+      "owner": "host",
+      "category": "saved-formation",
+      "reason": "Host owns personal formation editing and the existing shared persistence collection; extraction requires a separate write-command contract.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java",
+        "src/test/java/logbook/core/ShipRosterContractTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/DefinitionUiBinding.java",
+      "owner": "host",
+      "category": "live-bindings",
+      "reason": "Host owns shared definition/event/visibility subscriptions; feature UI calls public bridges and must not create another source of state.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/DefinitionUiBindingGuiTest.java",
+        "src/test/java/logbook/internal/gui/QuestObservationUiBindingGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/DetailItem.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/DetailPlugin.java",
+      "owner": "host",
+      "category": "global-configuration",
+      "reason": "Host owns global settings, legacy plugin inspection and application update lifecycle; feature installation must not replace these controls.",
+      "verification": [
+        "scripts/tests/test_runtime_migration_java.py",
+        "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/EquipmentDetailItem.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/EquipmentProjection.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ExpChartController.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/FeatureUiBridgeV1.java",
+      "owner": "host",
+      "category": "public-bridges",
+      "reason": "Host public bridge is the stable entry into shared UI and legacy adapters; implementation modules depend on this boundary.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/FleetTabPane.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/FleetTabShipPane.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/FleetTabShipPopup.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/InternalFXMLLoader.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/Item.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ItemAirBaseController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ItemController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ItemFilter.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ItemItemController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/LastDanceCalcController.java",
+      "owner": "calculators",
+      "category": "extracted-calculators",
+      "reason": "Feature controller/model is physically packaged in the calculators module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/Main.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MainController.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MainMenuController.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionAggregate.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionCheck.java",
+      "owner": "calculators",
+      "category": "extracted-calculators",
+      "reason": "Feature controller/model is physically packaged in the calculators module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionLogCollect.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionLogController.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionLogDetail.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionPane.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionRecordCollect.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/MissionRecordDetail.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/NdockPane.java",
+      "owner": "host",
+      "category": "application-session",
+      "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ParameterFilterPane.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/PopOver.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/PopOverPane.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/PopupSelectbox.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/PopupSelectboxContainer.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ProbCalcController.java",
+      "owner": "calculators",
+      "category": "extracted-calculators",
+      "reason": "Feature controller/model is physically packaged in the calculators module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/PropertyDialog.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/PublicAutoCompletion.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestConditionEditController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestEditorDocument.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestObservationUiBinding.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestPane.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestProgress.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestUiBridgeV1.java",
+      "owner": "host",
+      "category": "public-bridges",
+      "reason": "Host public bridge is the stable entry into shared UI and legacy adapters; implementation modules depend on this boundary.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/QuestVisibilityUi.java",
+      "owner": "host",
+      "category": "live-bindings",
+      "reason": "Host owns shared definition/event/visibility subscriptions; feature UI calls public bridges and must not create another source of state.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/DefinitionUiBindingGuiTest.java",
+        "src/test/java/logbook/internal/gui/QuestObservationUiBindingGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/RecordViewBridgeV1.java",
+      "owner": "host",
+      "category": "public-bridges",
+      "reason": "Host public bridge is the stable entry into shared UI and legacy adapters; implementation modules depend on this boundary.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/RequireNdock.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/RequireNdockController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ResourceChartController.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ResourceTable.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/RestoredCheckBoxGroup.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ScreenCapture.java",
+      "owner": "host",
+      "category": "desktop-capture",
+      "reason": "Host owns desktop Robot, capture process and destination chooser lifecycle; pure image operations are tested without desktop access.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/ScreenCaptureImageTest.java",
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/SeaAreaEditController.java",
+      "owner": "host",
+      "category": "saved-formation",
+      "reason": "Host owns personal formation editing and the existing shared persistence collection; extraction requires a separate write-command contract.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/AuxiliaryHostGuiTest.java",
+        "src/test/java/logbook/core/ShipRosterContractTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ShipController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ShipItem.java",
+      "owner": "host",
+      "category": "legacy-read-adapters",
+      "reason": "Host retains legacy row/view adapter identity for old plugins and shared tables; immutable versioned feature data boundaries are tested independently.",
+      "verification": [
+        "src/test/java/logbook/core/RecordDataContractTest.java",
+        "src/test/java/logbook/core/EquipmentDataContractTest.java",
+        "src/test/java/logbook/internal/gui/BattleDetailTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ShipTablePane.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/ShortageShipItem.java",
+      "owner": "calculators",
+      "category": "extracted-calculators",
+      "reason": "Feature controller/model is physically packaged in the calculators module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/StatisticsPane.java",
+      "owner": "charts",
+      "category": "extracted-charts",
+      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/SuggestSupport.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/TableTool.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/TextEditorPane.java",
+      "owner": "host",
+      "category": "shared-editor",
+      "reason": "Host owns one bundled WebView/JavaScript editor and native toolkit lifecycle reused by feature editors.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/OfflineTextEditorGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/Tools.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/TreeTableTool.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/UseitemController.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/UseitemItem.java",
+      "owner": "status",
+      "category": "extracted-status",
+      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "scripts/verify_r3.sh"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/VersionController.java",
+      "owner": "host",
+      "category": "global-configuration",
+      "reason": "Host owns global settings, legacy plugin inspection and application update lifecycle; feature installation must not replace these controls.",
+      "verification": [
+        "scripts/tests/test_runtime_migration_java.py",
+        "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/WindowController.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/WindowHolder.java",
+      "owner": "host",
+      "category": "shared-controls",
+      "reason": "Host owns toolkit-level window/table/popup/FXML services shared across modules; moving them into one feature would introduce reverse dependencies.",
+      "verification": [
+        "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
+        "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
+        "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+name: Source workbench checkpoint and new-environment recovery (no deploy)
+on:
+  pull_request:
+    paths:
+      - 'scripts/maintenance_workbench.py'
+      - 'scripts/tests/test_maintenance_workbench.py'
+      - 'docs/maintenance/maintenance-agent-contract.md'
+      - '.github/workflows/maintenance-workbench.yml'
+      - '.github/actions/pinned-maven/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checkpoint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9'
+      - uses: ./.github/actions/pinned-maven
+      - name: Test recovery guards and checkpoint public tracked development source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s scripts/tests -p test_maintenance_workbench.py -v
+          python3 - <<'PY'
+          import json,os,sys
+          from pathlib import Path
+          sys.path.insert(0,str(Path('scripts').resolve()))
+          import maintenance_workbench as w
+          source=Path.cwd();out=Path(os.environ['RUNNER_TEMP'])/'workbench-transfer'
+          before={name:w.digest(w.read_source(source,name)) for name in w.tracked(source)}
+          r=w.checkpoint(source,out,progress={'task':'M4','phase':'checkpoint-ready',
+              'next':'resume source validator on a separate runner','pending':['native validation','publication'],
+              'failed_attempts_retained':True},toolchain=w.measure_environment())
+          assert before=={name:w.digest(w.read_source(source,name)) for name in w.tracked(source)}
+          (out/'expected-sha256.txt').write_text(r['checkpoint_sha256']+'\n')
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: public-source-workbench-checkpoint
+          path: '${{ runner.temp }}/workbench-transfer/'
+          retention-days: 14
+          if-no-files-found: error
+  recover-on-new-runner:
+    needs: checkpoint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9'
+      - uses: ./.github/actions/pinned-maven
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: public-source-workbench-checkpoint
+          path: '${{ runner.temp }}/received-workbench'
+      - name: Verify transferred checkpoint and resume restored source on this separately provisioned runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/workbench-evidence
+          python3 - <<'PY'
+          import json,os,subprocess,sys,tempfile
+          from pathlib import Path
+          sys.path.insert(0,str(Path('scripts').resolve()))
+          import maintenance_workbench as w
+          source=Path.cwd();checkpoint=Path(os.environ['RUNNER_TEMP'])/'received-workbench'
+          pinned=(checkpoint/'expected-sha256.txt').read_text().strip();report=w.verify(checkpoint,pinned)
+          assert report['origin_revision']==os.environ['GITHUB_SHA']
+          before={name:w.digest(w.read_source(source,name)) for name in w.tracked(source)}
+          recovered=Path(tempfile.mkdtemp(prefix='workbench-recovery-',dir=os.environ['RUNNER_TEMP']))/'new-checkout'
+          w.check_environment(report,w.measure_environment())
+          restored=w.restore(checkpoint,pinned,recovered,protected=[source],initialize_git=True)
+          run=subprocess.run([sys.executable,'scripts/maintenance_inventory.py','--root','.'],cwd=recovered,capture_output=True,text=True,timeout=60,check=True)
+          inventory=json.loads(run.stdout)
+          assert inventory['counts']['skipped']==0 and inventory['counts']['game_json']==152
+          subprocess.run([sys.executable,'-m','unittest','discover','-s','scripts/tests','-p','test_maintenance_workbench.py'],cwd=recovered,check=True,timeout=90)
+          assert before=={name:w.digest(w.read_source(source,name)) for name in w.tracked(source)}
+          assert not restored['origin_history_copied'] and restored['initialized_new_git_history']
+          result={'result':'passed','checkout':os.environ['GITHUB_SHA'],'files':len(report['files']),
+              'toolchain':w.measure_environment(),'source_unchanged':True,'resumed_source_validator':True,
+              'separate_ci_job':True,'new_git_history':True,'paid_provider_calls':0,
+              'production_accessed':False,'actual_os_snapshot_claimed':False,'checkpoint_sha256':pinned}
+          Path('target/workbench-evidence/summary.json').write_text(json.dumps(result,indent=2)+'\n')
+          print('SOURCE_WORKBENCH_RECOVERY_OK '+json.dumps(result))
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: source-workbench-recovery-evidence
+          path: target/workbench-evidence/
+          retention-days: 14
+          if-no-files-found: error

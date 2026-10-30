@@ -1,0 +1,102 @@
+name: Single reviewed definition artifact delivery and rollback
+on:
+  pull_request:
+    paths:
+      - 'scripts/build_single_definition_trial.py'
+      - 'scripts/java/DefinitionTrialLifecycleProbe.java'
+      - 'scripts/tests/test_single_definition_trial.py'
+      - '.github/workflows/single-definition-trial.yml'
+      - 'src/main/resources/logbook/mission/1/A1.json'
+      - '.github/actions/pinned-maven/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  distribute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9'
+          cache: maven
+      - uses: ./.github/actions/pinned-maven
+      - name: Retrieve pinned actual published baseline and construct one-definition trial
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/definition-trial
+          curl --fail --silent --show-error --location --retry 3 --connect-timeout 15 --max-time 90 \
+            https://github.com/ItukiMac/logbook-kai-maintained/releases/download/data-v2026.10.25.1/logbook-data-pack.zip \
+            -o target/definition-trial/baseline.zip
+          python3 scripts/build_single_definition_trial.py --baseline target/definition-trial/baseline.zip \
+            --out target/definition-trial/trial.zip > target/definition-trial/receipt.json
+          mvn --batch-mode --no-transfer-progress -DskipTests package
+          cp target/logbook-kai.jar target/definition-trial/logbook-kai.jar
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('target/definition-trial/receipt.json');r=json.loads(p.read_text())
+          r['candidate_jar_sha256']=hashlib.sha256(Path('target/definition-trial/logbook-kai.jar').read_bytes()).hexdigest()
+          p.write_text(json.dumps(r,indent=2)+'\n')
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: single-reviewed-definition-trial-NOT-FOR-PRODUCTION
+          path: target/definition-trial/
+          retention-days: 14
+          if-no-files-found: error
+  receive-apply-restore:
+    needs: distribute
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21','25']
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: single-reviewed-definition-trial-NOT-FOR-PRODUCTION
+          path: target/received-trial
+      - name: Verify actual transferred artifacts, apply one change and restore retained generation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/definition-trial-evidence target/trial-probe
+          javac -proc:none --release 21 -cp target/received-trial/logbook-kai.jar -d target/trial-probe scripts/java/DefinitionTrialLifecycleProbe.java
+          python3 - <<'PY'
+          import hashlib,json,os,subprocess,tempfile
+          from pathlib import Path
+          root=Path('target/received-trial').resolve();r=json.loads((root/'receipt.json').read_text())
+          assert r['source_revision']==os.environ['GITHUB_SHA']
+          for name,key in [('baseline.zip','baseline_sha256'),('trial.zip','trial_sha256'),('logbook-kai.jar','candidate_jar_sha256')]:
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==r[key],name
+          store=Path(tempfile.mkdtemp(prefix='single-definition-',dir=os.environ['RUNNER_TEMP']))/'new-data-only-store'
+          run=subprocess.run(['java','-cp',str(root/'logbook-kai.jar')+':target/trial-probe',
+              'logbook.core.DefinitionTrialLifecycleProbe',str(root/'baseline.zip'),r['baseline_sha256'],
+              str(root/'trial.zip'),r['trial_sha256'],str(store),str(root/'logbook-kai.jar')],capture_output=True,text=True,check=True,timeout=90)
+          evidence=Path('target/definition-trial-evidence');(evidence/'lifecycle.log').write_text(run.stdout+run.stderr)
+          assert 'SINGLE_DEFINITION_LIFECYCLE_OK files=152 changed=1 apply=true restore=true original_retained=true jar_unchanged=true production=false' in run.stdout
+          r.update(result='passed',checkout=os.environ['GITHUB_SHA'],actual_artifact_delivery=True,actual_generation_restore=True,native_mint_tested=False)
+          (evidence/'summary.json').write_text(json.dumps(r,indent=2)+'\n');print(run.stdout)
+          PY
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: single-definition-lifecycle-java${{ matrix.java }}
+          path: target/definition-trial-evidence/
+          if-no-files-found: error
+          retention-days: 14
