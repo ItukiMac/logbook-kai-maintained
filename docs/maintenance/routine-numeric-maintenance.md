@@ -52,9 +52,17 @@ retained evidence and explicitly dispatch `resume_after_failure=true`; rerunning
 failed job does not bypass stale master/baseline checks. Cancelled workflows require
 operator inspection of any draft/public release before resuming.
 
-Development activation must be validated on the exact PR source. Completion of M2
-also requires inspection of actual post-merge release and both consumer receipts;
-synthetic unit fixtures and a successful readiness diagnostic are not that evidence.
+Activation and first live completion were verified on2026-10-30. PR83's exact final
+implementation passed all14 workflows. The master cycle
+[41116243426](https://github.com/ItukiMac/logbook-kai-maintained/actions/runs/41116243426)
+published [data-v2026.10.30.7](https://github.com/ItukiMac/logbook-kai-maintained/releases/tag/data-v2026.10.30.7).
+Both real public consumers on Java21/25 completed typed apply/idempotence/restoration.
+The actual public archive matches the verified candidate;4 payloads changed and148
+remained identical to the retained public baseline. Existing source literals already
+agreed, so this initial reconciliation committed only its audit JSON. Detailed immutable
+identities and the held/deferred scope are in
+[routine-numeric-first-live-cycle-20261030.json](routine-numeric-first-live-cycle-20261030.json).
+Synthetic fixtures and the earlier readiness diagnostic are separate evidence.
 Native Mint/IME/game traffic, personal migration and production application deployment
 remain outside this lane. Existing application clients that have explicitly opted
 into data updates may observe the stable data release through their ordinary updater.

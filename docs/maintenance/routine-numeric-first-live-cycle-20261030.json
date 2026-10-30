@@ -1,0 +1,190 @@
+{
+  "format": "logbook-original-plan-first-live-cycle-v1",
+  "verified_at": "2026-10-30T19:47:48.875702+00:00",
+  "original_plan_tasks": 27,
+  "original_non_native_acceptance_complete": true,
+  "native_validation_completed": false,
+  "whole_rule_verified": false,
+  "live_cycle_completed": true,
+  "paid_provider_calls": 0,
+  "implementation_pr": 83,
+  "implementation_head": "d60f69cf4d5e24ca6b4d95032e6ea48b5d5d604e",
+  "tested_merge": "19e731cb7d7acf1718c780df1eb15b8b144e5baa",
+  "implementation_merge": "8e4d6594c83d47f27341898c187714ad0de219c1",
+  "implementation_workflows_succeeded": 14,
+  "implementation_tree": "58b85f3005f945ec619b3f18493b5e6c9b1c8a80",
+  "canonical_java_tests_per_runtime": {
+    "tests": 1094,
+    "successful": 1093,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0
+  },
+  "canonical_python_scripts": {
+    "tests": 540,
+    "successful": 539,
+    "skipped": 1
+  },
+  "packager_tests_succeeded": 25,
+  "workflow_run_id": 41116243426,
+  "workflow_url": "https://github.com/ItukiMac/logbook-kai-maintained/actions/runs/41116243426",
+  "source_commit": "67323de82c4555339affc6e8799dc81e261a1985",
+  "source_committed_json_paths": [
+    "docs/maintenance/routine-numeric-candidate.json"
+  ],
+  "source_definition_changes": [],
+  "scope": {
+    "definitions": 55,
+    "numeric_selectors": 62,
+    "policy_deferred_comparisons": 9,
+    "runtime_held_definitions": [
+      {
+        "path": "src/main/resources/logbook/mission/1/A2.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/1/A3.json",
+        "reason": "Numeric clause must be unique, pure and globally conjunctive"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/1/A4.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/1/A6.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/2/B2.json",
+        "reason": "Numeric clause must be unique, pure and globally conjunctive"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/2/B3.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/2/B4.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/2/B5.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/4/D1.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/4/D2.json",
+        "reason": "Source disagreement or unsupported extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/5/35.json",
+        "reason": "Zekamashi level layout changed"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/5/E1.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/5/E2.json",
+        "reason": "Zekamashi level layout changed"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/7/41.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/7/43.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/7/44.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/7/45.json",
+        "reason": "Unreviewed extra numeric requirement"
+      },
+      {
+        "path": "src/main/resources/logbook/mission/7/46.json",
+        "reason": "Unreviewed extra numeric requirement"
+      }
+    ],
+    "pending_budget": [],
+    "whole_rule_certification": false
+  },
+  "policy_sha256": "678a73329cef1886f19a7e901a60f5059a606cf0ab7e6b408ab2cfeabe5faf14",
+  "evidence": [
+    {
+      "bytes": 157310,
+      "checked_at": "2026-10-30T19:33:54.106474+00:00",
+      "evidence_sha256": "58f9ac83998e562240b1f0a995f7ca0182e535725fbd6d5d93a2da715a256637",
+      "url": "https://wikiwiki.jp/kancolle/%E9%81%A0%E5%BE%81/%E8%A9%B3%E7%B4%B0%E4%B8%80%E8%A6%A7%E8%A1%A8"
+    },
+    {
+      "bytes": 360667,
+      "checked_at": "2026-10-30T19:33:54.507502+00:00",
+      "evidence_sha256": "05e4f603187c75feb85428b8dace5ae2fcaaf24f590f1f7867fca6de5fb0c0d1",
+      "url": "https://zekamashi.net/kancolle-kouryaku/ensei/"
+    }
+  ],
+  "publication": {
+    "release_id": 429426249,
+    "tag": "data-v2026.10.30.7",
+    "url": "https://github.com/ItukiMac/logbook-kai-maintained/releases/tag/data-v2026.10.30.7",
+    "pack_sha256": "455d48009d3e342a4f7129f2eef31742e6d77339a48f29be3e550a2bf6ff8374",
+    "pack_bytes": 112161,
+    "baseline_sha256": "0673bc4ee9de40f67afbefd8cf17d079860cddb11fe7826da03db3f84466fd70",
+    "baseline_tag": "data-v2026.10.25.1",
+    "definition_payloads": 152,
+    "changed_public_definitions": [
+      "src/main/resources/logbook/mission/1/A1.json",
+      "src/main/resources/logbook/mission/2/15.json",
+      "src/main/resources/logbook/mission/2/B6.json",
+      "src/main/resources/logbook/mission/7/42.json"
+    ],
+    "unchanged_public_payloads": 148,
+    "assets": [
+      "logbook-data-pack.zip",
+      "routine-numeric-receipt.json",
+      "SHA256SUMS-data.txt"
+    ],
+    "application_jar_published": false,
+    "actual_public_asset_matches_verified_candidate_byte_for_byte": true
+  },
+  "verification_application_jar_sha256": "86076086124c605766b2b4893913331122895025e67a66fea2dfb1cb717809eb",
+  "transfer_artifact": {
+    "id": 13007565247,
+    "sha256": "895e5453cf93f158b5f0601d49f3f112ad87013306754651bbb4eeabf59d984f"
+  },
+  "publication_artifact": {
+    "id": 13007440509,
+    "sha256": "09044e2bad9561216e12cdd22073f6af1cb2f14826634648f4fe51ac18a9879e"
+  },
+  "consumers": [
+    {
+      "jdk": "21.0.13+9",
+      "artifact_id": 13005704221,
+      "artifact_sha256": "a1362ada9c42fc2a77064dfe17d82fd270fb3e627bebf2b02f753d9201e17b1e",
+      "actual_public_downloader": true,
+      "typed_consumer": true,
+      "idempotent": true,
+      "restored_baseline_byte_for_byte": true,
+      "application_jar_unchanged": true,
+      "production_runtime_changed": false
+    },
+    {
+      "jdk": "25.0.5+8",
+      "artifact_id": 13005374371,
+      "artifact_sha256": "a0242f8d1b48a487b926bea1b5733c105a978b841fd01f7dc54ddb8a17d73758",
+      "actual_public_downloader": true,
+      "typed_consumer": true,
+      "idempotent": true,
+      "restored_baseline_byte_for_byte": true,
+      "application_jar_unchanged": true,
+      "production_runtime_changed": false
+    }
+  ],
+  "old_releases_branches_and_failed_evidence_retained": true
+}
