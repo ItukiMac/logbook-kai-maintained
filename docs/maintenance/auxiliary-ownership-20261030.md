@@ -26,5 +26,13 @@ CDN-dependent editor failure is fixed in a separate dependency change. Capture's
 native setWindow/Robot/desktop-detection path remains real-device work; it is never
 invoked by the FXML-only test. No real desktop, chooser, ffmpeg or private data is used.
 
-R3 requires all12 added Java cases with zero skips plus zero unclassified components.
+R3 requires all17 added Java cases with zero skips plus zero unclassified components.
 Real Mint/IME/capture/long-session behavior remains outside this development result.
+
+Five additional host timer/notification GUI cases cover mission idle/completed
+state, repair warning-style transitions/completion, anchorage timer stop, one-minute
+notification boundary/reminder interval, and actual mission/repair bookkeeping for
+once-only notification and inactive reset. Toast/audio/speech channels stay disabled;
+no native delivery is claimed. All touched singleton configuration and collections
+are restored. Application-session verification links now point to these actual
+functional cases and real-Launcher migration tests, not logging-only wiring tests.

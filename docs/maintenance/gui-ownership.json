@@ -29,8 +29,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -239,7 +239,7 @@
       "category": "global-configuration",
       "reason": "Host owns global settings, legacy plugin inspection and application update lifecycle; feature installation must not replace these controls.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
+        "scripts/tests/test_runtime_migration_java.py",
         "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
       ]
     },
@@ -320,7 +320,7 @@
       "category": "global-configuration",
       "reason": "Host owns global settings, legacy plugin inspection and application update lifecycle; feature installation must not replace these controls.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
+        "scripts/tests/test_runtime_migration_java.py",
         "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
       ]
     },
@@ -370,8 +370,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -380,8 +380,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -390,8 +390,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -473,8 +473,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -483,8 +483,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -493,8 +493,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -555,8 +555,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -585,8 +585,8 @@
       "category": "application-session",
       "reason": "Single host session owns application windows, fleet/repair timers and notification scheduling; features consume that state rather than duplicate it.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
-        "src/test/java/logbook/core/HostStateBoundaryTest.java"
+        "src/test/java/logbook/internal/gui/HostTimerNotificationGuiTest.java",
+        "scripts/tests/test_runtime_migration_java.py"
       ]
     },
     {
@@ -956,7 +956,7 @@
       "category": "global-configuration",
       "reason": "Host owns global settings, legacy plugin inspection and application update lifecycle; feature installation must not replace these controls.",
       "verification": [
-        "src/test/java/logbook/internal/logger/RuntimeWiringTest.java",
+        "scripts/tests/test_runtime_migration_java.py",
         "src/test/java/logbook/core/FeatureModuleBinaryCompatibilityTest.java"
       ]
     },

@@ -186,14 +186,14 @@ assert all(int(host_state[0].get(k,0))==0 for k in ('failures','errors','skipped
 quest_replay=[x for x in suites if x.get('name')=='logbook.internal.gui.QuestObservationUiBindingGuiTest']
 assert len(quest_replay)==1 and int(quest_replay[0].get('tests',0))>=8
 assert all(int(quest_replay[0].get(k,0))==0 for k in ('failures','errors','skipped'))
-auxiliary={s.get('name'):s for s in suites if s.get('name') in {'logbook.internal.gui.ScreenCaptureImageTest','logbook.internal.gui.AuxiliaryHostGuiTest','logbook.internal.gui.OfflineTextEditorGuiTest'}}
-assert len(auxiliary)==3
-for name,count in [('logbook.internal.gui.ScreenCaptureImageTest',6),('logbook.internal.gui.AuxiliaryHostGuiTest',3),('logbook.internal.gui.OfflineTextEditorGuiTest',3)]:
+auxiliary={s.get('name'):s for s in suites if s.get('name') in {'logbook.internal.gui.ScreenCaptureImageTest','logbook.internal.gui.AuxiliaryHostGuiTest','logbook.internal.gui.OfflineTextEditorGuiTest','logbook.internal.gui.HostTimerNotificationGuiTest'}}
+assert len(auxiliary)==4
+for name,count in [('logbook.internal.gui.ScreenCaptureImageTest',6),('logbook.internal.gui.AuxiliaryHostGuiTest',3),('logbook.internal.gui.OfflineTextEditorGuiTest',3),('logbook.internal.gui.HostTimerNotificationGuiTest',5)]:
     suite=auxiliary[name]
     assert int(suite.get('tests',0))==count and all(int(suite.get(k,0))==0 for k in ('failures','errors','skipped')),name
 ownership=json.loads((p/'gui-ownership.json').read_text())
 assert ownership['components']==95 and ownership['unclassified']==0 and ownership['owners']['host']==57
-report={'auxiliary_image_tests':6,'auxiliary_gui_tests':3,'offline_editor_gui_tests':3,'gui_ownership':ownership,'host_state_boundary_tests':int(host_state[0].get('tests',0)),'quest_observation_gui_tests':int(quest_replay[0].get('tests',0)),'quest_ui_packaging':quest_ui,'arsenal_document_tests':sum(int(x.get('tests',0)) for x in arsenal_suites),'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+report={'timer_notification_gui_tests':5,'auxiliary_image_tests':6,'auxiliary_gui_tests':3,'offline_editor_gui_tests':3,'gui_ownership':ownership,'host_state_boundary_tests':int(host_state[0].get('tests',0)),'quest_observation_gui_tests':int(quest_replay[0].get('tests',0)),'quest_ui_packaging':quest_ui,'arsenal_document_tests':sum(int(x.get('tests',0)) for x in arsenal_suites),'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,
