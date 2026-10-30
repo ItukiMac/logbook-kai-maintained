@@ -3,6 +3,10 @@ name: KLB and KQS plugin API compatibility (Java 21)
 on:
   pull_request:
     paths:
+      - 'modules/**'
+      - 'scripts/verify_bundled_plugins.sh'
+      - 'scripts/java/BundledPluginWiringProbe.java'
+      - 'scripts/*feature*distribution.py'
       - '.github/actions/pinned-maven/**'
       - 'src/main/**'
       - 'pom.xml'
@@ -26,20 +30,6 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - name: Checkout pinned KQS source
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: ItukiMac/kancolle-quest-share
-          ref: dca163a0db0e742b5b4705d8d36b8f7026faefa0
-          path: .external/kqs
-          persist-credentials: false
-      - name: Checkout pinned KLB source
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: ItukiMac/kancolle-logbook-bridge
-          ref: ba217f50dbd7f8b3ee8289a9ad6cbb430ee58979
-          path: .external/klb
-          persist-credentials: false
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
@@ -50,24 +40,7 @@ jobs:
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package
           test -s target/logbook-kai.jar
-      - name: Compile and run KQS isolated plugin regression suite
-        env:
-          LOGBOOK_JAR: ${{ github.workspace }}/target/logbook-kai.jar
-        working-directory: .external/kqs
+      - name: Build and verify the managed six-JAR distribution
         run: |
-          bash scripts/build.sh
-          bash scripts/test.sh
-      - name: Compile KLB bridge against maintained host API
-        shell: bash
-        run: |
-          mkdir -p target/klb-compat
-          javac --release 21 -proc:none -encoding UTF-8 \
-            -cp target/logbook-kai.jar \
-            -d target/klb-compat \
-            .external/klb/plugin/src/local/kancolle/bridge/KancolleBridgeStartUp.java
-          test -s target/klb-compat/local/kancolle/bridge/KancolleBridgeStartUp.class
-      - name: Report source pins and test limits
-        run: |
-          echo "KQS source: dca163a0db0e742b5b4705d8d36b8f7026faefa0"
-          echo "KLB source: ba217f50dbd7f8b3ee8289a9ad6cbb430ee58979"
-          echo "Compilation plus KQS tests only; deployed binary and GUI/runtime checks remain separate."
+          python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out target/bundled-plugin-check --revision "$GITHUB_SHA"
+          bash scripts/verify_bundled_plugins.sh target/bundled-plugin-check

@@ -40,6 +40,11 @@ class BundleManagerTest(unittest.TestCase):
                 jar.writestr('fixture.txt', label + name)
                 jar.writestr(FEATURE_METADATA, json.dumps(metadata))
                 jar.writestr(SERVICE, PROVIDERS[module_id] + '\n')
+                if module_id in ('klb', 'kqs'):
+                    provider = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp', 'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}[module_id]
+                    for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
+                        if module_id == 'kqs' or service == 'logbook.plugin.lifecycle.StartUp':
+                            jar.writestr('META-INF/services/' + service, provider + '\n')
                 for entry_name in sorted(required_entries(module_id)):
                     jar.writestr(entry_name, b'unit-fixture-not-executable')
             modules.append({**metadata, 'path': name,
@@ -127,7 +132,7 @@ class BundleManagerTest(unittest.TestCase):
         self.assertNotIn('JAVA_TOOL_OPTIONS',kwargs['env'])
         self.assertNotIn('CLASSPATH',kwargs['env'])
         cp=args[0][args[0].index('-cp')+1]
-        self.assertEqual(4,len(cp.split(m.os.pathsep)))
+        self.assertEqual(6,len(cp.split(m.os.pathsep)))
         self.assertTrue(all(self.aid in n for n in cp.split(m.os.pathsep)))
         self.assertTrue(kwargs['pass_fds'])
 

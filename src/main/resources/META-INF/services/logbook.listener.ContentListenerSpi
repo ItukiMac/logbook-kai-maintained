@@ -1,2 +1,3 @@
 logbook.internal.listener.APIListener
 logbook.internal.listener.ImageListener
+local.kancolle.kqs.KqsLogbookPlugin

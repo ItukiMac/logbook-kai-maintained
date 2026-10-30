@@ -3,13 +3,25 @@ package logbook.internal.kancolle;
 import java.nio.file.*;
 import java.time.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import logbook.bean.AppQuest;
 import logbook.bean.AppQuestDuration;
 import logbook.internal.Config;
 
 /** Fresh synthetic state only. Does NOT start Launcher, plugins, network or config saving. */
 public final class RuntimeSnapshotProbe {
+    /** Test-only adapter: run the same fixture on retained Jackson2 and kai2 hosts. */
+    private static byte[] jsonBytes(Object value) throws Exception {
+        Object mapper;
+        try {
+            Class<?> type = Class.forName("tools.jackson.databind.json.JsonMapper");
+            Object builder = type.getMethod("builderWithJackson2Defaults").invoke(null);
+            mapper = builder.getClass().getMethod("build").invoke(builder);
+        } catch (ClassNotFoundException legacy) {
+            mapper = Class.forName("com.fasterxml.jackson.databind.ObjectMapper").getConstructor().newInstance();
+        }
+        return (byte[]) mapper.getClass().getMethod("writeValueAsBytes", Object.class).invoke(mapper, value);
+    }
+
     private static final String EXPIRY = "2025-06-01 05:00:00";
     private static long time(String value) {
         return LocalDateTime.parse(value, logbook.internal.util.DateUtil.DATE_FORMAT)
@@ -39,7 +51,7 @@ public final class RuntimeSnapshotProbe {
         var periods=new AppQuestDuration();var duration=new AppQuestDuration.Duration();
         duration.setFrom("2025-05-10 09:00:00");duration.setTo("2025-05-11 00:00:00");
         periods.getMap().put(EXPIRY,Map.of(905,List.of(duration)));
-        new ObjectMapper().writeValue(root.resolve("config/logbook.bean.AppQuestDuration.json").toFile(),periods);
+        Files.write(root.resolve("config/logbook.bean.AppQuestDuration.json"), jsonBytes(periods), java.nio.file.StandardOpenOption.CREATE_NEW);
         var store=new PortArrivalStore(root.resolve("sortie-arrivals-v1"));
         for(var arrival:expected())store.append(arrival);
         System.out.println("RUNTIME_FIXTURE_SEEDED records=3 accepted=2 pending_retained=true");
