@@ -1,0 +1,65 @@
+name: Live M2 source readiness (no update or publish)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/m2-live-source-readiness.yml'
+      - 'scripts/collect_maintenance_sources.py'
+      - 'scripts/routine_scalar_candidate.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-readiness:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
+        with:
+          python-version: '3.12'
+      - name: Retrieve exact permitted live sources and report readiness honestly
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/m2-source-readiness
+          python3 - <<'PY'
+          import hashlib,json,os,sys,tempfile
+          from datetime import datetime,timezone
+          from pathlib import Path
+          sys.path.insert(0,str(Path('scripts').resolve()))
+          import collect_maintenance_sources as collector
+          import routine_scalar_candidate as routine
+          from maintenance_workbench import tracked,read_source,digest
+          root=Path.cwd();before={n:digest(read_source(root,n)) for n in tracked(root)}
+          temp=Path(tempfile.mkdtemp(prefix='m2-live-source-',dir=os.environ['RUNNER_TEMP']))
+          captured=collector.collect(routine.URLS,temp/'captured-public-source')
+          report={'format':'m2-live-source-readiness-v1','checkout':os.environ['GITHUB_SHA'],
+              'status':'blocked','recipe':routine.RECIPE,'live_cycle_completed':False,
+              'publication_enabled':False,'production_accessed':False,'paid_provider_calls':0,
+              'entries':[{k:v for k,v in row.items() if k!='file'} for row in captured['entries']]}
+          if captured['complete']:
+              try:
+                  values,evidence=routine.observed(temp/'captured-public-source',now=datetime.now(timezone.utc))
+                  report.update(status='sources_agree',observed=values,
+                      scope='A1 flagship/fleet scalar recipe only; not general rule verification')
+              except (ValueError,KeyError,TypeError,OSError) as error:
+                  report.update(status='requires_source_review',reason=type(error).__name__)
+          else:
+              report['reason']='One or both direct live source retrievals failed; candidate/update/publication stopped'
+          assert before=={n:digest(read_source(root,n)) for n in tracked(root)}
+          report['source_unchanged']=True
+          Path('target/m2-source-readiness/summary.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+          print('M2_LIVE_READINESS '+json.dumps(report,ensure_ascii=False))
+          # Job success means the read-only diagnostic completed. The status and
+          # live_cycle_completed fields are authoritative; blocked is not M2 success.
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: live-m2-source-readiness-NOT-COMPLETION
+          path: target/m2-source-readiness/
+          retention-days: 14
+          if-no-files-found: error
