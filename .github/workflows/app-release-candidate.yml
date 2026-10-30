@@ -3,6 +3,7 @@ name: Application release candidate (artifact only, no publish)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'pom.xml'
       - 'src/**'
       - 'assembly.xml'
@@ -30,6 +31,7 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Build and test candidate without releasing or installing
         run: mvn --batch-mode --no-transfer-progress verify
       - name: Check application archive identity and content

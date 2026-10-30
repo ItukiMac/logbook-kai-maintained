@@ -3,6 +3,7 @@ name: Offline game-data install integration (Java 21)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'src/main/java/logbook/core/**'
       - 'src/test/java/logbook/core/**'
       - 'tools/build_data_pack.py'
@@ -28,6 +29,7 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Package ALL bundled game definitions (no network publish)
         run: python3 tools/build_data_pack.py --source-sha "$GITHUB_SHA"
       - name: Install and read the real pack via Java, including negative tests

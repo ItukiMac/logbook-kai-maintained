@@ -3,6 +3,7 @@ name: Offline Linux staged update helper
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'dist-includes/helpers/apply-staged-update.py'
       - 'tools/tests/test_mint_staged_update.py'
       - 'docs/MINT_UPDATER_INTEGRATION.md'
@@ -30,6 +31,7 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Verify helper is included in the distribution ZIP
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package

@@ -3,6 +3,7 @@ name: Linux updater official-JAR to maintained-JAR integration
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'dist-includes/helpers/apply-staged-update.py'
       - 'pom.xml'
       - 'src/**'
@@ -27,6 +28,7 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Build maintained application JAR
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package

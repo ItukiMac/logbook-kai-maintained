@@ -3,6 +3,7 @@ name: KLB and KQS plugin API compatibility (Java 21)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'src/main/**'
       - 'pom.xml'
       - 'assembly.xml'
@@ -44,6 +45,7 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Build local host application without user settings
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package

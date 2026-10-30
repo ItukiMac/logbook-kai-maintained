@@ -2,6 +2,7 @@ name: Explicit JDK25 JavaFX27 runtime verification (no publish)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'src/**'
       - 'scripts/**'
       - 'tools/**'
@@ -23,6 +24,7 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
       - name: Require full real GUI, feature lifecycle, migration and JSON suites on the opt-in runtime
         shell: bash

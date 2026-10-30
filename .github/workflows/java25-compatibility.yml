@@ -3,6 +3,7 @@ name: Java 25 application compatibility (headless)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'pom.xml'
       - 'src/**'
       - '.github/workflows/java25-compatibility.yml'
@@ -26,6 +27,7 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Record runtime and Maven version
         run: |
           java -version

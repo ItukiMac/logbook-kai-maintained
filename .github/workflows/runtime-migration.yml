@@ -3,6 +3,7 @@ name: Runtime migration declared versions (no publish)
 on:
   pull_request:
     paths:
+      - '.github/actions/pinned-maven/**'
       - 'scripts/**'
       - 'src/**'
       - 'pom.xml'
@@ -40,6 +41,7 @@ jobs:
           distribution: temurin
           java-version: '${{ matrix.java }}'
           cache: maven
+      - uses: ./.github/actions/pinned-maven
       - name: Install display dependencies in the disposable CI runner
         run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64 libxtst6
       - name: Build candidate and the two unchanged declared application revisions
