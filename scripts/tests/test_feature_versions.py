@@ -188,14 +188,14 @@ class FeatureVersionTest(unittest.TestCase):
         self.assertEqual(current, manager.selector(self.store)['current'])
         self.assertFalse(list((self.store / 'versions').glob('pending-*')))
 
-    def test_all_three_modules_keep_unselected_candidate_changes_out(self):
+    def test_all_five_modules_keep_unselected_candidate_changes_out(self):
         candidate, report, _ = self.candidate(version='1.1.0')
-        for module_id in ('charts', 'status'):
+        for module_id in ('charts', 'status', 'klb', 'kqs'):
             self.repack(candidate, report, module_id, version='1.1.0')
         candidate_id = self.rewrite(report, candidate)
         verify(candidate)
         current = self.start_store()
-        for module_id in ('calculators', 'charts', 'status'):
+        for module_id in ('calculators', 'charts', 'status', 'klb', 'kqs'):
             with self.subTest(module=module_id):
                 result = manager.stage_feature(self.store, candidate, candidate_id, module_id, current)
                 staged = self.store / 'versions' / result['version']

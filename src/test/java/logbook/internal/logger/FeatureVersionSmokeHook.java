@@ -199,7 +199,7 @@ public final class FeatureVersionSmokeHook implements StartUp {
                 seen.add(id);
             }
         }
-        check(seen.size() == 3 && seen.containsAll(descriptors.keySet()), "Selected classpath misses a declared module");
+        check(seen.size() == 5 && seen.containsAll(descriptors.keySet()), "Selected classpath misses a declared module");
         String fxml = LogBookCoreServices.getClassLoader().getResource(registry.get("probability").fxml()).toString();
         check(fxml.contains("/features/logbook-feature-calculators.jar!"), "FXML did not load from the selected feature JAR");
         Class<?> controller = Class.forName("logbook.internal.gui.FeatureVersionFixtureController", false,

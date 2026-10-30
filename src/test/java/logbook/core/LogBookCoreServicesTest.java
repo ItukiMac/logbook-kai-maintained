@@ -26,10 +26,16 @@ class LogBookCoreServicesTest {
         Assertions.assertEquals(67, apiListenerSpiList.size());
 
         List<StartUp> startUpList =  LogBookCoreServices.getServiceProviders(StartUp.class).collect(Collectors.toList());
-        Assertions.assertEquals(1, startUpList.size());
+        Assertions.assertEquals(java.util.Set.of(
+                "logbook.internal.updatecheck.CheckUpdateStartUp",
+                "local.kancolle.bridge.KancolleBridgeStartUp",
+                "local.kancolle.kqs.KqsLogbookPlugin"),
+                startUpList.stream().map(x -> x.getClass().getName()).collect(Collectors.toSet()));
+        Assertions.assertEquals(3, startUpList.size());
 
         List<ContentListenerSpi> contentListenerSpiList =  LogBookCoreServices.getServiceProviders(ContentListenerSpi.class).collect(Collectors.toList());
-        Assertions.assertEquals(2, contentListenerSpiList.size());
+        Assertions.assertEquals(4, contentListenerSpiList.size());
+        Assertions.assertEquals(2, contentListenerSpiList.stream().filter(x -> x.getClass().getName().startsWith("local.kancolle.")).count());
 
         List<ProxyServerSpi> proxyServerSpiList =  LogBookCoreServices.getServiceProviders(ProxyServerSpi.class).collect(Collectors.toList());
         Assertions.assertEquals(1, proxyServerSpiList.size());

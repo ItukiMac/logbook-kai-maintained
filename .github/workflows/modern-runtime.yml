@@ -63,7 +63,7 @@ jobs:
           (root/'summary.json').write_text(json.dumps({'checkout':os.environ['GITHUB_SHA'],
               'jdk_baseline':25,'javafx':'27.0.1','openjfx_components':sorted(javafx),
               'jackson_host':'3.2.4','classfile_major':69,'json_compatibility_tests':14,
-              'legacy_plugin_bridge_retained':True,'native_mint_tested':False,'production_applied':False},indent=2)+'\n')
+              'legacy_plugin_bridge_retained':False,'native_mint_tested':False,'production_applied':False},indent=2)+'\n')
           print('MODERN_RUNTIME_OK JDK25 JavaFX27 Jackson3 full_suite=true native_mint=false')
           PY
           git diff --exit-code
