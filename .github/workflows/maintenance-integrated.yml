@@ -25,10 +25,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: actions/setup-java@v6.1.0
+        timeout-minutes: 5
         with:
           distribution: temurin
           java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
-          cache: maven
       - uses: ./.github/actions/pinned-maven
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
       - name: Generate the complete real game data pack in the isolated runner
