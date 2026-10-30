@@ -38,7 +38,7 @@ this exact combined source, not reuse predecessor success as final evidence.
 | L3 | Final Java21/Java25, JavaFX21/explicit27 virtual-display GUI checks. |
 | L4 | Replay/proxy/capture limits and actual KLB/KQS coexistence/compatibility checks. |
 | M1 | Existing non-production candidate/evidence/budget gates plus explicit failure/progress preservation and no paid provider. |
-| M2 | **Not complete.** Only bounded A1 scalar agreement/staging implemented. Actual unattended source-to-publication cycle, broader approved recipes and publication policy remain unverified/unenabled. Wiki direct retrieval returned HTTP403; conflict/layout/freshness failures stop. |
+| M2 | **Not complete.** The source-readiness CI now retrieves both live sources successfully. The new reviewed numeric lane covers55 definitions/62 fields, separates read/verify/write/consumer privileges and retains failed publications as drafts. Exact-PR CI and the first real post-merge public download/apply/restore receipts are still required; implementation and synthetic tests alone do not close this task. |
 | M3 | Exact checkpoint/proposal identity, scoped automatic documentation/test staging, patch-specific high-risk approval, separate disposable checkout and fixed Python+Maven GUI verification; no merge/deploy authority. |
 | M4 | Pinned source/task/tool checkpoint transferred to a separate newly provisioned CI runner and restored into new Git checkout; exact environment preflight and actual resumed source validator. Old environment remains usable. Not an OS snapshot or paid-provider recovery claim. |
 
@@ -46,12 +46,14 @@ this exact combined source, not reuse predecessor success as final evidence.
 
 After final combined CI and actual artifact inspection, the development acceptance
 above can be reported individually. The whole original non-native plan cannot be
-called complete while M2 remains incomplete. Source retrieval403 must not be replaced
-with fabricated source evidence, and local recipe assertions cannot authorize general
-unattended publishing. An accessible permitted source feed, approved normal-update
-scope and an exercised separate publishing/consumer/rollback lane are still needed.
+called complete while M2 remains incomplete. PR80 disproved the earlier runner source-retrieval blocker: both permitted live
+sources are accessible from GitHub CI. The reviewed numeric normal-update scope is
+recorded in `routine-numeric-maintenance.md`; its actual separate publication and
+consumer cycle must still be exercised before reporting M2 completion.
 
 Native Mint/IME/desktop capture/real Chrome/game traffic/deployed plugin endurance,
 personal external-path migration and production activation remain excluded work.
 Originals, failed outputs, backups and all branches remain retained. No cleanup,
-force-push, release/tag creation, automatic production update or paid model is included.
+force-push, application Release/deployment or paid model is included. The separate M2
+lane may create reviewed numeric-only data Releases; native application activation is
+excluded.

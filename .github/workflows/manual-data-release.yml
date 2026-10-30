@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: data-release-${{ github.ref }}
+  group: ${{ github.event_name == 'pull_request' && format('manual-data-pr-{0}', github.event.number) || 'maintained-data-single-writer' }}
   cancel-in-progress: false
 
 jobs:

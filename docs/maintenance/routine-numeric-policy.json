@@ -1,0 +1,401 @@
+{
+  "deferred": [
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/1/A5.json",
+      "reason": "source_conflict_or_nonliteral"
+    },
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/3/20.json",
+      "reason": "Numeric clause must be unique, pure and globally conjunctive"
+    },
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/3/24.json",
+      "reason": "Numeric clause must be unique, pure and globally conjunctive"
+    },
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/4/27.json",
+      "reason": "Numeric clause must be unique, pure and globally conjunctive"
+    },
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/4/32.json",
+      "reason": "Numeric clause must be unique, pure and globally conjunctive"
+    },
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/5/33.json",
+      "reason": "source_conflict_or_nonliteral"
+    },
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/5/34.json",
+      "reason": "source_conflict_or_nonliteral"
+    },
+    {
+      "field": "flagship_min_level",
+      "path": "src/main/resources/logbook/mission/5/40.json",
+      "reason": "Numeric clause must be unique, pure and globally conjunctive"
+    },
+    {
+      "field": "fleet:レベル",
+      "path": "src/main/resources/logbook/mission/1/A5.json",
+      "reason": "definition_has_unresolved_source_conflict"
+    }
+  ],
+  "definitions": [
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/01.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/02.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/03.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/04.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/05.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/06.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/07.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/08.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level",
+        "fleet:レベル"
+      ],
+      "path": "src/main/resources/logbook/mission/1/A1.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/A2.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level",
+        "fleet:索敵"
+      ],
+      "path": "src/main/resources/logbook/mission/1/A3.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/A4.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/1/A6.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/09.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/10.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/11.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/12.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/13.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/14.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/15.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/16.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/B1.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level",
+        "fleet:レベル",
+        "fleet:対潜",
+        "fleet:対空",
+        "fleet:火力",
+        "fleet:索敵"
+      ],
+      "path": "src/main/resources/logbook/mission/2/B2.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/B3.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/B4.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/B5.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/2/B6.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/3/17.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/3/18.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/3/19.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/3/21.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/3/22.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/3/23.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/25.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/26.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/28.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/29.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/30.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/31.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/D1.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/D2.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/4/D3.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/5/35.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/5/36.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/5/37.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/5/38.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/5/39.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/5/E1.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/5/E2.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/7/41.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/7/42.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/7/43.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/7/44.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/7/45.json"
+    },
+    {
+      "fields": [
+        "flagship_min_level"
+      ],
+      "path": "src/main/resources/logbook/mission/7/46.json"
+    }
+  ],
+  "enabled": true,
+  "format": "logbook-reviewed-numeric-policy-v1",
+  "max_changed_definitions": 20,
+  "paid_provider_calls": 0,
+  "publication_enabled": true,
+  "reviewed_bootstrap": {
+    "src/main/resources/logbook/mission/1/A1.json": {
+      "evidence": "D5 actual published152-entry baseline; single A1 change applied/restored on Java21/25",
+      "public_definition_sha256": "96ddd43449834aa6c040faee3d443cf80e4961efa29286443cc68e3be700d88c",
+      "reviewed_source_shape_sha256": "64ab4feb446c7f7f106b5ace5e9ffda9aca5cb2f6a2739019b6174103a7e3ba5"
+    }
+  },
+  "scope": "Only reviewed pure globally conjunctive expedition numeric clauses; unknown/conflicting/composition changes stop per definition. No whole-rule certification."
+}
