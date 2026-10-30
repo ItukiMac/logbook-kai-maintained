@@ -62,11 +62,20 @@ class SourceCandidateTest(unittest.TestCase):
         for changes in [[],self.proposal(content='nul\0byte'),self.proposal(content='x'*(2*1024*1024+1)),[{**self.proposal()[0],'command':'untrusted'}]]:
             with self.assertRaises(ValueError):c.prepare(self.out,r['checkpoint_sha256'],changes)
     def test_verify_cannot_execute_without_explicit_runner_assertion(self):
-        with patch.object(c.subprocess,'run') as run:
+        with patch.object(c,'execute_check') as run:
             with self.assertRaises(ValueError):c.verify_candidate(self.repo,{})
             run.assert_not_called()
     def test_fixed_verification_stops_on_first_failure_and_does_not_claim_success(self):
         r=self.capture();result=c.stage(self.out,r['checkpoint_sha256'],self.proposal(),self.root/'candidate')
-        with patch.object(w,'measure_environment',return_value=self.tools),patch.object(c.subprocess,'run',side_effect=subprocess.CalledProcessError(1,['fixed-check'])) as run:
+        with patch.object(w,'measure_environment',return_value=self.tools),patch.object(c,'execute_check',side_effect=subprocess.CalledProcessError(1,['fixed-check'])) as run:
             with self.assertRaises(subprocess.CalledProcessError):c.verify_candidate(self.root/'candidate',result,isolated_runner=True)
         self.assertEqual(1,run.call_count);self.assertFalse(result['tests_executed'])
+    def test_checks_that_mutate_candidate_source_cannot_issue_verified_receipt(self):
+        r=self.capture();before=self.state();out=self.root/'candidate'
+        result=c.stage(self.out,r['checkpoint_sha256'],self.proposal(),out)
+        def mutate(command,root):
+            (root/'docs/change.txt').write_text('changed during verification')
+            return subprocess.CompletedProcess(command,0)
+        with patch.object(w,'measure_environment',return_value=self.tools),patch.object(c,'execute_check',side_effect=mutate):
+            with self.assertRaises(ValueError):c.verify_candidate(out,result,isolated_runner=True)
+        self.assertFalse(result['tests_executed']);self.assertEqual(before,self.state())

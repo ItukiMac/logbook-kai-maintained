@@ -23,3 +23,13 @@ It records candidate revision, checkpoint/proposal identities, test totals, sour
 preservation and failure logs. A failed check never produces a successful receipt.
 No paid model, merge, release or deployment is invoked; a model can supply proposals
 through this same bounded input contract without being given application privileges.
+
+Artifact review found6 real-definition cases skipped when no data pack was supplied.
+Final integration reuses the canonical scripts/verify_r3.sh: it builds the complete
+committed candidate pack and actual Maven JAR before running script/tool Python
+suites and packaged feature/runtime probes. This also avoids skipping Java-backed
+Python integration cases before the application JAR exists. CI now
+requires the real-definition suite with zero skips and permits only the dedicated
+public-network test skip. The initial7-skip verification artifact is retained and
+not represented as complete definition validation. A negative case also proves that
+checks mutating tracked candidate source cannot issue a verified receipt.

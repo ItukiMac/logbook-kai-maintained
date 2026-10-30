@@ -92,6 +92,10 @@ def stage(checkpoint, expected, changes, output, *, approval=None, protected=())
         'original_source_unchanged': True}
 
 
+def execute_check(command, root):
+    return subprocess.run(command, cwd=root, check=True, timeout=1200)
+
+
 def verify_candidate(root, receipt, *, isolated_runner=False):
     # A flag is an operator assertion, not a security sandbox. Provision the runner
     # separately with no production credentials and read-only repository access.
@@ -104,13 +108,10 @@ def verify_candidate(root, receipt, *, isolated_runner=False):
         raise ValueError('Candidate is dirty')
     w.check_environment({'toolchain': receipt['toolchain']}, w.measure_environment())
     # Fixed profiles; proposal content can never inject shell commands or argv.
-    for command in ([sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts/tests'],
-                    ['xvfb-run', '-a', 'mvn', '--batch-mode', '--no-transfer-progress',
-                     '-Dlogbook.gui.tests=true', 'verify']):
-        subprocess.run(command, cwd=root, check=True, timeout=1200)
+    execute_check(['bash', 'scripts/verify_r3.sh'], root)
     if w.git(root, 'diff', '--name-only', 'HEAD', '--').strip():
         raise ValueError('Verification mutated tracked source')
-    return {**receipt, 'tests_executed': True, 'fixed_profiles': ['python-script-tests', 'java-gui-verify'],
+    return {**receipt, 'tests_executed': True, 'fixed_profiles': ['canonical-r3-complete-pack-gui-python-and-packaged-probes'],
             'isolated_runner_operator_assertion': True}
 
 

@@ -49,8 +49,8 @@ jobs:
           result=c.verify_candidate(base/'candidate',receipt,isolated_runner=True)
           suites=[E.parse(p).getroot() for p in (base/'candidate/target/surefire-reports').glob('TEST-*.xml')]
           totals={k:sum(int(s.get(k,0)) for s in suites) for k in ('tests','failures','errors','skipped')}
-          assert totals['tests']>=1000 and totals['failures']==totals['errors']==0
-          for name in ['PublicAutoCompletionGuiTest','QuestObservationUiBindingGuiTest']:
+          assert totals['tests']>=1000 and totals['failures']==totals['errors']==0 and totals['skipped']==1
+          for name in ['PublicAutoCompletionGuiTest','QuestObservationUiBindingGuiTest','RealDefinitionPackIntegrationTest']:
               matches=[s for s in suites if s.get('name','').endswith('.'+name)]
               assert len(matches)==1 and int(matches[0].get('tests',0))>0 and int(matches[0].get('skipped',0))==0,name
           assert before=={n:w.digest(w.read_source(original,n)) for n in w.tracked(original)}
