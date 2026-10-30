@@ -1,5 +1,5 @@
 """Credentialed-role guards with synthetic local receipts; no network or publication."""
-import copy,json,sys,unittest
+import copy,json,re,sys,unittest
 from pathlib import Path
 from unittest.mock import patch
 from datetime import timedelta
@@ -83,6 +83,15 @@ class PublisherGuardTest(unittest.TestCase):
     def test_observations_outside_reconciled_scope_stop(self):
         f,r=self.fixture();r['observed_values']['src/main/resources/logbook/mission/9/99.json']={'flagship_min_level':1};self.save(f,r)
         with self.assertRaisesRegex(ValueError,'outside reconciled scope'):pub.verify_transfer(f.root,f.out,now=f.now)
+    def test_both_credentialed_workflow_roles_are_excluded_from_pr_and_nonmaster(self):
+        workflow=(Path(__file__).resolve().parents[2]/'.github/workflows/routine-numeric-maintenance.yml').read_text()
+        for name in ['publish','withdraw-on-failure']:
+            block=re.search(r'^  '+name+r':\n(.*?)(?=^  [a-zA-Z-]+:|\Z)',workflow,re.M|re.S).group(1)
+            guard=next(line for line in block.splitlines() if line.strip().startswith('if:'))
+            for requirement in ["github.repository == 'ItukiMac/logbook-kai-maintained'","github.ref == 'refs/heads/master'","github.event_name != 'pull_request'"]:
+                self.assertIn(requirement,guard,name)
+            self.assertIn('contents: write',block)
+        self.assertEqual(2,workflow.count('contents: write'))
     def test_no_owned_release_is_a_preserving_noop(self):
         f=Fixture(self)
         with patch.object(pub,'gh_json') as read:

@@ -178,7 +178,7 @@ jobs:
           retention-days: 30
   withdraw-on-failure:
     needs: [publish, consume]
-    if: always() && needs.publish.result != 'skipped' && (needs.publish.result == 'failure' || needs.consume.result == 'failure' || needs.consume.result == 'cancelled')
+    if: always() && github.repository == 'ItukiMac/logbook-kai-maintained' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && needs.publish.result != 'skipped' && (needs.publish.result == 'failure' || needs.consume.result == 'failure' || needs.consume.result == 'cancelled')
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
