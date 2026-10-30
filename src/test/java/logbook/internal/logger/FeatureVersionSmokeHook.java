@@ -156,14 +156,14 @@ public final class FeatureVersionSmokeHook implements StartUp {
     private static void verifyModuleContracts(FeatureRegistry registry, String expectedVersion) throws Exception {
         Map<String, FeatureModule.Descriptor> descriptors = registry.descriptors().stream()
                 .collect(Collectors.toMap(FeatureModule.Descriptor::id, Function.identity()));
-        check(descriptors.size() == 3, "Expected all three declared modules");
+        check(descriptors.size() == 5, "Expected all five declared modules");
         check(expectedVersion.equals(descriptors.get("calculators").version()), "Wrong calculator descriptor version");
         check(registry.group(FeatureModule.Group.CALCULATOR).size() == 4, "Original calculator feature IDs changed");
         int features = 0;
         for (FeatureModule.Group group : FeatureModule.Group.values()) features += registry.group(group).size();
         check(features == 7, "Original seven menu features must remain available");
         String[] jars = System.getProperty("java.class.path").split(java.util.regex.Pattern.quote(File.pathSeparator));
-        check(jars.length == 4, "Launcher classpath must contain only the four selected bundle JARs");
+        check(jars.length == 6, "Launcher classpath must contain only the six selected bundle JARs");
         var seen = new ArrayList<String>();
         ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
         for (String jarPath : jars) {

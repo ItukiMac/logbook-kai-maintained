@@ -51,8 +51,8 @@ jobs:
                     'org.objenesis:objenesis':('3.6','test'),
                     'tools.jackson.core:jackson-databind':('3.2.4','compile'),
                     'tools.jackson.core:jackson-core':('3.2.4','compile'),
-                    'com.fasterxml.jackson.core:jackson-databind':('2.22.4','runtime'),
-                    'com.fasterxml.jackson.core:jackson-core':('2.22.4','runtime')}
+                    'com.fasterxml.jackson.core:jackson-databind':('2.22.4','test'),
+                    'com.fasterxml.jackson.core:jackson-core':('2.22.4','test')}
           for key,value in expected.items():
               assert rows.get(key)=={value},(key,rows.get(key),value)
           ns={'m':'http://maven.apache.org/POM/4.0.0'}
@@ -69,10 +69,10 @@ jobs:
           assert len(javafx)==7 and all(version=='21.0.13' for values in javafx.values() for version,_ in values)
           assert pom.findtext('m:properties/m:java.version',namespaces=ns)=='21'
           report={'checkout':os.environ['GITHUB_SHA'],'resolved':{k:sorted(v) for k,v in rows.items()},
-                  'plugins':plugins,'host_json':'Jackson3','legacy_plugin_json':'Jackson2 runtime only',
+                  'plugins':plugins,'host_json':'Jackson3','legacy_plugin_json':'Jackson2 historical-fixture tests only',
                   'default_javafx21_retained':True,'production_deployed':False}
           (root/'summary.json').write_text(json.dumps(report,indent=2)+'\n')
-          print('DEPENDENCY_RESOLUTION_OK Jackson3_host=true Jackson2_plugin_runtime=true JavaFX21_default=true')
+          print('DEPENDENCY_RESOLUTION_OK Jackson3_host=true Jackson2_plugin_runtime=false JavaFX21_default=true')
           PY
           git diff --exit-code
       - uses: actions/upload-artifact@v7.0.2

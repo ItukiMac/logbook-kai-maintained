@@ -143,6 +143,18 @@ def build(source: Path, output: Path, revision: str) -> dict:
             groups[group][name] = data
         elif name != SERVICE:
             core[name] = data
+    # Lifecycle registrations follow their owning module, never remain in core.
+    plugin_providers = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp',
+                        'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}
+    for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
+        name = 'META-INF/services/' + service
+        lines = core[name].decode().splitlines()
+        for group, provider in plugin_providers.items():
+            if lines.count(provider) != 1:
+                raise ValueError('Missing or duplicate bundled plugin service: ' + provider)
+            groups[group][name] = (provider + '\n').encode()
+        core[name] = ('\n'.join(line for line in lines if line not in plugin_providers.values()) + '\n').encode()
+
     # The managed launcher supplies an explicit four-JAR class path. Retain all
     # other legacy attributes but never let Class-Path silently add other JARs.
     core['META-INF/MANIFEST.MF'] = explicit_classpath_manifest(core['META-INF/MANIFEST.MF'])
@@ -160,6 +172,8 @@ def build(source: Path, output: Path, revision: str) -> dict:
         provider = GROUPS[group][0]
         values.update(styles)
         values['META-INF/LICENSE-logbook-kai.txt'] = license_text
+        if group in plugin_providers:
+            values['META-INF/LICENSE-' + group + '.txt'] = (Path(__file__).resolve().parents[1] / 'modules' / group / 'LICENSE').read_bytes()
         values[SERVICE] = ('logbook.features.' + provider + '\n').encode()
         metadata = {'id': group, 'version': '1.0.0', 'host_api': HOST_API,
                     'host_sha256': host_hash, 'dependencies': [],

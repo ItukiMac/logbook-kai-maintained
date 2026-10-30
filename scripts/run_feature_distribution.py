@@ -13,20 +13,26 @@ from pathlib import Path, PurePosixPath
 import re
 from zipfile import ZipFile
 
-FORMAT = 'logbook-feature-distribution-v2'
+FORMAT = 'logbook-feature-distribution-v3'
 HOST_API = 1
 HOST_VERSION = '1.0.0'
 SERVICE = 'META-INF/services/logbook.plugin.api.FeatureModule'
 FEATURE_METADATA = 'META-INF/logbook/feature.json'
 HOST_METADATA = 'META-INF/logbook/host-api.json'
+PLUGIN_PROVIDERS = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp',
+                    'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}
+PLUGIN_SERVICES = ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi')
 FEATURES = {
     'calculators': ('experience', 'mission-check', 'probability', 'last-dance'),
     'charts': ('resource-chart', 'experience-chart'),
     'status': ('repair-list',),
+    'klb': (),
+    'kqs': (),
 }
 PROVIDERS = {'calculators': 'logbook.features.CalculatorFeatures',
              'charts': 'logbook.features.ChartFeatures',
-             'status': 'logbook.features.StatusFeatures'}
+             'status': 'logbook.features.StatusFeatures',
+             'klb': 'logbook.features.KlbFeatures', 'kqs': 'logbook.features.KqsFeatures'}
 # API 1 retains these entry points used by host menus and feature FXML. Moving
 # any of them requires a new packaging contract, not silently dropping a window.
 GROUPS = {
@@ -40,7 +46,9 @@ GROUPS = {
                                 'AirBaseController', 'UseitemController', 'UseitemItem'),
                ('require_ndock', 'airbase', 'useitem')),
 }
-EXTRA_CLASSES = {'calculators': ('logbook/internal/calc/ProbabilityCalculator',
+GROUPS.update({'klb': ('KlbFeatures', (), ()), 'kqs': ('KqsFeatures', (), ())})
+EXTRA_CLASSES = {'klb': ('local/kancolle/bridge/KancolleBridgeStartUp',),
+                 'kqs': ('local/kancolle/kqs/KqsLogbookPlugin', 'local/kancolle/kqs/QuestStore', 'local/kancolle/kqs/QuestExporter'), 'calculators': ('logbook/internal/calc/ProbabilityCalculator',
                                  'logbook/internal/calc/ProbabilityInput')}
 METADATA_KEYS = {'id', 'version', 'host_api', 'host_sha256', 'dependencies',
                  'provider', 'features'}
@@ -52,6 +60,7 @@ MAX_BUNDLE = 256 * 1024 * 1024
 
 FILES = ('logbook-core.jar', 'features/logbook-feature-calculators.jar',
          'features/logbook-feature-charts.jar', 'features/logbook-feature-status.jar',
+         'features/logbook-feature-klb.jar', 'features/logbook-feature-kqs.jar',
          'run_feature_distribution.py')
 JARS = tuple(name for name in FILES if name.endswith('.jar'))
 
@@ -368,6 +377,15 @@ def verify_jars(root, report, catalog):
                 raise ValueError('Corrupt JAR entry')
             if 'META-INF/MANIFEST.MF' not in names:
                 raise ValueError('Missing JAR manifest')
+            if any(n.startswith(('com/fasterxml/jackson/databind/', 'com/fasterxml/jackson/core/')) for n in names):
+                raise ValueError('Jackson 2 runtime is not part of the kai2 bundle')
+            for service in PLUGIN_SERVICES:
+                service_path = 'META-INF/services/' + service
+                lines = jar.read(service_path).decode().splitlines() if service_path in names else []
+                for module_id, provider in PLUGIN_PROVIDERS.items():
+                    expected = path == 'features/logbook-feature-' + module_id + '.jar'
+                    if lines.count(provider) != int(expected):
+                        raise ValueError('Bundled plugin service has wrong owner: ' + provider)
             attributes = manifest_attributes(jar.read('META-INF/MANIFEST.MF'))
             if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':
                 raise ValueError('Multi-release feature JARs are not supported')

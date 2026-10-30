@@ -16,6 +16,8 @@ class FeatureDistributionTest(unittest.TestCase):
         self.entries={'META-INF/MANIFEST.MF':b'Manifest-Version: 1.0\r\n\r\n',
           'logbook/gui/application.css':b'.root {}','logbook/internal/Launcher.class':b'core',
           SERVICE:('\n'.join('logbook.features.'+v[0] for v in GROUPS.values())+'\n').encode()}
+        for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
+            self.entries['META-INF/services/' + service] = b'local.kancolle.bridge.KancolleBridgeStartUp\nlocal.kancolle.kqs.KqsLogbookPlugin\n'
         for provider, controllers, fxml in GROUPS.values():
             for stem in ['logbook/features/'+provider]+['logbook/internal/gui/'+c for c in controllers]:
                 self.entries[stem+'.class']=b'fixture';self.entries[stem+'$1.class']=b'nested'
@@ -73,5 +75,23 @@ class FeatureDistributionTest(unittest.TestCase):
     def test_service_contract_change_is_not_silently_dropped(self):
         self.entries[SERVICE]+=b'other.Module\n';self.write()
         with self.assertRaises(ValueError):build(self.jar,self.out,'a'*40)
+
+
+    def test_bundled_plugin_services_follow_their_jars(self):
+        self.build()
+        for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
+            name = 'META-INF/services/' + service
+            for module, provider in [('klb', 'local.kancolle.bridge.KancolleBridgeStartUp'), ('kqs', 'local.kancolle.kqs.KqsLogbookPlugin')]:
+                with ZipFile(self.out/f'features/logbook-feature-{module}.jar') as jar:
+                    self.assertEqual(provider + '\n', jar.read(name).decode())
+                with ZipFile(self.out/'logbook-core.jar') as jar:
+                    self.assertNotIn(provider, jar.read(name).decode())
+
+    def test_missing_plugin_registration_refused_before_output(self):
+        self.entries['META-INF/services/logbook.plugin.lifecycle.StartUp'] = b''
+        self.write()
+        with self.assertRaises(ValueError):
+            build(self.jar,self.out,'a'*40)
+        self.assertFalse(self.out.exists())
 
 if __name__=='__main__':unittest.main()

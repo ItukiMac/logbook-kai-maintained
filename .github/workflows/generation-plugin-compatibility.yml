@@ -24,18 +24,6 @@ jobs:
           persist-credentials: false
       - uses: actions/checkout@v7.0.1
         with:
-          repository: ItukiMac/kancolle-quest-share
-          ref: 319f8bee9eb5566b9fe5a026f55dc0df28594099
-          path: .external/kqs-r2
-          persist-credentials: false
-      - uses: actions/checkout@v7.0.1
-        with:
-          repository: ItukiMac/kancolle-logbook-bridge
-          ref: ba217f50dbd7f8b3ee8289a9ad6cbb430ee58979
-          path: .external/klb
-          persist-credentials: false
-      - uses: actions/checkout@v7.0.1
-        with:
           repository: ItukiMac/logbook-kai-maintained
           ref: 4f310942b231154d0d37d31d93a7a58f3793cf11
           path: .external/legacy-host
@@ -61,33 +49,7 @@ jobs:
         run: java -cp target/logbook-kai.jar:target/test-classes logbook.core.LegacyDefinitionPackProbe .external/legacy-host/target/logbook-kai.jar target/legacy-data-pack-proof
       - name: Prior V2-capable host rejects arrival semantics and retains active data
         run: java -cp target/logbook-kai.jar:target/test-classes logbook.core.PreArrivalHostProbe .external/pre-arrival-host/target/logbook-kai.jar target/pre-arrival-host-proof
-      - name: Whole-export generation and observed-state contract against the current host
-        working-directory: .external/kqs-r2
-        env:
-          LOGBOOK_JAR: ${{ github.workspace }}/target/logbook-kai.jar
-        shell: bash
+      - name: Verify bundled KQS and KLB with the exact split host
         run: |
-          set -euo pipefail
-          mkdir -p evidence
-          bash scripts/build.sh
-          bash scripts/test.sh | tee evidence/current-host.log
-      - name: Same plugin binary explicitly falls back on the legacy host
-        working-directory: .external/kqs-r2
-        env:
-          LOGBOOK_JAR: ${{ github.workspace }}/.external/legacy-host/target/logbook-kai.jar
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash scripts/test.sh | tee evidence/legacy-host.log
-      - name: Compile the existing KLB implementation against the current host
-        run: |
-          mkdir -p target/klb-r2-compat
-          javac --release 21 -proc:none -encoding UTF-8 -cp target/logbook-kai.jar -d target/klb-r2-compat .external/klb/plugin/src/local/kancolle/bridge/KancolleBridgeStartUp.java
-          test -s target/klb-r2-compat/local/kancolle/bridge/KancolleBridgeStartUp.class
-          echo 'Verified source compatibility only; no deployed binary or native Mint certification.'
-      - uses: actions/upload-artifact@v7.0.2
-        if: always()
-        with:
-          name: generation-plugin-java${{ matrix.java }}
-          path: .external/kqs-r2/evidence/
-          retention-days: 14
+          python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out target/bundled-plugin-check --revision "$GITHUB_SHA"
+          bash scripts/verify_bundled_plugins.sh target/bundled-plugin-check

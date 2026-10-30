@@ -30,6 +30,8 @@ class FeatureVersionTest(unittest.TestCase):
             builder.SERVICE: ('\n'.join('logbook.features.' + p[0]
                                        for p in builder.GROUPS.values()) + '\n').encode(),
         }
+        for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
+            entries['META-INF/services/' + service] = b'local.kancolle.bridge.KancolleBridgeStartUp\nlocal.kancolle.kqs.KqsLogbookPlugin\n'
         for provider, controllers, resources in builder.GROUPS.values():
             for stem in ['logbook/features/' + provider] + [
                     'logbook/internal/gui/' + c for c in controllers]:
@@ -119,9 +121,9 @@ class FeatureVersionTest(unittest.TestCase):
         path.write_bytes(b'{ deliberately invalid synthetic metadata')
 
     def test_build_declares_versioned_module_contracts(self):
-        self.assertEqual('logbook-feature-distribution-v2', self.report['format'])
+        self.assertEqual('logbook-feature-distribution-v3', self.report['format'])
         self.assertEqual(1, self.report['host']['api'])
-        self.assertEqual({'calculators', 'charts', 'status'},
+        self.assertEqual({'calculators', 'charts', 'status', 'klb', 'kqs'},
                          {m['id'] for m in self.report['modules']})
         self.assertEqual(7, sum(len(m['features']) for m in self.report['modules']))
         for module in self.report['modules']:
