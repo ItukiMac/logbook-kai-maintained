@@ -137,7 +137,7 @@ def previous_failure(runs,current_id):
     for run in runs:
         if str(run.get('id'))==str(current_id) or run.get('event')=='pull_request':continue
         if run.get('head_branch')!='master' or run.get('status')!='completed':continue
-        return run.get('conclusion') not in ('success','skipped','cancelled')
+        return run.get('conclusion') not in ('success','skipped')
     return False
 
 

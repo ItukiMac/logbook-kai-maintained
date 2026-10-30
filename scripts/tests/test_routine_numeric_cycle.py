@@ -59,4 +59,4 @@ class NumericCycleTest(unittest.TestCase):
         with self.assertRaises(ValueError):c.latest_data_release([release(url='https://untrusted.invalid/file')])
     def test_previous_failed_cycle_requires_review_but_readiness_or_pr_runs_do_not_lock(self):
         runs=[{'id':3,'head_branch':'master','event':'push','status':'in_progress'},{'id':2,'head_branch':'master','event':'push','status':'completed','conclusion':'failure'}]
-        self.assertTrue(c.previous_failure(runs,3));runs[1]['conclusion']='success';self.assertFalse(c.previous_failure(runs,3))
+        self.assertTrue(c.previous_failure(runs,3));runs[1]['conclusion']='cancelled';self.assertTrue(c.previous_failure(runs,3));runs[1]['conclusion']='success';self.assertFalse(c.previous_failure(runs,3))

@@ -47,7 +47,7 @@ publication when source literals already match live evidence.
 If publication or either consumer fails, a separate writer withdraws only this run's
 identified release to a retained draft. Assets, source commits, previous releases and
 all original environments remain retained. No force-push, deletion or private runtime
-rollback occurs. A subsequent failed-cycle hold requires an operator to review the
+rollback occurs. A subsequent failed/cancelled-cycle hold requires an operator to review the
 retained evidence and explicitly dispatch `resume_after_failure=true`; rerunning a
 failed job does not bypass stale master/baseline checks. Cancelled workflows require
 operator inspection of any draft/public release before resuming.
