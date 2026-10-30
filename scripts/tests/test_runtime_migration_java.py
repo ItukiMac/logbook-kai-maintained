@@ -175,7 +175,7 @@ class RuntimeMigrationJavaTest(unittest.TestCase):
             # Revalidate and watch all exact preflight inputs at approval/launch.
             for path in [*jars, distribution / 'distribution.json']:
                 command_inputs[str(path)] = digest(path.read_bytes())
-            print('MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars=4 strict_descriptor_validation=true')
+            print(f'MIGRATION_CURRENT_SPLIT_PREFLIGHT_OK jars={len(jars)} strict_descriptor_validation=true')
         if jar is not None:
             command_inputs[str(jar)] = digest(jar.read_bytes())
         receipt_hash = digest((output / 'migration.json').read_bytes())
