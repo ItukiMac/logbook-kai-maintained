@@ -29,7 +29,10 @@ RECIPE = 'a1-flagship-and-fleet-level-v1'
 class Tables(HTMLParser):
     def __init__(self):
         super().__init__();self.rows=[];self.row=[];self.cell=None
+        self.table_ids=[];self.table_stack=[];self.next_table_id=0
     def handle_starttag(self,tag,attrs):
+        if tag=='table':
+            self.next_table_id+=1;self.table_stack.append(self.next_table_id)
         if tag=='tr':self.row=[]
         if tag in ('td','th'):
             if self.cell is not None:raise ValueError('Nested table layout is unsupported')
@@ -40,7 +43,19 @@ class Tables(HTMLParser):
     def handle_endtag(self,tag):
         if tag in ('td','th') and self.cell is not None:
             self.row.append(' '.join(''.join(self.cell).split()));self.cell=None
-        if tag=='tr' and self.row:self.rows.append(self.row)
+        if tag=='tr' and self.row:
+            self.rows.append(self.row)
+            self.table_ids.append(self.table_stack[-1] if self.table_stack else None)
+        if tag=='table' and self.table_stack:self.table_stack.pop()
+
+    def following(self,index,limit):
+        table=self.table_ids[index]
+        if table is None:raise ValueError('Source row outside table')
+        rows=[]
+        for i in range(index+1,min(len(self.rows),index+1+limit)):
+            if self.table_ids[i]!=table:break
+            rows.append(self.rows[i])
+        return rows
 
 
 def levels(raw,source):
@@ -49,15 +64,19 @@ def levels(raw,source):
     if source=='wiki':
         matches=[i for i,row in enumerate(parser.rows) if len(row)>1 and row[0]=='A1' and row[1]=='兵站強化任務']
         if len(matches)!=1:raise ValueError('Wiki A1 row is missing or ambiguous')
-        following=parser.rows[matches[0]+1:matches[0]+2]
+        following=parser.following(matches[0],1)
         if len(following)!=1:raise ValueError('Wiki levels row missing')
         # Rowspan means repeated ID/name cells are absent in the following row.
         match=re.fullmatch(r'Lv([0-9]+)\s+Lv([0-9]+)',following[0][0])
     elif source=='zekamashi':
         matches=[i for i,row in enumerate(parser.rows) if len(row)>1 and row[0]=='兵站強化任務' and re.fullmatch(r'A1\s+[0-9]{2}:[0-9]{2}',row[1])]
         if len(matches)!=1:raise ValueError('Zekamashi A1 row is missing or ambiguous')
-        following=parser.rows[matches[0]+1:matches[0]+5]
-        fields=[row[1] for row in following if len(row)>1 and row[0]=='練度']
+        following=parser.following(matches[0],4)
+        scoped=[]
+        for row in following:
+            if len(row)>1 and re.fullmatch(r'[A-Z]?[0-9]+\s+[0-9]{2}:[0-9]{2}',row[1]):break
+            scoped.append(row)
+        fields=[row[1] for row in scoped if len(row)>1 and row[0]=='練度']
         if len(fields)!=1:raise ValueError('Zekamashi levels row missing or ambiguous')
         match=re.fullmatch(r'旗艦:([0-9]+)\s+艦隊:([0-9]+)',fields[0])
     else:raise ValueError('Unknown recipe source')
