@@ -22,6 +22,15 @@ public final class QuestListReadService {
         return LogBookCoreServices.readGameState(() -> capture(AppQuestCollection.get().getQuest()));
     }
 
+    public static void refreshExpiredQuests() {
+        GameStateService.shared().applyLocalUpdate("quest-expiry", () -> {
+            var collection = AppQuestCollection.get();
+            var before = new TreeMap<>(collection.getQuest());
+            collection.update();
+            return !before.equals(collection.getQuest());
+        }, Boolean::booleanValue);
+    }
+
     static Listing capture(Map<Integer, AppQuest> source) {
         Objects.requireNonNull(source, "quest collection");
         var rows = new ArrayList<Quest>();

@@ -172,7 +172,7 @@ public class MainController extends WindowController {
             this.mainMenuController.setParentController(this);
 
             // 古い任務を除く
-            AppQuestCollection.get().update();
+            logbook.core.QuestListReadService.refreshExpiredQuests();
 
             Timeline labelTimeline = new Timeline(
                     new KeyFrame(javafx.util.Duration.seconds(3), this::labelUpdate)
