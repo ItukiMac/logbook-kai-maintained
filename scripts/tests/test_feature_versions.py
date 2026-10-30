@@ -31,7 +31,7 @@ class FeatureVersionTest(unittest.TestCase):
                                        for p in builder.GROUPS.values()) + '\n').encode(),
         }
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            entries['META-INF/services/' + service] = b'local.kancolle.bridge.KancolleBridgeStartUp\nlocal.kancolle.kqs.KqsLogbookPlugin\n'
+            entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
         for provider, controllers, resources in builder.GROUPS.values():
             for stem in ['logbook/features/' + provider] + [
                     'logbook/internal/gui/' + c for c in controllers]:

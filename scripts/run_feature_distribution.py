@@ -383,7 +383,7 @@ def verify_jars(root, report, catalog):
                 service_path = 'META-INF/services/' + service
                 lines = jar.read(service_path).decode().splitlines() if service_path in names else []
                 for module_id, provider in PLUGIN_PROVIDERS.items():
-                    expected = path == 'features/logbook-feature-' + module_id + '.jar'
+                    expected = path == 'features/logbook-feature-' + module_id + '.jar' and (module_id == 'kqs' or service == 'logbook.plugin.lifecycle.StartUp')
                     if lines.count(provider) != int(expected):
                         raise ValueError('Bundled plugin service has wrong owner: ' + provider)
             attributes = manifest_attributes(jar.read('META-INF/MANIFEST.MF'))

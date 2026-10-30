@@ -9,6 +9,7 @@ public final class BundledPluginWiringProbe {
         for (var item : java.util.Map.of(
                 "local.kancolle.bridge.KancolleBridgeStartUp", "klb",
                 "local.kancolle.kqs.KqsLogbookPlugin", "kqs").entrySet()) {
+            if (service == ContentListenerSpi.class && item.getValue().equals("klb")) continue;
             var found = providers.stream().filter(type -> type.getName().equals(item.getKey())).toList();
             if (found.size() != 1) throw new AssertionError("Provider count: " + item.getKey());
             var source = found.get(0).getProtectionDomain().getCodeSource().getLocation().getPath();

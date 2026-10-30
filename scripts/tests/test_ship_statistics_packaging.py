@@ -20,7 +20,7 @@ class ShipStatisticsPackagingTest(unittest.TestCase):
         entries={'META-INF/MANIFEST.MF':b'Manifest-Version: 1.0\r\n\r\n',
                  SERVICE:('\n'.join(PROVIDERS.values())+'\n').encode()}
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            entries['META-INF/services/' + service] = b'local.kancolle.bridge.KancolleBridgeStartUp\nlocal.kancolle.kqs.KqsLogbookPlugin\n'
+            entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
         for group in GROUPS:
             entries.update({name:b'synthetic' for name in required_entries(group)})
         entries.update({name:b'synthetic statistics' for name in ship_statistics_required_entries()})

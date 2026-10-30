@@ -34,7 +34,7 @@ class FeatureVersionRejectionTest(unittest.TestCase):
                                        for values in builder.GROUPS.values()) + '\n').encode(),
         }
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            self.entries['META-INF/services/' + service] = b'local.kancolle.bridge.KancolleBridgeStartUp\nlocal.kancolle.kqs.KqsLogbookPlugin\n'
+            self.entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
         for module_id in distribution.GROUPS:
             for entry in distribution.required_entries(module_id):
                 self.entries[entry] = b'<fixture/>' if entry.endswith('.fxml') else b'inert feature inventory'

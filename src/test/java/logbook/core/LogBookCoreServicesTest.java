@@ -34,8 +34,8 @@ class LogBookCoreServicesTest {
         Assertions.assertEquals(3, startUpList.size());
 
         List<ContentListenerSpi> contentListenerSpiList =  LogBookCoreServices.getServiceProviders(ContentListenerSpi.class).collect(Collectors.toList());
-        Assertions.assertEquals(4, contentListenerSpiList.size());
-        Assertions.assertEquals(2, contentListenerSpiList.stream().filter(x -> x.getClass().getName().startsWith("local.kancolle.")).count());
+        Assertions.assertEquals(3, contentListenerSpiList.size());
+        Assertions.assertEquals(1, contentListenerSpiList.stream().filter(x -> x.getClass().getName().startsWith("local.kancolle.")).count());
 
         List<ProxyServerSpi> proxyServerSpiList =  LogBookCoreServices.getServiceProviders(ProxyServerSpi.class).collect(Collectors.toList());
         Assertions.assertEquals(1, proxyServerSpiList.size());

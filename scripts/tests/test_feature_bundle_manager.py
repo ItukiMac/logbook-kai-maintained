@@ -43,7 +43,8 @@ class BundleManagerTest(unittest.TestCase):
                 if module_id in ('klb', 'kqs'):
                     provider = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp', 'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}[module_id]
                     for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-                        jar.writestr('META-INF/services/' + service, provider + '\n')
+                        if module_id == 'kqs' or service == 'logbook.plugin.lifecycle.StartUp':
+                            jar.writestr('META-INF/services/' + service, provider + '\n')
                 for entry_name in sorted(required_entries(module_id)):
                     jar.writestr(entry_name, b'unit-fixture-not-executable')
             modules.append({**metadata, 'path': name,

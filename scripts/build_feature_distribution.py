@@ -150,6 +150,8 @@ def build(source: Path, output: Path, revision: str) -> dict:
         name = 'META-INF/services/' + service
         lines = core[name].decode().splitlines()
         for group, provider in plugin_providers.items():
+            if group == 'klb' and service != 'logbook.plugin.lifecycle.StartUp':
+                continue
             if lines.count(provider) != 1:
                 raise ValueError('Missing or duplicate bundled plugin service: ' + provider)
             groups[group][name] = (provider + '\n').encode()

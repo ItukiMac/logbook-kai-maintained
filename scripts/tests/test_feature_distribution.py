@@ -17,7 +17,7 @@ class FeatureDistributionTest(unittest.TestCase):
           'logbook/gui/application.css':b'.root {}','logbook/internal/Launcher.class':b'core',
           SERVICE:('\n'.join('logbook.features.'+v[0] for v in GROUPS.values())+'\n').encode()}
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            self.entries['META-INF/services/' + service] = b'local.kancolle.bridge.KancolleBridgeStartUp\nlocal.kancolle.kqs.KqsLogbookPlugin\n'
+            self.entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
         for provider, controllers, fxml in GROUPS.values():
             for stem in ['logbook/features/'+provider]+['logbook/internal/gui/'+c for c in controllers]:
                 self.entries[stem+'.class']=b'fixture';self.entries[stem+'$1.class']=b'nested'
@@ -83,7 +83,10 @@ class FeatureDistributionTest(unittest.TestCase):
             name = 'META-INF/services/' + service
             for module, provider in [('klb', 'local.kancolle.bridge.KancolleBridgeStartUp'), ('kqs', 'local.kancolle.kqs.KqsLogbookPlugin')]:
                 with ZipFile(self.out/f'features/logbook-feature-{module}.jar') as jar:
-                    self.assertEqual(provider + '\n', jar.read(name).decode())
+                    if module == 'klb' and service == 'logbook.listener.ContentListenerSpi':
+                        self.assertNotIn(name, jar.namelist())
+                    else:
+                        self.assertEqual(provider + '\n', jar.read(name).decode())
                 with ZipFile(self.out/'logbook-core.jar') as jar:
                     self.assertNotIn(provider, jar.read(name).decode())
 
