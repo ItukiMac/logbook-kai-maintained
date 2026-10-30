@@ -155,7 +155,15 @@ progress_suites=[s for s in suites if s.get('name')=='logbook.core.QuestProgress
 assert len(progress_suites)==1 and int(progress_suites[0].get('tests',0))>=4
 assert all(int(progress_suites[0].get(k,0))==0 for k in ('failures','errors','skipped'))
 assert all(int(s.get(k,0))==0 for s in local_suites for k in ('failures','errors','skipped'))
-report={'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+# Editor inputs must use read-only projections while retaining existing write safeguards.
+editor_expected={'logbook.core.QuestEditorReadTest':26,'logbook.internal.gui.QuestEditorReadBoundaryTest':2,'logbook.internal.gui.QuestEditorReadGuiTest':6}
+editor_read_suites=[x for x in suites if x.get('name') in editor_expected]
+assert len(editor_read_suites)==3
+for x in editor_read_suites:
+    assert int(x.get('tests',0))>=editor_expected[x.get('name')]
+    assert all(int(x.get(k,0))==0 for k in ('failures','errors','skipped'))
+editor_read_count=sum(int(x.get('tests',0)) for x in editor_read_suites)
+report={'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,

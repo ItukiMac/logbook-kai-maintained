@@ -13,7 +13,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import logbook.bean.AppQuest;
+import logbook.plugin.api.QuestEditorDataV1.Choice;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -35,7 +35,7 @@ class QuestDocumentCommandsGuiTest {
     static <T>T fx(Callable<T> task)throws Exception{var future=new FutureTask<T>(task);Platform.runLater(future);return future.get(25,TimeUnit.SECONDS);}
     final class Editor extends QuestConditionEditController{@Override Path questDirectory(){return root;}}
     record View(Stage stage,Parent pane,QuestConditionEditController editor) implements AutoCloseable {
-        @SuppressWarnings("unchecked") ComboBox<AppQuest> selector(){return (ComboBox<AppQuest>)pane.lookup("#questSelector");}
+        @SuppressWarnings("unchecked") ComboBox<Choice> selector(){return (ComboBox<Choice>)pane.lookup("#questSelector");}
         TextField title(){return (TextField)pane.lookup("#customNameField");}
         public void close(){stage.close();}
     }
@@ -100,7 +100,7 @@ class QuestDocumentCommandsGuiTest {
         fx(()->{try(var v=open()){
             dialogs(()->v.editor().remove(null),()->v.selector().getSelectionModel().select(1),true,true);
             assertEquals(ORIGINAL,Files.readString(root.resolve("10001.json")));assertEquals(ORIGINAL,Files.readString(root.resolve("10002.json")));
-            assertEquals(10002,v.selector().getValue().getNo());try(var p=Files.list(root)){assertEquals(2,p.count());}
+            assertEquals(10002,v.selector().getValue().id());try(var p=Files.list(root)){assertEquals(2,p.count());}
         }return null;});
     }
     @Test void clearedSelectionDuringConfirmationDoesNotRetireTheOldTarget()throws Exception{
@@ -117,7 +117,7 @@ class QuestDocumentCommandsGuiTest {
         fx(()->{try(var v=open()){
   dialogs(()->v.editor().remove(null),()->v.selector().getSelectionModel().select(1),false);
   assertEquals(ORIGINAL,Files.readString(root.resolve("10001.json")));assertEquals(ORIGINAL,Files.readString(root.resolve("10002.json")));
-  assertEquals(10002,v.selector().getValue().getNo());try(var p=Files.list(root)){assertEquals(2,p.count());}
+  assertEquals(10002,v.selector().getValue().id());try(var p=Files.list(root)){assertEquals(2,p.count());}
         }return null;});
     }
 }
