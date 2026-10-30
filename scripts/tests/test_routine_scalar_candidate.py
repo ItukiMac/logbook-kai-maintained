@@ -63,3 +63,25 @@ class RoutineScalarTest(unittest.TestCase):
     def test_recipe_does_not_rewrite_any_other_condition(self):
         value=json.loads(r.replacement(json.dumps(BASE).encode(),{'flagship':5,'fleet':10}))
         self.assertEqual(BASE['conditions'][1],value['conditions'][2]);self.assertEqual(BASE['unknown_preserved'],value['unknown_preserved'])
+
+    def test_levels_cannot_cross_table_boundary(self):
+        for raw, source in [(WIKI, 'wiki'), (ZEKA, 'zekamashi')]:
+            separated=raw.replace(b'</tr><tr>',b'</tr></table><table><tr>',1)
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                r.levels(separated,source)
+
+    def test_zekamashi_cannot_borrow_next_mission_levels(self):
+        raw=ZEKA.replace('<tr><td>練度'.encode(),
+            '<tr><td>海峡警備行動</td><td>A2 00:55</td></tr><tr><td>練度'.encode())
+        with self.assertRaises(ValueError):
+            r.levels(raw,'zekamashi')
+
+    def test_cross_table_agreement_cannot_create_stage(self):
+        for index in (0,1):
+            raw=(WIKI,ZEKA)[index].replace(b'</tr><tr>',b'</tr></table><table><tr>',1)
+            (self.evidence/f'source-{index:02d}.bin').write_bytes(raw)
+            self.rows[index].update(bytes=len(raw),evidence_sha256=hashlib.sha256(raw).hexdigest())
+        self.save()
+        with self.assertRaises(ValueError):
+            r.run(self.root,self.evidence,output=self.base/'stage',now=self.now)
+        self.assertFalse((self.base/'stage').exists())
