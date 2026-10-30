@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import logbook.core.AirBaseStatusService;
 
-/** Detached display values, not an atomic transaction with legacy communication writers. */
+/** Detached display values, serialized with host communication/local commands; direct legacy plugin writes are not intercepted. */
 public final class AirBaseStatusV1 {
     private AirBaseStatusV1() { }
     public static int version() { return 1; }

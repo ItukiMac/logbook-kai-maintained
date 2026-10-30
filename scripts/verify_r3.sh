@@ -178,7 +178,14 @@ assert len(quest_ui_reports)==1 and quest_ui_reports[0]['result']=='passed'
 quest_ui=quest_ui_reports[0]
 assert quest_ui['windows']==4 and quest_ui['guarded_note_roundtrip']
 assert quest_ui['product_status_jar'] and quest_ui['source_jar_unchanged'] and not quest_ui['production_accessed']
-report={'quest_ui_packaging':quest_ui,'arsenal_document_tests':sum(int(x.get('tests',0)) for x in arsenal_suites),'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+# Host-cooperating writers and public read adapters share one boundary.
+host_state=[x for x in suites if x.get('name')=='logbook.core.HostStateBoundaryTest']
+assert len(host_state)==1 and int(host_state[0].get('tests',0))>=9
+assert all(int(host_state[0].get(k,0))==0 for k in ('failures','errors','skipped'))
+quest_replay=[x for x in suites if x.get('name')=='logbook.internal.gui.QuestObservationUiBindingGuiTest']
+assert len(quest_replay)==1 and int(quest_replay[0].get('tests',0))>=8
+assert all(int(quest_replay[0].get(k,0))==0 for k in ('failures','errors','skipped'))
+report={'host_state_boundary_tests':int(host_state[0].get('tests',0)),'quest_observation_gui_tests':int(quest_replay[0].get('tests',0)),'quest_ui_packaging':quest_ui,'arsenal_document_tests':sum(int(x.get('tests',0)) for x in arsenal_suites),'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,

@@ -13,8 +13,8 @@ import logbook.core.ShipRosterService;
 /**
  * Versioned, read-only ship and fleet membership contract.
  *
- * Values are detached after capture. This does NOT serialize concurrent legacy
- * writers or guarantee an atomic ship/mission/label transaction; the UI still
+ * Values are detached after capture under the host API/local-command lock.
+ * Uncooperative legacy plugin writes are not intercepted; the UI still
  * resolves legacy ships for its existing editor and rendering path.
  */
 public final class ShipRosterV1 {

@@ -22,6 +22,9 @@ import logbook.plugin.api.AirBaseStatusV1.*;
 public final class AirBaseStatusService {
     private AirBaseStatusService() { }
     public static Snapshot snapshot() {
+        return LogBookCoreServices.readGameState(() -> captureSnapshot());
+    }
+    private static Snapshot captureSnapshot() {
         return snapshot(Mapinfo.get().getAirBase(), MapareaCollection.get().getMaparea(),
                 SlotItemCollection.get().getSlotitemMap(), SlotitemMstCollection.get().getSlotitemMap());
     }

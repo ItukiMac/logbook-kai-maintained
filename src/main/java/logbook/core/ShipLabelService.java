@@ -21,18 +21,22 @@ import logbook.plugin.api.ShipLabelsV1.Outcome;
 public final class ShipLabelService {
     private ShipLabelService() { }
 
-    public static synchronized List<Target> capture(List<Integer> shipIds) {
-        return captureFrom(ShipCollection.get().getShipMap(), ShipLabelCollection.get().getLabels(), shipIds);
+    public static List<Target> capture(List<Integer> shipIds) {
+        return GameStateService.shared().read(() -> captureFrom(ShipCollection.get().getShipMap(), ShipLabelCollection.get().getLabels(), shipIds));
     }
-    public static synchronized Result apply(List<Target> targets, String label, boolean add) {
-        return applyTo(ShipCollection.get().getShipMap(), ShipLabelCollection.get().getLabels(), targets, label, add,
+    public static Result apply(List<Target> targets, String label, boolean add) {
+        return GameStateService.shared().applyLocalUpdate("ship-labels", () -> applyTo(ShipCollection.get().getShipMap(), ShipLabelCollection.get().getLabels(), targets, label, add,
                 ship -> {
                     var area = SeaAreas.fromArea(ship.getSallyArea());
                     return area == null ? null : area.toString();
-                });
+                }), result -> result.outcome() == Outcome.APPLIED);
     }
 
-    static synchronized List<Target> captureFrom(Map<Integer, Ship> ships, Map<Integer, Set<String>> labels,
+    static List<Target> captureFrom(Map<Integer, Ship> ships, Map<Integer, Set<String>> labels,
+            List<Integer> shipIds) {
+        return GameStateService.shared().read(() -> captureLocked(ships, labels, shipIds));
+    }
+    private static List<Target> captureLocked(Map<Integer, Ship> ships, Map<Integer, Set<String>> labels,
             List<Integer> shipIds) {
         List<Target> result = new ArrayList<>();
         Set<Integer> seen = new HashSet<>();
@@ -45,8 +49,12 @@ public final class ShipLabelService {
         return List.copyOf(result);
     }
 
-    /** Same cooperative lock as the public commands; package scope enables data-only tests. */
-    static synchronized Result applyTo(Map<Integer, Ship> ships, Map<Integer, Set<String>> labels,
+    /** Same host state lock as the public commands; package scope enables data-only tests. */
+    static Result applyTo(Map<Integer, Ship> ships, Map<Integer, Set<String>> labels,
+            List<Target> request, String label, boolean add, Function<Ship, String> eventLabel) {
+        return GameStateService.shared().read(() -> applyLocked(ships,labels,request,label,add,eventLabel));
+    }
+    private static Result applyLocked(Map<Integer, Ship> ships, Map<Integer, Set<String>> labels,
             List<Target> request, String label, boolean add, Function<Ship, String> eventLabel) {
         Objects.requireNonNull(label);
         if (label.isEmpty()) throw new IllegalArgumentException("Empty manual label");

@@ -41,7 +41,7 @@ final class QuestObservationUiBinding implements AutoCloseable {
             token.subscription = Objects.requireNonNull(state.subscribe(value -> offer(token, value)));
             // Reopening may have missed a real quest receipt. Other API snapshots
             // cannot refresh the quest, even when they contain a cached quest list.
-            offer(token, state.snapshot());
+            offer(token, state.latestQuestReceipt());
         } catch (RuntimeException failure) {
             unsubscribe();
             throw failure;

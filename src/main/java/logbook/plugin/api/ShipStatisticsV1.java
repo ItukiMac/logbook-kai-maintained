@@ -10,7 +10,7 @@ import logbook.core.ShipStatisticsService;
 
 /**
  * Read-only statistics of locked ships. Results are detached and deeply immutable.
- * Legacy game writers do not share a transaction with capture; this is not an
+ * Host API and local-command writers share the capture lock; uncooperative legacy plugins do not. This is not an
  * atomic game-state snapshot, a new game rule, or an independent-core ABI promise.
  */
 public final class ShipStatisticsV1 {

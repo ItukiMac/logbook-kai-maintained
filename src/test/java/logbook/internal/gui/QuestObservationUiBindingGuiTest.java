@@ -172,6 +172,21 @@ class QuestObservationUiBindingGuiTest {
         }
     }
 
+    @Test void hostReplayKeepsLastRealQuestReceiptAfterUnrelatedTraffic() throws Exception {
+        var service=new logbook.core.GameStateService();var delivered=new java.util.concurrent.CopyOnWriteArrayList<GameStateSnapshot>();
+        service.applyApiUpdate(QUEST_API,()->true);var receipt=service.latestQuestReceipt();
+        service.applyApiUpdate("/kcsapi/api_port/port",()->true);
+        var stage=FxTestSupport.fx(()->{
+            var window=new Stage();window.setScene(new javafx.scene.Scene(new javafx.scene.layout.VBox()));
+            var binding=new QuestObservationUiBinding(window,service,delivered::add);
+            window.getProperties().put("fixture-binding",binding);window.show();return window;
+        });
+        try {
+            FxTestSupport.fx(()->null);FxTestSupport.fx(()->null);
+            assertEquals(List.of(receipt),delivered);assertSame(receipt,delivered.getFirst());
+        }finally{FxTestSupport.fx(()->{((QuestObservationUiBinding)stage.getProperties().get("fixture-binding")).close();stage.close();return null;});}
+    }
+
     @Test void closeIsIdempotentAndQueuedWorkCannotResubscribeOrDeliver() throws Exception {
         try (var f = new Fixture()) {
             f.show();

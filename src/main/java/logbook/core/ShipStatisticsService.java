@@ -21,6 +21,9 @@ public final class ShipStatisticsService {
     private ShipStatisticsService() { }
 
     public static Snapshot snapshot() {
+        return LogBookCoreServices.readGameState(() -> captureSnapshot());
+    }
+    private static Snapshot captureSnapshot() {
         return capture(ShipCollection.get().getShipMap().values(), StatisticsShipTypeGroup::toTypeGroup);
     }
 

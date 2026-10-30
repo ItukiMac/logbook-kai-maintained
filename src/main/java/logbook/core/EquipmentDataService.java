@@ -28,6 +28,9 @@ public final class EquipmentDataService {
     private EquipmentDataService() { }
 
     public static Inventory inventory() {
+        return LogBookCoreServices.readGameState(() -> captureInventory());
+    }
+    private static Inventory captureInventory() {
         var ownerIndex = owners(new ArrayList<>(ShipCollection.get().getShipMap().values()), Ships::toName);
         List<Owned> owned = new ArrayList<>();
         List<String> warnings = new ArrayList<>();
@@ -98,6 +101,9 @@ public final class EquipmentDataService {
     }
 
     public static List<Aircraft> aircraft() {
+        return LogBookCoreServices.readGameState(() -> captureAircraft());
+    }
+    private static List<Aircraft> captureAircraft() {
         List<Aircraft> result = new ArrayList<>();
         for (SlotItem item : new ArrayList<>(SlotItemCollection.get().getSlotitemMap().values())) {
             if (item == null) continue;
@@ -121,6 +127,9 @@ public final class EquipmentDataService {
     }
 
     public static Map<String, List<Category>> categories() {
+        return LogBookCoreServices.readGameState(() -> captureCategories());
+    }
+    private static Map<String, List<Category>> captureCategories() {
         Map<String, List<Category>> result = new LinkedHashMap<>();
         Items.getCategories().forEach((name, types) -> result.put(name, types.stream()
                 .filter(Objects::nonNull).map(t -> new Category(t.getId(), t.getName())).toList()));
@@ -128,6 +137,9 @@ public final class EquipmentDataService {
     }
 
     public static String itemName(int masterId) {
+        return LogBookCoreServices.readGameState(() -> captureItemName(masterId));
+    }
+    private static String captureItemName(int masterId) {
         SlotitemMst master = SlotitemMstCollection.get().getSlotitemMap().get(masterId);
         return master == null ? "不明(" + masterId + ")" : master.getName();
     }
