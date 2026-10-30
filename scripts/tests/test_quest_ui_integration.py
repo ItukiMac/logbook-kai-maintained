@@ -26,7 +26,7 @@ class QuestUiIntegrationTest(unittest.TestCase):
                 'atomic_game_snapshot_claimed':False};logs=[]
         try:
             dist=fixture/'distribution';report=build(original,dist,'a'*40);verify(dist)
-            self.assertEqual(QUEST_UI_PROFILE,report['ship_list_ui_profile'])
+            self.assertEqual(QUEST_UI_PROFILE,report['quest_ui_profile'])
             with ZipFile(dist/'logbook-core.jar') as core:
                 self.assertFalse(any(quest_ui_entry(n) for n in core.namelist()),'Hidden core fallback')
             with ZipFile(dist/'features/logbook-feature-status.jar') as status:
