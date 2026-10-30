@@ -30,7 +30,7 @@ permissions:
 # One writer across manual and unattended data releases. PR validation has its own lane.
 concurrency:
   group: ${{ github.event_name == 'pull_request' && format('numeric-pr-{0}', github.event.number) || 'maintained-data-single-writer' }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   prepare:
     runs-on: ubuntu-24.04
@@ -46,10 +46,10 @@ jobs:
         with:
           python-version: '3.12'
       - uses: actions/setup-java@v6.1.0
+        timeout-minutes: 5
         with:
           distribution: temurin
           java-version: '21.0.13+9'
-          cache: maven
       - uses: ./.github/actions/pinned-maven
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
       - name: Live sources, new JSON-only Git candidate and complete canonical R3 verification
@@ -141,6 +141,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: actions/setup-java@v6.1.0
+        timeout-minutes: 5
         with:
           distribution: temurin
           java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
