@@ -1,0 +1,45 @@
+{
+  "base_master": "89e73b55a34eda727f1df97ba8ad529d6d41f6e5",
+  "product_source_commit": "279247be3c7932b10495735b5dc5f498338843b0",
+  "verification_mode": "all-sources javac with prior verified runtime dependencies; JavaFX21 Monocle; not Maven/CI/native GUI",
+  "java": {
+    "java21": {
+      "tests": 1065,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "successful": 1064,
+      "report_sha256": "593e60cbe7bd1be0f129ad65b24007c633f26240a551f866ce05afc05bd26ae5"
+    },
+    "java25": {
+      "tests": 1065,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "successful": 1064,
+      "report_sha256": "275c18199b27e38d3c94c346d9a58e87709dab1b454ddf7c7fce94040d4064f0"
+    }
+  },
+  "python": {
+    "scripts_discovered": 453,
+    "scripts_successful": 437,
+    "scripts_skipped": 16,
+    "tools_successful": 25
+  },
+  "json": {
+    "validated": 152,
+    "errors": 0,
+    "pending": 0
+  },
+  "split_probe": {
+    "windows": 4,
+    "guarded_note_roundtrip": true,
+    "exit_code": 0,
+    "mode": "Monocle-headless",
+    "host_fallback": false
+  },
+  "github_saved": false,
+  "ci_executed": false,
+  "master_merged": false,
+  "production_accessed": false
+}

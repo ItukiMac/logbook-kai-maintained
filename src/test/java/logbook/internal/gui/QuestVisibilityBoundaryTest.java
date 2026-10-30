@@ -9,7 +9,8 @@ class QuestVisibilityBoundaryTest {
         try(var in=QuestPane.class.getResourceAsStream("QuestPane.class")) {
             assertNotNull(in);String symbols=new String(in.readAllBytes(),StandardCharsets.ISO_8859_1);
             assertFalse(symbols.contains("deleteIfExists"));assertFalse(symbols.contains("logbook/bean/AppQuestCollection"));
-            assertTrue(symbols.contains("logbook/internal/gui/QuestVisibilityUi"));
+            assertFalse(symbols.contains("logbook/internal/gui/QuestVisibilityUi"));
+            assertTrue(symbols.contains("logbook/plugin/api/QuestUiV1"));
         }
     }
     @Test void commandApiIsPresentAndFxmlNoLongerPromisesDeletion() throws Exception {

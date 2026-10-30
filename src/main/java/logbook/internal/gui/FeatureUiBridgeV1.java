@@ -42,6 +42,11 @@ public final class FeatureUiBridgeV1 {
         return InternalFXMLLoader.setGlobal(root);
     }
 
+    public static FeatureUiV1.Binding observeDefinitions(javafx.stage.Window window, Runnable refresh) {
+        var binding = new DefinitionUiBinding(java.util.Objects.requireNonNull(window), java.util.Objects.requireNonNull(refresh));
+        return binding::close;
+    }
+
     public static void restoreTree(javafx.scene.control.TreeTableView<?> table, String key) {
         TreeTableTool.setVisible(table, key);
     }

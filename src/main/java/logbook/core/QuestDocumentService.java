@@ -12,6 +12,10 @@ import logbook.plugin.api.QuestDocumentsV1.*;
 public final class QuestDocumentService {
     private QuestDocumentService() { }
     public static Workspace at(Path approvedDirectory) {
+        return at(approvedDirectory, bytes -> QuestDocumentValidation.validate(QuestDocumentValidation.parse(bytes)), true);
+    }
+    @FunctionalInterface interface Validator { void validate(byte[] bytes) throws IOException; }
+    static Workspace at(Path approvedDirectory, Validator validator, boolean allowRetirement) {
         Objects.requireNonNull(approvedDirectory);
         if (approvedDirectory.toString().isBlank()) throw new IllegalArgumentException("Missing directory");
         for (Path part : approvedDirectory)
@@ -20,7 +24,7 @@ public final class QuestDocumentService {
         return id -> {
             if (id <= 0) throw new IllegalArgumentException("Positive quest identity required");
             Path target = root.resolve(id + ".json");
-            return new Editor(target, new Document(id,target.toString(),QuestDocumentStore.read(target)));
+            return new Editor(target, new Document(id,target.toString(),QuestDocumentStore.read(target)),validator,allowRetirement);
         };
     }
     private static final class Change implements Plan {
@@ -43,18 +47,22 @@ public final class QuestDocumentService {
         private final Path target;
         private Document document;
         private long revision;
-        Editor(Path target, Document document) { this.target=target; this.document=document; }
+        private final Validator validator;
+        private final boolean allowRetirement;
+        Editor(Path target, Document document, Validator validator, boolean allowRetirement) {
+            this.target=target; this.document=document; this.validator=validator; this.allowRetirement=allowRetirement;
+        }
         public synchronized Document document() { return document; }
         public synchronized Plan prepareSave(byte[] replacement) throws IOException {
             if (replacement == null || replacement.length > QuestDocumentsV1.MAX_BYTES)
                 throw new IOException("保存する任務設定が不正、または上限を超えています。");
             Document after = new Document(document.questId(), document.target(), replacement);
             // Same strict parser/arrival/deck rules as the existing editor, not a second implementation.
-            QuestDocumentValidation.validate(QuestDocumentValidation.parse(after.bytes()));
+            validator.validate(after.bytes());
             return new Change(this,revision,Operation.SAVE,document,after);
         }
         public synchronized Plan prepareRetirement() throws IOException {
-            if (document.questId() < 10001 || document.questId() > 10005)
+            if (!allowRetirement || document.questId() < 10001 || document.questId() > 10005)
                 throw new IOException("退避できるのはカスタム任務10001～10005だけです。");
             return new Change(this,revision,Operation.RETIRE,document,
                     new Document(document.questId(),document.target(),null));

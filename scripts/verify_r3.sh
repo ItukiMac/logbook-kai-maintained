@@ -163,7 +163,22 @@ for x in editor_read_suites:
     assert int(x.get('tests',0))>=editor_expected[x.get('name')]
     assert all(int(x.get(k,0))==0 for k in ('failures','errors','skipped'))
 editor_read_count=sum(int(x.get('tests',0)) for x in editor_read_suites)
-report={'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
+# Factory-note commands and physical quest UI extraction must actually run.
+arsenal_expected={'logbook.core.ArsenalQuestDocumentsTest':11,
+    'logbook.internal.gui.ArsenalQuestDocumentsBoundaryTest':1,
+    'logbook.internal.gui.ArsenalQuestDocumentsGuiTest':6,
+    'logbook.internal.gui.QuestUiPackagingBoundaryTest':1}
+arsenal_suites=[x for x in suites if x.get('name') in arsenal_expected]
+assert len(arsenal_suites)==len(arsenal_expected)
+for x in arsenal_suites:
+    assert int(x.get('tests',0))>=arsenal_expected[x.get('name')]
+    assert all(int(x.get(k,0))==0 for k in ('failures','errors','skipped'))
+quest_ui_reports=[json.loads(f.read_text()) for f in p.glob('quest-ui-fixture-*.json')]
+assert len(quest_ui_reports)==1 and quest_ui_reports[0]['result']=='passed'
+quest_ui=quest_ui_reports[0]
+assert quest_ui['windows']==4 and quest_ui['guarded_note_roundtrip']
+assert quest_ui['product_status_jar'] and quest_ui['source_jar_unchanged'] and not quest_ui['production_accessed']
+report={'quest_ui_packaging':quest_ui,'arsenal_document_tests':sum(int(x.get('tests',0)) for x in arsenal_suites),'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,
         'ship_label_editing':ship_labels,'equipment_ui_packaging':equipment,'equipment_data_contract_tests':equipment_test_count,

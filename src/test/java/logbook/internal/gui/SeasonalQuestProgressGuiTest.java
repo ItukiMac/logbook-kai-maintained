@@ -119,7 +119,7 @@ class SeasonalQuestProgressGuiTest {
             var loader = new FXMLLoader(SeasonalQuestProgressGuiTest.class.getResource("/logbook/gui/quest_progress.fxml"));
             var controller = new IsolatedController(fixture); loader.setControllerFactory(type -> controller);
             Parent pane = loader.load(); var stage = new Stage(); stage.setScene(new Scene(pane));
-            controller.initWindow(stage); stage.show(); controller.setQuest(fixture.latest.get());
+            controller.bindWindow(stage); stage.show(); controller.setQuest(fixture.latest.get());
             return new Window(stage, pane, controller);
         });
     }

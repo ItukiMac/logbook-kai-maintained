@@ -27,7 +27,7 @@ import logbook.internal.logger.LoggerHolder;
  * 任務進捗確認
  *
  */
-public class QuestProgress extends WindowController {
+public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
 
     @FXML
     private Label name;
@@ -113,13 +113,14 @@ public class QuestProgress extends WindowController {
         }
         this.condition.setShowRoot(true);
         this.condition.setRoot(new TreeItem<>("読み込み中"));
+        final AppQuest requestedQuest = this.quest;
         final var definition = logbook.core.GameDefinitionRuntime.active() ? logbook.core.GameDefinitionRuntime.snapshot() : null;
         try {
             Task<Optional<AppQuestCondition>> task = new Task<Optional<AppQuestCondition>>() {
                 @Override
                 protected Optional<AppQuestCondition> call() throws Exception {
                     try (var scope = definition == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(definition)) {
-                    AppQuest quest = QuestProgress.this.quest;
+                    AppQuest quest = requestedQuest;
                     AppQuestCondition condition = loadCondition(quest);
                     if (condition != null) {
                         if (!condition.isRuleUsableFor(quest)) return Optional.of(condition);
@@ -141,7 +142,7 @@ public class QuestProgress extends WindowController {
                 protected void succeeded() {
                     if (requested != requestVersion || isCancelled()) return;
                     if (definition != null && definition != logbook.core.LogBookCoreServices.gameDataView().snapshot()) { load(); return; }
-                    AppQuest quest = QuestProgress.this.quest;
+                    AppQuest quest = requestedQuest;
                     Optional<AppQuestCondition> condition = this.getValue();
                     if (!condition.isPresent()) {
                         this.failed();

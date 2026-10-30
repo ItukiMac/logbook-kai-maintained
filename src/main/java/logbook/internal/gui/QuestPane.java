@@ -32,11 +32,11 @@ public class QuestPane extends HBox {
 
     private final Quest display;
     private final logbook.plugin.api.QuestLocalFilesV1.Note localNote;
-    private DefinitionUiBinding definitionBinding;
+    private logbook.plugin.api.FeatureUiV1.Binding definitionBinding;
     private final javafx.beans.value.ChangeListener<javafx.stage.Window> definitionWindowListener = (o,a,b) -> attachDefinitionWindow(b);
     private void attachDefinitionWindow(javafx.stage.Window window) {
         if (definitionBinding != null) definitionBinding.close();
-        definitionBinding = window == null ? null : new DefinitionUiBinding(window, this::refreshDefinitionAvailability);
+        definitionBinding = window == null ? null : logbook.plugin.api.FeatureUiV1.observeDefinitions(window, this::refreshDefinitionAvailability);
     }
     private void refreshDefinitionAvailability() {
         try (var scope = LogBookCoreServices.pinDefinitions()) {
@@ -89,7 +89,7 @@ public class QuestPane extends HBox {
         if (note != null && note.questId() != quest.no()) throw new IllegalArgumentException("Note identity mismatch");
         this.localNote = note;
         try {
-            FXMLLoader loader = InternalFXMLLoader.load("logbook/gui/quest.fxml");
+            FXMLLoader loader = logbook.plugin.api.FeatureUiV1.componentLoader(QuestPane.class, "/logbook/gui/quest.fxml");
             loader.setRoot(this);
             loader.setController(this);
             loader.load();
@@ -207,7 +207,7 @@ public class QuestPane extends HBox {
 
     @FXML
     void remove(ActionEvent event) {
-        QuestVisibilityUi.hide(this, java.util.List.of(this.display));
+        logbook.plugin.api.QuestUiV1.hide(this, java.util.List.of(this.display));
     }
 
     @FXML
@@ -217,7 +217,7 @@ public class QuestPane extends HBox {
         var rows = parent == null ? java.util.List.of(this.display)
                 : parent.getChildrenUnmodifiable().stream().filter(QuestPane.class::isInstance)
                     .map(QuestPane.class::cast).map(row -> row.display).toList();
-        QuestVisibilityUi.hide(this, rows);
+        logbook.plugin.api.QuestUiV1.hide(this, rows);
     }
 
     @FXML
@@ -249,7 +249,7 @@ public class QuestPane extends HBox {
     @FXML
     void condition(ActionEvent event) {
         try {
-            InternalFXMLLoader.showWindow("logbook/gui/quest_progress.fxml", (Stage) this.getScene().getWindow(),
+            logbook.plugin.api.FeatureUiV1.showWindow("logbook/gui/quest_progress.fxml", (Stage) this.getScene().getWindow(),
                     java.util.Objects.toString(this.display.title(), "任務 " + this.display.no()), c -> {
                         ((QuestProgress) c).setQuest(QuestListReadService.toProgressInput(this.display));
                     }, null);
