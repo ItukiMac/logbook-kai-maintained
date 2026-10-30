@@ -40,7 +40,7 @@ this exact combined source, not reuse predecessor success as final evidence.
 | M1 | Existing non-production candidate/evidence/budget gates plus explicit failure/progress preservation and no paid provider. |
 | M2 | **Not complete.** Only bounded A1 scalar agreement/staging implemented. Actual unattended source-to-publication cycle, broader approved recipes and publication policy remain unverified/unenabled. Wiki direct retrieval returned HTTP403; conflict/layout/freshness failures stop. |
 | M3 | Exact checkpoint/proposal identity, scoped automatic documentation/test staging, patch-specific high-risk approval, separate disposable checkout and fixed Python+Maven GUI verification; no merge/deploy authority. |
-| M4 | Pinned source/task/tool checkpoint restored into new Git checkout; exact environment preflight and actual resumed source validator. Old environment remains usable. Not an OS snapshot or paid-provider recovery claim. |
+| M4 | Pinned source/task/tool checkpoint transferred to a separate newly provisioned CI runner and restored into new Git checkout; exact environment preflight and actual resumed source validator. Old environment remains usable. Not an OS snapshot or paid-provider recovery claim. |
 
 ## Completion rule
 

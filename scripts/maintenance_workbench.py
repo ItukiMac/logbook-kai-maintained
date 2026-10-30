@@ -130,7 +130,7 @@ def validate_toolchain(value):
 def measure_environment():
     observed = {'python': platform.python_version()}
     commands = {'git': (['git', '--version'], r'git version ([^\s]+)'),
-        'java': (['java', '-version'], r'version "([^"]+)"'),
+        'java': (['java', '-version'], r'\(build ([0-9][^)\s]*)\)'),
         'maven': (['mvn', '--version'], r'Apache Maven ([^\s]+)')}
     env = {k: v for k, v in os.environ.items() if k in
         ('PATH', 'JAVA_HOME', 'SYSTEMROOT', 'WINDIR', 'LD_LIBRARY_PATH')}

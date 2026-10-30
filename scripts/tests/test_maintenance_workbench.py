@@ -23,7 +23,7 @@ class WorkbenchTest(unittest.TestCase):
         w.git(self.repo,'add','--all');w.git(self.repo,'-c','user.name=Fixture','-c','user.email=fixture@localhost','commit','-qm','fixture')
         (self.repo/'private-runtime').mkdir();(self.repo/'private-runtime/secret.txt').write_text('never archive this')
         self.progress={'task':'M4','state':'verification','next':'resume fixed validator','failure_history':['retained']}
-        self.tools={'python':'3.12','java':'21.0.13','maven':'3.9.11','git':'2.56.0'}
+        self.tools={'python':'3.12','java':'21.0.13+9-LTS','maven':'3.9.11','git':'2.56.0'}
         self.out=self.root/'checkpoint'
     def capture(self,**kw):
         return w.checkpoint(self.repo,self.out,progress=self.progress,toolchain=self.tools,**kw)
@@ -120,7 +120,7 @@ class WorkbenchTest(unittest.TestCase):
     def test_real_tool_probe_uses_only_fixed_version_commands_and_a_clean_environment(self):
         runs=[]
         def run(command,**kw):
-            runs.append((command,kw));output={'git':'git version 2.56.0','java':'openjdk version "21.0.13"','mvn':'Apache Maven 3.9.11'}[command[0]]
+            runs.append((command,kw));output={'git':'git version 2.56.0','java':'openjdk version "21.0.13"\nOpenJDK Runtime Environment (build 21.0.13+9-LTS)','mvn':'Apache Maven 3.9.11'}[command[0]]
             return subprocess.CompletedProcess(command,0,output)
         with patch.object(w.subprocess,'run',side_effect=run):observed=w.measure_environment()
         self.assertEqual(set(w.TOOLS),set(observed));self.assertEqual([['git','--version'],['java','-version'],['mvn','--version']],[r[0] for r in runs])

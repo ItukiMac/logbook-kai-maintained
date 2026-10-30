@@ -33,3 +33,12 @@ corruption, source races, and original byte preservation. Native Mint and deploy
 provider/account/environment validation remain separate from this portable source
 recovery capability. Paid-provider measurements require an actual approved provider;
 no receipt or test fixture may be substituted for real billing evidence.
+
+Final integration strengthens recovery across separate CI jobs: the first job
+checks and transfers the public tracked source checkpoint and pinned manifest hash;
+a new Ubuntu runner provisions the declared Python/JDK/Maven tools independently,
+verifies the checkpoint/checkout identity and exact versions, restores a new Git
+checkout, and executes its inventory validator plus recovery tests. Transfer artifacts
+contain public tracked repository source and the fixed public task record only, not
+Git history/config, ignored runtime data or credentials. They expire after14 days;
+this CI evidence retention is not an indefinite user-backup retention guarantee.
