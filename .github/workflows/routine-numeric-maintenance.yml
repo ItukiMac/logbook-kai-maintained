@@ -1,0 +1,203 @@
+name: Reviewed numeric data maintenance
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/routine-numeric-maintenance.yml'
+      - '.github/workflows/manual-data-release.yml'
+      - 'scripts/routine_numeric*.py'
+      - 'scripts/tests/*numeric*'
+      - 'scripts/java/RoutinePublishedDataProbe.java'
+      - 'src/test/java/logbook/core/*Numeric*'
+      - 'src/test/java/logbook/core/ReviewedMissionScalarTest.java'
+      - 'docs/maintenance/routine-numeric*.json'
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/routine-numeric-maintenance.yml'
+      - 'scripts/routine_numeric*.py'
+      - 'docs/maintenance/routine-numeric-policy.json'
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      resume_after_failure:
+        description: 'Resume only after reviewing the prior failed cycle and its retained artifacts'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: read
+# One writer across manual and unattended data releases. PR validation has its own lane.
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('numeric-pr-{0}', github.event.number) || 'maintained-data-single-writer' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      ready: ${{ steps.candidate.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v6.0.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v6.1.0
+        timeout-minutes: 5
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9'
+      - uses: ./.github/actions/pinned-maven
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0t64
+      - name: Live sources, new JSON-only Git candidate and complete canonical R3 verification
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_RESUME: ${{ github.event_name == 'workflow_dispatch' && inputs.resume_after_failure }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "$REVIEWED_RESUME" == true ]]; then args+=(--resume-after-failure); fi
+          python3 scripts/routine_numeric_cycle.py --root "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/numeric-transfer" "${args[@]}" > "$RUNNER_TEMP/numeric-prepare.log" 2>&1 || { tail -100 "$RUNNER_TEMP/numeric-prepare.log"; exit 1; }
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads((Path(os.environ['RUNNER_TEMP'])/'numeric-transfer/receipt.json').read_text())
+          ready=r['status']=='verified_candidate' and r['data_publication_eligible'] is True
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('ready='+str(ready).lower()+'\n')
+          print(json.dumps({k:r[k] for k in ['status','data_publication_eligible','live_cycle_completed']}))
+          if r.get('blocked'):print('Definitions held for review:',json.dumps(r['blocked'],ensure_ascii=False))
+          PY
+          git diff --exit-code
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: numeric-verified-transfer
+          path: |
+            ${{ runner.temp }}/numeric-transfer/receipt.json
+            ${{ runner.temp }}/numeric-transfer/candidate.bundle
+            ${{ runner.temp }}/numeric-transfer/canonical-r3-summary.json
+            ${{ runner.temp }}/numeric-transfer/logbook-data-pack.zip
+            ${{ runner.temp }}/numeric-transfer/baseline.zip
+            ${{ runner.temp }}/numeric-transfer/verification-application.jar
+          if-no-files-found: warn
+          retention-days: 30
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: numeric-read-only-verification-logs
+          path: |
+            ${{ runner.temp }}/numeric-prepare.log
+            ${{ runner.temp }}/numeric-transfer/candidate/target/r3-verification/*.log
+            ${{ runner.temp }}/numeric-transfer/candidate/target/surefire-reports/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 30
+  publish:
+    needs: prepare
+    if: needs.prepare.outputs.ready == 'true' && github.repository == 'ItukiMac/logbook-kai-maintained' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: numeric-verified-transfer
+          path: transfer
+      - name: Verify inert transfer and atomically push JSON-only child, then publish data-only Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/routine_numeric_publish.py publish --root . --artifact transfer > transfer/publication.log 2>&1
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: numeric-owned-publication
+          path: |
+            transfer/publication.json
+            transfer/publication-draft.json
+            transfer/publication.log
+          if-no-files-found: error
+          retention-days: 30
+  consume:
+    needs: publish
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6.1.0
+        timeout-minutes: 5
+        with:
+          distribution: temurin
+          java-version: "${{ matrix.java == '21' && '21.0.13+9' || '25.0.5+8' }}"
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: numeric-verified-transfer
+          path: transfer
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: numeric-owned-publication
+          path: publication
+      - name: Real public downloader, typed consumer, idempotence and retained baseline restoration in NEW store
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir probe-classes
+          javac -proc:none --release 21 -cp transfer/verification-application.jar -d probe-classes scripts/java/RoutinePublishedDataProbe.java
+          timeout 180s java -cp transfer/verification-application.jar:probe-classes logbook.core.RoutinePublishedDataProbe transfer/receipt.json publication/publication.json transfer/baseline.zip "$RUNNER_TEMP/new-numeric-store" transfer/verification-application.jar > consumer.log 2>&1 || { cat consumer.log; exit 1; }
+          grep '^ROUTINE_PUBLIC_DATA_CYCLE_OK ' consumer.log
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads(Path('transfer/receipt.json').read_text());pub=json.loads(Path('publication/publication.json').read_text())
+          Path('cycle-complete.json').write_text(json.dumps({'format':'logbook-routine-numeric-consumer-v1','live_cycle_completed':True,'source_commit':r['candidate_revision'],'pack_sha256':r['pack_sha256'],'release_url':pub['url'],'java':os.environ['JAVA_HOME'],'actual_public_downloader':True,'typed_consumer':True,'restored_baseline':True,'application_jar_unchanged':True,'production_runtime_changed':False,'paid_provider_calls':0},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: numeric-public-cycle-java${{ matrix.java }}
+          path: |
+            cycle-complete.json
+            consumer.log
+          if-no-files-found: error
+          retention-days: 30
+  withdraw-on-failure:
+    needs: [publish, consume]
+    if: always() && github.repository == 'ItukiMac/logbook-kai-maintained' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && needs.publish.result != 'skipped' && (needs.publish.result == 'failure' || needs.consume.result == 'failure' || needs.consume.result == 'cancelled')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: numeric-owned-publication
+          path: publication
+      - name: Withdraw only this run's owned publication to a retained draft, without deleting assets or reverting source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/routine_numeric_publish.py withdraw --artifact publication > withdrawal.json
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: numeric-retained-withdrawal
+          path: withdrawal.json
+          retention-days: 30
