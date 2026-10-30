@@ -6,7 +6,7 @@ import logbook.core.EquipmentDataService;
 
 /**
  * Read-only equipment inventory contract. Values and containers are detached,
- * immutable copies. Capture is not an atomic transaction with legacy writers;
+ * immutable copies. Capture is serialized with host API/local commands; uncooperative legacy plugins remain outside that boundary;
  * separate queries can observe different game states. No game/config/file write
  * operation or mutable bean/JavaFX type is exposed by this data contract.
  */

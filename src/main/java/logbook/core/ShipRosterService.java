@@ -23,6 +23,9 @@ public final class ShipRosterService {
     private ShipRosterService() { }
 
     public static Snapshot snapshot() {
+        return LogBookCoreServices.readGameState(() -> captureSnapshot());
+    }
+    private static Snapshot captureSnapshot() {
         return snapshot(ShipCollection.get().getShipMap(),
                 ShipMstCollection.get().getShipMap(),
                 DeckPortCollection.get().getDeckPortMap(),
@@ -30,9 +33,9 @@ public final class ShipRosterService {
     }
 
     /**
-     * Exposed to same-package synthetic tests. Does not take or imply a writer
-     * lock; each collection is copied for an isolated read, and simultaneous
-     * legacy writes can still race. Never returns a live bean or collection.
+     * Exposed to same-package synthetic tests with caller-owned fixtures. Public
+     * live capture holds the host state lock. Direct legacy plugin writes that
+     * ignore that lock can still race. Never returns a live bean or collection.
      */
     static Snapshot snapshot(Map<Integer, Ship> ships, Map<Integer, ShipMst> masters,
             Map<Integer, DeckPort> fleets, Map<Integer, Set<String>> labels) {

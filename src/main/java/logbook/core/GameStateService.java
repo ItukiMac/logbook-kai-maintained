@@ -14,8 +14,10 @@ public final class GameStateService implements GameStateView {
     public static GameStateService shared(){return SHARED;}
     private volatile GameStateSnapshot current=new GameStateSnapshot(0,Instant.EPOCH,"","runtime-not-started",false,List.of(),List.of(),List.of(),Map.of());
     private final CopyOnWriteArrayList<Subscription> listeners=new CopyOnWriteArrayList<>();
+    private volatile GameStateSnapshot latestQuestReceipt;
     private boolean updating;
     @Override public GameStateSnapshot snapshot(){return current;}
+    @Override public GameStateSnapshot latestQuestReceipt(){return latestQuestReceipt;}
     @Override public AutoCloseable subscribe(Consumer<GameStateSnapshot> callback){
         Subscription s=new Subscription(Objects.requireNonNull(callback));listeners.add(s);return s;
     }
@@ -23,14 +25,36 @@ public final class GameStateService implements GameStateView {
     public synchronized <T> T read(Supplier<T> query){return Objects.requireNonNull(query).get();}
     public synchronized void applyApiUpdate(String uri,BooleanSupplier handlers){
         Objects.requireNonNull(uri);Objects.requireNonNull(handlers);
-        if(updating)throw new IllegalStateException("Reentrant API mutation is not allowed");
+        transact(uri, handlers::getAsBoolean, ignored -> true, Boolean::booleanValue);
+    }
+    /** Host-local commands use the same writer boundary, never a forged game receipt. */
+    synchronized <T> T applyLocalUpdate(String operation,Supplier<T> command,Predicate<T> changed){
+        if(operation == null || !operation.matches("[a-z][a-z0-9-]{0,63}"))
+            throw new IllegalArgumentException("A local operation identifier is required");
+        return transact("host/local/"+operation,Objects.requireNonNull(command),
+                Objects.requireNonNull(changed),ignored -> true);
+    }
+    private <T> T transact(String source,Supplier<T> handler,Predicate<T> changed,Predicate<T> succeeded){
+        if(updating)throw new IllegalStateException("Reentrant state mutation is not allowed");
         updating=true;
         try(var scope=LogBookCoreServices.pinDefinitions()) {
-            boolean success=handlers.getAsBoolean();
-            GameStateSnapshot next=capture(current.sequence()+1,uri,scope.snapshot().generation(),success);
-            current=next;
-            for(Subscription s:listeners)if(s.active)try{s.callback.accept(next);}catch(RuntimeException e){LoggerHolder.get().warn("ゲーム状態の通知先で例外",e);}
+            T result;
+            try { result=handler.get(); }
+            catch(RuntimeException | Error failure) {
+                // A partially applied handler must not leave a successful old snapshot current.
+                try { publish(source,scope.snapshot().generation(),false); }
+                catch(RuntimeException | Error captureFailure) { failure.addSuppressed(captureFailure); }
+                throw failure;
+            }
+            if(changed.test(result))publish(source,scope.snapshot().generation(),succeeded.test(result));
+            return result;
         } finally {updating=false;}
+    }
+    private void publish(String source,String generation,boolean success){
+        GameStateSnapshot next=capture(Math.incrementExact(current.sequence()),source,generation,success);
+        current=next;
+        if(source.endsWith("/api_get_member/questlist"))latestQuestReceipt=next;
+        for(Subscription s:listeners)if(s.active)try{s.callback.accept(next);}catch(RuntimeException e){LoggerHolder.get().warn("ゲーム状態の通知先で例外",e);}
     }
     private static <T> List<T> copy(List<T> value){return value==null?List.of():List.copyOf(value);}
     static GameStateSnapshot capture(long sequence,String api,String generation,boolean success){
