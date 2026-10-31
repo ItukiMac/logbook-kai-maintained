@@ -21,4 +21,17 @@ class QuestManagementTest {
         row=QuestManagement.project(ledger.snapshot(),Map.of(key,"test")).rows().get(0);
         assertFalse(row.conflict());assertEquals(State.AVAILABLE,row.effective());assertEquals(3,ledger.snapshot().history().size());
     }
+    @Test void importedCatalogSurvivesRestartAndDoesNotInventAvailability() throws Exception {
+        var entry=new QuestManagement.CatalogEntry(991,"historical quest","event-2020","once","fixture");
+        var ledger=new QuestLedger(root);
+        QuestManagement.register(ledger,java.util.List.of(entry));
+        QuestManagement.register(ledger,java.util.List.of(entry));
+        var restored=new QuestLedger(root).snapshot();assertEquals(1,restored.revision());
+        var row=QuestManagement.project(restored,Map.of()).rows().get(0);
+        assertEquals("historical quest",row.title());assertEquals(State.UNKNOWN,row.effective());
+    }
+    @Test void catalogRejectsDuplicateIdentityBeforeWriting() throws Exception {
+        var file=root.resolve("import.json");java.nio.file.Files.writeString(file,"[{\"questId\":1,\"title\":\"a\",\"edition\":\"once\",\"period\":\"once\",\"source\":\"test\"},{\"questId\":1,\"title\":\"b\",\"edition\":\"once\",\"period\":\"once\",\"source\":\"test\"}]");
+        assertThrows(IllegalArgumentException.class,()->QuestManagement.readCatalog(file));
+    }
 }

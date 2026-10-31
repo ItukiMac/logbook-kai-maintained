@@ -23,7 +23,7 @@ class LogBookCoreServicesTest {
     @Test
     void testGetServiceProviders() throws Exception {
         List<APIListenerSpi> apiListenerSpiList =  LogBookCoreServices.getServiceProviders(APIListenerSpi.class).collect(Collectors.toList());
-        Assertions.assertEquals(67, apiListenerSpiList.size());
+        Assertions.assertEquals(68, apiListenerSpiList.size());
 
         List<StartUp> startUpList =  LogBookCoreServices.getServiceProviders(StartUp.class).collect(Collectors.toList());
         Assertions.assertEquals(java.util.Set.of(

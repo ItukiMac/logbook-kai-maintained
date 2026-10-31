@@ -65,3 +65,5 @@ logbook.api.ApiReqSortieBattleresult
 logbook.api.ApiReqSortieLdAirbattle
 logbook.api.ApiReqSortieLdShooting
 logbook.api.ApiStart2
+
+logbook.api.ApiReqQuestStart

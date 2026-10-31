@@ -1,6 +1,7 @@
 # Functional modules, shared export and persistent quest ledger
 
-Status: implementation specification; not implemented or release-ready.
+Status: implementation in PR #84; final-head CI pending. Not deployed.
+The bundled catalog has 670 provenance-bearing source records, including draft and historical entries. It is not certified exhaustive for the live game.
 Supersedes the proposal that status is a final functional module.
 
 ## Required module boundaries

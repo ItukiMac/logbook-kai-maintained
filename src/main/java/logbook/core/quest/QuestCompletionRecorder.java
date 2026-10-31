@@ -18,7 +18,7 @@ public final class QuestCompletionRecorder {
         // Receipt identity is intentionally unresolved until a catalog binding is verified.
         // Retaining the raw success is preferable to assigning it to the wrong reused ID.
         synchronized (ledger) {
-            ledger.append(ledger.snapshot().revision(), receiptId, key, State.CLAIMED,
+            ledger.append(-1, receiptId, key, State.CLAIMED,
                     Source.GAME, receivedAt, "Successful api_req_quest/clearitemget; identity resolved only when evidence is available");
         }
         return true;

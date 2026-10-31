@@ -13,7 +13,8 @@ import javafx.stage.*;
 /** One explicit preview/copy/save flow shared by every available export domain. */
 public final class InformationShareWindow {
     private InformationShareWindow() { }
-    public static void open(Window owner) {
+    public static void open(Window owner) { open(owner,InformationExport::capture); }
+    static void open(Window owner,java.util.concurrent.Callable<Map<String,Object>> source) {
         Stage stage=new Stage(); stage.initOwner(owner); stage.setTitle("情報の共有・出力");
         ComboBox<String> domain=new ComboBox<>(); domain.getItems().add("全情報");domain.setValue("全情報");
         ComboBox<String> format=new ComboBox<>();format.getItems().addAll("JSON","CSV");format.setValue("JSON");
@@ -26,7 +27,7 @@ public final class InformationShareWindow {
         };
         Runnable capture=()->{
             refresh.setDisable(true);copy.setDisable(true);save.setDisable(true);
-            CompletableFuture.supplyAsync(()->{try{return InformationExport.capture();}catch(Exception e){throw new java.util.concurrent.CompletionException(e);}})
+            CompletableFuture.supplyAsync(()->{try{return source.call();}catch(Exception e){throw new java.util.concurrent.CompletionException(e);}})
                 .whenComplete((data,error)->Platform.runLater(()->{
                     refresh.setDisable(false);
                     if(error!=null){preview.clear();status.setText("取得失敗: "+error.getCause());return;}

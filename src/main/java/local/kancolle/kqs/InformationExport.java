@@ -19,12 +19,25 @@ public final class InformationExport {
             values.put("consistency", "Host state captured under writer lock; disk histories and ledger captured separately. Legacy uncooperative writers are outside this boundary.");
             values.put("game_state", LogBookCoreServices.gameStateView().snapshot());
             values.put("ships_and_fleets", ShipRosterV1.snapshot());
+            values.put("ship_statistics", ShipStatisticsV1.snapshot());
             values.put("equipment", EquipmentDataV1.inventory());
             values.put("aircraft", EquipmentDataV1.aircraft());
+            values.put("supplies_repairs_construction", OperationsDataV1.snapshot());
             values.put("airbases", AirBaseStatusV1.snapshot());
             values.put("quests", QuestListV1.snapshot());
             return values;
         });
+        try(var scope=LogBookCoreServices.pinDefinitions()) {
+            Map<String,String> definitions=new LinkedHashMap<>();
+            for(String name:scope.snapshot().resourceNames()) {
+                try(var input=scope.snapshot().openResource(name).orElseThrow()) {
+                    definitions.put(name,new String(input.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8));
+                }
+            }
+            result.put("definition_generation",scope.snapshot().generation());result.put("definitions",definitions);
+        }
+        java.nio.file.Path materials=java.nio.file.Path.of(logbook.bean.AppConfig.get().getReportPath(),new logbook.internal.log.MaterialLogFormat().fileName());
+        result.put("resource_history",java.nio.file.Files.isRegularFile(materials)?Map.of("status","available","csv",java.nio.file.Files.readString(materials,logbook.internal.log.LogWriter.DEFAULT_CHARSET)):Map.of("status","not_recorded"));
         result.put("battle_records", RecordDataV1.battles());
         result.put("expedition_records", RecordDataV1.missions());
         result.put("development_records", RecordDataV1.developments());

@@ -76,9 +76,17 @@ public final class QuestLedger {
                         throw new IllegalArgumentException("Event ID reused with different content");
                     return e;
                 }
-                if (before.revision() != expectedRevision) throw new ConcurrentModificationException("Quest ledger changed; refresh before editing");
+                if (expectedRevision < 0 && !(expectedRevision == -1 && source == Source.GAME))
+                    throw new IllegalArgumentException("Only game observations may append against the latest revision");
+                if (expectedRevision != -1 && before.revision() != expectedRevision) throw new ConcurrentModificationException("Quest ledger changed; refresh before editing");
                 Event e = new Event(1, before.revision()+1, eventId, key, state, source,
                         effectiveAt.toString(), Instant.now().toString(), reason);
+                write(e);
+                return e;
+            }
+        }
+    }
+    private void write(Event e) throws IOException {
                 byte[] bytes = mapper.writeValueAsBytes(e);
                 Path temporary = Files.createTempFile(directory,"pending-",".tmp");
                 try {
@@ -89,7 +97,28 @@ public final class QuestLedger {
                     }
                     Files.move(temporary,directory.resolve(String.format(Locale.ROOT,"%020d.json",e.revision())),StandardCopyOption.ATOMIC_MOVE);
                 } finally { Files.deleteIfExists(temporary); }
-                return e;
+    }
+    public record CatalogRecord(String eventId,Key key,String json) { }
+    /** Catalog import locks and scans once. A failed import can resume without duplicate rows. */
+    public void registerCatalog(List<CatalogRecord> records) throws IOException {
+        synchronized(JVM_LOCK) {
+            Files.createDirectories(directory);
+            try(var channel=FileChannel.open(directory.resolve("ledger.lock"),StandardOpenOption.CREATE,StandardOpenOption.WRITE);
+                var lock=channel.lock()) {
+                var before=read();long revision=before.revision();Map<String,Event> existing=new HashMap<>();
+                before.history().forEach(e->existing.put(e.eventId(),e));
+                List<Event> pending=new ArrayList<>();
+                for(var record:records) {
+                    var old=existing.get(record.eventId());
+                    if(old!=null) {
+                        if(old.source()!=Source.CATALOG||!old.key().equals(record.key())||!old.reason().equals(record.json()))throw new IllegalArgumentException("Conflicting catalog identity");
+                        continue;
+                    }
+                    String now=Instant.now().toString();
+                    Event next=new Event(1,++revision,record.eventId(),record.key(),State.UNKNOWN,Source.CATALOG,now,now,record.json());
+                    existing.put(next.eventId(),next);pending.add(next);
+                }
+                for(var event:pending)write(event);
             }
         }
     }

@@ -6,6 +6,14 @@ import logbook.bean.*;
 import logbook.core.quest.QuestLedger.*;
 public final class QuestObservationRecorder {
     private QuestObservationRecorder() { }
+    public static boolean transition(jakarta.json.JsonObject response,int id,State state) {
+        if(response==null || !(response.get("api_result") instanceof jakarta.json.JsonNumber result)
+            || result.bigDecimalValue().compareTo(java.math.BigDecimal.ONE)!=0)return false;
+        var key=QuestIdentity.resolve(id,AppQuestCollection.get().getQuest().get(id));
+        try {QuestManagement.ledger().append(-1,UUID.randomUUID().toString(),key,state,Source.GAME,Instant.now(),"Successful quest state transition");}
+        catch(java.io.IOException failure){throw new UncheckedIOException("任務状態を保存できません",failure);}
+        return true;
+    }
     public static void record(QuestList list) {
         if(list.getList()==null)return;
         var ledger=QuestManagement.ledger();
@@ -16,7 +24,7 @@ public final class QuestObservationRecorder {
             try {
                 var snapshot=ledger.snapshot();
                 if(snapshot.latest(key,Source.GAME).map(e->e.state()==state).orElse(false))continue;
-                ledger.append(snapshot.revision(),UUID.randomUUID().toString(),key,state,Source.GAME,
+                ledger.append(-1,UUID.randomUUID().toString(),key,state,Source.GAME,
                     q.getObservedAt()==null?Instant.now():q.getObservedAt(),"任務一覧: "+q.getTitle());
             } catch(java.io.IOException failure){throw new UncheckedIOException("任務観測履歴を保存できません",failure);}
         }

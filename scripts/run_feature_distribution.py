@@ -49,7 +49,7 @@ GROUPS = {
     'quests': ('QuestFeatures', (), ()), 'records': ('RecordFeatures', (), ()),
 }
 GROUPS.update({'klb': ('KlbFeatures', (), ()), 'kqs': ('KqsFeatures', (), ())})
-EXTRA_CLASSES = {'quests': ('logbook/features/quests/QuestManagementWindow',), 'klb': ('local/kancolle/bridge/KancolleBridgeStartUp',),
+EXTRA_CLASSES = {'quests': ('logbook/features/quests/QuestManagementWindow', 'logbook/features/quests/QuestManagementMenu'), 'klb': ('local/kancolle/bridge/KancolleBridgeStartUp',),
                  'kqs': ('local/kancolle/kqs/KqsLogbookPlugin', 'local/kancolle/kqs/QuestStore', 'local/kancolle/kqs/QuestExporter', 'local/kancolle/kqs/InformationExport', 'local/kancolle/kqs/InformationShareWindow'), 'calculators': ('logbook/internal/calc/ProbabilityCalculator',
                                  'logbook/internal/calc/ProbabilityInput')}
 METADATA_KEYS = {'id', 'version', 'host_api', 'host_sha256', 'dependencies',
@@ -385,6 +385,20 @@ def verify_jars(root, report, catalog):
                     expected = path == 'features/logbook-feature-' + module_id + '.jar' and (module_id == 'kqs' or service == 'logbook.plugin.lifecycle.StartUp')
                     if lines.count(provider) != int(expected):
                         raise ValueError('Bundled plugin service has wrong owner: ' + provider)
+            management_service = 'META-INF/services/logbook.plugin.api.QuestManagementUi'
+            if path == JARS[0]:
+                management_profile = 'logbook/plugin/api/QuestManagementUi.class' in names
+            if management_profile:
+                lines = jar.read(management_service).decode().splitlines() if management_service in names else []
+                expected = ['logbook.features.quests.QuestManagementWindow'] if path == 'features/logbook-feature-quests.jar' else []
+                if lines != expected:
+                    raise ValueError('Quest management service has wrong owner')
+                menu_service = 'META-INF/services/logbook.plugin.gui.MainExtMenu'
+                lines = jar.read(menu_service).decode().splitlines() if menu_service in names else []
+                menu_owner = {'features/logbook-feature-kqs.jar': 'local.kancolle.kqs.KqsLogbookPlugin', 'features/logbook-feature-quests.jar': 'logbook.features.quests.QuestManagementMenu'}
+                expected = [menu_owner[path]] if path in menu_owner else []
+                if lines != expected:
+                    raise ValueError('Domain menu service has wrong owner')
             attributes = manifest_attributes(jar.read('META-INF/MANIFEST.MF'))
             if path != JARS[0] and attributes.get('multi-release', '').lower() == 'true':
                 raise ValueError('Multi-release feature JARs are not supported')
