@@ -73,8 +73,8 @@ public final class ShipStatisticsGuiProbe {
     @SuppressWarnings("unchecked")
     private static void window() throws Exception {
         check(StatisticsPane.class.getProtectionDomain().getCodeSource().getLocation().getPath()
-                .endsWith("/features/logbook-feature-charts.jar"), "Statistics pane loaded from host fallback");
-        check(StatisticsPane.class.getResource("/logbook/gui/statistics.fxml").toString().contains("logbook-feature-charts.jar!"), "Statistics FXML not in charts");
+                .endsWith("/features/logbook-kai2-feature-charts.jar"), "Statistics pane loaded from host fallback");
+        check(StatisticsPane.class.getResource("/logbook/gui/statistics.fxml").toString().contains("logbook-kai2-feature-charts.jar!"), "Statistics FXML not in charts");
         FXMLLoader loader = new FXMLLoader(ShipController.class.getResource("/logbook/gui/ship.fxml"));
         Parent root = loader.load(); ShipController controller = loader.getController();
         Stage stage = new Stage(); controller.setWindow(stage);

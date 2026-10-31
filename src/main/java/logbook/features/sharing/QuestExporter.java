@@ -1,4 +1,4 @@
-package local.kancolle.kqs;
+package logbook.features.sharing;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -118,7 +118,7 @@ public final class QuestExporter {
     private static Map<String, Object> buildPinned(QuestStore store, Collection<AppQuest> values, boolean enrich) {
         Map<String, Object> root = new LinkedHashMap<>();
         root.put("schema", "kqs.quest-snapshot.v2");
-        root.put("product", "KQS Logbook Plugin");
+        root.put("product", "logbook-kai2 情報共有");
         root.put("generated_at_jst", ZonedDateTime.now(ZoneId.of("Asia/Tokyo")).toString());
         root.put("scope", "all_quests_currently_known_to_logbook_kai");
         root.put("meaning_of_all", "available/unlocked quests observed by game and cached in logbook-kai; NOT locked prerequisites, historical completions, or all quests in the game");

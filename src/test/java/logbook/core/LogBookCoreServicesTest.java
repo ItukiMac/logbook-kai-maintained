@@ -28,8 +28,8 @@ class LogBookCoreServicesTest {
         List<StartUp> startUpList =  LogBookCoreServices.getServiceProviders(StartUp.class).collect(Collectors.toList());
         Assertions.assertEquals(java.util.Set.of(
                 "logbook.internal.updatecheck.CheckUpdateStartUp",
-                "local.kancolle.bridge.KancolleBridgeStartUp",
-                "local.kancolle.kqs.KqsLogbookPlugin"),
+                "logbook.features.bridge.BrowserBridgePlugin",
+                "logbook.features.sharing.InformationSharingPlugin"),
                 startUpList.stream().map(x -> x.getClass().getName()).collect(Collectors.toSet()));
         Assertions.assertEquals(3, startUpList.size());
 

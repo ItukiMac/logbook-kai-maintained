@@ -1,4 +1,4 @@
-package local.kancolle.kqs;
+package logbook.features.sharing;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
@@ -11,8 +11,8 @@ import javafx.scene.layout.*;
 import javafx.stage.*;
 
 /** One explicit preview/copy/save flow shared by every available export domain. */
-public final class InformationShareWindow {
-    private InformationShareWindow() { }
+public final class InformationSharingWindow {
+    private InformationSharingWindow() { }
     public static void open(Window owner) { open(owner,InformationExport::capture); }
     static void open(Window owner,java.util.concurrent.Callable<Map<String,Object>> source) {
         Stage stage=new Stage(); stage.initOwner(owner); stage.setTitle("情報の共有・出力");

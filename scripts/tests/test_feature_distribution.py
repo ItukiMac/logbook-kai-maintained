@@ -16,9 +16,9 @@ class FeatureDistributionTest(unittest.TestCase):
         self.entries={'META-INF/MANIFEST.MF':b'Manifest-Version: 1.0\r\n\r\n',
           'logbook/gui/application.css':b'.root {}','logbook/internal/Launcher.class':b'core',
           SERVICE:('\n'.join('logbook.features.'+v[0] for v in GROUPS.values())+'\n').encode()}
-        self.entries['META-INF/services/logbook.plugin.gui.MainExtMenu'] = b'local.kancolle.kqs.KqsLogbookPlugin\nlogbook.features.quests.QuestManagementMenu\n'
+        self.entries['META-INF/services/logbook.plugin.gui.MainExtMenu'] = b'logbook.features.sharing.InformationSharingPlugin\nlogbook.features.quests.QuestManagementMenu\n'
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            self.entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
+            self.entries['META-INF/services/' + service] = (b'logbook.features.bridge.BrowserBridgePlugin\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'logbook.features.sharing.InformationSharingPlugin\n'
         for provider, controllers, fxml in GROUPS.values():
             for stem in ['logbook/features/'+provider]+['logbook/internal/gui/'+c for c in controllers]:
                 self.entries[stem+'.class']=b'fixture';self.entries[stem+'$1.class']=b'nested'
@@ -30,8 +30,8 @@ class FeatureDistributionTest(unittest.TestCase):
         service='META-INF/services/logbook.plugin.api.QuestManagementUi'
         self.entries[service]=b'logbook.features.quests.QuestManagementWindow\n'
         self.build()
-        with ZipFile(self.out/'logbook-core.jar') as core:self.assertNotIn(service,core.namelist())
-        with ZipFile(self.out/'features/logbook-feature-quests.jar') as module:self.assertEqual(self.entries[service],module.read(service))
+        with ZipFile(self.out/'logbook-kai2-core.jar') as core:self.assertNotIn(service,core.namelist())
+        with ZipFile(self.out/'features/logbook-kai2-feature-quests.jar') as module:self.assertEqual(self.entries[service],module.read(service))
     def test_management_interface_without_provider_is_rejected(self):
         self.entries['logbook/plugin/api/QuestManagementUi.class']=b'fixture API'
         with self.assertRaisesRegex(ValueError,'quest management provider'):self.build()
@@ -42,11 +42,11 @@ class FeatureDistributionTest(unittest.TestCase):
     def test_physical_ownership_and_input_preservation(self):
         self.write();before=self.jar.read_bytes();r=build(self.jar,self.out,'a'*40)
         self.assertEqual(before,self.jar.read_bytes());verify(self.out)
-        with ZipFile(self.out/'logbook-core.jar') as core:
+        with ZipFile(self.out/'logbook-kai2-core.jar') as core:
             self.assertNotIn(SERVICE,core.namelist())
             self.assertFalse(any(owner(n) for n in core.namelist()))
         for g in GROUPS:
-            with ZipFile(self.out/f'features/logbook-feature-{g}.jar') as z:
+            with ZipFile(self.out/f'features/logbook-kai2-feature-{g}.jar') as z:
                 self.assertTrue(all(n in z.namelist() for n in r['extracted'][g]))
                 self.assertIn('logbook/gui/application.css',z.namelist())
                 self.assertIn(b'Copyright (c) 2015 sanaehirotaka', z.read('META-INF/LICENSE-logbook-kai.txt'))
@@ -73,7 +73,7 @@ class FeatureDistributionTest(unittest.TestCase):
             with ZipFile(self.jar,'a') as z:z.writestr(SERVICE,b'duplicate')
         with self.assertRaises(ValueError):build(self.jar,self.out,'a'*40)
     def test_modified_component_and_manifest_inventory_are_rejected(self):
-        self.build();p=self.out/'features/logbook-feature-charts.jar';p.write_bytes(b'bad')
+        self.build();p=self.out/'features/logbook-kai2-feature-charts.jar';p.write_bytes(b'bad')
         with self.assertRaises(ValueError):verify(self.out)
         m=json.loads((self.out/'distribution.json').read_text());m['files']['../x']='0'*64
         (self.out/'distribution.json').write_text(json.dumps(m))
@@ -92,13 +92,13 @@ class FeatureDistributionTest(unittest.TestCase):
         self.build()
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
             name = 'META-INF/services/' + service
-            for module, provider in [('klb', 'local.kancolle.bridge.KancolleBridgeStartUp'), ('kqs', 'local.kancolle.kqs.KqsLogbookPlugin')]:
-                with ZipFile(self.out/f'features/logbook-feature-{module}.jar') as jar:
-                    if module == 'klb' and service == 'logbook.listener.ContentListenerSpi':
+            for module, provider in [('bridge', 'logbook.features.bridge.BrowserBridgePlugin'), ('sharing', 'logbook.features.sharing.InformationSharingPlugin')]:
+                with ZipFile(self.out/f'features/logbook-kai2-feature-{module}.jar') as jar:
+                    if module == 'bridge' and service == 'logbook.listener.ContentListenerSpi':
                         self.assertNotIn(name, jar.namelist())
                     else:
                         self.assertEqual(provider + '\n', jar.read(name).decode())
-                with ZipFile(self.out/'logbook-core.jar') as jar:
+                with ZipFile(self.out/'logbook-kai2-core.jar') as jar:
                     self.assertNotIn(provider, jar.read(name).decode())
 
     def test_missing_plugin_registration_refused_before_output(self):

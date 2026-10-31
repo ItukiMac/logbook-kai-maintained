@@ -1,3 +1,3 @@
 logbook.internal.updatecheck.CheckUpdateStartUp
-local.kancolle.bridge.KancolleBridgeStartUp
-local.kancolle.kqs.KqsLogbookPlugin
+logbook.features.bridge.BrowserBridgePlugin
+logbook.features.sharing.InformationSharingPlugin

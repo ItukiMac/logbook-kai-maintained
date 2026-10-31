@@ -31,7 +31,7 @@ class BundleManagerTest(unittest.TestCase):
         host_hash = hashlib.sha256((root / m.JARS[0]).read_bytes()).hexdigest()
         modules = []
         for module_id, features in FEATURES.items():
-            name = 'features/logbook-feature-' + module_id + '.jar'
+            name = 'features/logbook-kai2-feature-' + module_id + '.jar'
             metadata = {'id': module_id, 'version': '1.0.0', 'host_api': 1,
                         'host_sha256': host_hash, 'dependencies': [],
                         'provider': PROVIDERS[module_id], 'features': list(features)}
@@ -40,10 +40,10 @@ class BundleManagerTest(unittest.TestCase):
                 jar.writestr('fixture.txt', label + name)
                 jar.writestr(FEATURE_METADATA, json.dumps(metadata))
                 jar.writestr(SERVICE, PROVIDERS[module_id] + '\n')
-                if module_id in ('klb', 'kqs'):
-                    provider = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp', 'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}[module_id]
+                if module_id in ('bridge', 'sharing'):
+                    provider = {'bridge': 'logbook.features.bridge.BrowserBridgePlugin', 'sharing': 'logbook.features.sharing.InformationSharingPlugin'}[module_id]
                     for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-                        if module_id == 'kqs' or service == 'logbook.plugin.lifecycle.StartUp':
+                        if module_id == 'sharing' or service == 'logbook.plugin.lifecycle.StartUp':
                             jar.writestr('META-INF/services/' + service, provider + '\n')
                 for entry_name in sorted(required_entries(module_id)):
                     jar.writestr(entry_name, b'unit-fixture-not-executable')

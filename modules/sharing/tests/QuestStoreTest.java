@@ -1,4 +1,4 @@
-package local.kancolle.kqs;
+package logbook.features.sharing;
 import java.util.Map;
 public final class QuestStoreTest {
     private static void assertTrue(boolean v,String name){if(!v)throw new AssertionError(name);}

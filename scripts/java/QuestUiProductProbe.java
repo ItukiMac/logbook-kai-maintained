@@ -24,13 +24,13 @@ public final class QuestUiProductProbe {
         var task=new FutureTask<Void>(()->{
             var row=new QuestListV1.Quest(987654,2,4,2,"synthetic","detail",List.of(),0,0,0,null,"2099-01-01 00:00:00",true);
             var pane=new QuestPane(row,null);var stage=new Stage();stage.setScene(new Scene(pane));stage.show();
-            check(pane.getClass().getProtectionDomain().getCodeSource().getLocation().toString().contains("logbook-feature-quests.jar"),"Row accidentally loaded from core");
+            check(pane.getClass().getProtectionDomain().getCodeSource().getLocation().toString().contains("logbook-kai2-feature-quests.jar"),"Row accidentally loaded from core");
             check(!pane.getChildren().isEmpty(),"Quest FXML did not load");stage.close();
             for(String name:List.of("quest_progress","quest_condition_edit","arsenal_quest_condition_edit")) {
                 var loader=new FXMLLoader(QuestUiProductProbe.class.getResource("/logbook/gui/"+name+".fxml"));
                 Parent root=loader.load();Object controller=loader.getController();
                 check(controller instanceof FeatureUiV1.Window,"Public window lifecycle missing: "+name);
-                check(controller.getClass().getProtectionDomain().getCodeSource().getLocation().toString().contains("logbook-feature-quests.jar"),"Controller fallback: "+name);
+                check(controller.getClass().getProtectionDomain().getCodeSource().getLocation().toString().contains("logbook-kai2-feature-quests.jar"),"Controller fallback: "+name);
                 Stage window=new Stage();window.setScene(new Scene(root));((FeatureUiV1.Window)controller).bindWindow(window);window.show();window.close();
             }
             var session=ArsenalQuestDocumentsV1.at(Path.of("arsenalquest")).open(605);

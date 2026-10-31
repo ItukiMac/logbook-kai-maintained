@@ -174,7 +174,7 @@ public final class FeatureVersionSmokeHook implements StartUp {
             try (ZipFile jar = new ZipFile(path.toFile())) {
                 var entry = jar.getEntry("META-INF/logbook/feature.json");
                 if (entry == null) {
-                    check(path.getFileName().toString().equals("logbook-core.jar"), "Missing feature contract: " + path);
+                    check(path.getFileName().toString().equals("logbook-kai2-core.jar"), "Missing feature contract: " + path);
                     continue;
                 }
                 JsonNode document;
@@ -201,11 +201,11 @@ public final class FeatureVersionSmokeHook implements StartUp {
         }
         check(seen.size() == 8 && seen.containsAll(descriptors.keySet()), "Selected classpath misses a declared module");
         String fxml = LogBookCoreServices.getClassLoader().getResource(registry.get("probability").fxml()).toString();
-        check(fxml.contains("/features/logbook-feature-calculators.jar!"), "FXML did not load from the selected feature JAR");
+        check(fxml.contains("/features/logbook-kai2-feature-calculators.jar!"), "FXML did not load from the selected feature JAR");
         Class<?> controller = Class.forName("logbook.internal.gui.FeatureVersionFixtureController", false,
                 LogBookCoreServices.getClassLoader());
         check(controller.getProtectionDomain().getCodeSource().getLocation().toString()
-                        .endsWith("/features/logbook-feature-calculators.jar"),
+                        .endsWith("/features/logbook-kai2-feature-calculators.jar"),
                 "Fixture controller did not load from the independently updated feature JAR");
     }
 }

@@ -122,14 +122,14 @@ public final class EquipmentInventoryProbe {
         Stage stage=new Stage();FeatureUiV1.Window controller=null;
         try {
             FXMLLoader loader=InternalFXMLLoader.load("logbook/gui/item.fxml");
-            check(loader.getLocation().toString().contains("logbook-feature-equipment.jar!/"),"Parent FXML remains in core");
+            check(loader.getLocation().toString().contains("logbook-kai2-feature-equipment.jar!/"),"Parent FXML remains in core");
             Parent root=loader.load();controller=loader.getController();controller.bindWindow(stage);
             stage.setScene(new Scene(root));stage.show();root.applyCss();root.layout();
             ItemItemController items=(ItemItemController)loader.getNamespace().get("itemController");
             ItemAirBaseController air=(ItemAirBaseController)loader.getNamespace().get("airbaseController");
             for(Object value:List.of(controller,items,air))
                 check(value.getClass().getProtectionDomain().getCodeSource().getLocation().toString()
-                        .endsWith("logbook-feature-equipment.jar"),"Controller silently fell back to core");
+                        .endsWith("logbook-kai2-feature-equipment.jar"),"Controller silently fell back to core");
             TableView<Item> table=field(items,"typeTable");
             TableView<EquipmentDetailItem> detail=field(items,"detailTable");
             check(table.getItems().size()==2,"Equipment summary rows missing");

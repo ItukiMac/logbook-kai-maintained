@@ -1,4 +1,4 @@
-package local.kancolle.kqs;
+package logbook.features.sharing;
 
 import java.util.List;
 import java.util.Map;

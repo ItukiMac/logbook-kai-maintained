@@ -17,7 +17,7 @@ python3 scripts/audit_seasonal_editions.py --root . > "$EVIDENCE/seasonal-editio
 python3 scripts/definition_review_ledger.py --facts docs/maintenance/source-field-review-20261026.json > "$EVIDENCE/review-ledger.json"
 python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out "$EVIDENCE/split" --revision "$REVISION" > "$EVIDENCE/feature-manifest.json"
 python3 scripts/run_feature_distribution.py --root "$EVIDENCE/split"
-CP="$EVIDENCE/split/logbook-core.jar:$EVIDENCE/split/features/logbook-feature-calculators.jar:$EVIDENCE/split/features/logbook-feature-charts.jar:$EVIDENCE/split/features/logbook-feature-ships.jar:$EVIDENCE/split/features/logbook-feature-equipment.jar:$EVIDENCE/split/features/logbook-feature-quests.jar:$EVIDENCE/split/features/logbook-feature-records.jar:$EVIDENCE/split/features/logbook-feature-klb.jar:$EVIDENCE/split/features/logbook-feature-kqs.jar"
+CP="$EVIDENCE/split/logbook-kai2-core.jar:$EVIDENCE/split/features/logbook-kai2-feature-calculators.jar:$EVIDENCE/split/features/logbook-kai2-feature-charts.jar:$EVIDENCE/split/features/logbook-kai2-feature-ships.jar:$EVIDENCE/split/features/logbook-kai2-feature-equipment.jar:$EVIDENCE/split/features/logbook-kai2-feature-quests.jar:$EVIDENCE/split/features/logbook-kai2-feature-records.jar:$EVIDENCE/split/features/logbook-kai2-feature-bridge.jar:$EVIDENCE/split/features/logbook-kai2-feature-sharing.jar"
 mkdir "$EVIDENCE/probe-classes"
 javac -proc:none --release 21 -cp "$CP" -d "$EVIDENCE/probe-classes" scripts/java/*.java
 bash scripts/verify_bundled_plugins.sh "$EVIDENCE/split" > "$EVIDENCE/bundled-plugins.log" 2>&1

@@ -34,7 +34,7 @@ class FeatureVersionRejectionTest(unittest.TestCase):
                                        for values in builder.GROUPS.values()) + '\n').encode(),
         }
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            self.entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
+            self.entries['META-INF/services/' + service] = (b'logbook.features.bridge.BrowserBridgePlugin\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'logbook.features.sharing.InformationSharingPlugin\n'
         for module_id in distribution.GROUPS:
             for entry in distribution.required_entries(module_id):
                 self.entries[entry] = b'<fixture/>' if entry.endswith('.fxml') else b'inert feature inventory'
@@ -84,14 +84,14 @@ class FeatureVersionRejectionTest(unittest.TestCase):
         self.rewrite_module_jar(entries, name)
 
     def change_core_entry(self, entry, content):
-        path = self.bundle / 'logbook-core.jar'
+        path = self.bundle / 'logbook-kai2-core.jar'
         entries = [(key, data) for key, data in self.read_archive(path) if key != entry]
         if content is not None:
             entries.append((entry, content))
         self.write_archive(path, entries)
         host_hash = hashlib.sha256(path.read_bytes()).hexdigest()
         self.report['host']['sha256'] = host_hash
-        self.report['files']['logbook-core.jar'] = host_hash
+        self.report['files']['logbook-kai2-core.jar'] = host_hash
         for module in self.report['modules']:
             module['host_sha256'] = host_hash
             metadata = {key: module[key] for key in distribution.METADATA_KEYS}
@@ -215,8 +215,8 @@ class FeatureVersionRejectionTest(unittest.TestCase):
         self.assert_manifest_refused(report)
 
     def test_noncanonical_module_path_is_rejected(self):
-        for path in ['../feature.jar', '/tmp/feature.jar', 'features/../features/logbook-feature-calculators.jar',
-                     'features/logbook-feature-charts.jar', 'features\\logbook-feature-calculators.jar']:
+        for path in ['../feature.jar', '/tmp/feature.jar', 'features/../features/logbook-kai2-feature-calculators.jar',
+                     'features/logbook-kai2-feature-charts.jar', 'features\\logbook-kai2-feature-calculators.jar']:
             with self.subTest(path=path):
                 report = deepcopy(self.report)
                 report['modules'][0]['path'] = path
@@ -433,7 +433,7 @@ class FeatureVersionRejectionTest(unittest.TestCase):
         output = self.root / 'new-cr-bundle'
         builder.build(source, output, 'b' * 40)
         self.assertEqual(before, source.read_bytes())
-        with ZipFile(output / 'logbook-core.jar') as archive:
+        with ZipFile(output / 'logbook-kai2-core.jar') as archive:
             manifest = archive.read('META-INF/MANIFEST.MF')
         self.assertNotIn(b'Class-Path:', manifest)
         distribution.verify(output)

@@ -31,7 +31,7 @@ class FeatureVersionTest(unittest.TestCase):
                                        for p in builder.GROUPS.values()) + '\n').encode(),
         }
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
+            entries['META-INF/services/' + service] = (b'logbook.features.bridge.BrowserBridgePlugin\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'logbook.features.sharing.InformationSharingPlugin\n'
         for provider, controllers, resources in builder.GROUPS.values():
             for stem in ['logbook/features/' + provider] + [
                     'logbook/internal/gui/' + c for c in controllers]:
@@ -121,9 +121,9 @@ class FeatureVersionTest(unittest.TestCase):
         path.write_bytes(b'{ deliberately invalid synthetic metadata')
 
     def test_build_declares_versioned_module_contracts(self):
-        self.assertEqual('logbook-feature-distribution-v4', self.report['format'])
+        self.assertEqual('logbook-kai2-feature-distribution-v4', self.report['format'])
         self.assertEqual(1, self.report['host']['api'])
-        self.assertEqual({'calculators', 'charts', 'ships', 'equipment', 'quests', 'records', 'klb', 'kqs'},
+        self.assertEqual({'calculators', 'charts', 'ships', 'equipment', 'quests', 'records', 'bridge', 'sharing'},
                          {m['id'] for m in self.report['modules']})
         self.assertEqual(7, sum(len(m['features']) for m in self.report['modules']))
         for module in self.report['modules']:
@@ -160,7 +160,7 @@ class FeatureVersionTest(unittest.TestCase):
         selected = self.store / 'versions' / updated
         verify(selected)
         for name in manager.FILES:
-            origin = candidate if name == 'features/logbook-feature-calculators.jar' else self.a
+            origin = candidate if name == 'features/logbook-kai2-feature-calculators.jar' else self.a
             self.assertEqual((origin / name).read_bytes(), (selected / name).read_bytes(), name)
         manager.activate(self.store, updated, current)
         manager.activate(self.store, '', updated, rollback=True)
@@ -190,17 +190,17 @@ class FeatureVersionTest(unittest.TestCase):
 
     def test_all_eight_modules_keep_unselected_candidate_changes_out(self):
         candidate, report, _ = self.candidate(version='1.1.0')
-        for module_id in ('charts', 'ships', 'equipment', 'quests', 'records', 'klb', 'kqs'):
+        for module_id in ('charts', 'ships', 'equipment', 'quests', 'records', 'bridge', 'sharing'):
             self.repack(candidate, report, module_id, version='1.1.0')
         candidate_id = self.rewrite(report, candidate)
         verify(candidate)
         current = self.start_store()
-        for module_id in ('calculators', 'charts', 'ships', 'equipment', 'quests', 'records', 'klb', 'kqs'):
+        for module_id in ('calculators', 'charts', 'ships', 'equipment', 'quests', 'records', 'bridge', 'sharing'):
             with self.subTest(module=module_id):
                 result = manager.stage_feature(self.store, candidate, candidate_id, module_id, current)
                 staged = self.store / 'versions' / result['version']
                 verify(staged)
-                selected_path = 'features/logbook-feature-' + module_id + '.jar'
+                selected_path = 'features/logbook-kai2-feature-' + module_id + '.jar'
                 for name in manager.FILES:
                     origin = candidate if name == selected_path else self.a
                     self.assertEqual((origin / name).read_bytes(), (staged / name).read_bytes(), name)
@@ -288,7 +288,7 @@ class FeatureVersionTest(unittest.TestCase):
                                        'calculators', current)
         selected = self.store / 'versions' / result['version']
         manager.bundle(selected, result['version'])
-        chart_path = 'features/logbook-feature-charts.jar'
+        chart_path = 'features/logbook-kai2-feature-charts.jar'
         self.assertEqual((self.a / chart_path).read_bytes(), (selected / chart_path).read_bytes())
         self.assertNotEqual((candidate / chart_path).read_bytes(), (selected / chart_path).read_bytes())
 
@@ -380,9 +380,9 @@ class FeatureVersionTest(unittest.TestCase):
         self.assertEqual(preserved, self.retained_snapshot())
         restaged = manager.stage_feature(self.store, self.a, original,
                                         'calculators', current)['version']
-        self.assertEqual((self.a / 'features/logbook-feature-calculators.jar').read_bytes(),
+        self.assertEqual((self.a / 'features/logbook-kai2-feature-calculators.jar').read_bytes(),
                          (self.store / 'versions' / restaged /
-                          'features/logbook-feature-calculators.jar').read_bytes())
+                          'features/logbook-kai2-feature-calculators.jar').read_bytes())
         manager.activate(self.store, restaged, current)
         self.assertEqual(restaged, manager.selector(self.store)['current'])
         manager.activate(self.store, '', restaged, rollback=True)
@@ -510,13 +510,13 @@ class FeatureVersionTest(unittest.TestCase):
         self.assertEqual(current, manager.selector(self.store)['current'])
         pending = list((self.store / 'versions').glob('pending-*'))
         self.assertEqual(1, len(pending))
-        self.assertTrue((pending[0] / 'logbook-core.jar').is_file())
+        self.assertTrue((pending[0] / 'logbook-kai2-core.jar').is_file())
         self.assertFalse((pending[0] / 'distribution.json').exists())
         manager.bundle(self.store / 'versions' / current, current)
 
     def test_legacy_v1_is_retained_but_not_silently_treated_as_versioned(self):
         report = deepcopy(self.report)
-        report['format'] = 'logbook-feature-distribution-v1'
+        report['format'] = 'logbook-kai2-feature-distribution-v1'
         report.pop('host')
         report.pop('modules')
         self.rewrite(report)

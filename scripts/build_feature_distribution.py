@@ -152,20 +152,20 @@ def build(source: Path, output: Path, revision: str) -> dict:
         groups['quests'][management_service] = core.pop(management_service)
     menu_service = 'META-INF/services/logbook.plugin.gui.MainExtMenu'
     if menu_service in core:
-        expected_menus = {'kqs': 'local.kancolle.kqs.KqsLogbookPlugin', 'quests': 'logbook.features.quests.QuestManagementMenu'}
+        expected_menus = {'sharing': 'logbook.features.sharing.InformationSharingPlugin', 'quests': 'logbook.features.quests.QuestManagementMenu'}
         if set(core[menu_service].decode().splitlines()) != set(expected_menus.values()):
             raise ValueError('Unexpected shared menu providers')
         core.pop(menu_service)
         for module, provider in expected_menus.items():
             groups[module][menu_service] = (provider + '\n').encode()
     # Lifecycle registrations follow their owning module, never remain in core.
-    plugin_providers = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp',
-                        'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}
+    plugin_providers = {'bridge': 'logbook.features.bridge.BrowserBridgePlugin',
+                        'sharing': 'logbook.features.sharing.InformationSharingPlugin'}
     for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
         name = 'META-INF/services/' + service
         lines = core[name].decode().splitlines()
         for group, provider in plugin_providers.items():
-            if group == 'klb' and service != 'logbook.plugin.lifecycle.StartUp':
+            if group == 'bridge' and service != 'logbook.plugin.lifecycle.StartUp':
                 continue
             if lines.count(provider) != 1:
                 raise ValueError('Missing or duplicate bundled plugin service: ' + provider)
@@ -181,9 +181,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
     core['META-INF/LICENSE-logbook-kai.txt'] = license_text
     new_directory(output)
     (output / 'features').mkdir()
-    write_jar(output / 'logbook-core.jar', core)
-    files = ['logbook-core.jar']
-    host_hash = sha((output / 'logbook-core.jar').read_bytes())
+    write_jar(output / 'logbook-kai2-core.jar', core)
+    files = ['logbook-kai2-core.jar']
+    host_hash = sha((output / 'logbook-kai2-core.jar').read_bytes())
     modules = []
     for group, values in groups.items():
         provider = GROUPS[group][0]
@@ -200,9 +200,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
                     'provider': PROVIDERS[group], 'features': list(FEATURES[group])}
         values[FEATURE_METADATA] = (json.dumps(metadata, sort_keys=True, indent=2) + '\n').encode()
         values['META-INF/MANIFEST.MF'] = (
-            'Manifest-Version: 1.0\r\nImplementation-Title: logbook-feature-' + group +
+            'Manifest-Version: 1.0\r\nImplementation-Title: logbook-kai2-feature-' + group +
             '\r\nImplementation-Version: 1.0.0\r\nBundle-License: MIT\r\n\r\n').encode()
-        name = 'features/logbook-feature-' + group + '.jar'
+        name = 'features/logbook-kai2-feature-' + group + '.jar'
         write_jar(output / name, values)
         files.append(name)
         modules.append({**metadata, 'path': name, 'sha256': sha((output / name).read_bytes())})
@@ -214,7 +214,7 @@ def build(source: Path, output: Path, revision: str) -> dict:
                 'update_policy': 'explicit managed launch; same-core independent module updates; no legacy updater integration',
                 'classloader_isolation': False,
                 'host': {'api': HOST_API, 'version': HOST_VERSION,
-                         'path': 'logbook-core.jar', 'sha256': host_hash},
+                         'path': 'logbook-kai2-core.jar', 'sha256': host_hash},
                 'modules': modules,
                 'files': {n: sha((output / n).read_bytes()) for n in files},
                 'extracted': {g: sorted(n for n in entries if owner(n, record_ui, equipment_ui, statistics_ui, ship_list_ui, quest_ui) == g) for g in GROUPS}}

@@ -70,11 +70,11 @@ public final class FeatureDistributionProbe {
             Stage window = new Stage();
             try {
                 var loader = InternalFXMLLoader.load(fxml);
-                check(loader.getLocation().toString().contains("logbook-feature-"), "FXML still in core: " + fxml);
+                check(loader.getLocation().toString().contains("logbook-kai2-feature-"), "FXML still in core: " + fxml);
                 Parent root = loader.load();
                 WindowController controller = loader.getController();
                 String source = controller.getClass().getProtectionDomain().getCodeSource().getLocation().toString();
-                check(source.contains("logbook-feature-"), "Controller still in core: " + source);
+                check(source.contains("logbook-kai2-feature-"), "Controller still in core: " + source);
                 if (controller instanceof CalcExpSeaAreaEditorController editor) editor.setApply(() -> {});
                 controller.initWindow(window);
                 window.setScene(new Scene(root));

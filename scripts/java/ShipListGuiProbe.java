@@ -35,7 +35,7 @@ public final class ShipListGuiProbe {
         Files.write(Path.of("history-sentinel.csv"),history,StandardOpenOption.CREATE_NEW);
         productClass(ShipController.class,"ships");productClass(ShipTablePane.class,"ships");
         productClass(ParameterFilterPane.class,"ships");productClass(StatisticsPane.class,"charts");
-        check(ShipItem.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/logbook-core.jar"),"Legacy shared row type changed owner");
+        check(ShipItem.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/logbook-kai2-core.jar"),"Legacy shared row type changed owner");
         var errors=new CopyOnWriteArrayList<Throwable>();
         Thread.setDefaultUncaughtExceptionHandler((t,e)->{errors.add(e);e.printStackTrace();});
         LogBookCoreServices.init(List.of());GameDefinitionRuntime.initialize();fixture();
@@ -55,7 +55,7 @@ public final class ShipListGuiProbe {
         } finally {Platform.exit();LogBookCoreServices.closeContainer();}
     }
     private static void productClass(Class<?> type,String module) {
-        check(type.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/features/logbook-feature-"+module+".jar"),"Hidden host fallback: "+type);
+        check(type.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/features/logbook-kai2-feature-"+module+".jar"),"Hidden host fallback: "+type);
     }
     private static void fixture() {
         AppConfig.get().setHideShipImageFromShipTablePane(true);AppConfig.get().setHideItemImageFromShipTablePane(true);
@@ -91,8 +91,8 @@ public final class ShipListGuiProbe {
             check(names.containsAll(List.of("全員","全艦隊","synthetic fleet","first","second","統計")),"Missing existing tabs: "+names);
             ShipTablePane all=select(tabs,"全員");all.enable();all.update();
             TableView<ShipItem> table=field(all,"table");expect(table,1,2);
-            check(ShipTablePane.class.getResource("/logbook/gui/ship_table.fxml").toString().contains("logbook-feature-ships.jar"),"Ship FXML still in host");
-            check(ParameterFilterPane.class.getResource("/logbook/gui/param_filter_pane.fxml").toString().contains("logbook-feature-ships.jar"),"Numeric filter FXML still in host");
+            check(ShipTablePane.class.getResource("/logbook/gui/ship_table.fxml").toString().contains("logbook-kai2-feature-ships.jar"),"Ship FXML still in host");
+            check(ParameterFilterPane.class.getResource("/logbook/gui/param_filter_pane.fxml").toString().contains("logbook-kai2-feature-ships.jar"),"Numeric filter FXML still in host");
             ShipTablePane fleet=select(tabs,"全艦隊");expect(field(fleet,"table"),2,1);
             expect(field(select(tabs,"synthetic fleet"),"table"),2,1);
             expect(field(select(tabs,"first"),"table"),1);expect(field(select(tabs,"second"),"table"),2);

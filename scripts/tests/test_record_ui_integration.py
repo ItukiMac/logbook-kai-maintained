@@ -49,8 +49,8 @@ class RecordUiIntegrationTest(unittest.TestCase):
             distribution = fixture / 'distribution'
             report = build(original, distribution, 'a' * 40)
             self.assertEqual(RECORD_UI_PROFILE, report.get('record_ui_profile'))
-            host = distribution / 'logbook-core.jar'
-            feature = distribution / 'features/logbook-feature-records.jar'
+            host = distribution / 'logbook-kai2-core.jar'
+            feature = distribution / 'features/logbook-kai2-feature-records.jar'
             with ZipFile(host) as core:
                 self.assertFalse(any(record_entry(n) for n in core.namelist()), 'Hidden fallback remained in host')
             with ZipFile(feature) as records:

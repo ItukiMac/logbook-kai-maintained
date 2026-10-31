@@ -1,4 +1,4 @@
-package local.kancolle.bridge;
+package logbook.features.bridge;
 
 import java.io.*;
 import java.net.*;
@@ -27,7 +27,7 @@ import logbook.plugin.lifecycle.StartUp;
  * 127.0.0.1:8891 and feeds it into logbook-kai's existing ContentListenerSpi
  * pipeline. It does not make requests to the Kancolle servers.
  */
-public final class KancolleBridgeStartUp implements StartUp {
+public final class BrowserBridgePlugin implements StartUp {
     private static final int PORT = 8891;
     private static final int MAGIC = 0x4B435031; // "KCP1"
     private static final int VERSION_V1 = 1;
@@ -81,7 +81,7 @@ public final class KancolleBridgeStartUp implements StartUp {
                 return t;
             });
             this.watchdog.scheduleAtFixedRate(
-                KancolleBridgeStartUp::watchdogTick,
+                BrowserBridgePlugin::watchdogTick,
                 5L, 5L, TimeUnit.SECONDS
             );
             updateMainWindowStatus();
@@ -95,7 +95,7 @@ public final class KancolleBridgeStartUp implements StartUp {
             log("ERROR: port " + PORT + " is already in use: " + e);
             notifyDesktop(
                 "艦これ環境",
-                "KLB :8891 の待受に失敗しました。航海日誌連携を確認してください。",
+                "ブラウザ接続 :8891 の待受に失敗しました。航海日誌連携を確認してください。",
                 true
             );
         } catch (SocketException e) {
@@ -253,7 +253,7 @@ public final class KancolleBridgeStartUp implements StartUp {
         if (previous == ChromeState.LOST) {
             notifyDesktop(
                 "艦これ環境",
-                "KLB の接続が復旧しました。",
+                "ブラウザ接続が復旧しました。",
                 false
             );
         }
@@ -270,7 +270,7 @@ public final class KancolleBridgeStartUp implements StartUp {
         if (previous == ChromeState.LOST) {
             notifyDesktop(
                 "艦これ環境",
-                "KLB の接続が復旧しました。",
+                "ブラウザ接続が復旧しました。",
                 false
             );
         }
@@ -286,7 +286,7 @@ public final class KancolleBridgeStartUp implements StartUp {
                     chromeState = ChromeState.LOST;
                     notifyDesktop(
                         "艦これ環境",
-                        "KLB から30秒以上 heartbeat がありません。艦これの通信取得を確認してください。",
+                        "ブラウザから30秒以上 heartbeat がありません。艦これの通信取得を確認してください。",
                         true
                     );
                 }
@@ -298,7 +298,7 @@ public final class KancolleBridgeStartUp implements StartUp {
     private static void updateMainWindowStatus() {
         try {
             if (!Platform.isFxApplicationThread()) {
-                Platform.runLater(KancolleBridgeStartUp::updateMainWindowStatus);
+                Platform.runLater(BrowserBridgePlugin::updateMainWindowStatus);
                 return;
             }
 
@@ -377,7 +377,7 @@ public final class KancolleBridgeStartUp implements StartUp {
                     + "-fx-border-width:0 0 1 0;"
             );
 
-            Label title = new Label("KLB:");
+            Label title = new Label("ブラウザ接続:");
             title.setStyle("-fx-font-weight:bold;");
 
             Label state = new Label("初期化中");

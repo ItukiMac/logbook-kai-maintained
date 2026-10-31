@@ -35,8 +35,8 @@ class EquipmentUiIntegrationTest(unittest.TestCase):
             distribution = fixture / 'distribution'
             report = build(original, distribution, 'a' * 40)
             self.assertEqual(EQUIPMENT_UI_PROFILE, report.get('equipment_ui_profile'))
-            host = distribution / 'logbook-core.jar'
-            status = distribution / 'features/logbook-feature-equipment.jar'
+            host = distribution / 'logbook-kai2-core.jar'
+            status = distribution / 'features/logbook-kai2-feature-equipment.jar'
             with ZipFile(host) as core:
                 self.assertFalse(any(equipment_ui_entry(n) for n in core.namelist()), 'Host fallback copy remains')
             with ZipFile(status) as module:

@@ -1,4 +1,4 @@
-package local.kancolle.kqs;
+package logbook.features.sharing;
 
 import java.time.Instant;
 import java.time.Clock;

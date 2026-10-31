@@ -1,4 +1,4 @@
-package local.kancolle.kqs;
+package logbook.features.sharing;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +42,7 @@ import logbook.plugin.lifecycle.StartUp;
 /**
  * Shared information and legacy quest exports are registered through the host menu SPI.
  */
-public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logbook.plugin.gui.MainExtMenu {
+public final class InformationSharingPlugin implements ContentListenerSpi, StartUp, logbook.plugin.gui.MainExtMenu {
     private static final QuestStore STORE = new QuestStore();
     private static final AtomicBoolean EXPORTING = new AtomicBoolean(false);
 
@@ -73,7 +73,7 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logb
             params.put("api_quest_id", request.getParameter("api_quest_id", ""));
             STORE.accept(request.getRequestURI(), params, new String(bytes, StandardCharsets.UTF_8));
         } catch (Exception e) {
-            System.err.println("[KQS] Quest response rejected: " + e.getClass().getSimpleName());
+            System.err.println("[sharing] Quest response rejected: " + e.getClass().getSimpleName());
         }
     }
 
@@ -81,20 +81,20 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logb
 
     @Override public MenuItem getContent() {
         Window window = null;
-        MenuItem copyJson = new MenuItem("KQS：現在の全任務をJSONコピー");
+        MenuItem copyJson = new MenuItem("任務出力：現在の全任務をJSONコピー");
         copyJson.setOnAction(e -> exportAsync(window, QuestExporter::json, text->copy(text,window)));
 
-        MenuItem copyPrompt = new MenuItem("KQS：任務消化計画用のJSON＋依頼文をコピー");
+        MenuItem copyPrompt = new MenuItem("任務出力：任務消化計画用のJSON＋依頼文をコピー");
         copyPrompt.setOnAction(e -> exportAsync(window, QuestExporter::prompt, text->copy(text,window)));
 
-        MenuItem preview = new MenuItem("KQS：全任務JSONを別ウィンドウで表示");
+        MenuItem preview = new MenuItem("任務出力：全任務JSONを別ウィンドウで表示");
         preview.setOnAction(e -> preview(window));
 
-        MenuItem save = new MenuItem("KQS：全任務JSONをファイル保存...");
+        MenuItem save = new MenuItem("任務出力：全任務JSONをファイル保存...");
         save.setOnAction(e -> save(window));
 
         MenuItem information = new MenuItem("全情報の共有・出力…");
-        information.setOnAction(e -> InformationShareWindow.open(window));
+        information.setOnAction(e -> InformationSharingWindow.open(window));
         Menu menu=new Menu("情報共有・出力");
         menu.getItems().addAll(information,copyJson,copyPrompt,preview,save);
         return menu;
@@ -103,7 +103,7 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logb
     private static void exportAsync(Window owner, java.util.function.Function<QuestStore,String> generator,
                                     Consumer<String> onSuccess) {
         if(!EXPORTING.compareAndSet(false,true)) {
-            message(owner,"KQS","別のJSON生成処理を実行中です。",Alert.AlertType.INFORMATION);
+            message(owner,"情報共有・出力","別のJSON生成処理を実行中です。",Alert.AlertType.INFORMATION);
             return;
         }
         Thread worker=new Thread(()-> {
@@ -116,10 +116,10 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logb
             } catch(Exception error) {
                 Platform.runLater(()-> {
                     EXPORTING.set(false);
-                    message(owner,"KQS","JSON生成に失敗: "+error.getClass().getSimpleName(),Alert.AlertType.ERROR);
+                    message(owner,"情報共有・出力","JSON生成に失敗: "+error.getClass().getSimpleName(),Alert.AlertType.ERROR);
                 });
             }
-        },"KQS-Export");
+        },"sharing-export");
         worker.setDaemon(true);
         worker.start();
     }
@@ -128,14 +128,14 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logb
         ClipboardContent content = new ClipboardContent();
         content.putString(text);
         if (!Clipboard.getSystemClipboard().setContent(content)) {
-            message(owner, "KQS", "コピーに失敗しました。", Alert.AlertType.ERROR);
+            message(owner, "情報共有・出力", "コピーに失敗しました。", Alert.AlertType.ERROR);
         }
     }
 
     private static void preview(Window owner) {
         Stage stage = new Stage();
         if (owner != null) stage.initOwner(owner);
-        stage.setTitle("KQS Logbook Plugin | 全任務JSON");
+        stage.setTitle("logbook-kai2 情報共有 | 全任務JSON");
         TextArea area = new TextArea("JSONを生成しています...");
         exportAsync(stage, QuestExporter::json, area::setText);
         area.setEditable(false);
@@ -153,7 +153,7 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logb
 
     private static void save(Window owner) {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("KQS 全任務JSONの保存先を指定");
+        chooser.setTitle("任務JSONJSONの保存先を指定");
         chooser.setInitialFileName("kqs-quests-" +
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")) + ".json");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
@@ -164,11 +164,11 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logb
             try {
                 // CREATE_NEW refuses to overwrite existing files, even with a stale dialog.
                 Files.writeString(path,text,StandardCharsets.UTF_8,StandardOpenOption.CREATE_NEW);
-                message(owner,"KQS","JSONファイルを保存しました。",Alert.AlertType.INFORMATION);
+                message(owner,"情報共有・出力","JSONファイルを保存しました。",Alert.AlertType.INFORMATION);
             } catch(java.nio.file.FileAlreadyExistsException ex) {
-                message(owner,"KQS","既存ファイルは上書きしません。",Alert.AlertType.WARNING);
+                message(owner,"情報共有・出力","既存ファイルは上書きしません。",Alert.AlertType.WARNING);
             } catch(Exception ex) {
-                message(owner,"KQS","保存に失敗しました: "+ex.getClass().getSimpleName(),Alert.AlertType.ERROR);
+                message(owner,"情報共有・出力","保存に失敗しました: "+ex.getClass().getSimpleName(),Alert.AlertType.ERROR);
             }
         });
     }

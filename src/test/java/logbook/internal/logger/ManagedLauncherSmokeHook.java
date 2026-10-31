@@ -39,7 +39,7 @@ public final class ManagedLauncherSmokeHook implements StartUp {
             if (features.size() != 7) throw new AssertionError("Feature count: " + features.size());
             for (var feature : features) {
                 String source = LogBookCoreServices.getClassLoader().getResource(feature.fxml()).toString();
-                if (!source.contains("/features/logbook-feature-")) throw new AssertionError(source);
+                if (!source.contains("/features/logbook-kai2-feature-")) throw new AssertionError(source);
             }
             Path expected = Path.of("expected-generation.txt");
             if (Files.exists(expected)) {

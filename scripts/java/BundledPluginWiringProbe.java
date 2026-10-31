@@ -7,13 +7,13 @@ public final class BundledPluginWiringProbe {
     private static <T> void check(Class<T> service) {
         var providers = ServiceLoader.load(service).stream().map(ServiceLoader.Provider::type).toList();
         for (var item : java.util.Map.of(
-                "local.kancolle.bridge.KancolleBridgeStartUp", "klb",
-                "local.kancolle.kqs.KqsLogbookPlugin", "kqs").entrySet()) {
-            if (service == ContentListenerSpi.class && item.getValue().equals("klb")) continue;
+                "logbook.features.bridge.BrowserBridgePlugin", "bridge",
+                "logbook.features.sharing.InformationSharingPlugin", "sharing").entrySet()) {
+            if (service == ContentListenerSpi.class && item.getValue().equals("bridge")) continue;
             var found = providers.stream().filter(type -> type.getName().equals(item.getKey())).toList();
             if (found.size() != 1) throw new AssertionError("Provider count: " + item.getKey());
             var source = found.get(0).getProtectionDomain().getCodeSource().getLocation().getPath();
-            if (!source.endsWith("/logbook-feature-" + item.getValue() + ".jar"))
+            if (!source.endsWith("/logbook-kai2-feature-" + item.getValue() + ".jar"))
                 throw new AssertionError("Wrong provider owner: " + source);
         }
     }

@@ -1,8 +1,8 @@
 logbook.features.CalculatorFeatures
 logbook.features.ChartFeatures
 logbook.features.ShipFeatures
-logbook.features.KlbFeatures
-logbook.features.KqsFeatures
+logbook.features.BridgeFeatures
+logbook.features.SharingFeatures
 
 logbook.features.EquipmentFeatures
 logbook.features.QuestFeatures
