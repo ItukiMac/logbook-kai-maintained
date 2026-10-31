@@ -33,8 +33,8 @@ public final class ShipListGuiProbe {
         check(args.length==1 && args[0].equals("synthetic-ship-list-only"),"Explicit fixture mode required");
         check(!Files.exists(Path.of("config")) && !Files.exists(Path.of("history-sentinel.csv")),"Refusing existing runtime");
         Files.write(Path.of("history-sentinel.csv"),history,StandardOpenOption.CREATE_NEW);
-        productClass(ShipController.class,"status");productClass(ShipTablePane.class,"status");
-        productClass(ParameterFilterPane.class,"status");productClass(StatisticsPane.class,"charts");
+        productClass(ShipController.class,"ships");productClass(ShipTablePane.class,"ships");
+        productClass(ParameterFilterPane.class,"ships");productClass(StatisticsPane.class,"charts");
         check(ShipItem.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/logbook-core.jar"),"Legacy shared row type changed owner");
         var errors=new CopyOnWriteArrayList<Throwable>();
         Thread.setDefaultUncaughtExceptionHandler((t,e)->{errors.add(e);e.printStackTrace();});
