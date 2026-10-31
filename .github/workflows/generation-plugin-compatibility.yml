@@ -50,9 +50,9 @@ jobs:
           mvn -f .external/legacy-host/pom.xml --batch-mode --no-transfer-progress -DskipTests package
           mvn -f .external/pre-arrival-host/pom.xml --batch-mode --no-transfer-progress -DskipTests package
       - name: Reject capability packs in the actual legacy host without changing its active data
-        run: java -cp target/logbook-kai2.jar:target/test-classes logbook.core.LegacyDefinitionPackProbe .external/legacy-host/target/logbook-kai2.jar target/legacy-data-pack-proof
+        run: java -cp target/logbook-kai2.jar:target/test-classes logbook.core.LegacyDefinitionPackProbe .external/legacy-host/target/logbook-kai.jar target/legacy-data-pack-proof
       - name: Prior V2-capable host rejects arrival semantics and retains active data
-        run: java -cp target/logbook-kai2.jar:target/test-classes logbook.core.PreArrivalHostProbe .external/pre-arrival-host/target/logbook-kai2.jar target/pre-arrival-host-proof
+        run: java -cp target/logbook-kai2.jar:target/test-classes logbook.core.PreArrivalHostProbe .external/pre-arrival-host/target/logbook-kai.jar target/pre-arrival-host-proof
       - name: Verify bundled KQS and KLB with the exact split host
         run: |
           python3 scripts/build_feature_distribution.py --jar target/logbook-kai2.jar --out target/bundled-plugin-check --revision "$GITHUB_SHA"
