@@ -137,7 +137,7 @@ jobs:
           cd dist
           sha256sum -c SHA256SUMS-application.txt
           {
-            echo "Maintained logbook-kai application candidate at $GITHUB_SHA"
+            echo "logbook-kai2 application candidate at $GITHUB_SHA"
             echo
             echo "This is an explicitly published PRERELEASE. It is not automatically"
             echo "installed on any user's machine. Linux Mint auto.sh should remain"
@@ -145,5 +145,5 @@ jobs:
             echo
             cat SHA256SUMS-application.txt
           } > release-notes.txt
-          gh release create "$APP_TAG"             logbook-kai2_25.0.10.zip SHA256SUMS-application.txt             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "公開日誌-改2 25.0.10 (prerelease)"             --notes-file release-notes.txt             --prerelease             --latest=false
+          gh release create "$APP_TAG"             logbook-kai2_25.0.10.zip SHA256SUMS-application.txt             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "logbook-kai2 25.0.10 (prerelease)"             --notes-file release-notes.txt             --prerelease             --latest=false
           gh release view "$APP_TAG" --repo "$GITHUB_REPOSITORY"             --json tagName,isPrerelease,assets
