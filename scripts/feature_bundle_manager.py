@@ -391,8 +391,9 @@ def activate(root: Path, target: str, expected_current: str | None, *, rollback=
         return new
 
 
-def launch(root: Path, java: str = 'java', bridge_port: int = 8892, proxy_port: int = 8889) -> int:
-    if not (1024 <= bridge_port <= 65535 and 1024 <= proxy_port <= 65535) or bridge_port == proxy_port:
+def launch(root: Path, java: str = 'java', bridge_port: int = 8892, proxy_port: int | None = None) -> int:
+    if not 1024 <= bridge_port <= 65535 or (proxy_port is not None and
+            (not 1024 <= proxy_port <= 65535 or bridge_port == proxy_port)):
         raise ValueError('Distinct bridge/proxy ports from 1024 to 65535 are required')
     with locked(root) as (root, fd):
         current = selector(root)
@@ -412,9 +413,10 @@ def launch(root: Path, java: str = 'java', bridge_port: int = 8892, proxy_port: 
             'JAVA_TOOL_OPTIONS', 'JDK_JAVA_OPTIONS', '_JAVA_OPTIONS', 'CLASSPATH')}
         common = [executable, '-Dlogbook.runtime.managedBundle=true',
                    '-Dlogbook.bridge.port=' + str(bridge_port),
-                   '-Dlogbook.proxy.port=' + str(proxy_port),
                    '-Dlogbook.data.autoUpdate=false', '-Duser.home=' + str(runtime / 'home'),
                    '-cp', os.pathsep.join(str(version / n) for n in JARS)]
+        if proxy_port is not None:
+            common.insert(2, '-Dlogbook.proxy.port=' + str(proxy_port))
         # Validate actual provider bytecode before Launcher/Config/proxy/plugins
         # initialization. JSON alone cannot prove that code declares the same API.
         preflight = subprocess.run(common + ['logbook.core.FeatureBundlePreflight'],
@@ -448,7 +450,7 @@ def main():
     sub.add_parser('status')
     start = sub.add_parser('launch');start.add_argument('--java', default='java')
     start.add_argument('--bridge-port', type=int, default=8892)
-    start.add_argument('--proxy-port', type=int, default=8889)
+    start.add_argument('--proxy-port', type=int, help='Override saved proxy port; omitted preserves the runtime setting')
     a = parser.parse_args()
     if a.operation == 'init': result = initialize(a.store)
     elif a.operation == 'stage': result = stage(a.store, a.bundle, a.expected_sha256)

@@ -124,6 +124,11 @@ class BundleManagerTest(unittest.TestCase):
             with patch.object(m.subprocess,'run',return_value=subprocess.CompletedProcess(
                     [], 0, stdout='FEATURE_BUNDLE_PREFLIGHT_OK\n', stderr='')) as run:
                 self.assertEqual(0,m.launch(self.store))
+        self.assertFalse(any(arg.startswith('-Dlogbook.proxy.port=') for arg in run.call_args.args[0]))
+        with patch.object(m.subprocess, 'run', return_value=subprocess.CompletedProcess(
+                [], 0, stdout='FEATURE_BUNDLE_PREFLIGHT_OK\n', stderr='')) as explicit:
+            self.assertEqual(0, m.launch(self.store, proxy_port=18889))
+            self.assertIn('-Dlogbook.proxy.port=18889', explicit.call_args.args[0])
         self.assertEqual(2, run.call_count)
         self.assertEqual('logbook.core.FeatureBundlePreflight', run.call_args_list[0].args[0][-1])
         args, kwargs=run.call_args
