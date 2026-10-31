@@ -59,7 +59,7 @@ class PortArrivalKai203Test {
 
     private final class Fixture implements AutoCloseable {
         final MovingClock clock = new MovingClock();
-        final PortArrivalStore store = new PortArrivalStore(temp.resolve("arrivals"));
+        final PortArrivalStore store = new PortArrivalStore(temp.resolve("arrivals-" + java.util.UUID.randomUUID()));
         final PortArrivalRuntime runtime = new PortArrivalRuntime(() -> store, clock);
         final MockedStatic<AppCondition> stateMock = mockStatic(AppCondition.class);
         final MockedStatic<DeckPortCollection> deckMock = mockStatic(DeckPortCollection.class);
@@ -131,11 +131,12 @@ class PortArrivalKai203Test {
     @Test void aSessionBoundaryBetweenDepartureAndGoalCannotCreateArrival() throws Exception {
         for (String boundary : List.of(PORT, MASTER)) {
             try (var f = new Fixture()) {
+                f.send(PORT, response(6, 2, 4, null));
                 f.send(START, response(6, 2, 4, null));
                 f.send(boundary, response(6, 2, 4, null));
                 f.send(NEXT, response(6, 0, 9, 2));
                 var entries = f.store.journal().readLatest();
-                assertEquals(List.of("START", "BOUNDARY"),
+                assertEquals(List.of("BOUNDARY", "START", "BOUNDARY"),
                         entries.stream().map(PortArrivalJournal.Entry::kind).toList());
                 assertEquals("NO_ACTIVE_SORTIE", f.runtime.statusReason());
                 assertTrue(f.store.readRange(T, T + 100).isEmpty());
