@@ -31,6 +31,7 @@ class PortArrivalKai203Test {
     private static final long T = Instant.parse("2026-10-31T09:00:00Z").toEpochMilli();
     private static final String START = "/kcsapi/api_req_map/start";
     private static final String NEXT = "/kcsapi/api_req_map/next";
+    private static final String RESULT = "/kcsapi/api_req_sortie/battleresult";
     private static final String PORT = "/kcsapi/api_port/port";
     private static final String MASTER = "/kcsapi/api_start2/getData";
 
@@ -143,4 +144,55 @@ class PortArrivalKai203Test {
             }
         }
     }
+    @Test void explicitNullEscapeInOrdinaryBattleResultMustNotBlockObservedGoal() throws Exception {
+        try (var f = new Fixture()) {
+            f.send(PORT, response(6, 2, 4, null));
+            f.send(START, response(6, 2, 4, null));
+            f.send(NEXT, response(6, 4, 4, 2));
+            // Parsed JSON null is a JsonValue, not a JsonObject. It is valid for
+            // a battle result without an actual retreat and must not poison tracking.
+            JsonObject normalBattle = Json.createReader(new java.io.StringReader(
+                    "{\"api_result\":1,\"api_data\":{\"api_escape_flag\":0,\"api_escape\":null}}"))
+                    .readObject();
+            f.send(RESULT, normalBattle);
+            f.send(NEXT, response(6, 0, 9, 4));
+            assertEquals(List.of("BOUNDARY", "START", "STEP", "GOAL"),
+                    f.store.journal().readLatest().stream().map(PortArrivalJournal.Entry::kind).toList());
+            assertEquals(1, f.store.readRange(T, T + 100).size());
+            assertEquals("ARRIVAL_RECORDED", f.runtime.statusReason());
+        }
+    }
+
+    @Test void explicitNullEscapeOnConnectedMapGoalMustNotBlockArrival() throws Exception {
+        try (var f = new Fixture()) {
+            f.send(PORT, response(6, 2, 4, null));
+            f.send(START, response(6, 2, 4, null));
+            JsonObject goal = Json.createReader(new java.io.StringReader(
+                    "{\"api_result\":1,\"api_data\":{\"api_maparea_id\":1,\"api_mapinfo_no\":6,"
+                  + "\"api_no\":0,\"api_event_id\":9,\"api_from_no\":2,\"api_escape\":null}}"))
+                    .readObject();
+            f.send(NEXT, goal);
+            assertEquals(List.of("BOUNDARY", "START", "GOAL"),
+                    f.store.journal().readLatest().stream().map(PortArrivalJournal.Entry::kind).toList());
+            assertEquals(1, f.store.readRange(T, T + 100).size());
+        }
+    }
+
+    @Test void nonObjectNonNullEscapeStillFailsClosedWithoutMintingGoal() throws Exception {
+        try (var f = new Fixture()) {
+            f.send(PORT, response(6, 2, 4, null));
+            f.send(START, response(6, 2, 4, null));
+            JsonObject malformed = Json.createReader(new java.io.StringReader(
+                    "{\"api_result\":1,\"api_data\":{\"api_maparea_id\":1,\"api_mapinfo_no\":6,"
+                  + "\"api_no\":0,\"api_event_id\":9,\"api_from_no\":2,\"api_escape\":[]}}"))
+                    .readObject();
+            f.send(NEXT, malformed);
+            f.send(NEXT, response(6, 0, 9, 2));
+            assertEquals(List.of("BOUNDARY", "START", "INVALID"),
+                    f.store.journal().readLatest().stream().map(PortArrivalJournal.Entry::kind).toList());
+            assertEquals("TRACKING_IO_OR_FORMAT_FAILURE", f.runtime.statusReason());
+            assertTrue(f.store.readRange(T, T + 100).isEmpty());
+        }
+    }
+
 }
