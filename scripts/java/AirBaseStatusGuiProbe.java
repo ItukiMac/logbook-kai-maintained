@@ -25,7 +25,7 @@ public final class AirBaseStatusGuiProbe {
         require(!Files.exists(Path.of("config")) && !Files.exists(Path.of("history.csv")),"Existing runtime rejected");
         byte[] history="unchanged synthetic history\n".getBytes(java.nio.charset.StandardCharsets.UTF_8);
         Files.write(Path.of("history.csv"),history,StandardOpenOption.CREATE_NEW);
-        require(AirBaseController.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/features/logbook-feature-status.jar"),"Host fallback must not hide feature errors");
+        require(AirBaseController.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/features/logbook-feature-equipment.jar"),"Host fallback must not hide feature errors");
         LogBookCoreServices.init(List.of());GameDefinitionRuntime.initialize();fixture();
         var errors=new CopyOnWriteArrayList<Throwable>();Thread.setDefaultUncaughtExceptionHandler((t,e)->{errors.add(e);e.printStackTrace();});
         var ready=new CompletableFuture<Void>();Platform.startup(()->ready.complete(null));ready.get(20,TimeUnit.SECONDS);Platform.setImplicitExit(false);

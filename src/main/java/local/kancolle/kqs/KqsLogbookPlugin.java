@@ -140,7 +140,12 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp {
         MenuItem save = new MenuItem("KQS：全任務JSONをファイル保存...");
         save.setOnAction(e -> save(window));
 
-        ContextMenu menu=new ContextMenu(copyJson,copyPrompt,preview,save);
+        MenuItem information = new MenuItem("全情報の共有・出力…");
+        information.setOnAction(e -> InformationShareWindow.open(window));
+        MenuItem management = new MenuItem("任務管理表・完了履歴…");
+        management.setOnAction(e -> java.util.ServiceLoader.load(logbook.plugin.api.QuestManagementUi.class,
+            logbook.core.LogBookCoreServices.getClassLoader()).findFirst().orElseThrow().open(window));
+        ContextMenu menu=new ContextMenu(copyJson,copyPrompt,preview,save,information,management);
         if(showOriginal) {
             Menu original=new Menu("航海日誌改（元の操作）");
             MenuItem clear=new MenuItem("全て除去...（確認あり）");

@@ -23,7 +23,7 @@ public class ApiReqQuestClearitemget implements APIListenerSpi {
             try {
                 new logbook.core.quest.QuestCompletionRecorder(
                     new logbook.core.quest.QuestLedger(java.nio.file.Path.of("config", "quest-ledger")))
-                    .record(json, key, java.util.UUID.randomUUID().toString(), java.time.Instant.now());
+                    .record(json, logbook.core.quest.QuestIdentity.resolve(key, AppQuestCollection.get().getQuest().get(key)), java.util.UUID.randomUUID().toString(), java.time.Instant.now());
             } catch (java.io.IOException failure) {
                 throw new java.io.UncheckedIOException("任務完了履歴を保存できません。既存の任務情報を保持します。", failure);
             }

@@ -39,15 +39,15 @@ def new_directory(path: Path) -> None:
 
 def owner(name: str, record_ui: bool = False, equipment_ui: bool = False, statistics_ui: bool = False, ship_list_ui: bool = False, quest_ui: bool = False) -> str | None:
     if quest_ui and quest_ui_entry(name):
-        return 'status'
+        return 'quests'
     if ship_list_ui and ship_list_ui_entry(name):
-        return 'status'
+        return 'ships'
     if statistics_ui and ship_statistics_entry(name):
         return 'charts'
     if equipment_ui and equipment_ui_entry(name):
-        return 'status'
+        return 'equipment'
     if record_ui and record_ui_entry(name):
-        return 'charts'
+        return 'records'
     for group, (provider, controllers, resources) in GROUPS.items():
         stems = ['logbook/features/' + provider]
         stems += ['logbook/internal/gui/' + c for c in controllers]
@@ -143,6 +143,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
             groups[group][name] = data
         elif name != SERVICE:
             core[name] = data
+    management_service = 'META-INF/services/logbook.plugin.api.QuestManagementUi'
+    if management_service in core:
+        groups['quests'][management_service] = core.pop(management_service)
     # Lifecycle registrations follow their owning module, never remain in core.
     plugin_providers = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp',
                         'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}

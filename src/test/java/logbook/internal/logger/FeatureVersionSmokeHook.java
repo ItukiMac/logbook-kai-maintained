@@ -156,14 +156,14 @@ public final class FeatureVersionSmokeHook implements StartUp {
     private static void verifyModuleContracts(FeatureRegistry registry, String expectedVersion) throws Exception {
         Map<String, FeatureModule.Descriptor> descriptors = registry.descriptors().stream()
                 .collect(Collectors.toMap(FeatureModule.Descriptor::id, Function.identity()));
-        check(descriptors.size() == 5, "Expected all five declared modules");
+        check(descriptors.size() == 8, "Expected all eight declared modules");
         check(expectedVersion.equals(descriptors.get("calculators").version()), "Wrong calculator descriptor version");
         check(registry.group(FeatureModule.Group.CALCULATOR).size() == 4, "Original calculator feature IDs changed");
         int features = 0;
         for (FeatureModule.Group group : FeatureModule.Group.values()) features += registry.group(group).size();
         check(features == 7, "Original seven menu features must remain available");
         String[] jars = System.getProperty("java.class.path").split(java.util.regex.Pattern.quote(File.pathSeparator));
-        check(jars.length == 6, "Launcher classpath must contain only the six selected bundle JARs");
+        check(jars.length == 9, "Launcher classpath must contain only the nine selected bundle JARs");
         var seen = new ArrayList<String>();
         ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
         for (String jarPath : jars) {
@@ -199,7 +199,7 @@ public final class FeatureVersionSmokeHook implements StartUp {
                 seen.add(id);
             }
         }
-        check(seen.size() == 5 && seen.containsAll(descriptors.keySet()), "Selected classpath misses a declared module");
+        check(seen.size() == 8 && seen.containsAll(descriptors.keySet()), "Selected classpath misses a declared module");
         String fxml = LogBookCoreServices.getClassLoader().getResource(registry.get("probability").fxml()).toString();
         check(fxml.contains("/features/logbook-feature-calculators.jar!"), "FXML did not load from the selected feature JAR");
         Class<?> controller = Class.forName("logbook.internal.gui.FeatureVersionFixtureController", false,

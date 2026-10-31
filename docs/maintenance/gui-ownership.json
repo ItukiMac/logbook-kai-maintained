@@ -4,9 +4,9 @@
   "components": [
     {
       "path": "src/main/java/logbook/internal/gui/AirBaseController.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -35,9 +35,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/ArsenalQuestConditionEditController.java",
-      "owner": "status",
+      "owner": "quests",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the quests module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -133,9 +133,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/BattleLogController.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -154,9 +154,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/BattleLogDetailAggregate.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -164,9 +164,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/BattleRecordCollect.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -174,9 +174,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/BattleRecordDetail.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -245,9 +245,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/CreateItemController.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -326,9 +326,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/EquipmentDetailItem.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -336,9 +336,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/EquipmentProjection.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -418,9 +418,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/ItemAirBaseController.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -428,9 +428,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/ItemController.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -449,9 +449,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/ItemItemController.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -499,9 +499,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/MissionAggregate.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -530,9 +530,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/MissionLogController.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -561,9 +561,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/MissionRecordCollect.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -571,9 +571,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/MissionRecordDetail.java",
-      "owner": "charts",
+      "owner": "records",
       "category": "extracted-charts",
-      "reason": "Feature controller/model is physically packaged in the charts module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the records module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -591,9 +591,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/ParameterFilterPane.java",
-      "owner": "status",
+      "owner": "ships",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the ships module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -677,9 +677,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/QuestConditionEditController.java",
-      "owner": "status",
+      "owner": "quests",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the quests module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -687,9 +687,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/QuestEditorDocument.java",
-      "owner": "status",
+      "owner": "quests",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the quests module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -697,9 +697,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/QuestObservationUiBinding.java",
-      "owner": "status",
+      "owner": "quests",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the quests module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -707,9 +707,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/QuestPane.java",
-      "owner": "status",
+      "owner": "quests",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the quests module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -717,9 +717,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/QuestProgress.java",
-      "owner": "status",
+      "owner": "quests",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the quests module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -757,9 +757,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/RequireNdock.java",
-      "owner": "status",
+      "owner": "ships",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the ships module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -767,9 +767,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/RequireNdockController.java",
-      "owner": "status",
+      "owner": "ships",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the ships module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -828,9 +828,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/ShipController.java",
-      "owner": "status",
+      "owner": "ships",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the ships module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -849,9 +849,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/ShipTablePane.java",
-      "owner": "status",
+      "owner": "ships",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the ships module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -932,9 +932,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/UseitemController.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"
@@ -942,9 +942,9 @@
     },
     {
       "path": "src/main/java/logbook/internal/gui/UseitemItem.java",
-      "owner": "status",
+      "owner": "equipment",
       "category": "extracted-status",
-      "reason": "Feature controller/model is physically packaged in the status module under the current additive distribution profile.",
+      "reason": "Domain-owned UI packaged in the equipment module; shared host services remain in core.",
       "verification": [
         "src/test/java/logbook/internal/gui/FeatureUiBoundaryGuiTest.java",
         "scripts/verify_r3.sh"

@@ -45,7 +45,7 @@ public final class ManagedLauncherSmokeHook implements StartUp {
             if (Files.exists(expected)) {
                 String label = Files.readString(expected);
                 String[] jars = System.getProperty("java.class.path").split(java.io.File.pathSeparator);
-                if (jars.length != 6) throw new AssertionError("Expected exactly six bundle JARs");
+                if (jars.length != 9) throw new AssertionError("Expected exactly nine bundle JARs");
                 for (String jarPath : jars) {
                     try (var jar = new java.util.zip.ZipFile(jarPath)) {
                         var entry = jar.getEntry("META-INF/managed-generation-test.txt");

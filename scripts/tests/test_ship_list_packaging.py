@@ -57,7 +57,7 @@ class ShipListPackagingTest(unittest.TestCase):
         source=self.source();before=source.read_bytes();root=self.root/'bundle';report=build(source,root,'a'*40)
         self.assertEqual(SHIP_LIST_UI_PROFILE,report['ship_list_ui_profile']);verify(root);self.assertEqual(before,source.read_bytes())
         with ZipFile(root/JARS[0]) as z:self.assertFalse(ship_list_ui_required_entries()&set(z.namelist()))
-        with ZipFile(root/'features/logbook-feature-status.jar') as z:self.assertTrue(ship_list_ui_required_entries()<=set(z.namelist()))
+        with ZipFile(root/'features/logbook-feature-ships.jar') as z:self.assertTrue(ship_list_ui_required_entries()<=set(z.namelist()))
     def test_incomplete_new_source_is_rejected_before_output_exists(self):
         source=self.source(missing='logbook/gui/ship_table.fxml');out=self.root/'no-output'
         with self.assertRaisesRegex(ValueError,'Missing ship list UI input'):build(source,out,'a'*40)
@@ -77,10 +77,10 @@ class ShipListPackagingTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Ship list UI remains in the host'):verify(out)
     def test_ship_list_UI_required_component_cannot_be_omitted(self):
         root,_=self.bundle();entry='logbook/gui/ship_table.fxml'
-        out=self.tamper(root,{'features/logbook-feature-status.jar':lambda d:d.pop(entry)})
+        out=self.tamper(root,{'features/logbook-feature-ships.jar':lambda d:d.pop(entry)})
         with self.assertRaisesRegex(ValueError,'Missing required feature entry'):verify(out)
     def test_ship_list_UI_cannot_be_moved_to_another_module(self):
         root,_=self.bundle();entry='logbook/gui/ship_table.fxml'
         out=self.tamper(root,{'features/logbook-feature-calculators.jar':lambda d:d.update({entry:b'wrong module'})})
-        with self.assertRaisesRegex(ValueError,'Ship list UI belongs to the status'):verify(out)
+        with self.assertRaisesRegex(ValueError,'Ship list UI belongs to the ships'):verify(out)
 if __name__=='__main__':unittest.main()

@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 import logbook.features.CalculatorFeatures;
 import logbook.features.ChartFeatures;
-import logbook.features.StatusFeatures;
+import logbook.features.ShipFeatures;
 import logbook.plugin.api.FeatureModule;
 import logbook.plugin.api.FeatureModule.Dependency;
 import logbook.plugin.api.FeatureModule.Descriptor;
@@ -40,8 +40,8 @@ class FeatureVersionContractTest {
     }
 
     @Test void builtinsDeclareTheirOwnStableVersions() {
-        var catalog = registry(new CalculatorFeatures(), new ChartFeatures(), new StatusFeatures());
-        assertEquals(List.of("calculators", "charts", "status"),
+        var catalog = registry(new CalculatorFeatures(), new ChartFeatures(), new ShipFeatures());
+        assertEquals(List.of("calculators", "charts", "ships"),
                 catalog.descriptors().stream().map(Descriptor::id).toList());
         assertTrue(catalog.descriptors().stream().allMatch(d ->
                 d.version().equals("1.0.0") && d.hostApi() == 1 && d.dependencies().isEmpty()));

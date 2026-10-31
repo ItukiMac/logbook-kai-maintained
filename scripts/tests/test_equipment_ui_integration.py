@@ -36,7 +36,7 @@ class EquipmentUiIntegrationTest(unittest.TestCase):
             report = build(original, distribution, 'a' * 40)
             self.assertEqual(EQUIPMENT_UI_PROFILE, report.get('equipment_ui_profile'))
             host = distribution / 'logbook-core.jar'
-            status = distribution / 'features/logbook-feature-status.jar'
+            status = distribution / 'features/logbook-feature-equipment.jar'
             with ZipFile(host) as core:
                 self.assertFalse(any(equipment_ui_entry(n) for n in core.namelist()), 'Host fallback copy remains')
             with ZipFile(status) as module:
@@ -63,7 +63,7 @@ class EquipmentUiIntegrationTest(unittest.TestCase):
             self.assertNotIn('FXMLの初期化に失敗しました', logs[-1])
             self.assertEqual(before, hashlib.sha256(original.read_bytes()).hexdigest())
             summary.update(result='passed', product_distribution=True, equipment_ui_profile=EQUIPMENT_UI_PROFILE,
-                equipment_module='status', tabs=2, summaries=2, owned_instances=6,
+                equipment_module='equipment', tabs=2, summaries=2, owned_instances=6,
                 normal_and_expansion_owner=True, aircraft=3, grouped_aircraft=2, locked_export=3,
                 settings_reread=True, original_history_unchanged=True, source_jar_unchanged=True,
                 host_sha256=hashlib.sha256(host.read_bytes()).hexdigest(),

@@ -15,12 +15,15 @@ public class ApiGetMemberQuestlist implements APIListenerSpi {
 
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
+        if(json==null || !(json.get("api_result") instanceof jakarta.json.JsonNumber result)
+            || result.bigDecimalValue().compareTo(java.math.BigDecimal.ONE)!=0)return;
         JsonObject data = json.getJsonObject("api_data");
         if (data != null) {
             QuestList quest = QuestList.toQuestList(data);
 
             AppQuestCollection.get()
                     .update(quest, "0".equals(req.getParameter("api_tab_id")));
+            logbook.core.quest.QuestObservationRecorder.record(quest);
         }
     }
 

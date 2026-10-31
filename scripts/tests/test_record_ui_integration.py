@@ -50,13 +50,13 @@ class RecordUiIntegrationTest(unittest.TestCase):
             report = build(original, distribution, 'a' * 40)
             self.assertEqual(RECORD_UI_PROFILE, report.get('record_ui_profile'))
             host = distribution / 'logbook-core.jar'
-            feature = distribution / 'features/logbook-feature-charts.jar'
+            feature = distribution / 'features/logbook-feature-records.jar'
             with ZipFile(host) as core:
                 self.assertFalse(any(record_entry(n) for n in core.namelist()), 'Hidden fallback remained in host')
             with ZipFile(feature) as records:
                 self.assertTrue(record_ui_required_entries().issubset(records.namelist()))
             summary.update(product_distribution=True, record_ui_profile=RECORD_UI_PROFILE,
-                           record_module='charts', original_distribution_source_unchanged=True)
+                           record_module='records', original_distribution_source_unchanged=True)
             classes = fixture / 'probe-classes'
             classes.mkdir()
             runtime = fixture / 'runtime'

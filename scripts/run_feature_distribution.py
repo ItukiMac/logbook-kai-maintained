@@ -13,7 +13,7 @@ from pathlib import Path, PurePosixPath
 import re
 from zipfile import ZipFile
 
-FORMAT = 'logbook-feature-distribution-v3'
+FORMAT = 'logbook-feature-distribution-v4'
 HOST_API = 1
 HOST_VERSION = '1.0.0'
 SERVICE = 'META-INF/services/logbook.plugin.api.FeatureModule'
@@ -25,13 +25,15 @@ PLUGIN_SERVICES = ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.Content
 FEATURES = {
     'calculators': ('experience', 'mission-check', 'probability', 'last-dance'),
     'charts': ('resource-chart', 'experience-chart'),
-    'status': ('repair-list',),
+    'ships': ('repair-list',),
+    'equipment': (), 'quests': (), 'records': (),
     'klb': (),
     'kqs': (),
 }
 PROVIDERS = {'calculators': 'logbook.features.CalculatorFeatures',
              'charts': 'logbook.features.ChartFeatures',
-             'status': 'logbook.features.StatusFeatures',
+             'ships': 'logbook.features.ShipFeatures',
+             'equipment': 'logbook.features.EquipmentFeatures', 'quests': 'logbook.features.QuestFeatures', 'records': 'logbook.features.RecordFeatures',
              'klb': 'logbook.features.KlbFeatures', 'kqs': 'logbook.features.KqsFeatures'}
 # API 1 retains these entry points used by host menus and feature FXML. Moving
 # any of them requires a new packaging contract, not silently dropping a window.
@@ -42,13 +44,13 @@ GROUPS = {
         ('calc_exp', 'calc_exp_area', 'missioncheck', 'prob_calc', 'last_dance_calc')),
     'charts': ('ChartFeatures', ('ResourceChartController', 'ExpChartController', 'ResourceTable'),
                ('resource_chart', 'exp_chart')),
-    'status': ('StatusFeatures', ('RequireNdockController', 'RequireNdock',
-                                'AirBaseController', 'UseitemController', 'UseitemItem'),
-               ('require_ndock', 'airbase', 'useitem')),
+    'ships': ('ShipFeatures', ('RequireNdockController', 'RequireNdock'), ('require_ndock',)),
+    'equipment': ('EquipmentFeatures', ('AirBaseController', 'UseitemController', 'UseitemItem'), ('airbase', 'useitem')),
+    'quests': ('QuestFeatures', (), ()), 'records': ('RecordFeatures', (), ()),
 }
 GROUPS.update({'klb': ('KlbFeatures', (), ()), 'kqs': ('KqsFeatures', (), ())})
-EXTRA_CLASSES = {'klb': ('local/kancolle/bridge/KancolleBridgeStartUp',),
-                 'kqs': ('local/kancolle/kqs/KqsLogbookPlugin', 'local/kancolle/kqs/QuestStore', 'local/kancolle/kqs/QuestExporter'), 'calculators': ('logbook/internal/calc/ProbabilityCalculator',
+EXTRA_CLASSES = {'quests': ('logbook/features/quests/QuestManagementWindow',), 'klb': ('local/kancolle/bridge/KancolleBridgeStartUp',),
+                 'kqs': ('local/kancolle/kqs/KqsLogbookPlugin', 'local/kancolle/kqs/QuestStore', 'local/kancolle/kqs/QuestExporter', 'local/kancolle/kqs/InformationExport', 'local/kancolle/kqs/InformationShareWindow'), 'calculators': ('logbook/internal/calc/ProbabilityCalculator',
                                  'logbook/internal/calc/ProbabilityInput')}
 METADATA_KEYS = {'id', 'version', 'host_api', 'host_sha256', 'dependencies',
                  'provider', 'features'}
@@ -58,16 +60,13 @@ VERSION = re.compile(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)')
 MAX_JAR = 192 * 1024 * 1024
 MAX_BUNDLE = 256 * 1024 * 1024
 
-FILES = ('logbook-core.jar', 'features/logbook-feature-calculators.jar',
-         'features/logbook-feature-charts.jar', 'features/logbook-feature-status.jar',
-         'features/logbook-feature-klb.jar', 'features/logbook-feature-kqs.jar',
-         'run_feature_distribution.py')
+FILES = ('logbook-core.jar',) + tuple('features/logbook-feature-' + name + '.jar' for name in FEATURES) + ('run_feature_distribution.py',)
 JARS = tuple(name for name in FILES if name.endswith('.jar'))
 
 
 # Additive v2 packaging profile: existing GUI profiles are retained alongside KLB/KQS.
 # Presence of the immutable data API in the host is the profile discriminator.
-RECORD_UI_PROFILE = 'record-ui-in-charts-v1'
+RECORD_UI_PROFILE = 'record-ui-in-records-v2'
 RECORD_UI_API = 'logbook/plugin/api/RecordDataV1.class'
 RECORD_UI_FAMILIES = ('BattleLogController', 'MissionLogController', 'CreateItemController',
     'BattleRecordCollect', 'BattleRecordDetail', 'BattleLogDetailAggregate',
@@ -88,7 +87,7 @@ def record_ui_required_entries():
             'logbook/gui/' + value + '.fxml' for value in RECORD_UI_RESOURCES}
 
 
-EQUIPMENT_UI_PROFILE = 'equipment-ui-in-status-v1'
+EQUIPMENT_UI_PROFILE = 'equipment-ui-in-equipment-v2'
 EQUIPMENT_UI_API = 'logbook/plugin/api/EquipmentDataV1.class'
 EQUIPMENT_UI_FAMILIES = ('ItemController', 'ItemItemController', 'ItemAirBaseController',
                          'EquipmentProjection', 'EquipmentDetailItem')
@@ -121,7 +120,7 @@ def ship_statistics_required_entries():
     return {'logbook/internal/gui/StatisticsPane.class', 'logbook/gui/statistics.fxml'}
 
 
-SHIP_LIST_UI_PROFILE = 'ship-list-in-status-v1'
+SHIP_LIST_UI_PROFILE = 'ship-list-in-ships-v2'
 SHIP_LIST_UI_API = 'logbook/plugin/api/ShipListUiV1.class'
 SHIP_LIST_UI_FAMILIES = ('ShipController', 'ShipTablePane', 'ParameterFilterPane')
 SHIP_LIST_UI_RESOURCES = ('ship', 'ship_table', 'param_filter_pane')
@@ -141,7 +140,7 @@ def ship_list_ui_required_entries():
                ('IntegerParameter', 'ShipItemParameterFilterPane', 'ItemParameterFilterPane', 'AirBaseParameterFilterPane')})
 
 
-QUEST_UI_PROFILE = 'quest-ui-in-status-v1'
+QUEST_UI_PROFILE = 'quest-ui-in-quests-v2'
 QUEST_UI_API = 'logbook/plugin/api/QuestUiV1.class'
 QUEST_UI_FAMILIES = ('QuestPane', 'QuestProgress', 'QuestConditionEditController',
                      'ArsenalQuestConditionEditController', 'QuestEditorDocument', 'QuestObservationUiBinding')
@@ -393,11 +392,11 @@ def verify_jars(root, report, catalog):
                 if (QUEST_UI_API in names) != quest_profile:
                     raise ValueError('Quest UI API and packaging profile disagree')
                 if quest_profile and any(quest_ui_entry(name) for name in names):
-                    raise ValueError('Quest UI remains in the host instead of status')
+                    raise ValueError('Quest UI remains in the host instead of quests')
                 if (SHIP_LIST_UI_API in names) != ship_list_profile:
                     raise ValueError('Ship list UI API and packaging profile disagree')
                 if ship_list_profile and any(ship_list_ui_entry(name) for name in names):
-                    raise ValueError('Ship list UI remains in the host instead of status')
+                    raise ValueError('Ship list UI remains in the host instead of ships')
                 if (SHIP_STATISTICS_API in names) != statistics_profile:
                     raise ValueError('Ship statistics API and packaging profile disagree')
                 if statistics_profile and any(ship_statistics_entry(name) for name in names):
@@ -405,11 +404,11 @@ def verify_jars(root, report, catalog):
                 if (EQUIPMENT_UI_API in names) != equipment_profile:
                     raise ValueError('Equipment data API and packaging profile disagree')
                 if equipment_profile and any(equipment_ui_entry(name) for name in names):
-                    raise ValueError('Equipment UI remains in the host instead of status')
+                    raise ValueError('Equipment UI remains in the host instead of equipment')
                 if (RECORD_UI_API in names) != record_profile:
                     raise ValueError('Record data API and packaging profile disagree')
                 if record_profile and any(record_ui_entry(name) for name in names):
-                    raise ValueError('Record UI remains in the host instead of charts')
+                    raise ValueError('Record UI remains in the host instead of records')
                 if SERVICE in names:
                     raise ValueError('Feature provider still present in the host')
                 if HOST_METADATA not in names or jar.getinfo(HOST_METADATA).file_size > 65536:
@@ -421,30 +420,30 @@ def verify_jars(root, report, catalog):
             module = next(m for m in catalog.values() if m['path'] == path)
             required = required_entries(module['id'])
             if quest_profile:
-                if module['id'] == 'status':
+                if module['id'] == 'quests':
                     required |= quest_ui_required_entries()
                 elif any(quest_ui_entry(name) for name in names):
-                    raise ValueError('Quest UI belongs to the status module')
+                    raise ValueError('Quest UI belongs to the quests module')
             if ship_list_profile:
-                if module['id'] == 'status':
+                if module['id'] == 'ships':
                     required |= ship_list_ui_required_entries()
                 elif any(ship_list_ui_entry(name) for name in names):
-                    raise ValueError('Ship list UI belongs to the status module')
+                    raise ValueError('Ship list UI belongs to the ships module')
             if statistics_profile:
                 if module['id'] == 'charts':
                     required |= ship_statistics_required_entries()
                 elif any(ship_statistics_entry(name) for name in names):
                     raise ValueError('Ship statistics UI belongs to the charts module')
             if equipment_profile:
-                if module['id'] == 'status':
+                if module['id'] == 'equipment':
                     required |= equipment_ui_required_entries()
                 elif any(equipment_ui_entry(name) for name in names):
-                    raise ValueError('Equipment UI belongs to the status module')
+                    raise ValueError('Equipment UI belongs to the equipment module')
             if record_profile:
-                if module['id'] == 'charts':
+                if module['id'] == 'records':
                     required |= record_ui_required_entries()
                 elif any(record_ui_entry(name) for name in names):
-                    raise ValueError('Record UI belongs to the charts module')
+                    raise ValueError('Record UI belongs to the records module')
             missing = required - names
             if missing:
                 raise ValueError('Missing required feature entry: ' + sorted(missing)[0])
