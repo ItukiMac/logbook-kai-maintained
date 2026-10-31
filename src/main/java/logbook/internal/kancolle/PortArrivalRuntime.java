@@ -439,8 +439,12 @@ public final class PortArrivalRuntime {
         if (data != null) {
             for (String name : List.of("api_maparea_id", "api_mapinfo_no", "api_no", "api_event_id", "api_from_no", "api_escape_flag"))
                 canonical.append('|').append(name).append('=').append(data.get(name));
-            JsonObject escape = data.getJsonObject("api_escape");
-            if (escape != null) canonical.append('|').append(escape.get("api_escape_idx")).append('|').append(escape.get("api_tow_idx"));
+            JsonValue escapeValue = data.get("api_escape");
+            if (escapeValue != null && escapeValue != JsonValue.NULL) {
+                if (!(escapeValue instanceof JsonObject escape))
+                    throw new IllegalArgumentException("Invalid escape observation field type");
+                canonical.append('|').append(escape.get("api_escape_idx")).append('|').append(escape.get("api_tow_idx"));
+            }
         }
         return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));
     }
