@@ -36,7 +36,7 @@ public class ShortageShipItem {
 
     /**
      * IDを取得します。
-     * 
+     *
      * @return ID
      */
     public IntegerProperty idProperty() {
@@ -45,7 +45,7 @@ public class ShortageShipItem {
 
     /**
      * IDを取得します。
-     * 
+     *
      * @return ID
      */
     public Integer getId() {
@@ -54,7 +54,7 @@ public class ShortageShipItem {
 
     /**
      * IDを設定します。
-     * 
+     *
      * @param id ID
      */
     public void setId(Integer id) {
@@ -63,7 +63,7 @@ public class ShortageShipItem {
 
     /**
      * 艦娘を取得します。
-     * 
+     *
      * @return 艦娘
      */
     public ObjectProperty<Ship> shipProperty() {
@@ -72,7 +72,7 @@ public class ShortageShipItem {
 
     /**
      * 艦娘を取得します。
-     * 
+     *
      * @return 艦娘
      */
     public Ship getShip() {
@@ -81,7 +81,7 @@ public class ShortageShipItem {
 
     /**
      * 艦娘を設定します。
-     * 
+     *
      * @param ship 艦娘
      */
     public void setShip(Ship ship) {
@@ -90,7 +90,7 @@ public class ShortageShipItem {
 
     /**
      * Lvを取得します。
-     * 
+     *
      * @return Lv
      */
     public IntegerProperty lvProperty() {
@@ -99,7 +99,7 @@ public class ShortageShipItem {
 
     /**
      * Lvを取得します。
-     * 
+     *
      * @return Lv
      */
     public Integer getLv() {
@@ -108,7 +108,7 @@ public class ShortageShipItem {
 
     /**
      * Lvを設定します。
-     * 
+     *
      * @param lv Lv
      */
     public void setLv(Integer lv) {
@@ -117,7 +117,7 @@ public class ShortageShipItem {
 
     /**
      * 改装Lvを取得します。
-     * 
+     *
      * @return 改装Lv
      */
     public IntegerProperty afterLvProperty() {
@@ -126,7 +126,7 @@ public class ShortageShipItem {
 
     /**
      * 改装Lvを取得します。
-     * 
+     *
      * @return 改装Lv
      */
     public Integer getAfterLv() {
@@ -135,7 +135,7 @@ public class ShortageShipItem {
 
     /**
      * 改装Lvを設定します。
-     * 
+     *
      * @param afterLv 改装Lv
      */
     public void setAfterLv(Integer afterLv) {
@@ -144,7 +144,7 @@ public class ShortageShipItem {
 
     /**
      * 改装取得装備を取得します。
-     * 
+     *
      * @return 改装取得装備
      */
     public StringProperty equipmentsProperty() {
@@ -153,7 +153,7 @@ public class ShortageShipItem {
 
     /**
      * 改装取得装備を取得します。
-     * 
+     *
      * @return 改装取得装備
      */
     public String getEquipments() {
@@ -162,7 +162,7 @@ public class ShortageShipItem {
 
     /**
      * 改装取得装備を設定します。
-     * 
+     *
      * @param equipments 改装取得装備
      */
     public void setEquipments(String equipments) {
@@ -171,7 +171,7 @@ public class ShortageShipItem {
 
     /**
      * 改装資材を取得します。
-     * 
+     *
      * @return 改装資材
      */
     public StringProperty upgradeMaterialsProperty() {
@@ -180,7 +180,7 @@ public class ShortageShipItem {
 
     /**
      * 改装資材を取得します。
-     * 
+     *
      * @return 改装資材
      */
     public String getUpgradeMaterials() {
@@ -189,7 +189,7 @@ public class ShortageShipItem {
 
     /**
      * 改装資材を設定します。
-     * 
+     *
      * @param upgradeMaterials 改装資材
      */
     public void setUpgradeMaterials(String upgradeMaterials) {

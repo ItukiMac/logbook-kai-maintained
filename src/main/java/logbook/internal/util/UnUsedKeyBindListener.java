@@ -13,11 +13,11 @@ public class UnUsedKeyBindListener implements BindListener {
 
     private final Set<String> usedKeys = new HashSet<>();
     private final JsonObject json;
-    
+
     public UnUsedKeyBindListener(JsonObject json) {
         this.json = json;
     }
-    
+
     @Override
     public void apply(String key, JsonValue val, Object obj) {
         this.usedKeys.add(key);

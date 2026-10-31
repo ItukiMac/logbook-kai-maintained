@@ -25,9 +25,9 @@ public class SortieBattleTest {
             try (JsonReader jsonReader = Json.createReader(reader)) {
                 JsonObject json = jsonReader.readObject()
                         .getJsonObject("api_data");
-                SortieBattle bean = SortieBattle.toBattle(json);                
+                SortieBattle bean = SortieBattle.toBattle(json);
                 SortieBattle bean2 = bean.copy();
-                
+
             }
         }
     }
@@ -52,7 +52,7 @@ public class SortieBattleTest {
                 JsonObject json = jsonReader.readObject()
                         .getJsonObject("api_data");
                 SortieBattle bean = SortieBattle.toBattle(json);
-                BattleTypes.Raigeki raigeki= bean.getOpeningAtack();
+                BattleTypes.Raigeki raigeki = bean.getOpeningAtack();
             }
         }
     }
@@ -65,7 +65,7 @@ public class SortieBattleTest {
                 JsonObject json = jsonReader.readObject()
                         .getJsonObject("api_data");
                 SortieBattle bean = SortieBattle.toBattle(json);
-                BattleTypes.Raigeki raigeki= bean.getOpeningAtack();
+                BattleTypes.Raigeki raigeki = bean.getOpeningAtack();
             }
         }
     }

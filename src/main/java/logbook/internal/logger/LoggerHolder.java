@@ -23,9 +23,9 @@ public class LoggerHolder {
         }
 
         public Logger getLogger() {
-            return this.logger; 
+            return this.logger;
         }
-        
+
         public boolean isDebugEnabled() {
             return this.logger.isDebugEnabled();
         }
@@ -97,9 +97,10 @@ public class LoggerHolder {
 
     static String getCallerClassAddMethodLines(final int depth) {
         StackTraceElement element = getEquivalentStackTraceElement(depth + 1);
-        return new StringBuilder(element.getClassName()).append("#").append(element.getMethodName()).append("(").append(element.getLineNumber()).append(") ").toString();
+        return new StringBuilder(element.getClassName()).append("#").append(element.getMethodName()).append("(")
+                .append(element.getLineNumber()).append(") ").toString();
     }
-    
+
     private static StackTraceElement getEquivalentStackTraceElement(final int depth) {
         final StackTraceElement[] elements = new Throwable().getStackTrace();
         int i = 0;

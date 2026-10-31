@@ -12,7 +12,7 @@ import logbook.bean.AppItemTableConfig;
 public class ItemController extends logbook.plugin.api.FeatureUiV1.Window {
     @FXML
     private TabPane tab;
-    
+
     @FXML
     private ItemItemController itemController;
 
@@ -22,7 +22,8 @@ public class ItemController extends logbook.plugin.api.FeatureUiV1.Window {
     @FXML
     void initialize() {
         this.tab.getSelectionModel().select(AppItemTableConfig.get().getTabIndex());
-        this.tab.getSelectionModel().selectedIndexProperty().addListener((ob, o, n) -> AppItemTableConfig.get().setTabIndex(n.intValue()));
+        this.tab.getSelectionModel().selectedIndexProperty()
+                .addListener((ob, o, n) -> AppItemTableConfig.get().setTabIndex(n.intValue()));
     }
 
     @Override

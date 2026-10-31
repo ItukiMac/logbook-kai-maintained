@@ -30,7 +30,7 @@ public class AppQuestDuration {
 
     /**
      * 受託します。
-     * 
+     *
      * @param quest 任務
      */
     @JsonIgnore
@@ -69,7 +69,7 @@ public class AppQuestDuration {
 
     /**
      * 受託を停止します。
-     * 
+     *
      * @param questId 任務ID
      */
     @JsonIgnore
@@ -91,7 +91,7 @@ public class AppQuestDuration {
 
     /**
      * 受託を完了します。
-     * 
+     *
      * @param questId
      */
     @JsonIgnore
@@ -170,30 +170,37 @@ public class AppQuestDuration {
     public List<logbook.internal.kancolle.PortArrival> getArrivalCondition(AppQuest quest) throws java.io.IOException {
         List<String[]> windows = new ArrayList<>();
         if (quest.getNo() >= 10001 && quest.getNo() <= 10005) {
-            windows.add(new String[] {getCustomQuestFromDate(quest), null});
+            windows.add(new String[] { getCustomQuestFromDate(quest), null });
         } else {
-            if (quest.getExpire() == null) return List.of();
+            if (quest.getExpire() == null)
+                return List.of();
             var byQuest = this.map.get(quest.getExpire());
             var durations = byQuest == null ? null : byQuest.get(quest.getNo());
-            if (durations == null) return List.of();
+            if (durations == null)
+                return List.of();
             synchronized (durations) {
-                for (Duration d : durations) windows.add(new String[] {d.getFrom(), d.getTo()});
+                for (Duration d : durations)
+                    windows.add(new String[] { d.getFrom(), d.getTo() });
             }
         }
-        if (windows.isEmpty()) return List.of();
+        if (windows.isEmpty())
+            return List.of();
         try {
             long from = Long.MAX_VALUE;
             long to = System.currentTimeMillis() + 1;
-            if (quest.getExpire() != null) to = Math.min(to, epoch(quest.getExpire()));
+            if (quest.getExpire() != null)
+                to = Math.min(to, epoch(quest.getExpire()));
             for (String[] window : windows) {
                 long start = epoch(window[0]);
-                if (window[1] != null && epoch(window[1]) < start) throw new IllegalArgumentException("Reversed acceptance interval");
+                if (window[1] != null && epoch(window[1]) < start)
+                    throw new IllegalArgumentException("Reversed acceptance interval");
                 from = Math.min(from, start);
             }
             return logbook.internal.kancolle.PortArrivalRuntime.read(from, to).stream().filter(arrival -> {
                 for (String[] window : windows) {
                     if (arrival.startDate().compareTo(window[0]) >= 0
-                            && (window[1] == null || arrival.date().compareTo(window[1]) < 0)) return true;
+                            && (window[1] == null || arrival.date().compareTo(window[1]) < 0))
+                        return true;
                 }
                 return false;
             }).toList();
@@ -201,6 +208,7 @@ public class AppQuestDuration {
             throw new java.io.IOException("Invalid arrival acceptance interval", error);
         }
     }
+
     private static long epoch(String date) {
         return java.time.LocalDateTime.parse(date, java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")
                 .withResolverStyle(java.time.format.ResolverStyle.STRICT))
@@ -236,8 +244,10 @@ public class AppQuestDuration {
         try {
             java.nio.file.Path file = java.nio.file.Paths.get("./customquest/" + quest.getNo() + ".json");
             if (java.nio.file.Files.exists(file)) {
-                tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
-                logbook.bean.AppQuestCondition condition = mapper.readValue(file.toFile(), logbook.bean.AppQuestCondition.class);
+                tools.jackson.databind.ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                        .enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+                logbook.bean.AppQuestCondition condition = mapper.readValue(file.toFile(),
+                        logbook.bean.AppQuestCondition.class);
                 if (condition != null && condition.getStartDate() != null) {
                     from = condition.getStartDate();
                 }

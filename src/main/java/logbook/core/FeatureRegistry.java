@@ -121,14 +121,18 @@ public final class FeatureRegistry {
         }
         // Iterative cycle detection also handles large graphs without recursion.
         var ready = new ArrayDeque<String>();
-        remaining.forEach((id, count) -> { if (count == 0) ready.add(id); });
+        remaining.forEach((id, count) -> {
+            if (count == 0)
+                ready.add(id);
+        });
         int visited = 0;
         while (!ready.isEmpty()) {
             String id = ready.remove();
             visited++;
             for (String consumer : consumers.getOrDefault(id, List.of())) {
                 int count = remaining.compute(consumer, (key, value) -> value - 1);
-                if (count == 0) ready.add(consumer);
+                if (count == 0)
+                    ready.add(consumer);
             }
         }
         if (visited != releases.size()) {
@@ -138,7 +142,7 @@ public final class FeatureRegistry {
 
     /** Reads each provider's own archive, never the first matching classpath resource. */
     private static void verifyEmbeddedDescriptor(FeatureModule module, Descriptor descriptor,
-                                                 List<FeatureModule.Feature> supplied, String hostFingerprint) {
+            List<FeatureModule.Feature> supplied, String hostFingerprint) {
         final String entryName = "META-INF/logbook/feature.json";
         final int maxMetadataBytes = 64 * 1024;
         String provider = module.getClass().getName();
@@ -168,10 +172,12 @@ public final class FeatureRegistry {
                 throw new IllegalArgumentException("Oversized embedded feature descriptor: " + provider);
             }
             // Preflight is intentionally usable without application implementation classes.
-            ObjectMapper mapper = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+            ObjectMapper mapper = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults()
+                    .enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
                     .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
             JsonNode metadata = mapper.readTree(raw);
-            requireFields(metadata, Set.of("id", "version", "host_api", "host_sha256", "dependencies", "provider", "features"));
+            requireFields(metadata,
+                    Set.of("id", "version", "host_api", "host_sha256", "dependencies", "provider", "features"));
             if (!metadata.get("host_api").isInt() || !metadata.get("dependencies").isArray()
                     || !metadata.get("features").isArray()) {
                 throw new IllegalArgumentException("Invalid embedded feature descriptor types: " + provider);
@@ -186,7 +192,8 @@ public final class FeatureRegistry {
                     metadata.get("host_api").intValue(), dependencies);
             List<String> featureIds = new ArrayList<>();
             for (JsonNode id : metadata.get("features")) {
-                if (!id.isTextual()) throw new IllegalArgumentException("Invalid embedded feature ID: " + provider);
+                if (!id.isTextual())
+                    throw new IllegalArgumentException("Invalid embedded feature ID: " + provider);
                 featureIds.add(id.textValue());
             }
             if (!hostFingerprint.equals(text(metadata, "host_sha256"))) {
@@ -194,7 +201,8 @@ public final class FeatureRegistry {
             }
             if (!descriptor.equals(embedded) || !provider.equals(text(metadata, "provider"))
                     || !supplied.stream().map(FeatureModule.Feature::id).toList().equals(featureIds)) {
-                throw new IllegalArgumentException("Embedded feature descriptor differs from provider contract: " + provider);
+                throw new IllegalArgumentException(
+                        "Embedded feature descriptor differs from provider contract: " + provider);
             }
         } catch (IOException | URISyntaxException | tools.jackson.core.JacksonException error) {
             throw new IllegalArgumentException("Cannot verify embedded feature descriptor: " + provider, error);
@@ -215,7 +223,8 @@ public final class FeatureRegistry {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             try (var input = Files.newInputStream(source)) {
                 byte[] block = new byte[64 * 1024];
-                for (int length; (length = input.read(block)) != -1;) digest.update(block, 0, length);
+                for (int length; (length = input.read(block)) != -1;)
+                    digest.update(block, 0, length);
             }
             return HexFormat.of().formatHex(digest.digest());
         } catch (IOException | URISyntaxException | NoSuchAlgorithmException error) {
@@ -254,7 +263,8 @@ public final class FeatureRegistry {
 
     public FeatureModule.Feature get(String id) {
         var feature = features.get(id);
-        if (feature == null) throw new IllegalArgumentException("Unknown feature " + id);
+        if (feature == null)
+            throw new IllegalArgumentException("Unknown feature " + id);
         return feature;
     }
 

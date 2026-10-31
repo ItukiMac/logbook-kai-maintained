@@ -9,21 +9,29 @@ public final class BundledPluginWiringProbe {
         for (var item : java.util.Map.of(
                 "logbook.features.bridge.BrowserBridgePlugin", "bridge",
                 "logbook.features.sharing.InformationSharingPlugin", "sharing").entrySet()) {
-            if (service == ContentListenerSpi.class && item.getValue().equals("bridge")) continue;
+            if (service == ContentListenerSpi.class && item.getValue().equals("bridge"))
+                continue;
             var found = providers.stream().filter(type -> type.getName().equals(item.getKey())).toList();
-            if (found.size() != 1) throw new AssertionError("Provider count: " + item.getKey());
+            if (found.size() != 1)
+                throw new AssertionError("Provider count: " + item.getKey());
             var source = found.get(0).getProtectionDomain().getCodeSource().getLocation().getPath();
             if (!source.endsWith("/logbook-kai2-feature-" + item.getValue() + ".jar"))
                 throw new AssertionError("Wrong provider owner: " + source);
         }
     }
+
     public static void main(String[] args) throws Exception {
-        check(StartUp.class); check(ContentListenerSpi.class);
+        check(StartUp.class);
+        check(ContentListenerSpi.class);
         Class.forName("tools.jackson.databind.ObjectMapper");
         Class.forName("com.fasterxml.jackson.annotation.JsonIgnore");
-        for (String old : java.util.List.of("com.fasterxml.jackson.databind.ObjectMapper", "com.fasterxml.jackson.core.JsonFactory")) {
-            try { Class.forName(old); throw new AssertionError("Jackson2 shipped: " + old); }
-            catch (ClassNotFoundException expected) { }
+        for (String old : java.util.List.of("com.fasterxml.jackson.databind.ObjectMapper",
+                "com.fasterxml.jackson.core.JsonFactory")) {
+            try {
+                Class.forName(old);
+                throw new AssertionError("Jackson2 shipped: " + old);
+            } catch (ClassNotFoundException expected) {
+            }
         }
         System.out.println("BUNDLED_PLUGIN_WIRING_OK klb=1 kqs=1 jackson2_runtime=false");
     }

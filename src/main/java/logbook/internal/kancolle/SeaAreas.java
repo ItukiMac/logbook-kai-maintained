@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -19,7 +18,7 @@ import lombok.Data;
 
 /**
  * 海域に関するメソッドを集めたクラス
- * 
+ *
  */
 public final class SeaAreas {
 
@@ -44,7 +43,7 @@ public final class SeaAreas {
 
     /**
      * 海域情報を取得します。
-     * 
+     *
      * @param area 海域番号
      * @return 海域情報
      */
@@ -55,7 +54,7 @@ public final class SeaAreas {
 
     /**
      * お札アイコンのNoを取得します。
-     * 
+     *
      * @param area 海域番号
      * @return お札アイコンのNo
      */
@@ -66,7 +65,7 @@ public final class SeaAreas {
 
     /**
      * 名前から海域番号を取得します。
-     * 
+     *
      * @param name 海域名
      * @return 海域番号、見つからない場合は Integer.MAX_VALUE
      */
@@ -92,27 +91,31 @@ public final class SeaAreas {
         }
 
         Map<Integer, SeaAreaInfo> map = new HashMap<>();
-        
+
         // 1. 基本情報をEnumから構築 (1~14)
         for (SeaArea sa : SeaArea.values()) {
             map.put(sa.getArea(), new SeaAreaInfo(sa.getArea(), sa.getName(), sa.getImageId()));
         }
 
         // 2. カスタムJSONで上書き
-        Path customJsonPath = Path.of(AppConfig.get().getResourcesDir(), "common", "common_event", "common_event_custom.json");
+        Path customJsonPath = Path.of(AppConfig.get().getResourcesDir(), "common", "common_event",
+                "common_event_custom.json");
         File file = customJsonPath.toFile();
-        
+
         if (file.exists() && file.canRead()) {
             try {
-                ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
-                
-                List<Map<String, Object>> customEntries = mapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
+                ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                        .enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+
+                List<Map<String, Object>> customEntries = mapper.readValue(file,
+                        new TypeReference<List<Map<String, Object>>>() {
+                        });
                 if (customEntries != null) {
                     for (Map<String, Object> props : customEntries) {
                         Integer area = (Integer) props.get("area");
                         String name = (String) props.get("name");
                         Integer imageNo = (Integer) props.get("imageNo");
-                        
+
                         if (area != null) {
                             SeaAreaInfo base = map.get(area);
                             String finalName = name != null ? name : (base != null ? base.getName() : "Unknown");

@@ -107,7 +107,7 @@ public class RequestMetaDataWrapper implements RequestMetaData, Cloneable {
         this.setMethod(req.getMethod().toString());
         this.setQueryString(req.getQueryString());
         this.setRequestURI(req.getRequestURI());
-        
+
         Map<String, String> headerMap = new LinkedHashMap<>();
         java.util.Enumeration<String> headerNames = req.getHeaderNames();
         if (headerNames != null) {
@@ -135,8 +135,11 @@ public class RequestMetaDataWrapper implements RequestMetaData, Cloneable {
             bodystr = "";
         } finally {
             if (body.markSupported()) {
-                try { body.reset(); }
-                catch (IOException e) { throw new IllegalArgumentException("Cannot restore captured request", e); }
+                try {
+                    body.reset();
+                } catch (IOException e) {
+                    throw new IllegalArgumentException("Cannot restore captured request", e);
+                }
             }
         }
         Map<String, List<String>> map = new LinkedHashMap<>();
@@ -153,7 +156,8 @@ public class RequestMetaDataWrapper implements RequestMetaData, Cloneable {
             }
             // Split before decoding: %26 and %3D are data, not parameter separators.
             key = URLDecoder.decode(key, StandardCharsets.UTF_8);
-            if (value != null) value = URLDecoder.decode(value, StandardCharsets.UTF_8);
+            if (value != null)
+                value = URLDecoder.decode(value, StandardCharsets.UTF_8);
             map.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
         }
         this.setParameterMap(map);

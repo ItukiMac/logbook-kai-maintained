@@ -25,8 +25,10 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
 
     public void bindDefinitionSnapshot(logbook.plugin.api.GameDefinitionSnapshot value) {
         this.definitionSnapshot = value;
-        if (conditions != null) conditions.forEach(c -> c.bindDefinitionSnapshot(value));
-        if (greatSuccessCondition != null) greatSuccessCondition.bindDefinitionSnapshot(value);
+        if (conditions != null)
+            conditions.forEach(c -> c.bindDefinitionSnapshot(value));
+        if (greatSuccessCondition != null)
+            greatSuccessCondition.bindDefinitionSnapshot(value);
     }
 
     @JsonProperty("description")
@@ -67,10 +69,12 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
 
     @Override
     public boolean test(List<Ship> ships) {
-        try (var scope = definitionSnapshot == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
+        try (var scope = definitionSnapshot == null ? logbook.core.LogBookCoreServices.pinDefinitions()
+                : logbook.core.LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
             return testPinned(ships);
         }
     }
+
     private boolean testPinned(List<Ship> ships) {
         this.result = false;
         if (this.type != null) {
@@ -179,8 +183,9 @@ public class MissionCondition implements TestAllPredicate<List<Ship>> {
         }
         if ("対潜".equals(this.countType)) {
             // 遠征のときは艦載機の対潜値は複雑な式となるので、最小見積もりとして0.65倍する（ことによって false positive をなくす）
-            current = this.fleetStatus(ships , ship -> Ships.getTaisen(ship)
-                    + Ships.sumItemParam(ship, (item) -> Items.isAircraft(item) ? (int)(item.getTais()*0.65) : item.getTais(), true));
+            current = this.fleetStatus(ships, ship -> Ships.getTaisen(ship)
+                    + Ships.sumItemParam(ship,
+                            (item) -> Items.isAircraft(item) ? (int) (item.getTais() * 0.65) : item.getTais(), true));
         }
         if ("対空".equals(this.countType)) {
             current = this.fleetStatus(ships, ship -> ship.getTaiku().get(0));

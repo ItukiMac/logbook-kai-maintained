@@ -28,7 +28,7 @@ public class AppQuest implements Serializable {
     /** クォータリー */
     private static final int QUARTRELY = 5;
     /** イヤリー */
-    private static final int YEARLY = 100;  // 艦これ的には「その他(5)」なためかぶらないように大きな数字にする
+    private static final int YEARLY = 100; // 艦これ的には「その他(5)」なためかぶらないように大きな数字にする
 
     /** No */
     private Integer no;
@@ -52,7 +52,7 @@ public class AppQuest implements Serializable {
         AppQuest bean = new AppQuest();
         bean.setNo(quest.getNo());
         bean.setQuest(quest);
-        bean.setActive(quest.getState() == 2 || quest.getState() == 3);  // 受諾中、もしくは完了済み
+        bean.setActive(quest.getState() == 2 || quest.getState() == 3); // 受諾中、もしくは完了済み
 
         ZonedDateTime base = ZonedDateTime.now(ZoneId.of("GMT+04:00"))
                 .truncatedTo(ChronoUnit.DAYS);
@@ -60,7 +60,7 @@ public class AppQuest implements Serializable {
 
         int type = quest.getType();
         int yearlyResetMonth = 0;
-        
+
         AppQuestCondition condition = AppQuestCondition.loadFromResource(quest);
         if (condition != null && condition.isRuleUsable()) {
             String resetType = condition.getResetType();

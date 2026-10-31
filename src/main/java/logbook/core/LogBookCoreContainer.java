@@ -11,7 +11,7 @@ import logbook.plugin.JarBasedPlugin;
 
 /**
  * 航海日誌で実行されるプラグイン含めた実行クラス群を管理するクラスです
- * 
+ *
  * @note
  * LogBookCoreServices経由でのみアクセスする様にしてください
  */
@@ -48,7 +48,7 @@ public class LogBookCoreContainer {
                     }
                 }
             }
-            
+
             URL[] urls = plugins.stream()
                     .map(JarBasedPlugin::getURL)
                     .toArray(URL[]::new);
@@ -93,7 +93,7 @@ public class LogBookCoreContainer {
     /**
      * コンテナーのインスタンスを返します
      * LogBookCoreServicesから呼び出す様にしてください
-     * 
+     *
      * @return インスタンス
      */
     public static LogBookCoreContainer getInstance() {

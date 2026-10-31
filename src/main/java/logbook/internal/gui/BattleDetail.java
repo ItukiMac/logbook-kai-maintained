@@ -158,13 +158,13 @@ public class BattleDetail extends WindowController {
         if (log != null && log.getBattle() != null) {
             BattleDetailViewData battleDetailViewData = new BattleDetailViewData(log, this.hashCode);
 
-            if (!battleDetailViewData.isNewData()){
+            if (!battleDetailViewData.isNewData()) {
                 //更新データなし。画面の更新を行わない
                 return;
             }
             //ハッシュコード更新
             this.hashCode = battleDetailViewData.getHashCode();
-            
+
             this.battle = log.getBattle();
             this.midnight = log.getMidnight();
 
@@ -207,7 +207,7 @@ public class BattleDetail extends WindowController {
      */
     private void setInfo(BattleDetailViewData battleDetailViewData) {
         PhaseState ps = battleDetailViewData.getPhaseState();
-        
+
         //出撃/進撃情報
         if (battleDetailViewData.isMapStartNextData()) {
             // マス
@@ -386,7 +386,7 @@ public class BattleDetail extends WindowController {
                 + "/敵損害率:" + BigDecimal.valueOf(judge.getEnemyDamageRatio()).setScale(3, RoundingMode.FLOOR) + ")");
 
         //最終パネルを開いた状態にする
-        BattleDetailPhase lastPanel = (BattleDetailPhase)phases.get(phases.size() - 1); 
+        BattleDetailPhase lastPanel = (BattleDetailPhase) phases.get(phases.size() - 1);
         lastPanel.setExpanded(true);
     }
 
@@ -469,7 +469,8 @@ public class BattleDetail extends WindowController {
 
                 for (AirBaseAttack airBaseAttack : ((IAirBaseAttack) this.battle).getAirBaseAttack()) {
                     if (airBaseAttack.getStage1() != null) {
-                        stage.add(new BattleDetailPhaseStage1AirBase(airBaseAttack.getStage1(), airBaseAttack.getSquadronPlane()));
+                        stage.add(new BattleDetailPhaseStage1AirBase(airBaseAttack.getStage1(),
+                                airBaseAttack.getSquadronPlane()));
                         stage.add(new BattleDetailPhaseStage1(airBaseAttack.getStage1(), "基地航空隊"));
                     }
                     if (airBaseAttack.getStage2() != null) {

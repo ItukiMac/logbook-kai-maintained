@@ -45,7 +45,6 @@ public class AppExpRecords {
         }
     }
 
-
     private static long getBase(ZonedDateTime time) {
         ZonedDateTime base = time.truncatedTo(ChronoUnit.HOURS);
         if (base.getHour() < 12) {

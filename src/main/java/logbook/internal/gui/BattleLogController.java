@@ -249,14 +249,15 @@ public class BattleLogController extends FeatureUiV1.Window {
 
     private static final List<String> RANK_ORDER = List.of("S", "A", "B", "C", "D", "E");
     private static final List<String> INTERCEPT_ORDER = List.of("Ｔ字戦有利", "同航戦", "反航戦", "Ｔ字戦不利");
-    private static final List<String> FORMATION_ORDER = List.of("単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣", "警戒陣", "第一警戒航行序列", "第二警戒航行序列", "第三警戒航行序列", "第四警戒航行序列");
+    private static final List<String> FORMATION_ORDER = List.of("単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣", "警戒陣", "第一警戒航行序列",
+            "第二警戒航行序列", "第三警戒航行序列", "第四警戒航行序列");
     private static final List<String> DISPSEIKU_ORDER = List.of("制空権確保", "航空優勢", "制空均衡", "航空劣勢", "制空権喪失");
 
     private static final Comparator<String> RANK_COMPARATOR = createFixedOrderComparator(RANK_ORDER);
     private static final Comparator<String> INTERCEPT_COMPARATOR = createFixedOrderComparator(INTERCEPT_ORDER);
     private static final Comparator<String> FORMATION_COMPARATOR = createFixedOrderComparator(FORMATION_ORDER);
     private static final Comparator<String> DISPSEIKU_COMPARATOR = createFixedOrderComparator(DISPSEIKU_ORDER);
-    
+
     @FXML
     void initialize() {
         try {
@@ -443,14 +444,15 @@ public class BattleLogController extends FeatureUiV1.Window {
 
     /**
      * ログをセット
-     * 
+     *
      * @param unit 集計単位
      */
     private void addTree(PeriodKey unit) {
         List<BattleRow> list = this.logMap.get(unit);
 
         // 単位のルート
-        BattleRecordCollect unitRootValue = BattleRecordCollect.fromTotals(RecordDataV1.summarizeBattles(list, null, false));
+        BattleRecordCollect unitRootValue = BattleRecordCollect
+                .fromTotals(RecordDataV1.summarizeBattles(list, null, false));
         unitRootValue.setUnit(unit.getName());
         unitRootValue.setCollectUnit(unit);
 
@@ -483,7 +485,8 @@ public class BattleLogController extends FeatureUiV1.Window {
             }
 
             // 海域毎の集計
-            BattleRecordCollect areaValue = BattleRecordCollect.fromTotals(RecordDataV1.summarizeBattles(list, name.get2(), false));
+            BattleRecordCollect areaValue = BattleRecordCollect
+                    .fromTotals(RecordDataV1.summarizeBattles(list, name.get2(), false));
             areaValue.setUnit(text);
             areaValue.setCollectUnit(unit);
             areaValue.setArea(area);
@@ -493,7 +496,8 @@ public class BattleLogController extends FeatureUiV1.Window {
             TreeItem<BattleRecordCollect> areaRoot = new TreeItem<BattleRecordCollect>(areaValue);
 
             // 海域ボス
-            BattleRecordCollect areaBossValue = BattleRecordCollect.fromTotals(RecordDataV1.summarizeBattles(list, name.get2(), true));
+            BattleRecordCollect areaBossValue = BattleRecordCollect
+                    .fromTotals(RecordDataV1.summarizeBattles(list, name.get2(), true));
             areaBossValue.setUnit("ボス");
             areaBossValue.setCollectUnit(unit);
             areaBossValue.setArea(area);
@@ -547,7 +551,8 @@ public class BattleLogController extends FeatureUiV1.Window {
     private void loadConfig() {
         Optional.ofNullable(AppViewConfig.get().getBattleLogConfig()).ifPresent(config -> {
             Optional.ofNullable(config.getCustomUnits()).ifPresent(units -> units.stream().forEach(u -> {
-                RecordDataV1.DateRange unit = new RecordDataV1.DateRange(LocalDate.ofEpochDay(u.getFrom()), LocalDate.ofEpochDay(u.getTo()));
+                RecordDataV1.DateRange unit = new RecordDataV1.DateRange(LocalDate.ofEpochDay(u.getFrom()),
+                        LocalDate.ofEpochDay(u.getTo()));
                 this.logMap.put(unit, RecordDataV1.battles(unit));
                 this.addTree(unit);
                 this.userUnit.add(unit);
@@ -585,8 +590,11 @@ public class BattleLogController extends FeatureUiV1.Window {
     @FXML
     void removeUnitAction(ActionEvent event) {
         TreeItem<BattleRecordCollect> item = this.collect.getSelectionModel().getSelectedItem();
-        if (item != null && this.userUnit.contains(item.getValue().getCollectUnit()) && this.collect.getRoot().getChildren().contains(item)) {
-            FeatureUiV1.Controls.alert(Alert.AlertType.CONFIRMATION, "削除", "集計("+item.getValue().getUnit()+")を削除してよろしいですか？", this.getWindow())
+        if (item != null && this.userUnit.contains(item.getValue().getCollectUnit())
+                && this.collect.getRoot().getChildren().contains(item)) {
+            FeatureUiV1.Controls
+                    .alert(Alert.AlertType.CONFIRMATION, "削除", "集計(" + item.getValue().getUnit() + ")を削除してよろしいですか？",
+                            this.getWindow())
                     .filter(op -> op == ButtonType.OK)
                     .ifPresent(type -> {
                         this.collect.getRoot().getChildren().remove(item);
@@ -620,7 +628,8 @@ public class BattleLogController extends FeatureUiV1.Window {
     @FXML
     void columnVisibleDetail() {
         try {
-            FeatureUiV1.Tables.showVisibleSetting(this.detail, this.getClass().toString() + "#" + "detail", this.getWindow());
+            FeatureUiV1.Tables.showVisibleSetting(this.detail, this.getClass().toString() + "#" + "detail",
+                    this.getWindow());
         } catch (Exception e) {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
@@ -672,7 +681,9 @@ public class BattleLogController extends FeatureUiV1.Window {
 
             Predicate<BattleRecordDetail> anyFilter = e -> true;
             // 海域フィルタ
-            Predicate<BattleRecordDetail> areaFilter = areaShortName != null ? e -> areaShortName.equals(e.getAreaShortName()) : anyFilter;
+            Predicate<BattleRecordDetail> areaFilter = areaShortName != null
+                    ? e -> areaShortName.equals(e.getAreaShortName())
+                    : anyFilter;
             // ボスフィルタ
             Predicate<BattleRecordDetail> bossFilter = boss ? e -> e.getBoss().indexOf("ボス") != -1 : anyFilter;
 
@@ -684,7 +695,8 @@ public class BattleLogController extends FeatureUiV1.Window {
                     .sorted(Comparator.comparing(BattleRecordDetail::getDate).reversed())
                     .collect(Collectors.toList());
             this.detailsSource.addAll(values);
-            boolean userUnitRootSelected = this.userUnit.contains(collect.getCollectUnit()) && this.collect.getRoot().getChildren().contains(value);
+            boolean userUnitRootSelected = this.userUnit.contains(collect.getCollectUnit())
+                    && this.collect.getRoot().getChildren().contains(value);
             this.removeUnitButton.setDisable(!userUnitRootSelected);
             this.removeUnitMenu.setDisable(!userUnitRootSelected);
         }
@@ -722,34 +734,46 @@ public class BattleLogController extends FeatureUiV1.Window {
         filterBase.add(this.addFilterColumn(this.detail, this.boss, listener, BattleRecordDetail::getBoss).predicate);
 
         // ランク: S, A, B, C, D, E
-        filterBase.add(this.addFilterColumn(this.detail, this.rank, listener, BattleRecordDetail::getRank, RANK_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.rank, listener, BattleRecordDetail::getRank,
+                RANK_COMPARATOR).predicate);
 
         // 艦隊行動
-        filterBase.add(this.addFilterColumn(this.detail, this.intercept, listener, BattleRecordDetail::getIntercept, INTERCEPT_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.intercept, listener, BattleRecordDetail::getIntercept,
+                INTERCEPT_COMPARATOR).predicate);
 
         // 味方陣形
-        filterBase.add(this.addFilterColumn(this.detail, this.fformation, listener, BattleRecordDetail::getFformation, FORMATION_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.fformation, listener, BattleRecordDetail::getFformation,
+                FORMATION_COMPARATOR).predicate);
 
         // 敵陣形
-        filterBase.add(this.addFilterColumn(this.detail, this.eformation, listener, BattleRecordDetail::getEformation, FORMATION_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.eformation, listener, BattleRecordDetail::getEformation,
+                FORMATION_COMPARATOR).predicate);
 
         // 制空権
-        filterBase.add(this.addFilterColumn(this.detail, this.dispseiku, listener, BattleRecordDetail::getDispseiku, DISPSEIKU_COMPARATOR).predicate);
+        filterBase.add(this.addFilterColumn(this.detail, this.dispseiku, listener, BattleRecordDetail::getDispseiku,
+                DISPSEIKU_COMPARATOR).predicate);
 
-        filterBase.add(this.addFilterColumn(this.detail, this.ftouch, listener, BattleRecordDetail::getFtouch).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.etouch, listener, BattleRecordDetail::getEtouch).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.efleet, listener, BattleRecordDetail::getEfleet).predicate);
+        filterBase
+                .add(this.addFilterColumn(this.detail, this.ftouch, listener, BattleRecordDetail::getFtouch).predicate);
+        filterBase
+                .add(this.addFilterColumn(this.detail, this.etouch, listener, BattleRecordDetail::getEtouch).predicate);
+        filterBase
+                .add(this.addFilterColumn(this.detail, this.efleet, listener, BattleRecordDetail::getEfleet).predicate);
 
         // ドロップ艦種
-        FilterColumn<BattleRecordDetail, String> dropTypeFilter = this.addFilterColumn(this.detail, this.dropType, listener, BattleRecordDetail::getDropType);
+        FilterColumn<BattleRecordDetail, String> dropTypeFilter = this.addFilterColumn(this.detail, this.dropType,
+                listener, BattleRecordDetail::getDropType);
         filterBase.add(dropTypeFilter.predicate);
 
         // ドロップ艦娘
-        FilterColumn<BattleRecordDetail, String> dropShipFilter = this.addFilterColumn(this.detail, this.dropShip, listener, BattleRecordDetail::getDropShip);
+        FilterColumn<BattleRecordDetail, String> dropShipFilter = this.addFilterColumn(this.detail, this.dropShip,
+                listener, BattleRecordDetail::getDropShip);
         filterBase.add(dropShipFilter.predicate);
 
-        filterBase.add(this.addFilterColumn(this.detail, this.dropItem, listener, BattleRecordDetail::getDropItem).predicate);
-        filterBase.add(this.addFilterColumn(this.detail, this.shipExp, listener, BattleRecordDetail::getShipExp).predicate);
+        filterBase.add(
+                this.addFilterColumn(this.detail, this.dropItem, listener, BattleRecordDetail::getDropItem).predicate);
+        filterBase.add(
+                this.addFilterColumn(this.detail, this.shipExp, listener, BattleRecordDetail::getShipExp).predicate);
         filterBase.add(this.addFilterColumn(this.detail, this.exp, listener, BattleRecordDetail::getExp).predicate);
 
         // ドロップ艦種が変更されたらドロップ艦娘の選択肢を更新する
@@ -758,7 +782,8 @@ public class BattleLogController extends FeatureUiV1.Window {
             ObservableList<String> shipItems = dropShipFilter.comboBox.getItems();
 
             // 現在の選択を保存
-            List<String> currentSelectedShips = new ArrayList<>(dropShipFilter.comboBox.getCheckModel().getCheckedItems());
+            List<String> currentSelectedShips = new ArrayList<>(
+                    dropShipFilter.comboBox.getCheckModel().getCheckedItems());
 
             shipItems.clear();
 
@@ -1015,14 +1040,24 @@ public class BattleLogController extends FeatureUiV1.Window {
             return null;
         }
     }
+
     /** Render unknown experience without changing the persisted record or inventing zero. */
-    private static final class RecordedExperienceCell extends javafx.scene.control.TableCell<BattleRecordDetail, Integer> {
+    private static final class RecordedExperienceCell
+            extends javafx.scene.control.TableCell<BattleRecordDetail, Integer> {
         private final boolean ship;
-        private RecordedExperienceCell(boolean ship) { this.ship = ship; }
-        @Override protected void updateItem(Integer value, boolean empty) {
+
+        private RecordedExperienceCell(boolean ship) {
+            this.ship = ship;
+        }
+
+        @Override
+        protected void updateItem(Integer value, boolean empty) {
             super.updateItem(value, empty);
             BattleRecordDetail row = getTableRow() == null ? null : getTableRow().getItem();
-            if (empty || row == null) { setText(null); return; }
+            if (empty || row == null) {
+                setText(null);
+                return;
+            }
             setText((ship ? row.getShipExpValue() : row.getExpValue()).display());
         }
     }

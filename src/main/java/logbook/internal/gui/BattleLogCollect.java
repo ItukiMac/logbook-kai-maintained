@@ -50,7 +50,7 @@ public class BattleLogCollect {
 
     /** 海域ソート順 */
     private int areaSortOrder;
-    
+
     /**
      * 集計を取得します。
      * @return 集計
@@ -88,7 +88,7 @@ public class BattleLogCollect {
      * @param start 出撃
      */
     public void setStart(String start) {
-        this.start .set(start);
+        this.start.set(start);
     }
 
     /**

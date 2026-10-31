@@ -22,7 +22,8 @@ import lombok.Data;
  */
 @Data
 public class SortieBattle
-        implements ISortieBattle, ISortieHougeki, IFormation, IKouku, ISupport, IAirBaseAttack, Serializable, Cloneable {
+        implements ISortieBattle, ISortieHougeki, IFormation, IKouku, ISupport, IAirBaseAttack, Serializable,
+        Cloneable {
 
     private static final long serialVersionUID = 3020709530421134903L;
 
@@ -115,7 +116,7 @@ public class SortieBattle
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたSortieBattle
      */
     @Override

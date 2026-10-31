@@ -63,7 +63,7 @@ public class BattleLogsTest {
         Assertions.assertEquals(660, Integer.parseInt(log.getShipExp()));
         Assertions.assertEquals("深海5,500t級軽巡洋\"\",\"艦", log.getEfleet());
     }
-    
+
     @Test
     public void testWriteButtleLog() throws IOException {
         BattleLog log = new BattleLog();
@@ -77,19 +77,20 @@ public class BattleLogsTest {
             }
         }
         log.setBattle(bean);
-        
-        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
-        
+
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
+
         OutputStream out = new ByteArrayOutputStream();
         try {
             mapper.writeValue(out, log);
         } finally {
             out.close();
         }
-        
-        String outString = out.toString();        
+
+        String outString = out.toString();
     }
-    
+
     @Test
     public void testReadSimpleLog() throws IOException {
         String startTimeStr = "2026-07-29 00:00:00";
@@ -97,8 +98,7 @@ public class BattleLogsTest {
         String cellInput = "Z";
 
         ZonedDateTime filterTime = parseZonedDateTime(startTimeStr);
-        
-        
+
         Predicate<SimpleBattleLog> predicate = log -> {
             // 日時チェック
             if (filterTime != null) {
@@ -106,7 +106,7 @@ public class BattleLogsTest {
                     return false;
                 }
             }
-            
+
             // 海域チェック
             if (!areaInput.isEmpty()) {
                 String areaShort = log.getAreaShortName();
@@ -136,13 +136,13 @@ public class BattleLogsTest {
 
         Path testConfigPath = Paths.get("./target/test-classes/logbook/config");
         Config testConfig = new Config(testConfigPath);
-        
+
         Path testBattlePath = Paths.get("./target/test-classes/logbook/testlog");
         Path testBattleLogPath = Paths.get("./target/test-classes/logbook/battlelog");
         AppConfig mockAppConfig = mock(AppConfig.class);
         when(mockAppConfig.getReportPath()).thenReturn(testBattlePath.toString());
         when(mockAppConfig.getBattleLogDir()).thenReturn(testBattleLogPath.toString());
-        
+
         try (MockedStatic<Config> mockedConfig = mockStatic(Config.class);
                 MockedStatic<AppConfig> mockedAppConfig = mockStatic(AppConfig.class)) {
             mockedConfig.when(Config::getDefault).thenReturn(testConfig);
@@ -152,7 +152,7 @@ public class BattleLogsTest {
             //System.out.println(matchedLogs.size());
         }
     }
-    
+
     private ZonedDateTime parseZonedDateTime(String text) {
         if (text == null || text.trim().isEmpty()) {
             return null;
@@ -165,7 +165,7 @@ public class BattleLogsTest {
             try {
                 str = str.replace('/', '-');
                 TemporalAccessor ta = DateUtil.DATE_FORMAT.parse(str);
-                return ZonedDateTime.of(LocalDateTime.from(ta), ZoneId.of("Asia/Tokyo"));                        
+                return ZonedDateTime.of(LocalDateTime.from(ta), ZoneId.of("Asia/Tokyo"));
             } catch (Exception ignored) {
             }
         }

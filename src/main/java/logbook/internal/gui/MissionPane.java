@@ -125,11 +125,10 @@ public class MissionPane extends AnchorPane {
                 this.name.setText("(連合艦隊)");
                 this.time.setText(
                         Optional.of(AppCondition.get().getCombinedType())
-                            .map(CombinedType::toCombinedType)
-                            .filter(type -> type != CombinedType.未結成)
-                            .map(CombinedType::toString)
-                            .orElse("<不明な連合艦隊タイプ>")
-                 );
+                                .map(CombinedType::toCombinedType)
+                                .filter(type -> type != CombinedType.未結成)
+                                .map(CombinedType::toString)
+                                .orElse("<不明な連合艦隊タイプ>"));
             } else {
                 // 遠征先
                 this.name.setText("<未出撃>");

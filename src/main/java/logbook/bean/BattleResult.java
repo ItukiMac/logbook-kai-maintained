@@ -157,17 +157,17 @@ public class BattleResult implements Serializable {
          */
         public static EnemyInfo toEnemyInfo(JsonObject json) {
             EnemyInfo bean = new EnemyInfo();
-            
+
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
                 unUsedKeyBindListener = new UnUsedKeyBindListener(json);
             }
-            
+
             JsonHelper.bind(json, unUsedKeyBindListener)
                     .setString("api_level", bean::setLevel)
                     .setString("api_rank", bean::setRank)
                     .setString("api_deck_name", bean::setDeckName);
-            
+
             if (LoggerHolder.get().isDebugEnabled()) {
                 Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
                 for (String key : unUsedKey) {

@@ -19,7 +19,8 @@ import lombok.Data;
  *
  */
 @Data
-public class CombinedBattleSpMidnight implements ICombinedBattle, IMidnightBattle, IFormation, INSupport, Serializable, Cloneable {
+public class CombinedBattleSpMidnight
+        implements ICombinedBattle, IMidnightBattle, IFormation, INSupport, Serializable, Cloneable {
 
     private static final long serialVersionUID = -364877629377359534L;
 
@@ -88,7 +89,7 @@ public class CombinedBattleSpMidnight implements ICombinedBattle, IMidnightBattl
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたCombinedBattleSpMidnight
      */
     @Override

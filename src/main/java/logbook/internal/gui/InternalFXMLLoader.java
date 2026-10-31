@@ -19,7 +19,8 @@ public final class InternalFXMLLoader {
     private static final String DEFAULT_FONT;
 
     static {
-        DEFAULT_FONT = System.getProperty("os.name").toLowerCase().startsWith("mac") ? "Hiragino Maru Gothic ProN" : "Meiryo UI";
+        DEFAULT_FONT = System.getProperty("os.name").toLowerCase().startsWith("mac") ? "Hiragino Maru Gothic ProN"
+                : "Meiryo UI";
     }
 
     public static FXMLLoader load(String name) throws IOException {
@@ -41,8 +42,9 @@ public final class InternalFXMLLoader {
                 root.getStylesheets().add(url.toString());
             }
         }
-        String font = Optional.ofNullable(AppConfig.get().getFontFamily()).filter(str -> str.trim().length() > 0).orElse(DEFAULT_FONT);
-        root.setStyle("-fx-font-family: \""+ font + "\";");
+        String font = Optional.ofNullable(AppConfig.get().getFontFamily()).filter(str -> str.trim().length() > 0)
+                .orElse(DEFAULT_FONT);
+        root.setStyle("-fx-font-family: \"" + font + "\";");
         return root;
     }
 
@@ -102,7 +104,8 @@ public final class InternalFXMLLoader {
      * @param windowConsumer ウインドウを操作するConsumer
      * @throws IOException 入出力例外が発生した場合
      */
-    static void showWindow(String name, Stage parent, String title, String subkey, Function<Parent, Scene> sceneFunction,
+    static void showWindow(String name, Stage parent, String title, String subkey,
+            Function<Parent, Scene> sceneFunction,
             Consumer<WindowController> controllerConsumer,
             Consumer<Stage> windowConsumer) throws IOException {
 

@@ -9,17 +9,27 @@ import org.eclipse.jetty.client.Request.ContentListener;
 public final class RequestContentListener implements ContentListener {
     private final HttpServletRequest httpRequest;
     private final CapturedHttpRequestResponse fixedCapture;
-    public RequestContentListener(HttpServletRequest request) { this(request, null); }
-    RequestContentListener(HttpServletRequest request, CapturedHttpRequestResponse capture) {
-        httpRequest = request; fixedCapture = capture;
+
+    public RequestContentListener(HttpServletRequest request) {
+        this(request, null);
     }
-    @Override public void onContent(Request request, ByteBuffer buffer) {
-        if (!buffer.hasRemaining()) return;
+
+    RequestContentListener(HttpServletRequest request, CapturedHttpRequestResponse capture) {
+        httpRequest = request;
+        fixedCapture = capture;
+    }
+
+    @Override
+    public void onContent(Request request, ByteBuffer buffer) {
+        if (!buffer.hasRemaining())
+            return;
         CapturedHttpRequestResponse captured = fixedCapture;
         if (captured == null) {
             synchronized (httpRequest) {
-                if (Boolean.TRUE.equals(httpRequest.getAttribute(ReverseProxyServlet.CAPTURE_FINISHED))) return;
-                captured = (CapturedHttpRequestResponse) httpRequest.getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
+                if (Boolean.TRUE.equals(httpRequest.getAttribute(ReverseProxyServlet.CAPTURE_FINISHED)))
+                    return;
+                captured = (CapturedHttpRequestResponse) httpRequest
+                        .getAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER);
                 if (captured == null) {
                     captured = new CapturedHttpRequestResponse();
                     httpRequest.setAttribute(CapturedHttpRequestResponseConst.CONTENT_HOLDER, captured);

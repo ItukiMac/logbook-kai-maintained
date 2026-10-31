@@ -46,10 +46,13 @@ public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
     // A definition reload cannot replace a failed or missing quest observation.
     private String observationProblem;
 
-    @Override public void setWindow(javafx.stage.Stage window) {
+    @Override
+    public void setWindow(javafx.stage.Stage window) {
         super.setWindow(window);
-        if (observations != null) observations.close();
-        observations = window == null ? null : new QuestObservationUiBinding(window, gameStateView(), this::questListUpdated);
+        if (observations != null)
+            observations.close();
+        observations = window == null ? null
+                : new QuestObservationUiBinding(window, gameStateView(), this::questListUpdated);
     }
 
     logbook.plugin.api.GameStateView gameStateView() {
@@ -59,39 +62,58 @@ public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
     AppQuest latestObservedQuest(int questId) {
         return logbook.core.LogBookCoreServices.readGameState(() -> {
             AppQuest latest = logbook.bean.AppQuestCollection.get().getQuest().get(questId);
-            if (latest == null || latest.getQuest() == null) return null;
+            if (latest == null || latest.getQuest() == null)
+                return null;
             var original = latest.getQuest();
             var copy = new logbook.bean.QuestList.Quest();
-            copy.setNo(original.getNo()); copy.setTitle(original.getTitle()); copy.setDetail(original.getDetail());
-            copy.setCategory(original.getCategory()); copy.setType(original.getType()); copy.setState(original.getState());
+            copy.setNo(original.getNo());
+            copy.setTitle(original.getTitle());
+            copy.setDetail(original.getDetail());
+            copy.setCategory(original.getCategory());
+            copy.setType(original.getType());
+            copy.setState(original.getState());
             copy.setObservedAt(original.getObservedAt()); // Copy evidence; never replace it with snapshot/receipt time.
-            var result = new AppQuest(); result.setNo(latest.getNo()); result.setExpire(latest.getExpire());
-            result.setActive(latest.isActive()); result.setQuest(copy);
+            var result = new AppQuest();
+            result.setNo(latest.getNo());
+            result.setExpire(latest.getExpire());
+            result.setActive(latest.isActive());
+            result.setQuest(copy);
             return result;
         });
     }
 
     private void questListUpdated(logbook.plugin.api.GameStateSnapshot snapshot) {
-        if (quest == null) return;
+        if (quest == null)
+            return;
         requestVersion++;
-        if (pending != null) pending.cancel();
-        if (seasonalRefresh != null) seasonalRefresh.stop();
+        if (pending != null)
+            pending.cancel();
+        if (seasonalRefresh != null)
+            seasonalRefresh.stop();
         AppQuest latest = snapshot.updateSucceeded() ? latestObservedQuest(quest.getNo()) : null;
         if (latest != null) {
             setQuest(latest);
         } else {
             observationProblem = snapshot.updateSucceeded()
-                ? "未確定：更新された任務一覧でこの任務を確認できません"
-                : "未確定：任務一覧の更新を確認できません";
+                    ? "未確定：更新された任務一覧でこの任務を確認できません"
+                    : "未確定：任務一覧の更新を確認できません";
             showUnconfirmedMessage(observationProblem);
         }
     }
 
-    @Override protected void onDefinitionsChanged() { if (quest != null) load(); }
-    @Override protected void onWindowHidden(WindowEvent event) {
+    @Override
+    protected void onDefinitionsChanged() {
+        if (quest != null)
+            load();
+    }
+
+    @Override
+    protected void onWindowHidden(WindowEvent event) {
         requestVersion++;
-        if (pending != null) pending.cancel();
-        if (seasonalRefresh != null) seasonalRefresh.stop();
+        if (pending != null)
+            pending.cancel();
+        if (seasonalRefresh != null)
+            seasonalRefresh.stop();
     }
 
     void setQuest(AppQuest quest) {
@@ -104,8 +126,10 @@ public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
     }
 
     private void load() {
-        if (pending != null) pending.cancel();
-        if (seasonalRefresh != null) seasonalRefresh.stop();
+        if (pending != null)
+            pending.cancel();
+        if (seasonalRefresh != null)
+            seasonalRefresh.stop();
         final long requested = ++requestVersion;
         if (observationProblem != null) {
             showUnconfirmedMessage(observationProblem);
@@ -114,34 +138,43 @@ public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
         this.condition.setShowRoot(true);
         this.condition.setRoot(new TreeItem<>("読み込み中"));
         final AppQuest requestedQuest = this.quest;
-        final var definition = logbook.core.GameDefinitionRuntime.active() ? logbook.core.GameDefinitionRuntime.snapshot() : null;
+        final var definition = logbook.core.GameDefinitionRuntime.active()
+                ? logbook.core.GameDefinitionRuntime.snapshot()
+                : null;
         try {
             Task<Optional<AppQuestCondition>> task = new Task<Optional<AppQuestCondition>>() {
                 @Override
                 protected Optional<AppQuestCondition> call() throws Exception {
-                    try (var scope = definition == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(definition)) {
-                    AppQuest quest = requestedQuest;
-                    AppQuestCondition condition = loadCondition(quest);
-                    if (condition != null) {
-                        if (!condition.isRuleUsableFor(quest)) return Optional.of(condition);
-                        if (this.isCancelled()) {
-                            return Optional.empty();
+                    try (var scope = definition == null ? logbook.core.LogBookCoreServices.pinDefinitions()
+                            : logbook.core.LogBookCoreServices.pinDefinitions(definition)) {
+                        AppQuest quest = requestedQuest;
+                        AppQuestCondition condition = loadCondition(quest);
+                        if (condition != null) {
+                            if (!condition.isRuleUsableFor(quest))
+                                return Optional.of(condition);
+                            if (this.isCancelled()) {
+                                return Optional.empty();
+                            }
+                            QuestCollect collect = collectCondition(quest, condition);
+                            if (collect == null) {
+                                return Optional.empty();
+                            }
+                            condition.test(collect);
+                            return Optional.of(condition);
                         }
-                        QuestCollect collect = collectCondition(quest, condition);
-                        if (collect == null) {
-                            return Optional.empty();
-                        }
-                        condition.test(collect);
-                        return Optional.of(condition);
-                    }
-                    return Optional.empty();
+                        return Optional.empty();
                     }
                 }
 
                 @Override
                 protected void succeeded() {
-                    if (requested != requestVersion || isCancelled()) return;
-                    if (definition != null && definition != logbook.core.LogBookCoreServices.gameDataView().snapshot()) { load(); return; }
+                    if (requested != requestVersion || isCancelled())
+                        return;
+                    if (definition != null
+                            && definition != logbook.core.LogBookCoreServices.gameDataView().snapshot()) {
+                        load();
+                        return;
+                    }
                     AppQuest quest = requestedQuest;
                     Optional<AppQuestCondition> condition = this.getValue();
                     if (!condition.isPresent()) {
@@ -155,7 +188,8 @@ public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
                     }
                     TreeItem<String> root = new TreeItem<>(displayTitle(quest));
                     root.setExpanded(true);
-                    if (definition != null) QuestProgress.this.info.setText(displayDetail(quest) + " / 定義: " + definition.generation());
+                    if (definition != null)
+                        QuestProgress.this.info.setText(displayDetail(quest) + " / 定義: " + definition.generation());
 
                     FilterCondition filterCondition = condition.get().getFilter();
                     if (filterCondition != null) {
@@ -192,7 +226,8 @@ public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
 
                 @Override
                 protected void failed() {
-                    if (requested != requestVersion || isCancelled()) return;
+                    if (requested != requestVersion || isCancelled())
+                        return;
                     Throwable t = this.getException();
                     TreeItem<String> root = new TreeItem<>("何らかの理由で集計出来ませんでした。" + (t != null ? String.valueOf(t) : ""));
                     setConditionIcon(root, false);
@@ -240,9 +275,11 @@ public class QuestProgress extends logbook.plugin.api.FeatureUiV1.Window {
 
     private void scheduleSeasonalRefresh(AppQuestCondition rule) {
         var selection = rule.getSeasonalSelection();
-        if (selection == null || selection.refreshAt() == null) return;
+        if (selection == null || selection.refreshAt() == null)
+            return;
         this.info.setText(displayDetail(this.quest) + " / " + rule.getRuleStatusMessage());
-        long millis = Math.max(1, java.time.Duration.between(java.time.Instant.now(), selection.refreshAt()).toMillis());
+        long millis = Math.max(1,
+                java.time.Duration.between(java.time.Instant.now(), selection.refreshAt()).toMillis());
         seasonalRefresh = new javafx.animation.PauseTransition(javafx.util.Duration.millis(millis));
         seasonalRefresh.setOnFinished(event -> load());
         seasonalRefresh.play();

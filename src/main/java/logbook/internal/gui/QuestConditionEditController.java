@@ -55,9 +55,12 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
 
     @FXML
     private TextField filterArea;
-    @FXML private TextField filterDeckIds;
-    @FXML private CheckBox filterNoRetreat;
-    @FXML private Label editNotice;
+    @FXML
+    private TextField filterDeckIds;
+    @FXML
+    private CheckBox filterNoRetreat;
+    @FXML
+    private Label editNotice;
     private tools.jackson.databind.JsonNode originalDocument;
     private tools.jackson.databind.JsonNode loadedForm;
     private byte[] loadedBytes;
@@ -66,7 +69,10 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
     private boolean arrivalAreaConflict;
 
     // Overridden only by the isolated FXML test controller, not a runtime property.
-    java.nio.file.Path questDirectory() { return java.nio.file.Paths.get("./customquest"); }
+    java.nio.file.Path questDirectory() {
+        return java.nio.file.Paths.get("./customquest");
+    }
+
     @FXML
     private VBox fleetConditionsBox;
 
@@ -154,7 +160,7 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
             this.editNotice.setText("艦隊番号は1～4をカンマ区切り。空欄は制限なし。保存前のファイルは別名で保持します。");
             this.fleetConditionsBox.getChildren().clear();
             this.conditionsBox.getChildren().clear();
-            
+
             this.customNameField.setText("");
             this.customStartDateField.setText(logbook.internal.util.DateUtil.nowString());
 
@@ -168,7 +174,8 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
         try {
             this.documentSession = logbook.plugin.api.QuestDocumentsV1.at(this.questDirectory()).open(quest.id());
             this.loadedBytes = this.documentSession.document().bytes();
-            if (this.loadedBytes == null) return;
+            if (this.loadedBytes == null)
+                return;
             this.originalDocument = QuestEditorDocument.parse(this.loadedBytes);
             var condition = QuestEditorDataV1.form(this.loadedBytes);
 
@@ -305,15 +312,15 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
                             ComboBox<String> opCombo = (ComboBox<String>) row.getChildren().get(idx++);
                             if (sub.operator() != null) {
                                 switch (sub.operator()) {
-                                    case "GE":
-                                        opCombo.getSelectionModel().select("以上");
-                                        break;
-                                    case "EQ":
-                                        opCombo.getSelectionModel().select("等しい");
-                                        break;
-                                    case "LE":
-                                        opCombo.getSelectionModel().select("以下");
-                                        break;
+                                case "GE":
+                                    opCombo.getSelectionModel().select("以上");
+                                    break;
+                                case "EQ":
+                                    opCombo.getSelectionModel().select("等しい");
+                                    break;
+                                case "LE":
+                                    opCombo.getSelectionModel().select("以下");
+                                    break;
                                 }
                             }
                         }
@@ -354,7 +361,8 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
                         }
                         countField.setText(String.valueOf(cond.count()));
                         CheckBox arrival = arrivalControl(row);
-                        if (arrival != null) arrival.setSelected(cond.arrival());
+                        if (arrival != null)
+                            arrival.setSelected(cond.arrival());
                     }
                 }
             }
@@ -377,8 +385,9 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
             retained.computeIfAbsent(area, key -> new java.util.ArrayDeque<>()).add(row);
         }
         // An active goal row cannot silently turn into a battle row when its map is edited.
-        long newArrivalRows = areaText == null ? 0 : Arrays.stream(areaText.split(","))
-                .map(String::trim).filter("1-6"::equals).count();
+        long newArrivalRows = areaText == null ? 0
+                : Arrays.stream(areaText.split(","))
+                        .map(String::trim).filter("1-6"::equals).count();
         var oldArrivalRows = retained.get("1-6");
         if (oldArrivalRows != null && newArrivalRows < oldArrivalRows.size()
                 && oldArrivalRows.stream().anyMatch(row -> arrivalControl(row) != null
@@ -429,7 +438,8 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
                 row.getChildren().add(label);
 
                 // マス入力欄を追加 (5-6, 7-2, 7-3, 7-5) または カスタム任務
-                if (val.startsWith("5-6") || val.startsWith("7-2") || val.startsWith("7-3") || val.startsWith("7-5") || isCustom) {
+                if (val.startsWith("5-6") || val.startsWith("7-2") || val.startsWith("7-3") || val.startsWith("7-5")
+                        || isCustom) {
                     row.getChildren().add(new Label("マス"));
                     TextField cellField = new TextField();
                     cellField.setPrefWidth(40);
@@ -625,7 +635,7 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
 
     /**
      * 入力制御の更新
-     * 
+     *
      * @param selected 選択状態
      * @param count    隻数入力欄
      * @param compare  比較演算子
@@ -643,7 +653,7 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
 
     /**
      * 入力制御の更新（隻数入力時）
-     * 
+     *
      * @param text     入力内容
      * @param checkbox チェックボックス
      */
@@ -682,299 +692,307 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
         Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();
         if (appQuest == null)
             throw new IllegalStateException("任務が選択されていません。");
-            // Root Object
-            logbook.bean.AppQuestCondition condition = new logbook.bean.AppQuestCondition();
+        // Root Object
+        logbook.bean.AppQuestCondition condition = new logbook.bean.AppQuestCondition();
 
-            // Type & ResetType
-            int category = appQuest.category();
-            condition.setType(
-                    category == 4 ? logbook.bean.AppQuestCondition.Type.遠征 : logbook.bean.AppQuestCondition.Type.出撃);
-            condition.setResetType(this.resetType.getSelectionModel().getSelectedItem());
+        // Type & ResetType
+        int category = appQuest.category();
+        condition.setType(
+                category == 4 ? logbook.bean.AppQuestCondition.Type.遠征 : logbook.bean.AppQuestCondition.Type.出撃);
+        condition.setResetType(this.resetType.getSelectionModel().getSelectedItem());
 
-            if ("イヤリー".equals(condition.getResetType())) {
-                try {
-                    condition.setYearlyResetMonth(Integer.parseInt(this.yearlyResetMonth.getText()));
-                } catch (NumberFormatException ex) {
-                    // Ignore or set default?
+        if ("イヤリー".equals(condition.getResetType())) {
+            try {
+                condition.setYearlyResetMonth(Integer.parseInt(this.yearlyResetMonth.getText()));
+            } catch (NumberFormatException ex) {
+                // Ignore or set default?
+            }
+        }
+
+        // Filter
+        logbook.bean.AppQuestCondition.FilterCondition filter = new logbook.bean.AppQuestCondition.FilterCondition();
+        filter.setDeckIds(QuestEditorDocument.deckIds(this.filterDeckIds.getText()));
+        if (this.filterNoRetreat.isSelected())
+            filter.setNoRetreat(true);
+        String areaText = this.filterArea.getText();
+        if (areaText != null && !areaText.isEmpty()) {
+            filter.setArea(Arrays.stream(areaText.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> {
+                        if ("5-6-1".equals(s) || "5-6-2".equals(s) || "5-6-3".equals(s)) {
+                            return "5-6";
+                        }
+                        if ("7-2-1".equals(s) || "7-2-2".equals(s)) {
+                            return "7-2";
+                        }
+                        if ("7-3-1".equals(s) || "7-3-2".equals(s)) {
+                            return "7-3";
+                        }
+                        if ("7-5-1".equals(s) || "7-5-2".equals(s) || "7-5-3".equals(s)) {
+                            return "7-5";
+                        }
+                        return s;
+                    })
+                    .collect(Collectors.toSet()));
+        }
+
+        // Fleet Conditions
+        logbook.bean.AppQuestCondition.FleetCondition fleet = new logbook.bean.AppQuestCondition.FleetCondition();
+        List<logbook.bean.AppQuestCondition.FleetCondition> subConditions = new java.util.ArrayList<>();
+
+        String globalLogic = "AND"; // Default
+
+        for (int i = 0; i < this.fleetConditionsBox.getChildren().size(); i++) {
+            HBox row = (HBox) this.fleetConditionsBox.getChildren().get(i);
+
+            logbook.bean.AppQuestCondition.FleetCondition sub = new logbook.bean.AppQuestCondition.FleetCondition();
+
+            // Row components check
+            // Row 1: [Type/Name], [Text], [Flagship]?, [Count], [Unit], [Compare], [Del]
+            // Row 2+: [Logic], [Type/Name], [Text], [Count], [Unit], [Compare], [Del]
+
+            int idx = 0;
+
+            // Logic (Row 2+)
+            if (i > 0) {
+                ComboBox<String> logicCombo = (ComboBox<String>) row.getChildren().get(idx++);
+                String l = logicCombo.getSelectionModel().getSelectedItem(); // "艦種" or "艦名"
+                if (i == 1) {
+                    globalLogic = "または".equals(l) ? "OR" : "AND";
                 }
             }
 
-            // Filter
-            logbook.bean.AppQuestCondition.FilterCondition filter = new logbook.bean.AppQuestCondition.FilterCondition();
-            filter.setDeckIds(QuestEditorDocument.deckIds(this.filterDeckIds.getText()));
-            if (this.filterNoRetreat.isSelected()) filter.setNoRetreat(true);
-            String areaText = this.filterArea.getText();
-            if (areaText != null && !areaText.isEmpty()) {
-                filter.setArea(Arrays.stream(areaText.split(","))
+            // Type/Name Selector
+            ComboBox<String> typeCombo = (ComboBox<String>) row.getChildren().get(idx++);
+            String typeVal = typeCombo.getSelectionModel().getSelectedItem(); // "艦種" or "艦名"
+
+            // Text
+            TextField tf = (TextField) row.getChildren().get(idx++);
+            String text = tf.getText();
+            if (text != null && !text.isEmpty()) {
+                java.util.LinkedHashSet<String> valSet = Arrays.stream(text.split(","))
                         .map(String::trim)
                         .filter(s -> !s.isEmpty())
-                        .map(s -> {
-                            if ("5-6-1".equals(s) || "5-6-2".equals(s) || "5-6-3".equals(s)) {
-                                return "5-6";
-                            }
-                            if ("7-2-1".equals(s) || "7-2-2".equals(s)) {
-                                return "7-2";
-                            }
-                            if ("7-3-1".equals(s) || "7-3-2".equals(s)) {
-                                return "7-3";
-                            }
-                            if ("7-5-1".equals(s) || "7-5-2".equals(s) || "7-5-3".equals(s)) {
-                                return "7-5";
-                            }
-                            return s;
-                        })
-                        .collect(Collectors.toSet()));
-            }
+                        .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
 
-            // Fleet Conditions
-            logbook.bean.AppQuestCondition.FleetCondition fleet = new logbook.bean.AppQuestCondition.FleetCondition();
-            List<logbook.bean.AppQuestCondition.FleetCondition> subConditions = new java.util.ArrayList<>();
-
-            String globalLogic = "AND"; // Default
-
-            for (int i = 0; i < this.fleetConditionsBox.getChildren().size(); i++) {
-                HBox row = (HBox) this.fleetConditionsBox.getChildren().get(i);
-
-                logbook.bean.AppQuestCondition.FleetCondition sub = new logbook.bean.AppQuestCondition.FleetCondition();
-
-                // Row components check
-                // Row 1: [Type/Name], [Text], [Flagship]?, [Count], [Unit], [Compare], [Del]
-                // Row 2+: [Logic], [Type/Name], [Text], [Count], [Unit], [Compare], [Del]
-
-                int idx = 0;
-
-                // Logic (Row 2+)
-                if (i > 0) {
-                    ComboBox<String> logicCombo = (ComboBox<String>) row.getChildren().get(idx++);
-                    String l = logicCombo.getSelectionModel().getSelectedItem(); // "艦種" or "艦名"
-                    if (i == 1) {
-                        globalLogic = "または".equals(l) ? "OR" : "AND";
-                    }
-                }
-
-                // Type/Name Selector
-                ComboBox<String> typeCombo = (ComboBox<String>) row.getChildren().get(idx++);
-                String typeVal = typeCombo.getSelectionModel().getSelectedItem(); // "艦種" or "艦名"
-
-                // Text
-                TextField tf = (TextField) row.getChildren().get(idx++);
-                String text = tf.getText();
-                if (text != null && !text.isEmpty()) {
-                    java.util.LinkedHashSet<String> valSet = Arrays.stream(text.split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
-
-                    if ("艦種".equals(typeVal)) {
-                        sub.setStype(valSet);
-                    } else {
-                        sub.setName(valSet);
-                    }
-                }
-
-                // Flagship / Second Ship
-                if (idx < row.getChildren().size() && row.getChildren().get(idx) instanceof CheckBox) {
-                    CheckBox cb = (CheckBox) row.getChildren().get(idx++);
-                    if (cb.isSelected()) {
-                        if (i == 0) {
-                            sub.setOrder(1); // Flagship
-                        } else if (i == 1) {
-                            sub.setOrder(2); // Second Ship
-                        }
-                    }
-                }
-
-                // Count
-                TextField cf = (TextField) row.getChildren().get(idx++);
-                try {
-                    sub.setCount(Integer.parseInt(cf.getText()));
-                } catch (Exception ex) {
-                    // ignore
-                }
-
-                // Unit Label
-                idx++;
-
-                // Compare Operator
-                ComboBox<String> opCombo = (ComboBox<String>) row.getChildren().get(idx++);
-                if (sub.getOrder() == null) {
-                    String op = opCombo.getSelectionModel().getSelectedItem();
-                    switch (op) {
-                        case "以上":
-                            sub.setOperator("GE");
-                            break;
-                        case "等しい":
-                            sub.setOperator("EQ");
-                            break;
-                        case "以下":
-                            sub.setOperator("LE");
-                            break;
-                    }
-                }
-
-                subConditions.add(sub);
-            }
-
-            if (!subConditions.isEmpty()) {
-                fleet.setOperator(globalLogic);
-                fleet.setConditions(subConditions);
-                filter.setFleet(fleet);
-            }
-            condition.setFilter(filter);
-
-            // Custom Name
-            String customName = this.customNameField.getText();
-            if (customName == null || customName.trim().isEmpty()) {
-                int no = appQuest.id();
-                if (no >= 10001 && no <= 10005) {
-                    customName = "カスタム任務" + (no - 10000);
-                }
-            }
-            condition.setCustomName(customName);
-
-            // Start Date
-            condition.setStartDate(this.customStartDateField.getText());
-
-            // Achievement Conditions
-            for (javafx.scene.Node node : this.conditionsBox.getChildren()) {
-                HBox row = (HBox) node;
-                // Label(Area), [Label, TextField]?, S, A, B, Count, Label
-                Label areaLabel = (Label) row.getChildren().get(0);
-
-                int idx = 1;
-                String cellValue = null;
-                if (hasCellField(row)) {
-                    idx++; // Label("マス")
-                    TextField cellField = (TextField) row.getChildren().get(idx++);
-                    cellValue = cellField.getText();
-                }
-
-                CheckBox s = (CheckBox) row.getChildren().get(idx++);
-                CheckBox a = (CheckBox) row.getChildren().get(idx++);
-                CheckBox b = (CheckBox) row.getChildren().get(idx++);
-                TextField countField = (TextField) row.getChildren().get(idx++);
-
-                logbook.bean.AppQuestCondition.Condition cond = new logbook.bean.AppQuestCondition.Condition();
-                cond.setBoss(true); // Default
-
-                String labelText = areaLabel.getText();
-                if ("5-6-1".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("5-6")));
-                    cond.setCell("G");
-                } else if ("5-6-2".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("5-6")));
-                    cond.setCell("N");
-                } else if ("5-6-3".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("5-6")));
-                    cond.setCell("Z");
-                } else if ("7-2-1".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-2")));
-                    cond.setCell("G");
-                } else if ("7-2-2".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-2")));
-                    cond.setCell("M");
-                } else if ("7-3-1".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-3")));
-                    cond.setCell("E");
-                } else if ("7-3-2".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-3")));
-                    cond.setCell("P");
-                } else if ("7-5-1".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-5")));
-                    cond.setCell("K");
-                } else if ("7-5-2".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-5")));
-                    cond.setCell("Q");
-                } else if ("7-5-3".equals(labelText)) {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-5")));
-                    cond.setCell("T");
+                if ("艦種".equals(typeVal)) {
+                    sub.setStype(valSet);
                 } else {
-                    cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList(labelText)));
+                    sub.setName(valSet);
                 }
+            }
 
-                // マス入力を反映 (ユーザー入力を優先)
-                if (cellValue != null && !cellValue.isEmpty()) {
-                    if (cellValue.contains(",")) {
-                        cond.setCells(new java.util.LinkedHashSet<>(Arrays.asList(cellValue.split(","))));
-                        cond.setCell(null);
-                    } else {
-                        cond.setCell(cellValue);
-                        cond.setCells(null);
+            // Flagship / Second Ship
+            if (idx < row.getChildren().size() && row.getChildren().get(idx) instanceof CheckBox) {
+                CheckBox cb = (CheckBox) row.getChildren().get(idx++);
+                if (cb.isSelected()) {
+                    if (i == 0) {
+                        sub.setOrder(1); // Flagship
+                    } else if (i == 1) {
+                        sub.setOrder(2); // Second Ship
                     }
                 }
+            }
 
-                java.util.LinkedHashSet<String> ranks = new java.util.LinkedHashSet<>();
-                if (s.isSelected())
-                    ranks.add("S");
-                if (a.isSelected())
-                    ranks.add("A");
-                if (b.isSelected())
-                    ranks.add("B");
-                if (!ranks.isEmpty()) {
-                    cond.setRank(ranks);
+            // Count
+            TextField cf = (TextField) row.getChildren().get(idx++);
+            try {
+                sub.setCount(Integer.parseInt(cf.getText()));
+            } catch (Exception ex) {
+                // ignore
+            }
+
+            // Unit Label
+            idx++;
+
+            // Compare Operator
+            ComboBox<String> opCombo = (ComboBox<String>) row.getChildren().get(idx++);
+            if (sub.getOrder() == null) {
+                String op = opCombo.getSelectionModel().getSelectedItem();
+                switch (op) {
+                case "以上":
+                    sub.setOperator("GE");
+                    break;
+                case "等しい":
+                    sub.setOperator("EQ");
+                    break;
+                case "以下":
+                    sub.setOperator("LE");
+                    break;
                 }
+            }
 
-                CheckBox arrival = arrivalControl(row);
-                if (arrival != null && arrival.isSelected()) {
-                    String value = countField.getText();
-                    if (value == null || !value.trim().matches("[0-9]+"))
-                        throw new IllegalArgumentException("港到達の回数は1以上の整数で入力してください。");
-                    try {
-                        cond.setCount(Integer.parseInt(value.trim()));
-                    } catch (NumberFormatException ex) {
-                        throw new IllegalArgumentException("港到達の回数は2147483647以下で入力してください。", ex);
-                    }
-                    if (cond.getCount() <= 0)
-                        throw new IllegalArgumentException("港到達の回数は1以上の整数で入力してください。");
-                    cond.setArrival(true);
-                    cond.setBoss(false);
-                    cond.setRank(null);
+            subConditions.add(sub);
+        }
+
+        if (!subConditions.isEmpty()) {
+            fleet.setOperator(globalLogic);
+            fleet.setConditions(subConditions);
+            filter.setFleet(fleet);
+        }
+        condition.setFilter(filter);
+
+        // Custom Name
+        String customName = this.customNameField.getText();
+        if (customName == null || customName.trim().isEmpty()) {
+            int no = appQuest.id();
+            if (no >= 10001 && no <= 10005) {
+                customName = "カスタム任務" + (no - 10000);
+            }
+        }
+        condition.setCustomName(customName);
+
+        // Start Date
+        condition.setStartDate(this.customStartDateField.getText());
+
+        // Achievement Conditions
+        for (javafx.scene.Node node : this.conditionsBox.getChildren()) {
+            HBox row = (HBox) node;
+            // Label(Area), [Label, TextField]?, S, A, B, Count, Label
+            Label areaLabel = (Label) row.getChildren().get(0);
+
+            int idx = 1;
+            String cellValue = null;
+            if (hasCellField(row)) {
+                idx++; // Label("マス")
+                TextField cellField = (TextField) row.getChildren().get(idx++);
+                cellValue = cellField.getText();
+            }
+
+            CheckBox s = (CheckBox) row.getChildren().get(idx++);
+            CheckBox a = (CheckBox) row.getChildren().get(idx++);
+            CheckBox b = (CheckBox) row.getChildren().get(idx++);
+            TextField countField = (TextField) row.getChildren().get(idx++);
+
+            logbook.bean.AppQuestCondition.Condition cond = new logbook.bean.AppQuestCondition.Condition();
+            cond.setBoss(true); // Default
+
+            String labelText = areaLabel.getText();
+            if ("5-6-1".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("5-6")));
+                cond.setCell("G");
+            } else if ("5-6-2".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("5-6")));
+                cond.setCell("N");
+            } else if ("5-6-3".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("5-6")));
+                cond.setCell("Z");
+            } else if ("7-2-1".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-2")));
+                cond.setCell("G");
+            } else if ("7-2-2".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-2")));
+                cond.setCell("M");
+            } else if ("7-3-1".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-3")));
+                cond.setCell("E");
+            } else if ("7-3-2".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-3")));
+                cond.setCell("P");
+            } else if ("7-5-1".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-5")));
+                cond.setCell("K");
+            } else if ("7-5-2".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-5")));
+                cond.setCell("Q");
+            } else if ("7-5-3".equals(labelText)) {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList("7-5")));
+                cond.setCell("T");
+            } else {
+                cond.setArea(new java.util.LinkedHashSet<>(Arrays.asList(labelText)));
+            }
+
+            // マス入力を反映 (ユーザー入力を優先)
+            if (cellValue != null && !cellValue.isEmpty()) {
+                if (cellValue.contains(",")) {
+                    cond.setCells(new java.util.LinkedHashSet<>(Arrays.asList(cellValue.split(","))));
                     cond.setCell(null);
-                    cond.setCells(null);
                 } else {
-                    try {
-                        cond.setCount(Integer.parseInt(countField.getText()));
-                    } catch (Exception ex) {
-                        cond.setCount(1);
-                    }
+                    cond.setCell(cellValue);
+                    cond.setCells(null);
                 }
-
-                condition.getConditions().add(cond);
             }
 
-            return condition;
+            java.util.LinkedHashSet<String> ranks = new java.util.LinkedHashSet<>();
+            if (s.isSelected())
+                ranks.add("S");
+            if (a.isSelected())
+                ranks.add("A");
+            if (b.isSelected())
+                ranks.add("B");
+            if (!ranks.isEmpty()) {
+                cond.setRank(ranks);
+            }
+
+            CheckBox arrival = arrivalControl(row);
+            if (arrival != null && arrival.isSelected()) {
+                String value = countField.getText();
+                if (value == null || !value.trim().matches("[0-9]+"))
+                    throw new IllegalArgumentException("港到達の回数は1以上の整数で入力してください。");
+                try {
+                    cond.setCount(Integer.parseInt(value.trim()));
+                } catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException("港到達の回数は2147483647以下で入力してください。", ex);
+                }
+                if (cond.getCount() <= 0)
+                    throw new IllegalArgumentException("港到達の回数は1以上の整数で入力してください。");
+                cond.setArrival(true);
+                cond.setBoss(false);
+                cond.setRank(null);
+                cond.setCell(null);
+                cond.setCells(null);
+            } else {
+                try {
+                    cond.setCount(Integer.parseInt(countField.getText()));
+                } catch (Exception ex) {
+                    cond.setCount(1);
+                }
+            }
+
+            condition.getConditions().add(cond);
+        }
+
+        return condition;
     }
 
     private static tools.jackson.databind.ObjectMapper formMapper() {
         var mapper = QuestEditorDocument.mapper();
-        mapper = mapper.rebuild().changeDefaultPropertyInclusion(value -> com.fasterxml.jackson.annotation.JsonInclude.Value.construct(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL, com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)).build();
-        mapper = mapper.rebuild().addMixIn(logbook.bean.AppQuestCondition.FleetCondition.class, FleetConditionMixin.class).build();
-        mapper = mapper.rebuild().addMixIn(logbook.bean.AppQuestCondition.Condition.class, ConditionMixin.class).build();
+        mapper = mapper.rebuild()
+                .changeDefaultPropertyInclusion(value -> com.fasterxml.jackson.annotation.JsonInclude.Value.construct(
+                        com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL,
+                        com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL))
+                .build();
+        mapper = mapper.rebuild()
+                .addMixIn(logbook.bean.AppQuestCondition.FleetCondition.class, FleetConditionMixin.class).build();
+        mapper = mapper.rebuild().addMixIn(logbook.bean.AppQuestCondition.Condition.class, ConditionMixin.class)
+                .build();
         mapper = mapper.rebuild().addMixIn(logbook.bean.AppQuestCondition.class, AppQuestConditionMixin.class).build();
         return mapper;
     }
 
     java.nio.file.Path saveDocument() throws java.io.IOException {
         try {
-        if (this.loadFailed) throw new java.io.IOException("読込失敗のため保存を中止しました。");
-        var currentForm = formMapper().valueToTree(this.readForm());
-        var output = this.originalDocument == null ? currentForm
-                : QuestEditorDocument.merge(this.originalDocument, this.loadedForm, currentForm);
-        QuestEditorDocument.validate(output);
-        var appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (this.documentSession == null || this.documentSession.document().questId() != appQuest.id())
-            throw new java.io.IOException("読込時と保存対象が異なります。対象を再読込してください。");
-        // Exact no-edit saves retain comments/formatting as well as all unrepresented fields.
-        byte[] bytes = this.originalDocument != null && output.equals(this.originalDocument)
-                ? this.loadedBytes
-                : formMapper().writerWithDefaultPrettyPrinter().writeValueAsBytes(output);
-        var plan = this.documentSession.prepareSave(bytes);
-        // Explicit Save button / package-local test hook. The session owns the exact captured target.
-        var backup = this.documentSession.apply(plan, true).retained();
-        this.loadedBytes = bytes.clone();
-        this.originalDocument = output.deepCopy();
-        this.loadedForm = currentForm.deepCopy();
-        return backup;
+            if (this.loadFailed)
+                throw new java.io.IOException("読込失敗のため保存を中止しました。");
+            var currentForm = formMapper().valueToTree(this.readForm());
+            var output = this.originalDocument == null ? currentForm
+                    : QuestEditorDocument.merge(this.originalDocument, this.loadedForm, currentForm);
+            QuestEditorDocument.validate(output);
+            var appQuest = this.questSelector.getSelectionModel().getSelectedItem();
+            if (this.documentSession == null || this.documentSession.document().questId() != appQuest.id())
+                throw new java.io.IOException("読込時と保存対象が異なります。対象を再読込してください。");
+            // Exact no-edit saves retain comments/formatting as well as all unrepresented fields.
+            byte[] bytes = this.originalDocument != null && output.equals(this.originalDocument)
+                    ? this.loadedBytes
+                    : formMapper().writerWithDefaultPrettyPrinter().writeValueAsBytes(output);
+            var plan = this.documentSession.prepareSave(bytes);
+            // Explicit Save button / package-local test hook. The session owns the exact captured target.
+            var backup = this.documentSession.apply(plan, true).retained();
+            this.loadedBytes = bytes.clone();
+            this.originalDocument = output.deepCopy();
+            this.loadedForm = currentForm.deepCopy();
+            return backup;
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
@@ -983,7 +1001,8 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
     @FXML
     void save(javafx.event.ActionEvent e) {
         Choice appQuest = this.questSelector.getSelectionModel().getSelectedItem();
-        if (appQuest == null) return;
+        if (appQuest == null)
+            return;
         try {
             java.nio.file.Path backup = this.saveDocument();
             // Show Alert
@@ -1009,13 +1028,16 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
     }
 
     // Isolated FXML tests may supply synthetic choices without altering global collections.
-    QuestEditorDataV1.Selection editorChoices(boolean custom) { return QuestEditorDataV1.choices(custom); }
+    QuestEditorDataV1.Selection editorChoices(boolean custom) {
+        return QuestEditorDataV1.choices(custom);
+    }
 
     private void updateQuestList() {
         var selection = this.editorChoices(!this.normalQuestRadio.isSelected());
         this.questSelector.setItems(FXCollections.observableArrayList(selection.choices()));
         this.questSelector.getSelectionModel().clearSelection();
-        if (this.removeBtn != null) this.removeBtn.setDisable(true);
+        if (this.removeBtn != null)
+            this.removeBtn.setDisable(true);
         if (this.editNotice != null && !selection.diagnostics().isEmpty())
             this.editNotice.setText(String.join("\n", selection.diagnostics()));
     }
@@ -1032,9 +1054,9 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
             throws java.io.IOException {
         var selected = this.questSelector.getSelectionModel().getSelectedItem();
         if (selected == null || this.documentSession == null
-      || selected.id() != plan.questId()
-      || this.documentSession.document().questId() != plan.questId())
-  throw new java.io.IOException("確認中に選択対象が変わりました。退避せず、対象を再確認してください。");
+                || selected.id() != plan.questId()
+                || this.documentSession.document().questId() != plan.questId())
+            throw new java.io.IOException("確認中に選択対象が変わりました。退避せず、対象を再確認してください。");
         var result = this.documentSession.apply(plan, true);
         if (result.retained() != null) {
             this.setQuestData(this.questSelector.getSelectionModel().getSelectedItem());
@@ -1063,24 +1085,26 @@ public class QuestConditionEditController extends logbook.plugin.api.FeatureUiV1
             var plan = this.prepareRetirementDocument();
             var preparedSession = this.documentSession;
             if (plan.existing()) {
-                var proceed = new javafx.scene.control.ButtonType("原本を保持して退避", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+                var proceed = new javafx.scene.control.ButtonType("原本を保持して退避",
+                        javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
                 var confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION,
                         "対象: " + plan.target() + "\n読込時SHA-256: " + plan.expectedSha256()
-                        + "\n\n有効な定義名から外し、同じフォルダーへ別名で原本と検証済みコピーを残します。"
-                        + "\nこのカスタム枠は空きます。受諾履歴・到達記録・他の設定は変更しません。"
-                        + "\nファイルが読込後に変更されていた場合は退避を中止します。",
+                                + "\n\n有効な定義名から外し、同じフォルダーへ別名で原本と検証済みコピーを残します。"
+                                + "\nこのカスタム枠は空きます。受諾履歴・到達記録・他の設定は変更しません。"
+                                + "\nファイルが読込後に変更されていた場合は退避を中止します。",
                         proceed, javafx.scene.control.ButtonType.CANCEL);
                 confirm.initOwner(this.questSelector.getScene().getWindow());
-                confirm.setTitle("カスタム任務の退避確認"); confirm.setHeaderText("完全削除ではなく、復旧可能な別名退避です");
+                confirm.setTitle("カスタム任務の退避確認");
+                confirm.setHeaderText("完全削除ではなく、復旧可能な別名退避です");
                 if (confirm.showAndWait().filter(proceed::equals).isEmpty()) {
                     preparedSession.apply(plan, false);
                     return;
                 }
             }
             java.nio.file.Path retained = this.applyRetirementDocument(plan);
-            
+
             if (retained != null) {
-                
+
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                         javafx.scene.control.Alert.AlertType.INFORMATION);
                 alert.initOwner(this.questSelector.getScene().getWindow());

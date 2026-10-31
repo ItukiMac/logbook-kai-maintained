@@ -35,25 +35,41 @@ class ProxyFailureIsolationTest {
     private boolean oldUseProxy;
     private String oldHost;
     private int oldPort;
-    @BeforeEach void saveConfiguration() {
+
+    @BeforeEach
+    void saveConfiguration() {
         var config = AppConfig.get();
-        oldUseProxy = config.isUseProxy(); oldHost = config.getProxyHost(); oldPort = config.getProxyPort();
+        oldUseProxy = config.isUseProxy();
+        oldHost = config.getProxyHost();
+        oldPort = config.getProxyPort();
         config.setUseProxy(false);
     }
-    @AfterEach void restoreConfiguration() {
+
+    @AfterEach
+    void restoreConfiguration() {
         var config = AppConfig.get();
-        config.setUseProxy(oldUseProxy); config.setProxyHost(oldHost); config.setProxyPort(oldPort);
+        config.setUseProxy(oldUseProxy);
+        config.setProxyHost(oldHost);
+        config.setProxyPort(oldPort);
     }
+
     private record Proxy(Server server, HttpClient client) implements AutoCloseable {
-        public void close() throws Exception { client.close(); server.stop(); }
+        public void close() throws Exception {
+            client.close();
+            server.stop();
+        }
     }
+
     private static Proxy proxy(List<ContentListenerSpi> listeners, int timeout) throws Exception {
         var servlet = new ReverseProxyServlet();
         var field = ReverseProxyServlet.class.getDeclaredField("listeners");
-        field.setAccessible(true); field.set(servlet, listeners);
+        field.setAccessible(true);
+        field.set(servlet, listeners);
         var server = new Server();
         var connector = new ServerConnector(server);
-        connector.setHost("127.0.0.1"); connector.setPort(0); server.addConnector(connector);
+        connector.setHost("127.0.0.1");
+        connector.setPort(0);
+        server.addConnector(connector);
         var context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         var holder = new ServletHolder(servlet);
@@ -68,15 +84,22 @@ class ProxyFailureIsolationTest {
                     .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", connector.getLocalPort())))
                     .build();
             return new Proxy(server, client);
-        } catch (Exception e) { server.stop(); throw e; }
+        } catch (Exception e) {
+            server.stop();
+            throw e;
+        }
     }
+
     private static HttpServer origin() throws Exception {
         return HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
     }
+
     private static HttpRequest.Builder request(String target) {
         return HttpRequest.newBuilder(URI.create(target)).timeout(Duration.ofSeconds(8));
     }
-    @Test void forwardsViaConfiguredUpstreamWithoutResolvingOrigin() throws Exception {
+
+    @Test
+    void forwardsViaConfiguredUpstreamWithoutResolvingOrigin() throws Exception {
         HttpServer upstream = origin();
         AtomicReference<String> target = new AtomicReference<>();
         upstream.createContext("/", exchange -> {
@@ -85,11 +108,15 @@ class ProxyFailureIsolationTest {
                     + ":" + new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             byte[] output = text.getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, output.length);
-            try (OutputStream out = exchange.getResponseBody()) { out.write(output); }
+            try (OutputStream out = exchange.getResponseBody()) {
+                out.write(output);
+            }
         });
         upstream.start();
         var config = AppConfig.get();
-        config.setUseProxy(true); config.setProxyHost("127.0.0.1"); config.setProxyPort(upstream.getAddress().getPort());
+        config.setUseProxy(true);
+        config.setProxyHost("127.0.0.1");
+        config.setProxyPort(upstream.getAddress().getPort());
         try (Proxy proxy = proxy(List.of(), 3000)) {
             var response = proxy.client().send(request("http://origin.invalid/through-upstream")
                     .header("X-Check", "preserved").POST(HttpRequest.BodyPublishers.ofString("hello")).build(),
@@ -97,9 +124,13 @@ class ProxyFailureIsolationTest {
             assertEquals(200, response.statusCode());
             assertEquals("POST:preserved:hello", response.body());
             assertTrue(target.get().contains("/through-upstream"));
-        } finally { upstream.stop(0); }
+        } finally {
+            upstream.stop(0);
+        }
     }
-    @Test void refusedOriginBecomesAnHttpFailureInsteadOfHanging() throws Exception {
+
+    @Test
+    void refusedOriginBecomesAnHttpFailureInsteadOfHanging() throws Exception {
         int unused;
         try (ServerSocket socket = new ServerSocket(0, 1, java.net.InetAddress.getByName("127.0.0.1"))) {
             unused = socket.getLocalPort();
@@ -110,46 +141,64 @@ class ProxyFailureIsolationTest {
             assertTrue(response.statusCode() >= 500 && response.statusCode() <= 599);
         }
     }
-    @Test void predicateFailureDoesNotSuppressLaterListener() throws Exception {
+
+    @Test
+    void predicateFailureDoesNotSuppressLaterListener() throws Exception {
         assertListenerIsolation(true);
     }
-    @Test void acceptFailureDoesNotSuppressLaterListener() throws Exception {
+
+    @Test
+    void acceptFailureDoesNotSuppressLaterListener() throws Exception {
         assertListenerIsolation(false);
     }
+
     private static void assertListenerIsolation(boolean failInTest) throws Exception {
         HttpServer upstream = origin();
         upstream.createContext("/", exchange -> {
             byte[] body = "complete-response".getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, body.length);
-            try (var output = exchange.getResponseBody()) { output.write(body); }
+            try (var output = exchange.getResponseBody()) {
+                output.write(body);
+            }
         });
         upstream.start();
         CountDownLatch received = new CountDownLatch(1);
         AtomicReference<String> content = new AtomicReference<>();
         ContentListenerSpi broken = new ContentListenerSpi() {
             public boolean test(RequestMetaData request) {
-                if (failInTest) throw new IllegalStateException("isolated predicate fixture");
+                if (failInTest)
+                    throw new IllegalStateException("isolated predicate fixture");
                 return true;
             }
+
             public void accept(RequestMetaData request, ResponseMetaData response) {
                 throw new IllegalStateException("isolated accept fixture");
             }
         };
         ContentListenerSpi healthy = new ContentListenerSpi() {
-            public boolean test(RequestMetaData request) { return true; }
+            public boolean test(RequestMetaData request) {
+                return true;
+            }
+
             public void accept(RequestMetaData request, ResponseMetaData response) {
                 try (var in = response.getResponseBody().orElseThrow()) {
                     content.set(new String(in.readAllBytes(), StandardCharsets.UTF_8));
-                } catch (Exception ex) { content.set(ex.toString()); }
-                finally { received.countDown(); }
+                } catch (Exception ex) {
+                    content.set(ex.toString());
+                } finally {
+                    received.countDown();
+                }
             }
         };
         try (Proxy proxy = proxy(List.of(broken, healthy), 3000)) {
-            var response = proxy.client().send(request("http://127.0.0.1:" + upstream.getAddress().getPort() + "/").GET().build(),
+            var response = proxy.client().send(
+                    request("http://127.0.0.1:" + upstream.getAddress().getPort() + "/").GET().build(),
                     HttpResponse.BodyHandlers.ofString());
             assertEquals(200, response.statusCode());
             assertTrue(received.await(5, TimeUnit.SECONDS));
             assertEquals("complete-response", content.get());
-        } finally { upstream.stop(0); }
+        } finally {
+            upstream.stop(0);
+        }
     }
 }

@@ -22,7 +22,8 @@ import lombok.Data;
  */
 @Data
 public class CombinedBattleAirbattle
-        implements ICombinedBattle, ISortieBattle, IFormation, IAirbattle, ISupport, IAirBaseAttack, Serializable, Cloneable {
+        implements ICombinedBattle, ISortieBattle, IFormation, IAirbattle, ISupport, IAirBaseAttack, Serializable,
+        Cloneable {
 
     private static final long serialVersionUID = 5422374810830868549L;
 
@@ -103,7 +104,7 @@ public class CombinedBattleAirbattle
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたCombinedBattleAirbattle
      */
     @Override
@@ -123,7 +124,7 @@ public class CombinedBattleAirbattle
      */
     public static CombinedBattleAirbattle toBattle(JsonObject json) {
         CombinedBattleAirbattle bean = new CombinedBattleAirbattle();
-        
+
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);
@@ -158,7 +159,7 @@ public class CombinedBattleAirbattle
                 .set("api_support_info", bean::setSupportInfo, BattleTypes.SupportInfo::toSupportInfo)
                 .setIntegerList("api_stage_flag2", bean::setStageFlag2)
                 .set("api_kouku2", bean::setKouku2, BattleTypes.Kouku::toKouku);
-        
+
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             for (String key : unUsedKey) {

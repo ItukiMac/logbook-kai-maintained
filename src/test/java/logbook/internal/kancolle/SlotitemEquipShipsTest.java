@@ -24,7 +24,7 @@ class SlotitemEquipShipsTest {
         Path testConfigPath = Paths.get("./src/test/resources/logbook/config"); // ソースパスを直接指定してテスト
 
         try (MockedStatic<logbook.internal.Config> mockedConfig = mockStatic(logbook.internal.Config.class);
-             MockedStatic<logbook.bean.AppConfig> mockedAppConfig = mockStatic(logbook.bean.AppConfig.class)) {
+                MockedStatic<logbook.bean.AppConfig> mockedAppConfig = mockStatic(logbook.bean.AppConfig.class)) {
 
             logbook.internal.Config testConfig = new logbook.internal.Config(testConfigPath);
             logbook.bean.AppConfig mockAppConfig = mock(logbook.bean.AppConfig.class);
@@ -54,7 +54,7 @@ class SlotitemEquipShipsTest {
         Path testConfigPath = Paths.get("./src/test/resources/logbook/config");
 
         try (MockedStatic<logbook.internal.Config> mockedConfig = mockStatic(logbook.internal.Config.class);
-             MockedStatic<logbook.bean.AppConfig> mockedAppConfig = mockStatic(logbook.bean.AppConfig.class)) {
+                MockedStatic<logbook.bean.AppConfig> mockedAppConfig = mockStatic(logbook.bean.AppConfig.class)) {
 
             logbook.internal.Config testConfig = new logbook.internal.Config(testConfigPath);
             logbook.bean.AppConfig mockAppConfig = mock(logbook.bean.AppConfig.class);
@@ -70,7 +70,7 @@ class SlotitemEquipShipsTest {
             assertTrue(ships.isEmpty(), "Should return empty list for unknown item ID");
         }
     }
-    
+
     /**
      * データ確認用
      */
@@ -79,7 +79,7 @@ class SlotitemEquipShipsTest {
         Path testConfigPath = Paths.get("./src/test/resources/logbook/config");
 
         try (MockedStatic<logbook.internal.Config> mockedConfig = mockStatic(logbook.internal.Config.class);
-             MockedStatic<logbook.bean.AppConfig> mockedAppConfig = mockStatic(logbook.bean.AppConfig.class)) {
+                MockedStatic<logbook.bean.AppConfig> mockedAppConfig = mockStatic(logbook.bean.AppConfig.class)) {
 
             logbook.internal.Config testConfig = new logbook.internal.Config(testConfigPath);
             logbook.bean.AppConfig mockAppConfig = mock(logbook.bean.AppConfig.class);
@@ -93,20 +93,20 @@ class SlotitemEquipShipsTest {
             SlotitemMstCollection slotItemMstCollection = SlotitemMstCollection.get();
             Map<Integer, ShipMst> shipMstMap = shipMstCollection.getShipMap();
             Map<Integer, SlotitemMst> slotItemMstMap = slotItemMstCollection.getSlotitemMap();
-            
+
             Map<Integer, List<Integer>> allSlotitemEquipShipsMap = service.getAllSlotitemEquipShips();
-            
+
             for (Entry<Integer, List<Integer>> entry : allSlotitemEquipShipsMap.entrySet()) {
                 Integer itemId = entry.getKey();
                 List<Integer> ships = entry.getValue();
-                
+
                 //System.out.println(slotItemMstMap.get(itemId).toString());
                 for (Integer shipid : ships) {
                     String data = shipMstMap.get(shipid) != null ? shipMstMap.get(shipid).toString() : "null";
                     //System.out.println(" " +  data);
                 }
             }
-            
+
         }
     }
 }

@@ -2,7 +2,7 @@ package logbook.constants;
 
 /**
  * SlotitemMst内、Type配列の定数クラス
- * 
+ *
  */
 public class SlotitemMstTypeConst {
 

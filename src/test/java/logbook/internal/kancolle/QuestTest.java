@@ -22,23 +22,23 @@ class QuestTest {
     void test() {
         Path testConfigPath = Paths.get("./target/test-classes/logbook/config");
         Config testConfig = new Config(testConfigPath);
-        
+
         Path testBattlePath = Paths.get("./target/test-classes/logbook/testlog");
         Path testBattleLogPath = Paths.get("./target/test-classes/logbook/battlelog");
         AppConfig mockAppConfig = mock(AppConfig.class);
         when(mockAppConfig.getReportPath()).thenReturn(testBattlePath.toString());
         when(mockAppConfig.getBattleLogDir()).thenReturn(testBattleLogPath.toString());
-        
+
         try (MockedStatic<Config> mockedConfig = mockStatic(Config.class);
                 MockedStatic<AppConfig> mockedAppConfig = mockStatic(AppConfig.class)) {
             mockedConfig.when(Config::getDefault).thenReturn(testConfig);
             mockedAppConfig.when(AppConfig::get).thenReturn(mockAppConfig);
-            
-            AppQuestCollection appQuestCollection = AppQuestCollection.get();        
-            ConcurrentSkipListMap<Integer,AppQuest> questList = appQuestCollection.getQuest(); 
+
+            AppQuestCollection appQuestCollection = AppQuestCollection.get();
+            ConcurrentSkipListMap<Integer, AppQuest> questList = appQuestCollection.getQuest();
             AppQuest quest = questList.get(1040);
             AppQuestCondition condition = AppQuestCondition.loadFromResource(quest.getNo());
-        
+
             QuestCollect collect = QuestCollect.collect(quest, condition);
             condition.test(collect);
             Optional.of(condition);

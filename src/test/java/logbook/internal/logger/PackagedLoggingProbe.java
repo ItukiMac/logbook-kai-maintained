@@ -8,7 +8,8 @@ public final class PackagedLoggingProbe {
             throw new IllegalStateException("Assembled application lost its SLF4J provider: " + actual);
         }
         long providers = java.util.ServiceLoader.load(org.slf4j.spi.SLF4JServiceProvider.class).stream().count();
-        if (providers != 1) throw new IllegalStateException("Expected one assembled provider, got " + providers);
+        if (providers != 1)
+            throw new IllegalStateException("Expected one assembled provider, got " + providers);
         System.out.println("PACKAGED_LOGGING_OK " + actual);
     }
 }

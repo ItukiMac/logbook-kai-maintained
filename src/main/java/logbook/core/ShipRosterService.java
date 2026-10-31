@@ -20,11 +20,13 @@ import logbook.plugin.api.ShipRosterV1.Snapshot;
 
 /** Host-side copying of the existing mutable ship, fleet and label beans. */
 public final class ShipRosterService {
-    private ShipRosterService() { }
+    private ShipRosterService() {
+    }
 
     public static Snapshot snapshot() {
         return LogBookCoreServices.readGameState(() -> captureSnapshot());
     }
+
     private static Snapshot captureSnapshot() {
         return snapshot(ShipCollection.get().getShipMap(),
                 ShipMstCollection.get().getShipMap(),
@@ -54,17 +56,21 @@ public final class ShipRosterService {
                 continue;
             }
             ShipMst master = masterCopy.get(ship.getShipId());
-            if (master == null) warnings.add("Missing ship master: " + ship.getShipId());
+            if (master == null)
+                warnings.add("Missing ship master: " + ship.getShipId());
             int sort = master == null || master.getSortId() == null
-                    ? Integer.MAX_VALUE : master.getSortId();
+                    ? Integer.MAX_VALUE
+                    : master.getSortId();
 
             List<Integer> equipment = cleanIntegers(ship.getSlot(), warnings, "ship equipment");
             Set<String> ownedLabels = new LinkedHashSet<>();
             Set<String> currentLabels = labelCopy.get(key);
             if (currentLabels != null) {
                 for (String label : new ArrayList<>(currentLabels)) {
-                    if (label == null) warnings.add("Null manual ship label: " + key);
-                    else ownedLabels.add(label);
+                    if (label == null)
+                        warnings.add("Null manual ship label: " + key);
+                    else
+                        ownedLabels.add(label);
                 }
             }
             result.put(key, new ShipView(key, ship.getShipId(), ship.getLv(),
@@ -81,7 +87,8 @@ public final class ShipRosterService {
             }
             List<Integer> ids = cleanIntegers(fleet.getShip(), warnings, "fleet members");
             for (Integer id : ids) {
-                if (id > 0 && !result.containsKey(id)) warnings.add("Unresolved fleet ship: " + id);
+                if (id > 0 && !result.containsKey(id))
+                    warnings.add("Unresolved fleet ship: " + id);
             }
             fleetResult.add(new FleetView(key, fleet.getName(), ids));
         }
@@ -89,11 +96,14 @@ public final class ShipRosterService {
     }
 
     private static List<Integer> cleanIntegers(Collection<Integer> source, List<String> warnings, String field) {
-        if (source == null) return List.of();
+        if (source == null)
+            return List.of();
         List<Integer> copy = new ArrayList<>();
         for (Integer id : new ArrayList<>(source)) {
-            if (id == null) warnings.add("Missing " + field + " entry");
-            else copy.add(id);
+            if (id == null)
+                warnings.add("Missing " + field + " entry");
+            else
+                copy.add(id);
         }
         return List.copyOf(copy);
     }

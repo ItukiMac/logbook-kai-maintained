@@ -15,13 +15,19 @@ public final class ProbabilityCalculator {
     }
 
     /** Stable, GUI-independent reasons for rejecting a calculation. */
-    public enum Problem { NONE, PERCENT_RANGE, POSITIVE_COUNTS, ROW_BUDGET, UNDERFLOW }
+    public enum Problem {
+        NONE, PERCENT_RANGE, POSITIVE_COUNTS, ROW_BUDGET, UNDERFLOW
+    }
 
     public static Problem validate(double percent, int limit, int step) {
-        if (!Double.isFinite(percent) || percent <= 0 || percent >= 100) return Problem.PERCENT_RANGE;
-        if (limit <= 0 || step <= 0) return Problem.POSITIVE_COUNTS;
-        if ((long) limit / step + 5 > MAX_ROWS) return Problem.ROW_BUDGET;
-        if (percent / 100.0 == 0) return Problem.UNDERFLOW;
+        if (!Double.isFinite(percent) || percent <= 0 || percent >= 100)
+            return Problem.PERCENT_RANGE;
+        if (limit <= 0 || step <= 0)
+            return Problem.POSITIVE_COUNTS;
+        if ((long) limit / step + 5 > MAX_ROWS)
+            return Problem.ROW_BUDGET;
+        if (percent / 100.0 == 0)
+            return Problem.UNDERFLOW;
         return Problem.NONE;
     }
 
@@ -33,7 +39,8 @@ public final class ProbabilityCalculator {
      * Milestones above Integer.MAX_VALUE are omitted, not falsely clamped.
      */
     public static List<Point> calculate(double percent, int limit, int step) {
-        if (validate(percent, limit, step) != Problem.NONE) return List.of();
+        if (validate(percent, limit, step) != Problem.NONE)
+            return List.of();
         double p = percent / 100.0;
         boolean tiny = p < 1e-8;
         double logFailure = tiny ? Math.log1p(-p) : Math.log(1.0 - p);
@@ -42,7 +49,7 @@ public final class ProbabilityCalculator {
         for (long count = step; count <= limit; count += step) {
             counts.add((int) count);
         }
-        for (double target : new double[] {0.5, 0.75, 0.9, 0.95}) {
+        for (double target : new double[] { 0.5, 0.75, 0.9, 0.95 }) {
             double count = Math.ceil(Math.log1p(-target) / logFailure);
             if (Double.isFinite(count) && count >= 1 && count <= Integer.MAX_VALUE) {
                 counts.add((int) count);

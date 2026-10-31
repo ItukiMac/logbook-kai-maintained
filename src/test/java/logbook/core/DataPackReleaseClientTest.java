@@ -45,8 +45,8 @@ class DataPackReleaseClientTest {
                 entry("v25.0.9", valid, false, false) + "," +
                 entry("data-v2026.10.26", valid, true, false) + "," +
                 entry("data-v2026.10.25", valid, false, false) + "]";
-        Optional<DataPackReleaseClient.DataRelease> found =
-                DataPackReleaseClient.selectRelease(MAPPER.readTree(payload));
+        Optional<DataPackReleaseClient.DataRelease> found = DataPackReleaseClient
+                .selectRelease(MAPPER.readTree(payload));
         assertTrue(found.isPresent());
         assertEquals("data-v2026.10.25", found.get().tag());
         assertEquals(CHECKSUM, found.get().sha256());
@@ -62,8 +62,7 @@ class DataPackReleaseClientTest {
     void rejectsExternalAssetUrlEvenWithValidDigest() throws Exception {
         String payload = "[" +
                 entry("data-v2026.10.25", "https://example.invalid/evil.zip", false, false) + "]";
-        assertThrows(IOException.class, () ->
-                DataPackReleaseClient.selectRelease(MAPPER.readTree(payload)));
+        assertThrows(IOException.class, () -> DataPackReleaseClient.selectRelease(MAPPER.readTree(payload)));
     }
 
     @Test
@@ -73,7 +72,6 @@ class DataPackReleaseClientTest {
                   "assets":[{"name":"logbook-data-pack.zip","digest":"sha256:bad",
                   "browser_download_url":"https://github.com/ItukiMac/logbook-kai-maintained/releases/download/data-v2026.10.25/logbook-data-pack.zip"}]}]
                 """;
-        assertThrows(IOException.class, () ->
-                DataPackReleaseClient.selectRelease(MAPPER.readTree(payload)));
+        assertThrows(IOException.class, () -> DataPackReleaseClient.selectRelease(MAPPER.readTree(payload)));
     }
 }

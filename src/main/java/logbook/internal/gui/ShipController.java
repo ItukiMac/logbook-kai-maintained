@@ -121,9 +121,9 @@ public class ShipController extends FeatureUiV1.Window {
             Map<Integer, Ship> shipMap = ShipCollection.get()
                     .getShipMap();
             return logbook.plugin.api.ShipRosterV1.snapshot().allDeckShipIds().stream()
-                .map(shipMap::get)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                    .map(shipMap::get)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         }, "全艦隊");
         this.tab.getTabs().add(new Tab("全艦隊", deckPane));
     }
@@ -145,17 +145,17 @@ public class ShipController extends FeatureUiV1.Window {
         Map<Integer, Set<String>> labelMap = ShipLabelCollection.get().getLabels();
         // 海域札(手動のラベルは除く)がついている艦がいる場合のみ表示
         if (ShipCollection.get().getShipMap().values().stream()
-            .map(Ship::getSallyArea)
-            .map(SeaAreas::fromArea)
-            .filter(Objects::nonNull)
-            .count() > 0) {
+                .map(Ship::getSallyArea)
+                .map(SeaAreas::fromArea)
+                .filter(Objects::nonNull)
+                .count() > 0) {
             // 「海域札なし」タブには手動でラベルを付けただけの艦を表示するため SallyArea のみチェック
             ShipTablePane noLabelPane = new ShipTablePane(() -> {
                 return ShipCollection.get().getShipMap().values().stream()
-                    .filter(ship -> SeaAreas.fromArea(ship.getSallyArea()) == null)
-                    .sorted(Comparator.comparing(Ship::getLv).reversed()
-                            .thenComparing(Comparator.comparing(Ship::getShipId)))
-                    .collect(Collectors.toList());
+                        .filter(ship -> SeaAreas.fromArea(ship.getSallyArea()) == null)
+                        .sorted(Comparator.comparing(Ship::getLv).reversed()
+                                .thenComparing(Comparator.comparing(Ship::getShipId)))
+                        .collect(Collectors.toList());
             }, "海域札なし");
             this.tab.getTabs().add(new Tab("海域札なし", noLabelPane));
         }

@@ -48,23 +48,29 @@ public final class InformationSharingPlugin implements ContentListenerSpi, Start
 
     @Override
     public boolean test(RequestMetaData request) {
-        if (request == null) return false;
+        if (request == null)
+            return false;
         String path = request.getRequestURI();
         return path != null && (path.equals("/kcsapi/api_get_member/questlist")
-            || path.equals("/kcsapi/api_req_quest/start")
-            || path.equals("/kcsapi/api_req_quest/stop")
-            || path.equals("/kcsapi/api_req_quest/clearitemget"));
+                || path.equals("/kcsapi/api_req_quest/start")
+                || path.equals("/kcsapi/api_req_quest/stop")
+                || path.equals("/kcsapi/api_req_quest/clearitemget"));
     }
 
     @Override
     public void accept(RequestMetaData request, ResponseMetaData response) {
-        if (request == null || response == null || response.getStatus() < 200 || response.getStatus() >= 300) return;
+        if (request == null || response == null || response.getStatus() < 200 || response.getStatus() >= 300)
+            return;
         try {
             Optional<InputStream> body = response.getResponseBody();
-            if (body.isEmpty()) return;
+            if (body.isEmpty())
+                return;
             byte[] bytes;
-            try (InputStream in = body.get()) { bytes = in.readNBytes(2_000_001); }
-            if (bytes.length > 2_000_000) return;
+            try (InputStream in = body.get()) {
+                bytes = in.readNBytes(2_000_001);
+            }
+            if (bytes.length > 2_000_000)
+                return;
 
             // Only the whitelisted quest parameters: no api_token or raw POST body.
             Map<String, String> params = new HashMap<>();
@@ -77,15 +83,18 @@ public final class InformationSharingPlugin implements ContentListenerSpi, Start
         }
     }
 
-    @Override public void run() { /* Menu lifecycle is owned by the host SPI. */ }
+    @Override
+    public void run() {
+        /* Menu lifecycle is owned by the host SPI. */ }
 
-    @Override public MenuItem getContent() {
+    @Override
+    public MenuItem getContent() {
         Window window = null;
         MenuItem copyJson = new MenuItem("任務出力：現在の全任務をJSONコピー");
-        copyJson.setOnAction(e -> exportAsync(window, QuestExporter::json, text->copy(text,window)));
+        copyJson.setOnAction(e -> exportAsync(window, QuestExporter::json, text -> copy(text, window)));
 
         MenuItem copyPrompt = new MenuItem("任務出力：任務消化計画用のJSON＋依頼文をコピー");
-        copyPrompt.setOnAction(e -> exportAsync(window, QuestExporter::prompt, text->copy(text,window)));
+        copyPrompt.setOnAction(e -> exportAsync(window, QuestExporter::prompt, text -> copy(text, window)));
 
         MenuItem preview = new MenuItem("任務出力：全任務JSONを別ウィンドウで表示");
         preview.setOnAction(e -> preview(window));
@@ -95,31 +104,31 @@ public final class InformationSharingPlugin implements ContentListenerSpi, Start
 
         MenuItem information = new MenuItem("全情報の共有・出力…");
         information.setOnAction(e -> InformationSharingWindow.open(window));
-        Menu menu=new Menu("情報共有・出力");
-        menu.getItems().addAll(information,copyJson,copyPrompt,preview,save);
+        Menu menu = new Menu("情報共有・出力");
+        menu.getItems().addAll(information, copyJson, copyPrompt, preview, save);
         return menu;
     }
 
-    private static void exportAsync(Window owner, java.util.function.Function<QuestStore,String> generator,
-                                    Consumer<String> onSuccess) {
-        if(!EXPORTING.compareAndSet(false,true)) {
-            message(owner,"情報共有・出力","別のJSON生成処理を実行中です。",Alert.AlertType.INFORMATION);
+    private static void exportAsync(Window owner, java.util.function.Function<QuestStore, String> generator,
+            Consumer<String> onSuccess) {
+        if (!EXPORTING.compareAndSet(false, true)) {
+            message(owner, "情報共有・出力", "別のJSON生成処理を実行中です。", Alert.AlertType.INFORMATION);
             return;
         }
-        Thread worker=new Thread(()-> {
+        Thread worker = new Thread(() -> {
             try {
-                String value=generator.apply(STORE);
-                Platform.runLater(()-> {
+                String value = generator.apply(STORE);
+                Platform.runLater(() -> {
                     EXPORTING.set(false);
                     onSuccess.accept(value);
                 });
-            } catch(Exception error) {
-                Platform.runLater(()-> {
+            } catch (Exception error) {
+                Platform.runLater(() -> {
                     EXPORTING.set(false);
-                    message(owner,"情報共有・出力","JSON生成に失敗: "+error.getClass().getSimpleName(),Alert.AlertType.ERROR);
+                    message(owner, "情報共有・出力", "JSON生成に失敗: " + error.getClass().getSimpleName(), Alert.AlertType.ERROR);
                 });
             }
-        },"sharing-export");
+        }, "sharing-export");
         worker.setDaemon(true);
         worker.start();
     }
@@ -134,7 +143,8 @@ public final class InformationSharingPlugin implements ContentListenerSpi, Start
 
     private static void preview(Window owner) {
         Stage stage = new Stage();
-        if (owner != null) stage.initOwner(owner);
+        if (owner != null)
+            stage.initOwner(owner);
         stage.setTitle("logbook-kai2 情報共有 | 全任務JSON");
         TextArea area = new TextArea("JSONを生成しています...");
         exportAsync(stage, QuestExporter::json, area::setText);
@@ -155,20 +165,21 @@ public final class InformationSharingPlugin implements ContentListenerSpi, Start
         FileChooser chooser = new FileChooser();
         chooser.setTitle("任務JSONJSONの保存先を指定");
         chooser.setInitialFileName("kqs-quests-" +
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")) + ".json");
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")) + ".json");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
         java.io.File destination = chooser.showSaveDialog(owner);
-        if (destination == null) return;
+        if (destination == null)
+            return;
         Path path = destination.toPath();
-        exportAsync(owner,QuestExporter::json,text->{
+        exportAsync(owner, QuestExporter::json, text -> {
             try {
                 // CREATE_NEW refuses to overwrite existing files, even with a stale dialog.
-                Files.writeString(path,text,StandardCharsets.UTF_8,StandardOpenOption.CREATE_NEW);
-                message(owner,"情報共有・出力","JSONファイルを保存しました。",Alert.AlertType.INFORMATION);
-            } catch(java.nio.file.FileAlreadyExistsException ex) {
-                message(owner,"情報共有・出力","既存ファイルは上書きしません。",Alert.AlertType.WARNING);
-            } catch(Exception ex) {
-                message(owner,"情報共有・出力","保存に失敗しました: "+ex.getClass().getSimpleName(),Alert.AlertType.ERROR);
+                Files.writeString(path, text, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
+                message(owner, "情報共有・出力", "JSONファイルを保存しました。", Alert.AlertType.INFORMATION);
+            } catch (java.nio.file.FileAlreadyExistsException ex) {
+                message(owner, "情報共有・出力", "既存ファイルは上書きしません。", Alert.AlertType.WARNING);
+            } catch (Exception ex) {
+                message(owner, "情報共有・出力", "保存に失敗しました: " + ex.getClass().getSimpleName(), Alert.AlertType.ERROR);
             }
         });
     }
@@ -176,7 +187,8 @@ public final class InformationSharingPlugin implements ContentListenerSpi, Start
     private static void message(Window owner, String title, String msg, Alert.AlertType type) {
         Alert alert = new Alert(type, msg);
         alert.setTitle(title);
-        if (owner != null) alert.initOwner(owner);
+        if (owner != null)
+            alert.initOwner(owner);
         alert.show();
     }
 }

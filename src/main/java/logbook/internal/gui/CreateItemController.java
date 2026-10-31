@@ -165,7 +165,8 @@ public class CreateItemController extends FeatureUiV1.Window {
             this.secretary.setCellValueFactory(new PropertyValueFactory<>("secretary"));
 
             this.collect.setSortPolicy((param) -> {
-                Optional.ofNullable(this.collect.getRoot()).map(TreeItem::getChildren).ifPresent(items -> sortItems(param.getSortOrder(), items));
+                Optional.ofNullable(this.collect.getRoot()).map(TreeItem::getChildren)
+                        .ifPresent(items -> sortItems(param.getSortOrder(), items));
                 return true;
             });
             this.collect.getSelectionModel()
@@ -180,13 +181,14 @@ public class CreateItemController extends FeatureUiV1.Window {
             LoggerHolder.get().error("FXMLの初期化に失敗しました", e);
         }
     }
-    
-    private void sortItems(List<TreeTableColumn<CreateItemCollect, ?>> sortOrder, List<TreeItem<CreateItemCollect>> items) {
+
+    private void sortItems(List<TreeTableColumn<CreateItemCollect, ?>> sortOrder,
+            List<TreeItem<CreateItemCollect>> items) {
         items.sort((o1, o2) -> {
             CreateItemCollect c1 = o1.getValue();
             CreateItemCollect c2 = o2.getValue();
             int diff = 0;
-            for (TreeTableColumn<CreateItemCollect, ?> order: sortOrder) {
+            for (TreeTableColumn<CreateItemCollect, ?> order : sortOrder) {
                 if (order == this.unit) {
                     diff = c1.getUnit().compareTo(c2.getUnit());
                 } else if (order == this.count) {
@@ -266,7 +268,7 @@ public class CreateItemController extends FeatureUiV1.Window {
         try {
             List<CreateItem> logs;
             Map<String, Integer> map = SlotitemEquiptypeCollection.get().getEquiptypeMap().values().stream()
-                .collect(Collectors.toMap(SlotitemEquiptype::getName, SlotitemEquiptype::getId)); 
+                    .collect(Collectors.toMap(SlotitemEquiptype::getName, SlotitemEquiptype::getId));
             logs = RecordDataV1.developments().stream()
                     .map(CreateItem::fromSnapshot)
                     .map(item -> item.setEquipType(map.getOrDefault(item.getType(), -1)))
@@ -337,7 +339,7 @@ public class CreateItemController extends FeatureUiV1.Window {
             if (key instanceof Recipe) {
                 recipe = (Recipe) key;
             } else if (key instanceof Tuple.Pair) {
-                pair = (Tuple.Pair<Integer, String>)key;
+                pair = (Tuple.Pair<Integer, String>) key;
             }
             CreateItemCollect item = new CreateItemCollect();
             if ("".equals(key)) {
@@ -376,9 +378,10 @@ public class CreateItemController extends FeatureUiV1.Window {
             }
         }
     }
-    
+
     private static void setCount(TreeItem<CreateItemCollect> item) {
-        item.getValue().setCount(item.getChildren().stream().map(TreeItem::getValue).mapToInt(CreateItemCollect::getCount).sum());
+        item.getValue().setCount(
+                item.getChildren().stream().map(TreeItem::getValue).mapToInt(CreateItemCollect::getCount).sum());
     }
 
     private List<CreateItem> getSubItem(Object maporlist) {
@@ -410,7 +413,7 @@ public class CreateItemController extends FeatureUiV1.Window {
             addItems(this.detailItems, value);
         }
     }
-    
+
     private void addItems(List<CreateItem> list, TreeItem<CreateItemCollect> value) {
         Optional<List<CreateItem>> v = Optional.ofNullable(this.detailList.get(value.getValue()));
         if (v.isPresent()) {
@@ -435,11 +438,11 @@ public class CreateItemController extends FeatureUiV1.Window {
 
     private void loadConfig() {
         Optional.ofNullable(AppViewConfig.get().getCreateItemLogConfig())
-            .ifPresent(config -> {
-                if (config.getIndex() == 1) {
-                    this.group.selectToggle(this.buttonRecipeItem);
-                }
-            });
+                .ifPresent(config -> {
+                    if (config.getIndex() == 1) {
+                        this.group.selectToggle(this.buttonRecipeItem);
+                    }
+                });
     }
 
     private void saveConfig() {
@@ -505,7 +508,7 @@ public class CreateItemController extends FeatureUiV1.Window {
 
         /** SlotitemEquiptype */
         private int equipType;
-        
+
         /**
          * 日付を取得します。
          * @return 日付
@@ -653,7 +656,9 @@ public class CreateItemController extends FeatureUiV1.Window {
 
         public static CreateItem fromSnapshot(RecordDataV1.DevelopmentRow row) {
             CreateItem value = new CreateItem();
-            value.setDate(row.date()); value.setItem(row.item()); value.setType(row.type());
+            value.setDate(row.date());
+            value.setItem(row.item());
+            value.setType(row.type());
             value.setRecipe(new Recipe(Integer.toString(row.fuel()), Integer.toString(row.ammo()),
                     Integer.toString(row.metal()), Integer.toString(row.bauxite())));
             value.setSecretary(row.secretary());
@@ -675,7 +680,7 @@ public class CreateItemController extends FeatureUiV1.Window {
 
         /** 割合 */
         private Double ratio;
-        
+
         /** ソート順 */
         private int sortOrder;
 

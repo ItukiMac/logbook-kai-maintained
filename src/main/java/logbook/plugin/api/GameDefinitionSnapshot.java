@@ -17,7 +17,8 @@ import java.util.TreeMap;
 
 /** Immutable, generation-pinned game definitions. No user settings or mutable game beans. */
 public final class GameDefinitionSnapshot {
-    private static final Set<String> CATEGORIES = Set.of("quest", "eventquest", "mission", "map", "kousyou", "supplemental");
+    private static final Set<String> CATEGORIES = Set.of("quest", "eventquest", "mission", "map", "kousyou",
+            "supplemental");
     public static final int MAX_FILES = 2000;
     public static final long MAX_BYTES = 128L * 1024 * 1024;
     private final String generation;
@@ -29,12 +30,14 @@ public final class GameDefinitionSnapshot {
             throw new IllegalArgumentException("Invalid generation identifier");
         }
         Objects.requireNonNull(input);
-        if (input.size() > MAX_FILES) throw new IllegalArgumentException("Too many definitions");
+        if (input.size() > MAX_FILES)
+            throw new IllegalArgumentException("Too many definitions");
         long total = 0;
         for (var entry : input.entrySet()) {
             validateName(entry.getKey());
             total += Objects.requireNonNull(entry.getValue()).length;
-            if (total > MAX_BYTES) throw new IllegalArgumentException("Definitions exceed memory limit");
+            if (total > MAX_BYTES)
+                throw new IllegalArgumentException("Definitions exceed memory limit");
         }
         Map<String, byte[]> copied = new LinkedHashMap<>();
         new TreeMap<>(input).forEach((name, bytes) -> copied.put(name, bytes.clone()));
@@ -50,11 +53,14 @@ public final class GameDefinitionSnapshot {
                 digest.update(bytes);
             });
             this.fingerprint = HexFormat.of().formatHex(digest.digest());
-        } catch (NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public static void validateName(String name) {
-        if (name == null || name.contains("\\") || name.contains(":") || name.contains("..") || !name.endsWith(".json")) {
+        if (name == null || name.contains("\\") || name.contains(":") || name.contains("..")
+                || !name.endsWith(".json")) {
             throw new IllegalArgumentException("Invalid managed resource name");
         }
         String[] parts = name.split("/", -1);
@@ -62,12 +68,23 @@ public final class GameDefinitionSnapshot {
             throw new IllegalArgumentException("Resource is not a managed game definition");
         }
         for (String part : parts) {
-            if (part.isEmpty() || part.equals(".")) throw new IllegalArgumentException("Invalid resource path");
+            if (part.isEmpty() || part.equals("."))
+                throw new IllegalArgumentException("Invalid resource path");
         }
     }
-    public String generation() { return generation; }
-    public String fingerprint() { return fingerprint; }
-    public Set<String> resourceNames() { return files.keySet(); }
+
+    public String generation() {
+        return generation;
+    }
+
+    public String fingerprint() {
+        return fingerprint;
+    }
+
+    public Set<String> resourceNames() {
+        return files.keySet();
+    }
+
     public Optional<InputStream> openResource(String name) {
         validateName(name);
         byte[] bytes = files.get(name);

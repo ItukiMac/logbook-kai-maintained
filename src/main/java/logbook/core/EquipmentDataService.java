@@ -25,11 +25,13 @@ import logbook.plugin.api.EquipmentDataV1.*;
 
 /** Host-only adaptation of existing beans/calculations. It does not invoke their writers. */
 public final class EquipmentDataService {
-    private EquipmentDataService() { }
+    private EquipmentDataService() {
+    }
 
     public static Inventory inventory() {
         return LogBookCoreServices.readGameState(() -> captureInventory());
     }
+
     private static Inventory captureInventory() {
         var ownerIndex = owners(new ArrayList<>(ShipCollection.get().getShipMap().values()), Ships::toName);
         List<Owned> owned = new ArrayList<>();
@@ -54,19 +56,23 @@ public final class EquipmentDataService {
             try {
                 int category = master.getType().get(2);
                 var type = types.get(category);
-                if (type == null) warnings.add("Missing equipment category: " + category);
-                definitions.add(copyDefinition(master, type == null ? "不明(" + category + ")" : type.getName(), entry.getValue()));
+                if (type == null)
+                    warnings.add("Missing equipment category: " + category);
+                definitions.add(copyDefinition(master, type == null ? "不明(" + category + ")" : type.getName(),
+                        entry.getValue()));
             } catch (RuntimeException incomplete) {
                 warnings.add("Incomplete equipment master: " + entry.getKey());
             }
         }
-        if (!warnings.isEmpty()) LoggerHolder.get().warn("Equipment inventory snapshot: " + warnings);
+        if (!warnings.isEmpty())
+            LoggerHolder.get().warn("Equipment inventory snapshot: " + warnings);
         return new Inventory(definitions, owned, warnings);
     }
 
     static Map<Integer, Integer> counts(List<Owned> values) {
         Map<Integer, Integer> counts = new LinkedHashMap<>();
-        for (Owned value : values) counts.merge(value.masterId(), 1, Integer::sum);
+        for (Owned value : values)
+            counts.merge(value.masterId(), 1, Integer::sum);
         return counts;
     }
 
@@ -74,14 +80,17 @@ public final class EquipmentDataService {
     static Map<Integer, Owner> owners(Collection<Ship> ships, Function<Ship, String> names) {
         Map<Integer, Owner> result = new HashMap<>();
         for (Ship ship : ships) {
-            if (ship == null || ship.getId() == null || ship.getShipId() == null) continue;
+            if (ship == null || ship.getId() == null || ship.getShipId() == null)
+                continue;
             Owner owner = new Owner(ship.getId(), ship.getShipId(), names.apply(ship));
             if (ship.getSlot() != null) {
                 for (Integer id : new ArrayList<>(ship.getSlot()))
-                    if (id != null && id > 0) result.putIfAbsent(id, owner);
+                    if (id != null && id > 0)
+                        result.putIfAbsent(id, owner);
             }
             Integer extra = ship.getSlotEx();
-            if (extra != null && extra > 0) result.putIfAbsent(extra, owner);
+            if (extra != null && extra > 0)
+                result.putIfAbsent(extra, owner);
         }
         return result;
     }
@@ -103,12 +112,16 @@ public final class EquipmentDataService {
     public static List<Aircraft> aircraft() {
         return LogBookCoreServices.readGameState(() -> captureAircraft());
     }
+
     private static List<Aircraft> captureAircraft() {
         List<Aircraft> result = new ArrayList<>();
         for (SlotItem item : new ArrayList<>(SlotItemCollection.get().getSlotitemMap().values())) {
-            if (item == null) continue;
+            if (item == null)
+                continue;
             SlotitemMst master = Items.slotitemMst(item).orElse(null);
-            if (master == null || !Items.isAircraft(master) || master.getDistance() == null || master.getDistance() == 0) continue;
+            if (master == null || !Items.isAircraft(master) || master.getDistance() == null
+                    || master.getDistance() == 0)
+                continue;
             // Reuse the existing domain calculations. No independent formula is introduced.
             int onslot = Items.isCombatAircraft(master) ? 18 : 4;
             int radius = master.getDistance();
@@ -118,7 +131,8 @@ public final class EquipmentDataService {
                     master.getName(), type == null ? "不明(" + master.getType().get(2) + ")" : type.getName(),
                     item.getAlv() == null ? 0 : item.getAlv(), item.getLevel() == null ? 0 : item.getLevel(),
                     AirBases.airSuperiority(item, onslot, false), AirBases.airSuperiority(item, onslot, true),
-                    radius, radius + AirBases.distanceAdditional(radius, 20), radius + AirBases.distanceAdditional(radius, 10),
+                    radius, radius + AirBases.distanceAdditional(radius, 20),
+                    radius + AirBases.distanceAdditional(radius, 10),
                     master.getCost() == null ? 0 : master.getCost() * onslot, master.getTyku(),
                     interceptor ? master.getHoum() : 0, interceptor ? master.getHouk() : 0,
                     master.getRaig(), master.getBaku(), master.getTais(), master.getSaku()));
@@ -129,6 +143,7 @@ public final class EquipmentDataService {
     public static Map<String, List<Category>> categories() {
         return LogBookCoreServices.readGameState(() -> captureCategories());
     }
+
     private static Map<String, List<Category>> captureCategories() {
         Map<String, List<Category>> result = new LinkedHashMap<>();
         Items.getCategories().forEach((name, types) -> result.put(name, types.stream()
@@ -139,6 +154,7 @@ public final class EquipmentDataService {
     public static String itemName(int masterId) {
         return LogBookCoreServices.readGameState(() -> captureItemName(masterId));
     }
+
     private static String captureItemName(int masterId) {
         SlotitemMst master = SlotitemMstCollection.get().getSlotitemMap().get(masterId);
         return master == null ? "不明(" + masterId + ")" : master.getName();

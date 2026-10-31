@@ -13,7 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 class ManagedGameJsonResourceTest {
-    @TempDir Path temp;
+    @TempDir
+    Path temp;
 
     @AfterEach
     void clearConfiguration() {
@@ -26,10 +27,10 @@ class ManagedGameJsonResourceTest {
         Path definitions = root.resolve("generations")
                 .resolve("a".repeat(64)).resolve("definitions");
         String[] names = {
-            "mission/1/1.json",
-            "map/mapping.json",
-            "kousyou/kousyou.json",
-            "supplemental/ships.json"
+                "mission/1/1.json",
+                "map/mapping.json",
+                "kousyou/kousyou.json",
+                "supplemental/ships.json"
         };
         for (String name : names) {
             Path file = definitions.resolve(name);
@@ -38,7 +39,7 @@ class ManagedGameJsonResourceTest {
         }
         Files.writeString(root.resolve("active.json"),
                 "{\"schema\":\"logbook-active-data-v1\",\"generation\":\""
-                + "a".repeat(64) + "\"}");
+                        + "a".repeat(64) + "\"}");
         System.setProperty(ExternalQuestDefinitions.ROOT_PROPERTY, root.toString());
 
         for (String name : names) {
@@ -61,7 +62,7 @@ class ManagedGameJsonResourceTest {
         Files.createDirectories(definitions.resolve("map"));
         Files.writeString(root.resolve("active.json"),
                 "{\"schema\":\"logbook-active-data-v1\",\"generation\":\""
-                + "b".repeat(64) + "\"}");
+                        + "b".repeat(64) + "\"}");
         System.setProperty(ExternalQuestDefinitions.ROOT_PROPERTY, root.toString());
 
         assertNull(LogBookCoreServices.getResource("logbook/map/mapping.json"));

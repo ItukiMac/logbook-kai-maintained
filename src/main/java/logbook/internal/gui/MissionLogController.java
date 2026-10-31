@@ -215,7 +215,8 @@ public class MissionLogController extends FeatureUiV1.Window {
         this.readLog();
         this.setCollect();
 
-        this.collect.setSortPolicy((params) -> sortCollect(params.getSortOrder(), this.collect.getRoot().getChildren()));
+        this.collect
+                .setSortPolicy((params) -> sortCollect(params.getSortOrder(), this.collect.getRoot().getChildren()));
         FeatureUiV1.Trees.restoreLayout(this.collect, this.getClass() + "#" + "collect");
 
         // 選択された時のリスナーを設定
@@ -227,10 +228,11 @@ public class MissionLogController extends FeatureUiV1.Window {
                 .addListener(this::chart);
     }
 
-    private boolean sortCollect(List<TreeTableColumn<MissionRecordCollect, ?>> sortOrder, List<TreeItem<MissionRecordCollect>> items) {
+    private boolean sortCollect(List<TreeTableColumn<MissionRecordCollect, ?>> sortOrder,
+            List<TreeItem<MissionRecordCollect>> items) {
         items.sort((o1, o2) -> {
-            MissionRecordCollect c1 = (MissionRecordCollect)o1.getValue();
-            MissionRecordCollect c2 = (MissionRecordCollect)o2.getValue();
+            MissionRecordCollect c1 = (MissionRecordCollect) o1.getValue();
+            MissionRecordCollect c2 = (MissionRecordCollect) o2.getValue();
             for (TreeTableColumn<MissionRecordCollect, ?> column : sortOrder) {
                 int diff = 0;
                 if (column == this.unit) {
@@ -255,7 +257,7 @@ public class MissionLogController extends FeatureUiV1.Window {
         items.forEach(item -> sortCollect(sortOrder, item.getChildren()));
         return true;
     }
-    
+
     @FXML
     void copyDetail(ActionEvent event) {
         FeatureUiV1.Tables.selectionCopy(this.detail);
@@ -343,9 +345,9 @@ public class MissionLogController extends FeatureUiV1.Window {
                 agg.setCount(entry.getValue());
                 double average = ((double) entry.getValue()) / subLog.size();
                 average = BigDecimal.valueOf(entry.getValue())
-                    .divide(BigDecimal.valueOf(subLog.size()), 2, RoundingMode.HALF_UP)
-                    .setScale(2)
-                    .doubleValue();
+                        .divide(BigDecimal.valueOf(subLog.size()), 2, RoundingMode.HALF_UP)
+                        .setScale(2)
+                        .doubleValue();
                 agg.setAverage(average);
 
                 // 資材別の合計を表示する
@@ -425,7 +427,7 @@ public class MissionLogController extends FeatureUiV1.Window {
 
         int index = 0;
         Map<String, Integer> orders = MissionCollection.get().getMissionMap().values().stream().collect(
-                Collectors.toMap(Mission::getName, m -> m.getMapareaId()*10000+m.getId(), (k1, k2) -> k1));
+                Collectors.toMap(Mission::getName, m -> m.getMapareaId() * 10000 + m.getId(), (k1, k2) -> k1));
         for (Period unit : Period.values()) {
             List<MissionRow> list = this.logMap.get(unit);
             // 単位のルート

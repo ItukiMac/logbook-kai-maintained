@@ -28,8 +28,8 @@ public class AirBases {
     }
 
     /** Same formula, with caller-owned captured inputs instead of rereading globals. */
-    public static int airSuperiority(AirBase airBase, Map<Integer,SlotItem> itemMap,
-            Map<Integer,SlotitemMst> itemMstMap) {
+    public static int airSuperiority(AirBase airBase, Map<Integer, SlotItem> itemMap,
+            Map<Integer, SlotitemMst> itemMstMap) {
         // 防空の場合true
         boolean isIntercept = airBase.getActionKind() == 2;
         // 対空値
@@ -74,13 +74,16 @@ public class AirBases {
      * @return 制空値
      */
     public static int airSuperiority(SlotItem item, int onSlot, boolean isIntercept) {
-        if (onSlot <= 0) return 0;
-        return airSuperiority(item, SlotitemMstCollection.get().getSlotitemMap().get(item.getSlotitemId()), onSlot, isIntercept);
+        if (onSlot <= 0)
+            return 0;
+        return airSuperiority(item, SlotitemMstCollection.get().getSlotitemMap().get(item.getSlotitemId()), onSlot,
+                isIntercept);
     }
 
     /** Existing per-squadron formula; does not consult mutable equipment collections. */
     public static int airSuperiority(SlotItem item, SlotitemMst itemMst, int onSlot, boolean isIntercept) {
-        if (onSlot <= 0) return 0;
+        if (onSlot <= 0)
+            return 0;
         if (itemMst == null)
             return 0;
 

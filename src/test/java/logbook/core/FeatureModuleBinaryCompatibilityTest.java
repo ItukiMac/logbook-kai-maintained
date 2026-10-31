@@ -15,9 +15,11 @@ import org.junit.jupiter.api.io.TempDir;
 
 /** Compile against the former SPI, then run the unchanged provider with the new API. */
 class FeatureModuleBinaryCompatibilityTest {
-    @TempDir Path directory;
+    @TempDir
+    Path directory;
 
-    @Test void previouslyCompiledProviderUsesDefaultMetadataWithoutAbstractMethodError() throws Exception {
+    @Test
+    void previouslyCompiledProviderUsesDefaultMetadataWithoutAbstractMethodError() throws Exception {
         Path api = directory.resolve("src/logbook/plugin/api/FeatureModule.java");
         Files.createDirectories(api.getParent());
         Files.writeString(api, """
@@ -52,7 +54,7 @@ class FeatureModuleBinaryCompatibilityTest {
             output.write(Files.readAllBytes(classes.resolve(entry)));
             output.closeEntry();
         }
-        try (var loader = new URLClassLoader(new java.net.URL[]{jar.toUri().toURL()},
+        try (var loader = new URLClassLoader(new java.net.URL[] { jar.toUri().toURL() },
                 FeatureModule.class.getClassLoader())) {
             Class<?> type = loader.loadClass("fixture.LegacyFeatureProvider");
             assertSame(FeatureModule.class, type.getInterfaces()[0]);

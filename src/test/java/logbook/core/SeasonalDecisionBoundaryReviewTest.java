@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 
 /** A selected edition must still be valid when the actual predicate returns. */
 class SeasonalDecisionBoundaryReviewTest {
-    @Test void expiryDuringActualCountEvaluationCannotPublishAConfirmedResult() throws Exception {
+    @Test
+    void expiryDuringActualCountEvaluationCannotPublishAConfirmedResult() throws Exception {
         var clock = new SeasonalQuestRuleServiceTest.MutableClock(SeasonalQuestRuleServiceTest.NOW);
         var resolution = SeasonalQuestRuleServiceTest.service(clock, SeasonalQuestRuleServiceTest.edition())
                 .resolve(840, "eventquest", SeasonalQuestRuleServiceTest.BASE,

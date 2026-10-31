@@ -50,7 +50,8 @@ class SeasonalQuestCollectionTest {
             """;
 
     private record Fixture(AppQuest quest, AppQuestCondition condition,
-            SeasonalQuestRuleServiceTest.MutableClock clock) {}
+            SeasonalQuestRuleServiceTest.MutableClock clock) {
+    }
 
     private static Quest observation(int category, Instant at) {
         var observed = new Quest();
@@ -106,7 +107,8 @@ class SeasonalQuestCollectionTest {
         var fixture = load(rule, category, NOW, NOW, true);
         assertEquals(SELECTED, fixture.condition().getSeasonalSelection().status());
         assertTrue(fixture.condition().isRuleUsableFor(fixture.quest()));
-        assertEquals(1, fixture.condition().getConditions().size(), "The selected candidate must replace the base conditions");
+        assertEquals(1, fixture.condition().getConditions().size(),
+                "The selected candidate must replace the base conditions");
         assertEquals(2, fixture.condition().getConditions().getFirst().getCount());
         return fixture;
     }
@@ -199,7 +201,8 @@ class SeasonalQuestCollectionTest {
         }
     }
 
-    @Test void battlesCountTheInclusiveEditionStartAndPresentInstant() throws Exception {
+    @Test
+    void battlesCountTheInclusiveEditionStartAndPresentInstant() throws Exception {
         var fixture = selected(BATTLE_RULE, 2);
         var actual = collect(fixture, List.of(battle(JST_DATE.format(FROM)), battle(JST_DATE.format(NOW))),
                 List.of(), List.of());
@@ -208,7 +211,8 @@ class SeasonalQuestCollectionTest {
         assertMeasured(fixture, actual, true, 2);
     }
 
-    @Test void battlesRejectPreviousEditionsEndBoundaryFutureAndMalformedDates() throws Exception {
+    @Test
+    void battlesRejectPreviousEditionsEndBoundaryFutureAndMalformedDates() throws Exception {
         var fixture = selected(BATTLE_RULE, 2);
         var excluded = List.of(battle("2024-01-29 00:00:00"), battle(JST_DATE.format(FROM.minusSeconds(1))),
                 battle(JST_DATE.format(UNTIL)), battle(JST_DATE.format(NOW.plusSeconds(1))),
@@ -221,7 +225,8 @@ class SeasonalQuestCollectionTest {
         excluded.forEach(row -> verify(row, never()).getArea());
     }
 
-    @Test void missionsCountTheInclusiveEditionStartAndPresentInstant() throws Exception {
+    @Test
+    void missionsCountTheInclusiveEditionStartAndPresentInstant() throws Exception {
         var fixture = selected(MISSION_RULE, 4);
         var actual = collect(fixture, List.of(), List.of(mission(JST_DATE.format(FROM), "成功"),
                 mission(JST_DATE.format(NOW), "大成功")), List.of());
@@ -229,7 +234,8 @@ class SeasonalQuestCollectionTest {
         assertMeasured(fixture, actual, true, 2);
     }
 
-    @Test void missionsRejectPreviousEditionsEndBoundaryFutureAndMalformedDates() throws Exception {
+    @Test
+    void missionsRejectPreviousEditionsEndBoundaryFutureAndMalformedDates() throws Exception {
         var fixture = selected(MISSION_RULE, 4);
         var excluded = List.of(mission("2024-01-29 00:00:00", "成功"),
                 mission(JST_DATE.format(FROM.minusSeconds(1)), "大成功"),
@@ -241,7 +247,8 @@ class SeasonalQuestCollectionTest {
         excluded.forEach(row -> verify(row, never()).getResult());
     }
 
-    @Test void arrivalsCountOnlyObservedGoalsWithinTheEdition() throws Exception {
+    @Test
+    void arrivalsCountOnlyObservedGoalsWithinTheEdition() throws Exception {
         var fixture = selected(ARRIVAL_RULE, 2);
         var actual = collect(fixture, List.of(), List.of(), List.of(arrival(FROM, FROM.plusMillis(1)),
                 arrival(NOW.minusSeconds(1), NOW)));
@@ -252,7 +259,8 @@ class SeasonalQuestCollectionTest {
         assertMeasured(fixture, actual, true, 2);
     }
 
-    @Test void arrivalsRejectDeparturesBeforeTheEditionEvenWhenGoalsAreInside() throws Exception {
+    @Test
+    void arrivalsRejectDeparturesBeforeTheEditionEvenWhenGoalsAreInside() throws Exception {
         var fixture = selected(ARRIVAL_RULE, 2);
         var actual = collect(fixture, List.of(), List.of(), List.of(arrival(FROM.minusMillis(1), FROM),
                 arrival(FROM.minusSeconds(60), FROM.plusSeconds(1))));
@@ -261,7 +269,8 @@ class SeasonalQuestCollectionTest {
         assertMeasured(fixture, actual, false, 0);
     }
 
-    @Test void arrivalsRejectPreviousEditionsEndBoundaryAndFutureGoals() throws Exception {
+    @Test
+    void arrivalsRejectPreviousEditionsEndBoundaryAndFutureGoals() throws Exception {
         var fixture = selected(ARRIVAL_RULE, 2);
         Instant previousYear = Instant.parse("2024-01-28T15:00:00Z");
         var actual = collect(fixture, List.of(), List.of(), List.of(
@@ -276,7 +285,8 @@ class SeasonalQuestCollectionTest {
         assertMeasured(fixture, actual, false, 0);
     }
 
-    @Test void unresolvedEvidenceAndMissingOrStaleObservationReadNoPlayerStores() throws Exception {
+    @Test
+    void unresolvedEvidenceAndMissingOrStaleObservationReadNoPlayerStores() throws Exception {
         for (String rule : List.of(BATTLE_RULE, MISSION_RULE, ARRIVAL_RULE)) {
             int category = rule.equals(MISSION_RULE) ? 4 : 2;
             for (Fixture fixture : List.of(load(rule, category, NOW, NOW, false),
@@ -289,7 +299,8 @@ class SeasonalQuestCollectionTest {
         }
     }
 
-    @Test void selectedRuleCannotBeReusedForDifferentQuestIdsDetailsOrObservationTimes() throws Exception {
+    @Test
+    void selectedRuleCannotBeReusedForDifferentQuestIdsDetailsOrObservationTimes() throws Exception {
         for (String rule : List.of(BATTLE_RULE, MISSION_RULE, ARRIVAL_RULE)) {
             int category = rule.equals(MISSION_RULE) ? 4 : 2;
             var fixture = selected(rule, category);
@@ -301,8 +312,10 @@ class SeasonalQuestCollectionTest {
             changedDetail.getQuest().setDetail("different required ships");
             var changedObservation = quest(observation(category, NOW.plusMillis(1)));
             var missingObservation = quest(observation(category, null));
-            for (var other : List.of(wrongOuterId, wrongInnerId, changedDetail, changedObservation, missingObservation)) {
-                assertTrue(fixture.condition().isRuleUsable(), "The edition remains selected for its original observation");
+            for (var other : List.of(wrongOuterId, wrongInnerId, changedDetail, changedObservation,
+                    missingObservation)) {
+                assertTrue(fixture.condition().isRuleUsable(),
+                        "The edition remains selected for its original observation");
                 assertFalse(fixture.condition().isRuleUsableFor(other));
                 assertUnknownWithoutStoreReads(fixture, other);
             }
@@ -312,7 +325,8 @@ class SeasonalQuestCollectionTest {
         }
     }
 
-    @Test void loadedSelectionStopsReadingStoresAtExpiryAndObservationFreshnessBoundary() throws Exception {
+    @Test
+    void loadedSelectionStopsReadingStoresAtExpiryAndObservationFreshnessBoundary() throws Exception {
         for (Instant deadline : List.of(UNTIL, NOW.plus(SeasonalQuestRuleService.MAX_OBSERVATION_AGE))) {
             var fixture = selected(BATTLE_RULE, 2);
             fixture.clock().now = deadline;
@@ -320,7 +334,8 @@ class SeasonalQuestCollectionTest {
         }
     }
 
-    @Test void collectedSuccessBecomesUnknownIfTheSelectedEditionExpiresBeforeDisplay() throws Exception {
+    @Test
+    void collectedSuccessBecomesUnknownIfTheSelectedEditionExpiresBeforeDisplay() throws Exception {
         for (Instant deadline : List.of(UNTIL, NOW.plus(SeasonalQuestRuleService.MAX_OBSERVATION_AGE))) {
             var fixture = selected(BATTLE_RULE, 2);
             var actual = collect(fixture, List.of(battle(JST_DATE.format(FROM)), battle(JST_DATE.format(NOW))),

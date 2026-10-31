@@ -137,7 +137,7 @@ public class CombinedBattleEcBattle implements ICombinedEcBattle, ISortieBattle,
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたCombinedBattleEcBattle
      */
     @Override
@@ -162,7 +162,7 @@ public class CombinedBattleEcBattle implements ICombinedEcBattle, ISortieBattle,
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);
         }
-        
+
         JsonHelper.bind(json, unUsedKeyBindListener)
                 .set("api_air_base_injection", bean::setAirBaseInjection,
                         BattleTypes.AirBaseAttack::toAirBaseAttack)
@@ -203,7 +203,7 @@ public class CombinedBattleEcBattle implements ICombinedEcBattle, ISortieBattle,
                 .set("api_hougeki2", bean::setHougeki2, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki3", bean::setHougeki3, BattleTypes.Hougeki::toHougeki)
                 .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki);
-        
+
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             for (String key : unUsedKey) {

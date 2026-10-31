@@ -8,28 +8,17 @@ import java.util.stream.Stream;
  */
 public enum SeaArea {
 
-    識別札1("第三十一戦隊", 1, 4),
-    識別札2("増強第三十一戦隊", 2, 14),
-    識別札3("多号作戦部隊", 3, 16),
-    識別札4("連合艦隊", 4, 18),
-    識別札5("ウルシー攻撃部隊", 5, 20),
-    識別札6("第六艦隊", 6, 22),
-    識別札7("仏第3艦隊", 7, 24),
-    識別札8("仏地中海艦隊", 8, 26),
-    識別札9("2-eme Escadre Leoele", 9, 28),
-    識別札10("イギリス救援艦隊", 10, 5),
-    識別札11("Forth de Raid", 11, 7),
-    識別札12("Forth H", 12, 9),
-    識別札13("欧州連合艦隊", 13, 11),
-    識別札14("識別札14", 14, 37)
-    ;
+    識別札1("第三十一戦隊", 1, 4), 識別札2("増強第三十一戦隊", 2, 14), 識別札3("多号作戦部隊", 3, 16), 識別札4("連合艦隊", 4, 18), 識別札5("ウルシー攻撃部隊", 5,
+            20), 識別札6("第六艦隊", 6, 22), 識別札7("仏第3艦隊", 7, 24), 識別札8("仏地中海艦隊", 8, 26), 識別札9("2-eme Escadre Leoele", 9,
+                    28), 識別札10("イギリス救援艦隊", 10, 5), 識別札11("Forth de Raid", 11,
+                            7), 識別札12("Forth H", 12, 9), 識別札13("欧州連合艦隊", 13, 11), 識別札14("識別札14", 14, 37);
 
     /** 名前 */
     private String name;
 
     /** 海域(イベント海域のお札) */
     private int area;
-    
+
     /** お札アイコンのNo
      *  resources\common\common_event
      *  */
@@ -64,7 +53,7 @@ public enum SeaArea {
     public int getImageId() {
         return this.imageNo;
     }
-    
+
     /**
      * お札アイコンのNoを取得します。
      * @param 海域(イベント海域のお札)
@@ -73,11 +62,11 @@ public enum SeaArea {
     public static int getImageId(int area) {
         SeaArea seaArea = fromArea(area);
         if (seaArea == null) {
-           return 0; 
+            return 0;
         }
         return seaArea.getImageId();
     }
-    
+
     @Override
     public String toString() {
         return this.name;
@@ -92,5 +81,5 @@ public enum SeaArea {
     public static SeaArea fromArea(int area) {
         return Stream.of(SeaArea.values()).filter(s -> s.getArea() == area).findAny().orElse(null);
     }
-    
+
 }

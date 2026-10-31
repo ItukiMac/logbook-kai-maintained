@@ -149,7 +149,7 @@ public class ShipMst implements Serializable {
 
     /**
      * この艦船定義から{@link ShipType}を返します。
-     * 
+     *
      * @return {@link ShipType}
      */
     public ShipType asShipType() {
@@ -185,12 +185,12 @@ public class ShipMst implements Serializable {
      */
     public static ShipMst toShip(JsonObject json) {
         ShipMst bean = new ShipMst();
-        
+
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);
         }
-        
+
         JsonHelper.bind(json, unUsedKeyBindListener)
                 .setInteger("api_id", bean::setId)
                 .setInteger("api_sortno", bean::setSortno)
@@ -224,7 +224,7 @@ public class ShipMst implements Serializable {
             unUsedKey.remove("api_broken"); //解体資材
             unUsedKey.remove("api_buildtime"); //建造時間
             unUsedKey.remove("api_voicef"); //ボイス設定フラグ
-            
+
             for (String key : unUsedKey) {
                 LoggerHolder.get().debug("未使用のKeyを検出 : " + key + ":" + json.get(key));
             }

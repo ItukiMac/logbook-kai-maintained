@@ -12,7 +12,9 @@ class GameDefinitionRollbackIdentityTest {
     private static GameDefinitionSnapshot snapshot(String id, String value) {
         return new GameDefinitionSnapshot(id, Map.of("logbook/quest/1.json", value.getBytes(StandardCharsets.UTF_8)));
     }
-    @Test void changedPreviousGenerationIsRejectedWithoutEventOrSequenceGap() {
+
+    @Test
+    void changedPreviousGenerationIsRejectedWithoutEventOrSequenceGap() {
         var service = new GameDefinitionService(e -> fail(e));
         var events = new ArrayList<Long>();
         service.subscribe(event -> events.add(event.sequence()));
@@ -26,7 +28,9 @@ class GameDefinitionRollbackIdentityTest {
         assertEquals(List.of(1L, 2L, 3L), events);
         assertEquals(snapshot("A", "original").fingerprint(), retained.fingerprint());
     }
-    @Test void genuineRollbackRetainsTheOriginalIdentity() {
+
+    @Test
+    void genuineRollbackRetainsTheOriginalIdentity() {
         var service = new GameDefinitionService(e -> fail(e));
         var first = service.publish(snapshot("A", "original"));
         service.publish(snapshot("B", "second"));
@@ -35,10 +39,13 @@ class GameDefinitionRollbackIdentityTest {
         assertEquals(first.fingerprint(), rollback.fingerprint());
         assertSame(rollback, service.snapshot());
     }
-    @Test void moreThanOneInterveningGenerationDoesNotForgetIdentity() {
+
+    @Test
+    void moreThanOneInterveningGenerationDoesNotForgetIdentity() {
         var service = new GameDefinitionService(e -> fail(e));
         service.publish(snapshot("A", "original"));
-        for (int n = 0; n < 100; n++) service.publish(snapshot("next-" + n, "new-" + n));
+        for (int n = 0; n < 100; n++)
+            service.publish(snapshot("next-" + n, "new-" + n));
         assertThrows(IllegalArgumentException.class, () -> service.publish(snapshot("A", "tampered")));
         assertEquals("next-99", service.snapshot().generation());
     }

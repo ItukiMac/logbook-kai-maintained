@@ -67,7 +67,7 @@ public class ResponseMetaDataWrapper implements ResponseMetaData, Cloneable {
     public void set(HttpServletResponse res) {
         this.setStatus(res.getStatus());
         this.setContentType(res.getContentType());
-        
+
         java.util.Map<String, String> headerMap = new java.util.LinkedHashMap<>();
         java.util.Collection<String> headerNames = res.getHeaderNames();
         if (headerNames != null) {
@@ -102,7 +102,8 @@ public class ResponseMetaDataWrapper implements ResponseMetaData, Cloneable {
     public static void validateBody(InputStream body) throws IOException {
         try (InputStream decoded = decoded(body, MAX_DECODED_BYTES)) {
             byte[] buffer = new byte[8192];
-            while (decoded.read(buffer) != -1) { /* Bounded streaming validation, no retained decoded copy. */ }
+            while (decoded.read(buffer) != -1) {
+                /* Bounded streaming validation, no retained decoded copy. */ }
         }
     }
 

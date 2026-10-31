@@ -115,7 +115,8 @@ public class Tools {
         public static void defaultCloseAction(WindowController controller, String subkey) {
             if (controller.getWindow() != null) {
                 EventHandler<WindowEvent> action = e -> {
-                    String key = controller.getClass().getCanonicalName()+ Optional.ofNullable(subkey).map(str -> "#"+ str).orElse("");
+                    String key = controller.getClass().getCanonicalName()
+                            + Optional.ofNullable(subkey).map(str -> "#" + str).orElse("");
                     AppConfig.get()
                             .getWindowLocationMap()
                             .put(key, controller.getWindowLocation());
@@ -139,7 +140,8 @@ public class Tools {
          * @param subkey String
          */
         public static void defaultOpenAction(WindowController controller, String subkey) {
-            String key = controller.getClass().getCanonicalName() + Optional.ofNullable(subkey).map(str -> "#"+ str).orElse("");
+            String key = controller.getClass().getCanonicalName()
+                    + Optional.ofNullable(subkey).map(str -> "#" + str).orElse("");
             WindowLocation location = AppConfig.get()
                     .getWindowLocationMap()
                     .get(key);
@@ -269,7 +271,7 @@ public class Tools {
          * @param ownerWindow 親Window
          */
         public static void showNotify(Node node, String title, String message, Duration hide) {
-            showNotify(node, title, message, hide, 
+            showNotify(node, title, message, hide,
                     Optional.ofNullable(AppConfig.get().getToastLocation()).map(Pos::valueOf).orElse(Pos.BOTTOM_RIGHT),
                     WindowHolder.getInstance().getMainWindow());
         }
@@ -284,7 +286,7 @@ public class Tools {
          * @param ownerWindow 親Window
          */
         public static void showNotify(Node node, String title, String message, Duration hide, Stage ownerWindow) {
-            showNotify(node, title, message, hide, 
+            showNotify(node, title, message, hide,
                     Optional.ofNullable(AppConfig.get().getToastLocation()).map(Pos::valueOf).orElse(Pos.BOTTOM_RIGHT),
                     ownerWindow);
         }
@@ -299,7 +301,8 @@ public class Tools {
          * @param pos 出す位置
          * @param ownerWindow 親Window
          */
-        public static void showNotify(Node node, String title, String message, Duration hide, Pos position, Stage ownerWindow) {
+        public static void showNotify(Node node, String title, String message, Duration hide, Pos position,
+                Stage ownerWindow) {
             Notifications notifications = Notifications.create()
                     .graphic(node)
                     .title(title)
@@ -331,7 +334,7 @@ public class Tools {
 
         /**
          * SplitPaneの分割サイズを設定する
-         * 
+         *
          * @param pane SplitPane
          * @param key SplitPaneのキー
          */
@@ -354,11 +357,11 @@ public class Tools {
 
         /**
          * 親子関係のある CheckBox を bind します。
-         * 
+         *
          * 親を選択した場合、子は全部選択され、親を非選択した場合は子も全部非選択されます。
          * すべての子が選択されていたら親を選択し、すべての子が非選択ならば親も非選択にします。
          * 子が選択非選択混ざっている場合は親は不定にします。
-         * 
+         *
          * @param parent 親の CheckBox
          * @param children 子供の CheckBox
          */
@@ -430,7 +433,7 @@ public class Tools {
          * @param table テーブル
          * @param key テーブルのキー名
          */
-        public static  <S> void setWidth(Supplier<Stream<? extends TableColumnBase<S, ?>>> columns, String key) {
+        public static <S> void setWidth(Supplier<Stream<? extends TableColumnBase<S, ?>>> columns, String key) {
             Map<String, Double> setting = AppConfig.get()
                     .getColumnWidthMap()
                     .get(key);
@@ -456,19 +459,25 @@ public class Tools {
 
         public interface AbstractTable<S, C extends TableColumnBase<?, ?>> {
             public Stream<C> getColumns();
+
             public ObservableList<C> getTopColumns();
+
             public ObservableList<C> getSortOrder();
+
             public String getSortType(C column);
+
             public void setSortType(C column, String type);
+
             public ObjectProperty<?> sortTypeProperty(C column);
         }
-        
+
         public static class TableWrapper<S> implements AbstractTable<S, TableColumn<S, ?>> {
             private final TableView<S> table;
+
             TableWrapper(TableView<S> table) {
                 this.table = table;
             }
-            
+
             @Override
             public Stream<TableColumn<S, ?>> getColumns() {
                 return Tables.getColumns(this.table);
@@ -502,10 +511,11 @@ public class Tools {
 
         public static class TreeWrapper<S> implements AbstractTable<S, TreeTableColumn<S, ?>> {
             private final TreeTableView<S> tree;
+
             TreeWrapper(TreeTableView<S> table) {
                 this.tree = table;
             }
-            
+
             @Override
             public Stream<TreeTableColumn<S, ?>> getColumns() {
                 return Trees.getColumns(this.tree);
@@ -536,7 +546,7 @@ public class Tools {
                 return column.sortTypeProperty();
             }
         }
-        
+
         /**
          * テーブルソート列の設定を行う
          * @param table テーブル
@@ -573,7 +583,7 @@ public class Tools {
             setting.clear();
             sortOrder.stream().forEach(col -> setting.put(getColumnName(col), table.getSortType(col)));
         }
-        
+
         /**
          * テーブル列の並び順の設定を行う
          * @param table テーブル
@@ -588,7 +598,7 @@ public class Tools {
                 for (int i = 0; i < setting.size() && i < columns.size(); i++) {
                     if (!setting.get(i).equals(columns.get(i).getText())) {
                         // 並び順が違うので探す
-                        for (int j = i+1; j < columns.size(); j++) {
+                        for (int j = i + 1; j < columns.size(); j++) {
                             if (setting.get(i).equals(columns.get(j).getText())) {
                                 // 見つかった
                                 C column = columns.remove(j);
@@ -603,7 +613,7 @@ public class Tools {
             // 並び順が変更された時に設定を保存する
             columns.addListener((ListChangeListener<C>) e -> {
                 AppConfig.get().getColumnOrderMap()
-                    .put(key, e.getList().stream().map(TableColumnBase::getText).collect(Collectors.toList()));
+                        .put(key, e.getList().stream().map(TableColumnBase::getText).collect(Collectors.toList()));
             });
         }
 
@@ -628,7 +638,7 @@ public class Tools {
             }
         }
     }
-    
+
     /**
      * TableViewに関係するメソッドを集めたクラス
      *
@@ -827,7 +837,7 @@ public class Tools {
             return Stream.of(column);
         }
     }
-    
+
     public static class Trees extends TablesTreesBase {
         /**
          * テーブル列の幅の設定を行う
@@ -837,7 +847,7 @@ public class Tools {
         public static void setWidth(TreeTableView<?> tree, String key) {
             TablesTreesBase.setWidth(() -> getColumns(tree), key);
         }
-        
+
         /**
          * テーブルソート列の設定を行う
          * @param table テーブル

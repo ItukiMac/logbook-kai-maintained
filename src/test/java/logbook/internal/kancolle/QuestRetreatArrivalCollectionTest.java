@@ -55,17 +55,19 @@ class QuestRetreatArrivalCollectionTest {
         var masters = new ShipMstCollection();
         masters.getShipMap().put(101, master(101, "flag"));
         masters.getShipMap().put(102, master(102, "retired"));
-        if (!unknownSurvivor) masters.getShipMap().put(103, master(103, "required"));
+        if (!unknownSurvivor)
+            masters.getShipMap().put(103, master(103, "required"));
 
         try (var durationService = mockStatic(AppQuestDuration.class);
-             var masterService = mockStatic(ShipMstCollection.class);
-             var mapService = mockStatic(MapinfoMstCollection.class);
-             var disk = mockStatic(PortArrivalRuntime.class)) {
+                var masterService = mockStatic(ShipMstCollection.class);
+                var mapService = mockStatic(MapinfoMstCollection.class);
+                var disk = mockStatic(PortArrivalRuntime.class)) {
             durationService.when(AppQuestDuration::get).thenReturn(durations);
             masterService.when(ShipMstCollection::get).thenReturn(masters);
             mapService.when(MapinfoMstCollection::get).thenReturn(new MapinfoMstCollection());
             disk.when(() -> PortArrivalRuntime.readFleet(arrival)).thenAnswer(call -> {
-                if (corrupt) throw new IOException("Synthetic inconsistent fleet evidence");
+                if (corrupt)
+                    throw new IOException("Synthetic inconsistent fleet evidence");
                 return evidence;
             });
             var result = QuestCollect.collect(quest, condition);
@@ -74,7 +76,8 @@ class QuestRetreatArrivalCollectionTest {
         }
     }
 
-    @Test void provenRetreatSurvivorsCanSatisfyTheirOriginalPosition() throws Exception {
+    @Test
+    void provenRetreatSurvivorsCanSatisfyTheirOriginalPosition() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{\"fleet\":{\"name\":[\"required\"],\"order\":3}}");
         var result = collect(condition, arrival, Optional.of(survivors(arrival)), false, false, true);
@@ -83,7 +86,8 @@ class QuestRetreatArrivalCollectionTest {
         assertFalse(result.isArrivalEvidenceUnavailable());
     }
 
-    @Test void provenVacancyNeverPromotesAThirdSlotSurvivor() throws Exception {
+    @Test
+    void provenVacancyNeverPromotesAThirdSlotSurvivor() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{\"fleet\":{\"name\":[\"required\"],\"order\":2}}");
         var result = collect(condition, arrival, Optional.of(survivors(arrival)), false, false, true);
@@ -91,14 +95,16 @@ class QuestRetreatArrivalCollectionTest {
         assertFalse(condition.test(result));
     }
 
-    @Test void departureMemberThatRetreatedDoesNotMeetPresenceCondition() throws Exception {
+    @Test
+    void departureMemberThatRetreatedDoesNotMeetPresenceCondition() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{\"fleet\":{\"name\":[\"retired\"]}}");
         var result = collect(condition, arrival, Optional.of(survivors(arrival)), false, false, true);
         assertEquals(0, result.getTotal().getArrivals());
     }
 
-    @Test void noRetreatRequirementStillRejectsAProvenSurvivingFleet() throws Exception {
+    @Test
+    void noRetreatRequirementStillRejectsAProvenSurvivingFleet() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{\"noRetreat\":true,\"fleet\":{\"name\":[\"flag\"],\"order\":1}}");
         var result = collect(condition, arrival, Optional.of(survivors(arrival)), false, false, false);
@@ -106,7 +112,8 @@ class QuestRetreatArrivalCollectionTest {
         assertFalse(condition.test(result));
     }
 
-    @Test void legacyRetreatRecordWithoutSeparateEvidenceKeepsFailingClosed() throws Exception {
+    @Test
+    void legacyRetreatRecordWithoutSeparateEvidenceKeepsFailingClosed() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{\"fleet\":{\"name\":[\"flag\"],\"order\":1}}");
         var result = collect(condition, arrival, Optional.empty(), false, false, true);
@@ -114,7 +121,8 @@ class QuestRetreatArrivalCollectionTest {
         assertFalse(result.isArrivalEvidenceUnavailable());
     }
 
-    @Test void brokenSurvivorEvidenceIsVisibleAsUnavailable() throws Exception {
+    @Test
+    void brokenSurvivorEvidenceIsVisibleAsUnavailable() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{\"fleet\":{\"name\":[\"flag\"],\"order\":1}}");
         var result = collect(condition, arrival, Optional.empty(), true, false, true);
@@ -123,14 +131,16 @@ class QuestRetreatArrivalCollectionTest {
         assertTrue(condition.getConditions().getFirst().getCurrent().contains("確認できません"));
     }
 
-    @Test void unknownLivingMasterCannotBeSilentlyRemovedFromTheFleet() throws Exception {
+    @Test
+    void unknownLivingMasterCannotBeSilentlyRemovedFromTheFleet() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{\"fleet\":{\"name\":[\"flag\"],\"order\":1}}");
         var result = collect(condition, arrival, Optional.of(survivors(arrival)), false, true, true);
         assertEquals(0, result.getTotal().getArrivals());
     }
 
-    @Test void ordinaryLegacyArrivalKeepsItsExistingFleetEvaluation() throws Exception {
+    @Test
+    void ordinaryLegacyArrivalKeepsItsExistingFleetEvaluation() throws Exception {
         var arrival = arrival(true);
         var condition = rule("{\"fleet\":{\"name\":[\"required\"],\"order\":3}}");
         var result = collect(condition, arrival, Optional.empty(), false, false, false);
@@ -138,14 +148,16 @@ class QuestRetreatArrivalCollectionTest {
         assertTrue(condition.test(result));
     }
 
-    @Test void ordinaryLegacyArrivalWithUnknownMasterStillFailsClosed() throws Exception {
+    @Test
+    void ordinaryLegacyArrivalWithUnknownMasterStillFailsClosed() throws Exception {
         var arrival = arrival(true);
         var condition = rule("{\"fleet\":{\"name\":[\"flag\"],\"order\":1}}");
         var result = collect(condition, arrival, Optional.empty(), false, true, false);
         assertEquals(0, result.getTotal().getArrivals());
     }
 
-    @Test void deckAndAreaRestrictionsRemainAheadOfSurvivorEvaluation() throws Exception {
+    @Test
+    void deckAndAreaRestrictionsRemainAheadOfSurvivorEvaluation() throws Exception {
         var arrival = arrival(false);
         for (String restriction : List.of("\"deckIds\":[2]", "\"area\":[\"1-5\"]")) {
             var condition = rule("{" + restriction + ",\"fleet\":{\"name\":[\"flag\"],\"order\":1}}");
@@ -154,7 +166,8 @@ class QuestRetreatArrivalCollectionTest {
         }
     }
 
-    @Test void noFleetConditionDoesNotInventANewSurvivorRequirement() throws Exception {
+    @Test
+    void noFleetConditionDoesNotInventANewSurvivorRequirement() throws Exception {
         var arrival = arrival(false);
         var condition = rule("{}");
         var result = collect(condition, arrival, Optional.empty(), false, false, false);

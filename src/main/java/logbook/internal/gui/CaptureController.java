@@ -203,7 +203,8 @@ public class CaptureController extends WindowController {
                 this.mapInfoLastModified = Mapinfo.get().getLastModified();
                 this.autoBattleCaptureTimeline = new Timeline();
                 this.autoBattleCaptureTimeline.setCycleCount(Timeline.INDEFINITE);
-                this.autoBattleCaptureTimeline.getKeyFrames().add(new KeyFrame(Duration.seconds(3), this::checkBattleStartEnd));
+                this.autoBattleCaptureTimeline.getKeyFrames()
+                        .add(new KeyFrame(Duration.seconds(3), this::checkBattleStartEnd));
                 this.autoBattleCaptureTimeline.play();
             }
         } else {
@@ -247,7 +248,7 @@ public class CaptureController extends WindowController {
             }
         }
     }
-    
+
     @FXML
     void cutNone(ActionEvent event) {
         this.sc.setCutRect(ScreenCapture.CutType.NONE.getAngle());
@@ -412,18 +413,19 @@ public class CaptureController extends WindowController {
         this.detectAction();
         if (this.sc == null) {
             Optional.ofNullable(AppViewConfig.get().getCaptureConfig())
-                .map(CaptureConfig::getBounds)
-                .ifPresent(bounds -> {
-                    // 前の状態を復元する
-                    GraphicsConfiguration gc = this.currentGraphicsConfiguration();
-                    try {
-                        Robot robot = new Robot(gc.getDevice());
-                        Rectangle rect = new Rectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
-                        setBounds(robot, rect);
-                    } catch (AWTException e) {
-                        // could not restored but just ignore
-                    }
-                });
+                    .map(CaptureConfig::getBounds)
+                    .ifPresent(bounds -> {
+                        // 前の状態を復元する
+                        GraphicsConfiguration gc = this.currentGraphicsConfiguration();
+                        try {
+                            Robot robot = new Robot(gc.getDevice());
+                            Rectangle rect = new Rectangle(bounds.getX(), bounds.getY(), bounds.getWidth(),
+                                    bounds.getHeight());
+                            setBounds(robot, rect);
+                        } catch (AWTException e) {
+                            // could not restored but just ignore
+                        }
+                    });
         }
     }
 
@@ -750,16 +752,16 @@ public class CaptureController extends WindowController {
         this.sc = new ScreenCapture(robot, fixed);
         this.sc.setItems(this.images);
         this.sc.setCurrent(this.preview);
-        
+
         CaptureConfig config = AppViewConfig.get().getCaptureConfig();
         if (config == null) {
             config = new CaptureConfig();
         }
         CaptureConfig.Bounds bounds = new CaptureConfig.Bounds();
-        bounds.setX((int)fixed.getMinX());
-        bounds.setY((int)fixed.getMinY());
-        bounds.setWidth((int)fixed.getWidth());
-        bounds.setHeight((int)fixed.getHeight());
+        bounds.setX((int) fixed.getMinX());
+        bounds.setY((int) fixed.getMinY());
+        bounds.setWidth((int) fixed.getWidth());
+        bounds.setHeight((int) fixed.getHeight());
         config.setBounds(bounds);
         AppViewConfig.get().setCaptureConfig(config);
     }
@@ -773,9 +775,7 @@ public class CaptureController extends WindowController {
 
     private static enum ButtonState {
 
-        CAPTURE("キャプチャ", "start"),
-        START("開始", "start"),
-        STOP("停止", "stop");
+        CAPTURE("キャプチャ", "start"), START("開始", "start"), STOP("停止", "stop");
 
         @Getter
         private String name;

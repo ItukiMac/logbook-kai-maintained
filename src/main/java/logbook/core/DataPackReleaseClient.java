@@ -41,14 +41,15 @@ public final class DataPackReleaseClient {
      */
     public static boolean refreshConfiguredData() throws IOException {
         try {
-        if (!Boolean.getBoolean(AUTO_UPDATE_PROPERTY)) return false;
-        String rootValue = System.getProperty(ExternalQuestDefinitions.ROOT_PROPERTY);
-        if (rootValue == null || rootValue.isBlank()) {
-            throw new IOException("Data auto-update needs -Dlogbook.data.root");
-        }
-        Path root = Path.of(rootValue).toAbsolutePath().normalize();
-        JsonNode index = JSON.readTree(readLimited(URI.create(INDEX_URL), 8L * 1024 * 1024));
-        return applyRelease(index, root, DataPackReleaseClient::downloadLimited);
+            if (!Boolean.getBoolean(AUTO_UPDATE_PROPERTY))
+                return false;
+            String rootValue = System.getProperty(ExternalQuestDefinitions.ROOT_PROPERTY);
+            if (rootValue == null || rootValue.isBlank()) {
+                throw new IOException("Data auto-update needs -Dlogbook.data.root");
+            }
+            Path root = Path.of(rootValue).toAbsolutePath().normalize();
+            JsonNode index = JSON.readTree(readLimited(URI.create(INDEX_URL), 8L * 1024 * 1024));
+            return applyRelease(index, root, DataPackReleaseClient::downloadLimited);
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
@@ -61,7 +62,8 @@ public final class DataPackReleaseClient {
     static boolean applyRelease(JsonNode releaseIndex, Path root, ReleaseDownloader downloader)
             throws IOException {
         Optional<DataRelease> selected = selectRelease(releaseIndex);
-        if (selected.isEmpty()) return false;
+        if (selected.isEmpty())
+            return false;
 
         DataRelease release = selected.get();
         Path active;
@@ -97,27 +99,29 @@ public final class DataPackReleaseClient {
                 continue;
             }
             JsonNode assets = release.path("assets");
-            if (!assets.isArray()) continue;
-            for (String assetName : new String[] {CAPABILITY_ASSET_NAME, ASSET_NAME}) {
-              for (JsonNode asset : assets) {
-                if (!assetName.equals(asset.path("name").asText())) continue;
-                String digest = asset.path("digest").asText("");
-                String url = asset.path("browser_download_url").asText("");
-                if (!digest.matches("sha256:[0-9a-fA-F]{64}")) {
-                    throw new IOException("Data Release SHA-256 digest is invalid");
+            if (!assets.isArray())
+                continue;
+            for (String assetName : new String[] { CAPABILITY_ASSET_NAME, ASSET_NAME }) {
+                for (JsonNode asset : assets) {
+                    if (!assetName.equals(asset.path("name").asText()))
+                        continue;
+                    String digest = asset.path("digest").asText("");
+                    String url = asset.path("browser_download_url").asText("");
+                    if (!digest.matches("sha256:[0-9a-fA-F]{64}")) {
+                        throw new IOException("Data Release SHA-256 digest is invalid");
+                    }
+                    URI uri;
+                    try {
+                        uri = URI.create(url);
+                    } catch (IllegalArgumentException e) {
+                        throw new IOException("Malformed data Release URL", e);
+                    }
+                    if (!isTrustedAssetUri(uri, tag, assetName)) {
+                        throw new IOException("Data Release asset is outside maintained GitHub repository");
+                    }
+                    return Optional.of(new DataRelease(tag,
+                            digest.substring(7).toLowerCase(Locale.ROOT), uri));
                 }
-                URI uri;
-                try {
-                    uri = URI.create(url);
-                } catch (IllegalArgumentException e) {
-                    throw new IOException("Malformed data Release URL", e);
-                }
-                if (!isTrustedAssetUri(uri, tag, assetName)) {
-                    throw new IOException("Data Release asset is outside maintained GitHub repository");
-                }
-                return Optional.of(new DataRelease(tag,
-                        digest.substring(7).toLowerCase(Locale.ROOT), uri));
-              }
             }
         }
         return Optional.empty();
@@ -131,7 +135,7 @@ public final class DataPackReleaseClient {
                 && uri.getRawQuery() == null
                 && uri.getRawFragment() == null
                 && ("/" + OWNER_REPO + "/releases/download/" + tag + "/" + assetName)
-                    .equals(uri.getRawPath());
+                        .equals(uri.getRawPath());
     }
 
     private static byte[] readLimited(URI uri, long maximum) throws IOException {
@@ -195,7 +199,8 @@ public final class DataPackReleaseClient {
                     stream.write(buffer, 0, n);
                     digest.update(buffer, 0, n);
                 }
-                if (total == 0) throw new IOException("Empty definition archive");
+                if (total == 0)
+                    throw new IOException("Empty definition archive");
             }
             if (!expectedDigest.equals(HexFormat.of().formatHex(digest.digest()))) {
                 throw new IOException("Data Release SHA-256 mismatch");
@@ -205,5 +210,6 @@ public final class DataPackReleaseClient {
         }
     }
 
-    record DataRelease(String tag, String sha256, URI download) {}
+    record DataRelease(String tag, String sha256, URI download) {
+    }
 }

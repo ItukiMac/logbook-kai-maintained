@@ -24,7 +24,8 @@ public final class PublicAutoCompletion implements AutoCloseable {
     private final ListView<String> list = new ListView<>();
     private final ChangeListener<String> textListener = (o, a, b) -> schedule();
     private final ChangeListener<Boolean> focusListener = (o, a, focused) -> {
-        if (!focused) popup.hide();
+        if (!focused)
+            popup.hide();
     };
     private final ChangeListener<Scene> sceneListener = (o, a, b) -> popup.hide();
     private final EventHandler<KeyEvent> keyHandler = this::keyPressed;
@@ -43,7 +44,8 @@ public final class PublicAutoCompletion implements AutoCloseable {
         Objects.requireNonNull(field);
         Objects.requireNonNull(provider);
         Object previous = field.getProperties().get(KEY);
-        if (previous instanceof PublicAutoCompletion binding) binding.close();
+        if (previous instanceof PublicAutoCompletion binding)
+            binding.close();
         PublicAutoCompletion binding = new PublicAutoCompletion(field, provider);
         field.getProperties().put(KEY, binding);
         return binding;
@@ -55,7 +57,8 @@ public final class PublicAutoCompletion implements AutoCloseable {
         list.setFixedCellSize(26);
         list.setFocusTraversable(false);
         list.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) choose();
+            if (event.getButton() == MouseButton.PRIMARY)
+                choose();
         });
         popup.getContent().add(list);
         popup.setAutoHide(true);
@@ -69,12 +72,14 @@ public final class PublicAutoCompletion implements AutoCloseable {
     }
 
     private void schedule() {
-        if (closed || choosing || scheduled) return;
+        if (closed || choosing || scheduled)
+            return;
         scheduled = true;
         // Coalesce text/IME events. Never display intermediate composition text.
         Platform.runLater(() -> {
             scheduled = false;
-            if (!closed) refresh();
+            if (!closed)
+                refresh();
         });
     }
 
@@ -93,7 +98,8 @@ public final class PublicAutoCompletion implements AutoCloseable {
             return;
         }
         Bounds screen = field.localToScreen(field.getBoundsInLocal());
-        if (screen == null) return;
+        if (screen == null)
+            return;
         list.setPrefSize(Math.max(180, screen.getWidth()), Math.min(8, values.size()) * 26 + 4);
         list.getSelectionModel().selectFirst();
         if (popup.isShowing()) {
@@ -105,7 +111,8 @@ public final class PublicAutoCompletion implements AutoCloseable {
     }
 
     private void keyPressed(KeyEvent event) {
-        if (closed || composing || !popup.isShowing()) return;
+        if (closed || composing || !popup.isShowing())
+            return;
         KeyCode code = event.getCode();
         if (code == KeyCode.DOWN || code == KeyCode.UP) {
             int selected = list.getSelectionModel().getSelectedIndex();
@@ -127,7 +134,8 @@ public final class PublicAutoCompletion implements AutoCloseable {
 
     private void choose() {
         String selected = list.getSelectionModel().getSelectedItem();
-        if (closed || composing || selected == null) return;
+        if (closed || composing || selected == null)
+            return;
         choosing = true;
         try {
             popup.hide();
@@ -138,12 +146,19 @@ public final class PublicAutoCompletion implements AutoCloseable {
         }
     }
 
-    List<String> suggestions() { return List.copyOf(list.getItems()); }
-    boolean isShowing() { return popup.isShowing(); }
+    List<String> suggestions() {
+        return List.copyOf(list.getItems());
+    }
 
-    @Override public void close() {
+    boolean isShowing() {
+        return popup.isShowing();
+    }
+
+    @Override
+    public void close() {
         requireFxThread();
-        if (closed) return;
+        if (closed)
+            return;
         closed = true;
         popup.hide();
         field.textProperty().removeListener(textListener);
@@ -151,11 +166,13 @@ public final class PublicAutoCompletion implements AutoCloseable {
         field.sceneProperty().removeListener(sceneListener);
         field.removeEventFilter(KeyEvent.KEY_PRESSED, keyHandler);
         field.removeEventFilter(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED, imeHandler);
-        if (field.getProperties().get(KEY) == this) field.getProperties().remove(KEY);
+        if (field.getProperties().get(KEY) == this)
+            field.getProperties().remove(KEY);
         list.getItems().clear();
     }
 
     private static void requireFxThread() {
-        if (!Platform.isFxApplicationThread()) throw new IllegalStateException("JavaFX thread required");
+        if (!Platform.isFxApplicationThread())
+            throw new IllegalStateException("JavaFX thread required");
     }
 }

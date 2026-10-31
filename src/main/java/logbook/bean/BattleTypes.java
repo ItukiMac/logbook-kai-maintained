@@ -904,7 +904,7 @@ public class BattleTypes {
             if (LoggerHolder.get().isDebugEnabled()) {
                 unUsedKeyBindListener = new UnUsedKeyBindListener(json);
             }
-            
+
             JsonHelper.bind(json, unUsedKeyBindListener)
                     .setInteger("api_f_count", bean::setFCount)
                     .setInteger("api_f_lostcount", bean::setFLostcount)
@@ -912,7 +912,7 @@ public class BattleTypes {
                     .setInteger("api_e_lostcount", bean::setELostcount)
                     .setInteger("api_disp_seiku", bean::setDispSeiku)
                     .setIntegerList("api_touch_plane", bean::setTouchPlane);
-            
+
             if (LoggerHolder.get().isDebugEnabled()) {
                 Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
                 for (String key : unUsedKey) {
@@ -1004,7 +1004,7 @@ public class BattleTypes {
          */
         public static AirFire toAirFire(JsonObject json) {
             AirFire bean = new AirFire();
-            
+
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
                 unUsedKeyBindListener = new UnUsedKeyBindListener(json);
@@ -1014,7 +1014,7 @@ public class BattleTypes {
                     .setInteger("api_idx", bean::setIdx)
                     .setInteger("api_kind", bean::setKind)
                     .setIntegerList("api_use_items", bean::setUseItems);
-            
+
             if (LoggerHolder.get().isDebugEnabled()) {
                 Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
                 for (String key : unUsedKey) {
@@ -1290,30 +1290,30 @@ public class BattleTypes {
         /** api_ecl */
         private List<Integer> ecl;
 
-        public List<List<Integer>> getNewFormatFrai(){
+        public List<List<Integer>> getNewFormatFrai() {
             return convertIntegerList(this.frai);
         }
-        
-        public List<List<Integer>> getNewFormatFcl(){
+
+        public List<List<Integer>> getNewFormatFcl() {
             return convertIntegerList(this.fcl);
         }
 
-        public List<List<Double>> getNewFormatFydam(){
+        public List<List<Double>> getNewFormatFydam() {
             return convertDoubleList(this.fydam);
         }
 
-        public List<List<Integer>> getNewFormatErai(){
+        public List<List<Integer>> getNewFormatErai() {
             return convertIntegerList(this.erai);
         }
-        
-        public List<List<Integer>> getNewFormatEcl(){
+
+        public List<List<Integer>> getNewFormatEcl() {
             return convertIntegerList(this.ecl);
         }
 
-        public List<List<Double>> getNewFormatEydam(){
+        public List<List<Double>> getNewFormatEydam() {
             return convertDoubleList(this.eydam);
         }
-        
+
         private List<List<Integer>> convertIntegerList(List<Integer> inputList) {
             List<List<Integer>> convertList = new ArrayList<List<Integer>>();
             for (Integer data : inputList) {
@@ -1323,7 +1323,7 @@ public class BattleTypes {
             }
             return convertList;
         }
-        
+
         private List<List<Double>> convertDoubleList(List<Double> inputList) {
             List<List<Double>> convertList = new ArrayList<List<Double>>();
             for (Double data : inputList) {
@@ -1365,7 +1365,7 @@ public class BattleTypes {
 
         /** api_frai_list_items : 攻撃対象 0-6 雷撃しない null */
         private List<List<Integer>> frai;
-        
+
         /** api_fcl_list_items : クリティカル 1-2  雷撃しない null */
         private List<List<Integer>> fcl;
 
@@ -1386,7 +1386,7 @@ public class BattleTypes {
 
         /** api_eydam_list_items : 敵側の与えたダメージ　*/
         private List<List<Double>> eydam;
-        
+
         /**
          * BattleLogから直接Bindされる場合の対応
          * @param list
@@ -1396,10 +1396,10 @@ public class BattleTypes {
             if (list instanceof List<?>) {
                 if (list.get(0) == null || list.get(0) instanceof List<?>) {
                     //nullかListデータなら新フォーマット
-                    this.frai = (List<List<Integer>>) list;                
+                    this.frai = (List<List<Integer>>) list;
                 } else if (list.get(0) instanceof Integer) {
                     //全データの存在する旧フォーマット
-                    this.frai = convertIntegerList((List<Integer>)list);
+                    this.frai = convertIntegerList((List<Integer>) list);
                 }
             }
         }
@@ -1413,10 +1413,10 @@ public class BattleTypes {
             if (list instanceof List<?>) {
                 if (list.get(0) == null || list.get(0) instanceof List<?>) {
                     //nullかListデータなら新フォーマット
-                    this.fcl = (List<List<Integer>>) list;                
+                    this.fcl = (List<List<Integer>>) list;
                 } else if (list.get(0) instanceof Integer) {
                     //全データの存在する旧フォーマット
-                    this.fcl = convertIntegerList((List<Integer>)list);
+                    this.fcl = convertIntegerList((List<Integer>) list);
                 }
             }
         }
@@ -1430,10 +1430,10 @@ public class BattleTypes {
             if (list instanceof List<?>) {
                 if (list.get(0) == null || list.get(0) instanceof List<?>) {
                     //nullかListデータなら新フォーマット
-                    this.fydam = (List<List<Double>>) list;                
+                    this.fydam = (List<List<Double>>) list;
                 } else if (list.get(0) instanceof Double) {
                     //全データの存在する旧フォーマット
-                    this.fydam = convertDoubleList((List<Double>)list);
+                    this.fydam = convertDoubleList((List<Double>) list);
                 }
             }
         }
@@ -1447,10 +1447,10 @@ public class BattleTypes {
             if (list instanceof List<?>) {
                 if (list.get(0) == null || list.get(0) instanceof List<?>) {
                     //nullかListデータなら新フォーマット
-                    this.erai = (List<List<Integer>>) list;                
+                    this.erai = (List<List<Integer>>) list;
                 } else if (list.get(0) instanceof Integer) {
                     //全データの存在する旧フォーマット
-                    this.erai = convertIntegerList((List<Integer>)list);
+                    this.erai = convertIntegerList((List<Integer>) list);
                 }
             }
         }
@@ -1464,10 +1464,10 @@ public class BattleTypes {
             if (list instanceof List<?>) {
                 if (list.get(0) == null || list.get(0) instanceof List<?>) {
                     //nullかListデータなら新フォーマット
-                    this.ecl = (List<List<Integer>>) list;                
+                    this.ecl = (List<List<Integer>>) list;
                 } else if (list.get(0) instanceof Integer) {
                     //全データの存在する旧フォーマット
-                    this.ecl = convertIntegerList((List<Integer>)list);
+                    this.ecl = convertIntegerList((List<Integer>) list);
                 }
             }
         }
@@ -1480,14 +1480,14 @@ public class BattleTypes {
         public void setEydam(List<?> list) {
             if (list instanceof List<?>) {
                 if (list.get(0) == null || list.get(0) instanceof List<?>) {
-                    this.eydam = (List<List<Double>>) list;                
+                    this.eydam = (List<List<Double>>) list;
                 } else if (list.get(0) instanceof Double) {
                     //全データの存在する旧フォーマット
-                    this.eydam = convertDoubleList((List<Double>)list);
+                    this.eydam = convertDoubleList((List<Double>) list);
                 }
             }
         }
-        
+
         private List<List<Integer>> convertIntegerList(List<Integer> inputList) {
             List<List<Integer>> convertList = new ArrayList<List<Integer>>();
             for (Integer data : inputList) {
@@ -1497,7 +1497,7 @@ public class BattleTypes {
             }
             return convertList;
         }
-        
+
         private List<List<Double>> convertDoubleList(List<Double> inputList) {
             List<List<Double>> convertList = new ArrayList<List<Double>>();
             for (Double data : inputList) {
@@ -1507,7 +1507,7 @@ public class BattleTypes {
             }
             return convertList;
         }
-        
+
         /**
          * JsonObjectから{@link Raigeki}を構築します
          *
@@ -1516,7 +1516,7 @@ public class BattleTypes {
          */
         public static Raigeki toRaigeki(JsonObject json) {
             Raigeki bean = new Raigeki();
-            
+
             if (json.containsKey("api_frai_list_items")) {
                 UnUsedKeyBindListener unUsedKeyBindListener = null;
                 if (LoggerHolder.get().isDebugEnabled()) {
@@ -1552,7 +1552,7 @@ public class BattleTypes {
             } else {
                 LoggerHolder.get().warn("Raigekiクラスへのbindに失敗 : " + json);
             }
-            
+
             return bean;
         }
     }
@@ -1731,7 +1731,7 @@ public class BattleTypes {
          */
         public static AirBaseAttack toAirBaseAttack(JsonObject json) {
             AirBaseAttack bean = new AirBaseAttack();
-            
+
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
                 unUsedKeyBindListener = new UnUsedKeyBindListener(json);
@@ -1756,7 +1756,7 @@ public class BattleTypes {
                     LoggerHolder.get().debug("未使用のKeyを検出 : " + key);
                 }
             }
-            
+
             return bean;
         }
     }
@@ -1914,16 +1914,7 @@ public class BattleTypes {
      * 陣形
      */
     public enum Formation {
-        単縦陣,
-        複縦陣,
-        輪形陣,
-        梯形陣,
-        単横陣,
-        警戒陣,
-        第一警戒航行序列,
-        第二警戒航行序列,
-        第三警戒航行序列,
-        第四警戒航行序列;
+        単縦陣, 複縦陣, 輪形陣, 梯形陣, 単横陣, 警戒陣, 第一警戒航行序列, 第二警戒航行序列, 第三警戒航行序列, 第四警戒航行序列;
 
         /**
          * 陣形を取得します
@@ -2055,19 +2046,9 @@ public class BattleTypes {
      *
      */
     public enum SortieAtType implements AtType {
-        通常攻撃("通常攻撃"),
-        レーザー攻撃("レーザー攻撃"),
-        連撃("連撃"),
-        主砲副砲CI("主砲副砲CI"),
-        主砲電探CI("主砲電探CI"),
-        主砲徹甲弾CI("主砲徹甲弾CI"),
-        主砲主砲CI("主砲主砲CI"),
-        戦爆連合CI("戦爆連合CI"),
-        NelsonTouch("NelsonTouch"),
-        胸熱CI("一斉射かッ…胸が熱いな！"),
-        陸奥タッチ("長門、いい？ いくわよ！ 主砲一斉射ッ！"),
-        ColoradoTouch("特殊攻撃(Colorado)"),
-        僚艦夜戦突撃("僚艦夜戦突撃");   // 夜戦専用だが念のため
+        通常攻撃("通常攻撃"), レーザー攻撃("レーザー攻撃"), 連撃("連撃"), 主砲副砲CI("主砲副砲CI"), 主砲電探CI("主砲電探CI"), 主砲徹甲弾CI("主砲徹甲弾CI"), 主砲主砲CI(
+                "主砲主砲CI"), 戦爆連合CI("戦爆連合CI"), NelsonTouch("NelsonTouch"), 胸熱CI("一斉射かッ…胸が熱いな！"), 陸奥タッチ(
+                        "長門、いい？ いくわよ！ 主砲一斉射ッ！"), ColoradoTouch("特殊攻撃(Colorado)"), 僚艦夜戦突撃("僚艦夜戦突撃"); // 夜戦専用だが念のため
 
         private String name;
 
@@ -2127,20 +2108,10 @@ public class BattleTypes {
      *
      */
     public enum MidnightSpList implements AtType {
-        通常攻撃("通常攻撃"),
-        連撃("連撃"),
-        主砲魚雷CI("主砲魚雷CI"),
-        魚雷魚雷CI("魚雷魚雷CI"),
-        主砲副砲CI("主砲副砲CI"),
-        主砲主砲CI("主砲主砲CI"),
-        夜襲CI("夜襲CI"),
-        主砲魚雷電探CI("主砲魚雷電探CI"),
-        魚雷見張員電探CI("魚雷見張員電探CI"),
-        NelsonTouch("NelsonTouch"),
-        胸熱CI("一斉射かッ…胸が熱いな！"),
-        陸奥タッチ("長門、いい？ いくわよ！ 主砲一斉射ッ！"),
-        ColoradoTouch("特殊攻撃(Colorado)"),
-        僚艦夜戦突撃("僚艦夜戦突撃");
+        通常攻撃("通常攻撃"), 連撃("連撃"), 主砲魚雷CI("主砲魚雷CI"), 魚雷魚雷CI("魚雷魚雷CI"), 主砲副砲CI("主砲副砲CI"), 主砲主砲CI("主砲主砲CI"), 夜襲CI(
+                "夜襲CI"), 主砲魚雷電探CI("主砲魚雷電探CI"), 魚雷見張員電探CI("魚雷見張員電探CI"), NelsonTouch("NelsonTouch"), 胸熱CI(
+                        "一斉射かッ…胸が熱いな！"), 陸奥タッチ(
+                                "長門、いい？ いくわよ！ 主砲一斉射ッ！"), ColoradoTouch("特殊攻撃(Colorado)"), 僚艦夜戦突撃("僚艦夜戦突撃");
 
         private String name;
 

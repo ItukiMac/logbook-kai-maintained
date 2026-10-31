@@ -18,13 +18,15 @@ import java.util.zip.ZipOutputStream;
 
 /** Validate restoration only after verifying every retained definition. */
 class DataGenerationRollbackTest {
-    @TempDir Path temporary;
+    @TempDir
+    Path temporary;
 
     private static String digest(byte[] bytes) throws Exception {
         return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
     }
 
-    private record Pack(Path path, String sha256) {}
+    private record Pack(Path path, String sha256) {
+    }
 
     private Pack createPack(String value) throws Exception {
         byte[] json = ("{\"type\":\"" + value + "\"}").getBytes(StandardCharsets.UTF_8);
@@ -75,8 +77,7 @@ class DataGenerationRollbackTest {
         Files.writeString(store.resolve("generations").resolve(before)
                 .resolve("definitions/quest/1045.json"), "{\"type\":\"TAMPERED\"}");
 
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.restoreGeneration(store, before));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.restoreGeneration(store, before));
         assertEquals("after", activeType(store));
         assertEquals(after,
                 DefinitionPackInstaller.activeDefinitionsRoot(store).getParent().getFileName().toString());
@@ -95,8 +96,7 @@ class DataGenerationRollbackTest {
         Files.delete(old);
         Files.createSymbolicLink(old, outside);
 
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.restoreGeneration(store, before));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.restoreGeneration(store, before));
         assertEquals("after", activeType(store));
     }
 
@@ -105,10 +105,8 @@ class DataGenerationRollbackTest {
         Path store = temporary.resolve("store");
         Pack one = createPack("after");
         DefinitionPackInstaller.install(store, one.path, one.sha256);
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.restoreGeneration(store, "f".repeat(64)));
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.restoreGeneration(store, "../outside"));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.restoreGeneration(store, "f".repeat(64)));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.restoreGeneration(store, "../outside"));
         assertEquals("after", activeType(store));
     }
 

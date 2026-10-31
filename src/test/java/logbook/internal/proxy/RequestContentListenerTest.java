@@ -26,39 +26,43 @@ class RequestContentListenerTest {
                 CapturedHttpRequestResponseConst.CONTENT_HOLDER);
     }
 
-    @Test void capturesOnlyRemainingBytesWithoutChangingBufferState() throws Exception {
+    @Test
+    void capturesOnlyRemainingBytesWithoutChangingBufferState() throws Exception {
         HttpServletRequest request = requestWithAttributes();
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[] {99, 1, 2, 3, 88});
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 99, 1, 2, 3, 88 });
         buffer.position(1).limit(4).mark();
         new RequestContentListener(request).onContent(null, buffer);
         assertEquals(1, buffer.position());
         assertEquals(4, buffer.limit());
         buffer.reset();
         assertEquals(1, buffer.position());
-        assertArrayEquals(new byte[] {1, 2, 3}, captured(request).getOriginRequest().readAllBytes());
+        assertArrayEquals(new byte[] { 1, 2, 3 }, captured(request).getOriginRequest().readAllBytes());
     }
 
-    @Test void directReadOnlyBufferIsCopiedBeforeReuse() throws Exception {
+    @Test
+    void directReadOnlyBufferIsCopiedBeforeReuse() throws Exception {
         HttpServletRequest request = requestWithAttributes();
         ByteBuffer source = ByteBuffer.allocateDirect(4);
-        source.put(new byte[] {9, 10, 11, 12}).flip();
+        source.put(new byte[] { 9, 10, 11, 12 }).flip();
         source.position(1).limit(3);
         ByteBuffer view = source.asReadOnlyBuffer();
         new RequestContentListener(request).onContent(null, view);
         source.put(1, (byte) 77);
         assertEquals(1, view.position());
-        assertArrayEquals(new byte[] {10, 11}, captured(request).getOriginRequest().readAllBytes());
+        assertArrayEquals(new byte[] { 10, 11 }, captured(request).getOriginRequest().readAllBytes());
     }
 
-    @Test void repeatedContentCallbacksPreserveRepeatedPayload() throws Exception {
+    @Test
+    void repeatedContentCallbacksPreserveRepeatedPayload() throws Exception {
         HttpServletRequest request = requestWithAttributes();
         RequestContentListener listener = new RequestContentListener(request);
-        listener.onContent(null, ByteBuffer.wrap(new byte[] {1, 2}));
-        listener.onContent(null, ByteBuffer.wrap(new byte[] {1, 2}));
-        assertArrayEquals(new byte[] {1, 2, 1, 2}, captured(request).getOriginRequest().readAllBytes());
+        listener.onContent(null, ByteBuffer.wrap(new byte[] { 1, 2 }));
+        listener.onContent(null, ByteBuffer.wrap(new byte[] { 1, 2 }));
+        assertArrayEquals(new byte[] { 1, 2, 1, 2 }, captured(request).getOriginRequest().readAllBytes());
     }
 
-    @Test void emptyChunkIsIgnoredButOversizedChunkInvalidatesTheWholeCapture() {
+    @Test
+    void emptyChunkIsIgnoredButOversizedChunkInvalidatesTheWholeCapture() {
         HttpServletRequest request = requestWithAttributes();
         RequestContentListener listener = new RequestContentListener(request);
         listener.onContent(null, ByteBuffer.allocate(0));
@@ -67,7 +71,7 @@ class RequestContentListenerTest {
         listener.onContent(null, oversized);
         assertNotNull(captured(request));
         assertFalse(captured(request).isComplete());
-        listener.onContent(null, ByteBuffer.wrap(new byte[] {1, 2}));
+        listener.onContent(null, ByteBuffer.wrap(new byte[] { 1, 2 }));
         assertFalse(captured(request).isComplete());
         assertThrows(IllegalStateException.class, () -> captured(request).getOriginRequest());
         assertEquals(0, oversized.position());

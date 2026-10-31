@@ -29,7 +29,9 @@ import java.util.zip.ZipFile;
  * archive SHA-256 MUST be independently obtained from the trusted publisher.
  */
 final class DefinitionPackInstaller {
-    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(tools.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder()
+            .enable(tools.jackson.core.StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+            .enable(tools.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     private static final long MAX_ARCHIVE_BYTES = 128L * 1024 * 1024;
     private static final long MAX_UNCOMPRESSED_BYTES = 128L * 1024 * 1024;
     private static final int MAX_FILES = 2000;
@@ -43,125 +45,126 @@ final class DefinitionPackInstaller {
 
     static String install(Path rootInput, Path zip, String expectedSha256) throws IOException {
         try {
-        if (expectedSha256 == null || !expectedSha256.matches("[0-9a-fA-F]{64}")) {
-            throw new IOException("Missing authenticated SHA-256 expectation");
-        }
-        if (!Files.isRegularFile(zip, LinkOption.NOFOLLOW_LINKS)
-                || Files.size(zip) == 0 || Files.size(zip) > MAX_ARCHIVE_BYTES) {
-            throw new IOException("Invalid definition ZIP size");
-        }
-        String generation = sha256(zip);
-        if (!generation.equalsIgnoreCase(expectedSha256)) {
-            throw new IOException("Definition ZIP SHA-256 mismatch");
-        }
+            if (expectedSha256 == null || !expectedSha256.matches("[0-9a-fA-F]{64}")) {
+                throw new IOException("Missing authenticated SHA-256 expectation");
+            }
+            if (!Files.isRegularFile(zip, LinkOption.NOFOLLOW_LINKS)
+                    || Files.size(zip) == 0 || Files.size(zip) > MAX_ARCHIVE_BYTES) {
+                throw new IOException("Invalid definition ZIP size");
+            }
+            String generation = sha256(zip);
+            if (!generation.equalsIgnoreCase(expectedSha256)) {
+                throw new IOException("Definition ZIP SHA-256 mismatch");
+            }
 
-        Path root = rootInput.toAbsolutePath().normalize();
-        Files.createDirectories(root);
-        requireRealDirectory(root);
-        Path releases = root.resolve("generations");
-        Files.createDirectories(releases);
-        requireRealDirectory(releases);
-        Path destination = releases.resolve(generation);
-        Path temporary = Files.createTempDirectory(releases, ".install-");
-        byte[] manifestBytes;
-        Map<String, ExpectedFile> expected;
-        Set<String> requiredCapabilities;
-        try {
-            try (ZipFile archive = new ZipFile(zip.toFile())) {
-                ZipEntry manifestEntry = archive.getEntry("manifest.json");
-                if (manifestEntry == null || manifestEntry.isDirectory()
-                        || manifestEntry.getSize() > 2 * 1024 * 1024) {
-                    throw new IOException("Missing or oversized data manifest");
-                }
-                manifestBytes = readBounded(archive.getInputStream(manifestEntry), 2 * 1024 * 1024);
-                expected = parseManifest(manifestBytes);
-                requiredCapabilities = DefinitionPackCompatibility.requireManifest(JSON.readTree(manifestBytes));
+            Path root = rootInput.toAbsolutePath().normalize();
+            Files.createDirectories(root);
+            requireRealDirectory(root);
+            Path releases = root.resolve("generations");
+            Files.createDirectories(releases);
+            requireRealDirectory(releases);
+            Path destination = releases.resolve(generation);
+            Path temporary = Files.createTempDirectory(releases, ".install-");
+            byte[] manifestBytes;
+            Map<String, ExpectedFile> expected;
+            Set<String> requiredCapabilities;
+            try {
+                try (ZipFile archive = new ZipFile(zip.toFile())) {
+                    ZipEntry manifestEntry = archive.getEntry("manifest.json");
+                    if (manifestEntry == null || manifestEntry.isDirectory()
+                            || manifestEntry.getSize() > 2 * 1024 * 1024) {
+                        throw new IOException("Missing or oversized data manifest");
+                    }
+                    manifestBytes = readBounded(archive.getInputStream(manifestEntry), 2 * 1024 * 1024);
+                    expected = parseManifest(manifestBytes);
+                    requiredCapabilities = DefinitionPackCompatibility.requireManifest(JSON.readTree(manifestBytes));
 
-                Set<String> seen = new HashSet<>();
-                long[] total = {0};
-                var entries = archive.entries();
-                while (entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    String name = entry.getName();
-                    if (!safeZipName(name) || entry.isDirectory()) {
-                        throw new IOException("Unsafe definition ZIP entry: " + name);
-                    }
-                    if (!seen.add(name)) {
-                        throw new IOException("Duplicate definition ZIP entry: " + name);
-                    }
-                    if ("manifest.json".equals(name)) {
-                        continue;
-                    }
-                    ExpectedFile file = expected.get(name);
-                    if (file == null || entry.getSize() > MAX_UNCOMPRESSED_BYTES) {
-                        throw new IOException("Unlisted or oversized definition file: " + name);
-                    }
-                    Path target = temporary.resolve(name).normalize();
-                    if (!target.startsWith(temporary)) {
-                        throw new IOException("Data ZIP path escapes staging root: " + name);
-                    }
-                    Files.createDirectories(target.getParent());
-                    try (InputStream in = archive.getInputStream(entry);
-                         var out = Files.newOutputStream(target)) {
-                        MessageDigest digest = newDigest();
-                        long count = 0;
-                        byte[] buffer = new byte[16384];
-                        int size;
-                        while ((size = in.read(buffer)) != -1) {
-                            count += size;
-                            total[0] += size;
-                            if (count > MAX_UNCOMPRESSED_BYTES || total[0] > MAX_UNCOMPRESSED_BYTES) {
-                                throw new IOException("Definition ZIP exceeds expanded data limit");
+                    Set<String> seen = new HashSet<>();
+                    long[] total = { 0 };
+                    var entries = archive.entries();
+                    while (entries.hasMoreElements()) {
+                        ZipEntry entry = entries.nextElement();
+                        String name = entry.getName();
+                        if (!safeZipName(name) || entry.isDirectory()) {
+                            throw new IOException("Unsafe definition ZIP entry: " + name);
+                        }
+                        if (!seen.add(name)) {
+                            throw new IOException("Duplicate definition ZIP entry: " + name);
+                        }
+                        if ("manifest.json".equals(name)) {
+                            continue;
+                        }
+                        ExpectedFile file = expected.get(name);
+                        if (file == null || entry.getSize() > MAX_UNCOMPRESSED_BYTES) {
+                            throw new IOException("Unlisted or oversized definition file: " + name);
+                        }
+                        Path target = temporary.resolve(name).normalize();
+                        if (!target.startsWith(temporary)) {
+                            throw new IOException("Data ZIP path escapes staging root: " + name);
+                        }
+                        Files.createDirectories(target.getParent());
+                        try (InputStream in = archive.getInputStream(entry);
+                                var out = Files.newOutputStream(target)) {
+                            MessageDigest digest = newDigest();
+                            long count = 0;
+                            byte[] buffer = new byte[16384];
+                            int size;
+                            while ((size = in.read(buffer)) != -1) {
+                                count += size;
+                                total[0] += size;
+                                if (count > MAX_UNCOMPRESSED_BYTES || total[0] > MAX_UNCOMPRESSED_BYTES) {
+                                    throw new IOException("Definition ZIP exceeds expanded data limit");
+                                }
+                                digest.update(buffer, 0, size);
+                                out.write(buffer, 0, size);
                             }
-                            digest.update(buffer, 0, size);
-                            out.write(buffer, 0, size);
+                            if (count != file.bytes || !file.sha256.equals(HexFormat.of().formatHex(digest.digest()))) {
+                                throw new IOException("Invalid definition file hash or size: " + name);
+                            }
                         }
-                        if (count != file.bytes || !file.sha256.equals(HexFormat.of().formatHex(digest.digest()))) {
-                            throw new IOException("Invalid definition file hash or size: " + name);
+                        // A correctly hashed file can still contain invalid JSON.
+                        // Reject the entire generation before active.json changes.
+                        try (InputStream jsonInput = Files.newInputStream(target)) {
+                            DefinitionPackCompatibility.requireDefinition(name, JSON.readTree(jsonInput),
+                                    requiredCapabilities);
+                        } catch (tools.jackson.core.JacksonException e) {
+                            throw new IOException("Malformed definition JSON: " + name, e);
                         }
                     }
-                    // A correctly hashed file can still contain invalid JSON.
-                    // Reject the entire generation before active.json changes.
-                    try (InputStream jsonInput = Files.newInputStream(target)) {
-                        DefinitionPackCompatibility.requireDefinition(name, JSON.readTree(jsonInput), requiredCapabilities);
-                    } catch (tools.jackson.core.JacksonException e) {
-                        throw new IOException("Malformed definition JSON: " + name, e);
+                    if (seen.size() != expected.size() + 1) {
+                        throw new IOException("Definition ZIP contains missing entries");
                     }
                 }
-                if (seen.size() != expected.size() + 1) {
-                    throw new IOException("Definition ZIP contains missing entries");
-                }
-            }
-            Files.write(temporary.resolve("manifest.json"), manifestBytes);
-            if (Files.exists(destination, LinkOption.NOFOLLOW_LINKS)) {
-                // Safe repeat-install: only activate an already staged generation
-                // if its contents match the verified archive.
-                requireRealDirectory(destination);
-                for (Map.Entry<String, ExpectedFile> item : expected.entrySet()) {
-                    Path file = destination.resolve(item.getKey());
-                    if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)
-                            || Files.size(file) != item.getValue().bytes
-                            || !sha256(file).equals(item.getValue().sha256)) {
-                        throw new IOException("Existing generation is not intact: " + item.getKey());
+                Files.write(temporary.resolve("manifest.json"), manifestBytes);
+                if (Files.exists(destination, LinkOption.NOFOLLOW_LINKS)) {
+                    // Safe repeat-install: only activate an already staged generation
+                    // if its contents match the verified archive.
+                    requireRealDirectory(destination);
+                    for (Map.Entry<String, ExpectedFile> item : expected.entrySet()) {
+                        Path file = destination.resolve(item.getKey());
+                        if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)
+                                || Files.size(file) != item.getValue().bytes
+                                || !sha256(file).equals(item.getValue().sha256)) {
+                            throw new IOException("Existing generation is not intact: " + item.getKey());
+                        }
                     }
+                    if (!java.util.Arrays.equals(Files.readAllBytes(destination.resolve("manifest.json")),
+                            manifestBytes)) {
+                        throw new IOException("Existing generation manifest differs");
+                    }
+                } else {
+                    Files.move(temporary, destination, StandardCopyOption.ATOMIC_MOVE);
                 }
-                if (!java.util.Arrays.equals(Files.readAllBytes(destination.resolve("manifest.json")), manifestBytes)) {
-                    throw new IOException("Existing generation manifest differs");
-                }
-            } else {
-                Files.move(temporary, destination, StandardCopyOption.ATOMIC_MOVE);
-            }
 
-            activatePointer(root, generation);
-            return generation;
-        } finally {
-            removeTemporaryTree(temporary);
-        }
+                activatePointer(root, generation);
+                return generation;
+            } finally {
+                removeTemporaryTree(temporary);
+            }
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
     }
-
 
     /**
      * Explicit data-only rollback, independent of the host application JAR.
@@ -170,46 +173,47 @@ final class DefinitionPackInstaller {
      */
     static String restoreGeneration(Path rootInput, String generation) throws IOException {
         try {
-        if (generation == null || !generation.matches("[0-9a-f]{64}")) {
-            throw new IOException("Invalid data generation ID");
-        }
-        Path root = rootInput.toAbsolutePath().normalize();
-        requireRealDirectory(root);
-        Path generations = root.resolve("generations");
-        Path selected = generations.resolve(generation);
-        requireRealDirectory(generations);
-        requireRealDirectory(selected);
+            if (generation == null || !generation.matches("[0-9a-f]{64}")) {
+                throw new IOException("Invalid data generation ID");
+            }
+            Path root = rootInput.toAbsolutePath().normalize();
+            requireRealDirectory(root);
+            Path generations = root.resolve("generations");
+            Path selected = generations.resolve(generation);
+            requireRealDirectory(generations);
+            requireRealDirectory(selected);
 
-        Path manifest = selected.resolve("manifest.json");
-        if (!Files.isRegularFile(manifest, LinkOption.NOFOLLOW_LINKS)
-                || Files.size(manifest) > 2L * 1024 * 1024) {
-            throw new IOException("Invalid retained generation manifest");
-        }
-        byte[] rawManifest = readBounded(Files.newInputStream(manifest), 2 * 1024 * 1024);
-        Map<String, ExpectedFile> expected = parseManifest(rawManifest);
-        Set<String> requiredCapabilities = DefinitionPackCompatibility.requireManifest(JSON.readTree(rawManifest));
-        for (Map.Entry<String, ExpectedFile> item : expected.entrySet()) {
-            Path target = selected;
-            String[] parts = item.getKey().split("/");
-            for (int n = 0; n < parts.length - 1; n++) {
-                target = target.resolve(parts[n]);
-                requireRealDirectory(target);
+            Path manifest = selected.resolve("manifest.json");
+            if (!Files.isRegularFile(manifest, LinkOption.NOFOLLOW_LINKS)
+                    || Files.size(manifest) > 2L * 1024 * 1024) {
+                throw new IOException("Invalid retained generation manifest");
             }
-            target = target.resolve(parts[parts.length - 1]);
-            if (!Files.isRegularFile(target, LinkOption.NOFOLLOW_LINKS)
-                    || Files.size(target) != item.getValue().bytes
-                    || !sha256(target).equals(item.getValue().sha256)) {
-                throw new IOException("Retained generation is corrupted: " + item.getKey());
+            byte[] rawManifest = readBounded(Files.newInputStream(manifest), 2 * 1024 * 1024);
+            Map<String, ExpectedFile> expected = parseManifest(rawManifest);
+            Set<String> requiredCapabilities = DefinitionPackCompatibility.requireManifest(JSON.readTree(rawManifest));
+            for (Map.Entry<String, ExpectedFile> item : expected.entrySet()) {
+                Path target = selected;
+                String[] parts = item.getKey().split("/");
+                for (int n = 0; n < parts.length - 1; n++) {
+                    target = target.resolve(parts[n]);
+                    requireRealDirectory(target);
+                }
+                target = target.resolve(parts[parts.length - 1]);
+                if (!Files.isRegularFile(target, LinkOption.NOFOLLOW_LINKS)
+                        || Files.size(target) != item.getValue().bytes
+                        || !sha256(target).equals(item.getValue().sha256)) {
+                    throw new IOException("Retained generation is corrupted: " + item.getKey());
+                }
+                // A data file with an intact recorded hash can still be malformed.
+                try (InputStream input = Files.newInputStream(target)) {
+                    DefinitionPackCompatibility.requireDefinition(item.getKey(), JSON.readTree(input),
+                            requiredCapabilities);
+                } catch (tools.jackson.core.JacksonException e) {
+                    throw new IOException("Malformed retained JSON: " + item.getKey(), e);
+                }
             }
-            // A data file with an intact recorded hash can still be malformed.
-            try (InputStream input = Files.newInputStream(target)) {
-                DefinitionPackCompatibility.requireDefinition(item.getKey(), JSON.readTree(input), requiredCapabilities);
-            } catch (tools.jackson.core.JacksonException e) {
-                throw new IOException("Malformed retained JSON: " + item.getKey(), e);
-            }
-        }
-        activatePointer(root, generation);
-        return generation;
+            activatePointer(root, generation);
+            return generation;
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
@@ -233,31 +237,31 @@ final class DefinitionPackInstaller {
 
     static Path activeDefinitionsRoot(Path rootInput) throws IOException {
         try {
-        Path root = rootInput.toAbsolutePath().normalize();
-        requireRealDirectory(root);
-        Path pointer = root.resolve("active.json");
-        if (!Files.exists(pointer, LinkOption.NOFOLLOW_LINKS)) {
-            return root; // legacy manual -Dlogbook.data.root=/path/with/quest
-        }
-        if (!Files.isRegularFile(pointer, LinkOption.NOFOLLOW_LINKS)
-                || Files.size(pointer) > 4096) {
-            throw new IOException("Invalid generation pointer");
-        }
-        JsonNode data;
-        try (InputStream in = Files.newInputStream(pointer)) {
-            data = JSON.readTree(in);
-        }
-        if (data == null || !POINTER_FORMAT.equals(data.path("schema").asText())
-                || !data.path("generation").asText().matches("[0-9a-f]{64}")) {
-            throw new IOException("Malformed generation pointer");
-        }
-        Path releases = root.resolve("generations");
-        Path generation = releases.resolve(data.path("generation").asText());
-        Path definitions = generation.resolve("definitions");
-        requireRealDirectory(releases);
-        requireRealDirectory(generation);
-        requireRealDirectory(definitions);
-        return definitions;
+            Path root = rootInput.toAbsolutePath().normalize();
+            requireRealDirectory(root);
+            Path pointer = root.resolve("active.json");
+            if (!Files.exists(pointer, LinkOption.NOFOLLOW_LINKS)) {
+                return root; // legacy manual -Dlogbook.data.root=/path/with/quest
+            }
+            if (!Files.isRegularFile(pointer, LinkOption.NOFOLLOW_LINKS)
+                    || Files.size(pointer) > 4096) {
+                throw new IOException("Invalid generation pointer");
+            }
+            JsonNode data;
+            try (InputStream in = Files.newInputStream(pointer)) {
+                data = JSON.readTree(in);
+            }
+            if (data == null || !POINTER_FORMAT.equals(data.path("schema").asText())
+                    || !data.path("generation").asText().matches("[0-9a-f]{64}")) {
+                throw new IOException("Malformed generation pointer");
+            }
+            Path releases = root.resolve("generations");
+            Path generation = releases.resolve(data.path("generation").asText());
+            Path definitions = generation.resolve("definitions");
+            requireRealDirectory(releases);
+            requireRealDirectory(generation);
+            requireRealDirectory(definitions);
+            return definitions;
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
@@ -265,38 +269,41 @@ final class DefinitionPackInstaller {
 
     private static Map<String, ExpectedFile> parseManifest(byte[] manifest) throws IOException {
         try {
-        JsonNode document = JSON.readTree(manifest);
-        DefinitionPackCompatibility.requireManifest(document);
-        JsonNode files = document.path("files");
-        if (!files.isArray() || files.isEmpty() || files.size() > MAX_FILES) {
-            throw new IOException("Invalid definition file list");
-        }
-        Map<String, ExpectedFile> result = new HashMap<>();
-        for (JsonNode file : files) {
-            String path = file.path("path").asText();
-            String checksum = file.path("sha256").asText();
-            long bytes = file.path("bytes").asLong(-1);
-            if (!validDefinitionPath(path) || !checksum.matches("[0-9a-f]{64}")
-                    || bytes < 0 || bytes > MAX_UNCOMPRESSED_BYTES) {
-                throw new IOException("Invalid manifest definition entry: " + path);
+            JsonNode document = JSON.readTree(manifest);
+            DefinitionPackCompatibility.requireManifest(document);
+            JsonNode files = document.path("files");
+            if (!files.isArray() || files.isEmpty() || files.size() > MAX_FILES) {
+                throw new IOException("Invalid definition file list");
             }
-            if (result.putIfAbsent(path, new ExpectedFile(checksum, bytes)) != null) {
-                throw new IOException("Duplicate manifest definition entry: " + path);
+            Map<String, ExpectedFile> result = new HashMap<>();
+            for (JsonNode file : files) {
+                String path = file.path("path").asText();
+                String checksum = file.path("sha256").asText();
+                long bytes = file.path("bytes").asLong(-1);
+                if (!validDefinitionPath(path) || !checksum.matches("[0-9a-f]{64}")
+                        || bytes < 0 || bytes > MAX_UNCOMPRESSED_BYTES) {
+                    throw new IOException("Invalid manifest definition entry: " + path);
+                }
+                if (result.putIfAbsent(path, new ExpectedFile(checksum, bytes)) != null) {
+                    throw new IOException("Duplicate manifest definition entry: " + path);
+                }
             }
-        }
-        return result;
+            return result;
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
     }
 
     private static boolean validDefinitionPath(String name) {
-        if (!safeZipName(name) || !name.endsWith(".json")) return false;
+        if (!safeZipName(name) || !name.endsWith(".json"))
+            return false;
         String[] elements = name.split("/");
         if (elements.length < 3 || !"definitions".equals(elements[0])
-                || !CATEGORIES.contains(elements[1])) return false;
+                || !CATEGORIES.contains(elements[1]))
+            return false;
         for (String element : elements) {
-            if (element.isEmpty() || element.equals(".") || element.equals("..")) return false;
+            if (element.isEmpty() || element.equals(".") || element.equals(".."))
+                return false;
         }
         return true;
     }
@@ -313,7 +320,8 @@ final class DefinitionPackInstaller {
             byte[] buffer = new byte[8192];
             int count;
             while ((count = in.read(buffer)) != -1) {
-                if (out.size() + count > maxBytes) throw new IOException("Manifest exceeds limit");
+                if (out.size() + count > maxBytes)
+                    throw new IOException("Manifest exceeds limit");
                 out.write(buffer, 0, count);
             }
             return out.toByteArray();
@@ -332,7 +340,8 @@ final class DefinitionPackInstaller {
         try (InputStream in = Files.newInputStream(file)) {
             byte[] buffer = new byte[8192];
             int count;
-            while ((count = in.read(buffer)) != -1) digest.update(buffer, 0, count);
+            while ((count = in.read(buffer)) != -1)
+                digest.update(buffer, 0, count);
         }
         return HexFormat.of().formatHex(digest.digest());
     }
@@ -346,7 +355,8 @@ final class DefinitionPackInstaller {
     }
 
     private static void removeTemporaryTree(Path temporary) throws IOException {
-        if (!Files.exists(temporary, LinkOption.NOFOLLOW_LINKS)) return;
+        if (!Files.exists(temporary, LinkOption.NOFOLLOW_LINKS))
+            return;
         try (var paths = Files.walk(temporary)) {
             for (Path p : paths.sorted(java.util.Comparator.reverseOrder()).toList()) {
                 Files.deleteIfExists(p);
@@ -354,5 +364,6 @@ final class DefinitionPackInstaller {
         }
     }
 
-    private record ExpectedFile(String sha256, long bytes) {}
+    private record ExpectedFile(String sha256, long bytes) {
+    }
 }

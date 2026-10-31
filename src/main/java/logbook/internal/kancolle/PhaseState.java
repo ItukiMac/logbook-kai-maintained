@@ -92,7 +92,7 @@ public class PhaseState {
 
     /**
      * 戦闘から新規フェイズを作成します
-     * 
+     *
      * @param log 戦闘ログ
      */
     public PhaseState(BattleLog log) {
@@ -101,7 +101,7 @@ public class PhaseState {
 
     /**
      * 戦闘から新規フェイズを作成します
-     * 
+     *
      * @param combinedType 連合艦隊
      * @param b            戦闘
      * @param deckMap      艦隊スナップショット
@@ -220,7 +220,7 @@ public class PhaseState {
 
     /**
      * 航空戦フェイズ(噴式強襲)を適用します
-     * 
+     *
      * @param battle 航空戦
      */
     public void applyInjectionKouku(IKouku battle) {
@@ -229,7 +229,7 @@ public class PhaseState {
 
     /**
      * 航空戦フェイズを適用します
-     * 
+     *
      * @param battle 航空戦
      */
     public void applyKouku(IKouku battle) {
@@ -238,7 +238,7 @@ public class PhaseState {
 
     /**
      * 支援フェイズを適用します
-     * 
+     *
      * @param battle 支援フェイズ
      */
     public void applySupport(ISupport battle) {
@@ -247,7 +247,7 @@ public class PhaseState {
 
     /**
      * 昼戦砲雷撃戦フェイズを適用します
-     * 
+     *
      * @param battle 昼戦砲雷撃戦フェイズ
      */
     public void applySortieHougeki(ISortieHougeki battle) {
@@ -297,7 +297,7 @@ public class PhaseState {
 
     /**
      * 航空戦を適用します
-     * 
+     *
      * @param battle 航空戦
      */
     public void applyAirbattle(IAirbattle battle) {
@@ -306,7 +306,7 @@ public class PhaseState {
 
     /**
      * 支援フェイズを適用します
-     * 
+     *
      * @param battle 支援フェイズ
      */
     public void applySupport(INSupport battle) {
@@ -315,7 +315,7 @@ public class PhaseState {
 
     /**
      * 友軍艦隊の砲撃戦フェイズを適用します
-     * 
+     *
      * @param battle 夜戦
      */
     public void applyFriendlyHougeki(IMidnightBattle battle) {
@@ -340,7 +340,7 @@ public class PhaseState {
 
     /**
      * 夜戦を適用します
-     * 
+     *
      * @param battle 夜戦
      */
     public void applyMidnightBattle(IMidnightBattle battle) {
@@ -350,7 +350,7 @@ public class PhaseState {
 
     /**
      * 夜戦を適用します
-     * 
+     *
      * @param battle 夜戦
      */
     public void applyMidnightBattle(INightToDayBattle battle) {
@@ -362,7 +362,7 @@ public class PhaseState {
 
     /**
      * 全てのフェイズを適用します
-     * 
+     *
      * @param battle 戦闘
      */
     public void apply(IBattle battle) {
@@ -476,7 +476,7 @@ public class PhaseState {
 
     /**
      * 航空戦フェイズを適用します
-     * 
+     *
      * @param kouku 航空戦フェイズ
      */
     private void applyKouku(Kouku kouku) {
@@ -502,7 +502,7 @@ public class PhaseState {
 
     /**
      * 支援フェイズを適用します
-     * 
+     *
      * @param support 支援
      */
     private void applySupport(SupportInfo support) {
@@ -523,7 +523,7 @@ public class PhaseState {
 
     /**
      * 雷撃戦フェイズを適用します
-     * 
+     *
      * @param raigeki 雷撃戦フェイズ
      */
     private void applyRaigeki(Raigeki raigeki) {
@@ -539,7 +539,7 @@ public class PhaseState {
 
     /**
      * 砲撃戦フェイズを適用します
-     * 
+     *
      * @param hougeki 砲撃戦フェイズ
      */
     private void applyHougeki(IHougeki hougeki) {
@@ -548,7 +548,7 @@ public class PhaseState {
 
     /**
      * 友軍艦隊の砲撃戦フェイズを適用します
-     * 
+     *
      * @param friendlyBattle 砲撃戦フェイズ
      */
     private void applyFriendlyHougeki(FriendlyBattle friendlyBattle) {
@@ -559,7 +559,7 @@ public class PhaseState {
 
     /**
      * 砲撃戦フェイズを適用します
-     * 
+     *
      * @param hougeki          砲撃戦フェイズ
      * @param isFriendlyBattle 友軍艦隊フラグ
      */
@@ -665,7 +665,7 @@ public class PhaseState {
 
     /**
      * ダメージを適用します(味方第1,2艦隊)
-     * 
+     *
      * @param damages ダメージ(zero-based)
      */
     private void applyFriendDamage(List<Double> damages) {
@@ -684,7 +684,7 @@ public class PhaseState {
 
     /**
      * ダメージを適用します(味方第2艦隊)
-     * 
+     *
      * @param damages ダメージ(zero-based)
      */
     private void applyFriendDamageCombined(List<Double> damages) {
@@ -701,7 +701,7 @@ public class PhaseState {
 
     /**
      * ダメージを適用します(敵第1,2艦隊)
-     * 
+     *
      * @param damages ダメージ
      */
     private void applyEnemyDamage(List<Double> damages) {
@@ -720,7 +720,7 @@ public class PhaseState {
 
     /**
      * ダメージを適用します(敵第2艦隊)
-     * 
+     *
      * @param damages ダメージ
      */
     private void applyEnemyDamageCombined(List<Double> damages) {
@@ -737,7 +737,7 @@ public class PhaseState {
 
     /**
      * HPをセットします
-     * 
+     *
      * @param b 戦闘
      */
     private void setInitialHp(IBattle b) {
@@ -880,7 +880,7 @@ public class PhaseState {
             defenderFleetCombined = defenderFleetCombined.stream()
                     .map(c -> c != null ? c.clone() : null)
                     .collect(Collectors.toList());
-        
+
         if (index != null) {
             for (int i = 0; i < index.size(); i++) {
                 if (index.get(i) != null) {
@@ -893,10 +893,11 @@ public class PhaseState {
                                     ? defenderFleet.get(index.get(i).get(j))
                                     : defenderFleetCombined.get(index.get(i).get(j) - 6);
                             int damage = (int) ydam.get(i).get(j).doubleValue();
-            
+
                             defender.setNowhp(defender.getNowhp() - damage);
-            
-                            this.addDetail(attacker, defender, damage, Collections.singletonList(damage), Collections.singletonList(critical.get(i).get(j)),
+
+                            this.addDetail(attacker, defender, damage, Collections.singletonList(damage),
+                                    Collections.singletonList(critical.get(i).get(j)),
                                     SortieAtTypeRaigeki.通常雷撃);
                         }
                     }
@@ -924,7 +925,7 @@ public class PhaseState {
 
     /**
      * 味方のHP合計を取得する
-     * 
+     *
      * @return 味方のHP合計
      */
     public double friendTotalHp() {
@@ -937,20 +938,20 @@ public class PhaseState {
 
     /**
      * 敵のHP合計を取得する
-     * 
+     *
      * @return 敵のHP合計
      */
     public double enemyTotalHp() {
-            return Stream.concat(this.afterEnemy.stream(), this.afterEnemyCombined.stream())
-                    .filter(Objects::nonNull)
-                    .mapToInt(Chara::getNowhp)
-                    .map(hp -> Math.max(hp, 0))
-                    .sum();
+        return Stream.concat(this.afterEnemy.stream(), this.afterEnemyCombined.stream())
+                .filter(Objects::nonNull)
+                .mapToInt(Chara::getNowhp)
+                .map(hp -> Math.max(hp, 0))
+                .sum();
     }
 
     /**
      * 味方のHP1以上の隻数を取得する
-     * 
+     *
      * @return 味方のHP1以上の隻数
      */
     public int friendAliveCount() {
@@ -963,11 +964,11 @@ public class PhaseState {
 
     /**
      * 敵のHP1以上の隻数を取得する
-     * 
+     *
      * @return 敵のHP1以上の隻数
      */
     public int enemydAliveCount() {
-            return (int) Stream.concat(this.afterEnemy.stream(), this.afterEnemyCombined.stream())
+        return (int) Stream.concat(this.afterEnemy.stream(), this.afterEnemyCombined.stream())
                 .filter(Objects::nonNull)
                 .mapToInt(Chara::getNowhp)
                 .filter(hp -> hp > 0)

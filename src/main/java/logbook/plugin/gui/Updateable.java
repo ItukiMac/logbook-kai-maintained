@@ -7,5 +7,5 @@ package logbook.plugin.gui;
  */
 public interface Updateable<T> {
 
-    void updateItem (T item);
+    void updateItem(T item);
 }

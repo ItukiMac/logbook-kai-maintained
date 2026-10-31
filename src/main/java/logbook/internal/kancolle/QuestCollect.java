@@ -95,10 +95,12 @@ public class QuestCollect {
             unavailable.seasonalEvidenceUnavailable = true;
             return unavailable;
         }
-        try (var scope = condition.getDefinitionSnapshot() == null ? logbook.core.LogBookCoreServices.pinDefinitions() : logbook.core.LogBookCoreServices.pinDefinitions(condition.getDefinitionSnapshot())) {
+        try (var scope = condition.getDefinitionSnapshot() == null ? logbook.core.LogBookCoreServices.pinDefinitions()
+                : logbook.core.LogBookCoreServices.pinDefinitions(condition.getDefinitionSnapshot())) {
             return collectPinned(quest, condition);
         }
     }
+
     private static QuestCollect collectPinned(AppQuest quest, AppQuestCondition condition) {
         if (condition.getType() == Type.遠征) {
             return missionCollect(quest, condition);
@@ -118,9 +120,10 @@ public class QuestCollect {
                         return true;
                     try {
                         boolean isCount = LocalDateTime.parse(log.getDateString(), DateUtil.DATE_FORMAT)
-                                .compareTo(LocalDateTime.parse(condition.getStartDate(), DateUtil.DATE_FORMAT)) >= 0; 
+                                .compareTo(LocalDateTime.parse(condition.getStartDate(), DateUtil.DATE_FORMAT)) >= 0;
                         if (LoggerHolder.get().isDebugEnabled()) {
-                            LoggerHolder.get().debug(log.getDateString() + " : " + condition.getStartDate() + " : " + isCount);
+                            LoggerHolder.get()
+                                    .debug(log.getDateString() + " : " + condition.getStartDate() + " : " + isCount);
                         }
                         return isCount;
                     } catch (Exception e) {
@@ -142,7 +145,8 @@ public class QuestCollect {
                 .orElse(Collections.emptyList());
         Collection<MapinfoMst> mapinfo = MapinfoMstCollection.get().getMapinfo().values();
         for (SimpleBattleLog log : logs) {
-            if (!condition.permitsSeasonalLog(log.getDateString())) continue;
+            if (!condition.permitsSeasonalLog(log.getDateString()))
+                continue;
             if (Thread.currentThread().isInterrupted()) {
                 return null;
             }
@@ -223,24 +227,32 @@ public class QuestCollect {
         try {
             for (PortArrival arrival : AppQuestDuration.get().getArrivalCondition(quest)) {
                 if (!condition.permitsSeasonalLog(java.time.Instant.ofEpochMilli(arrival.startedAt()))
-                        || !condition.permitsSeasonalLog(java.time.Instant.ofEpochMilli(arrival.arrivedAt()))) continue;
-                if (Thread.currentThread().isInterrupted()) throw new java.io.IOException("Arrival query interrupted");
-                if (condition.getStartDate() != null && arrival.startDate().compareTo(condition.getStartDate()) < 0) continue;
+                        || !condition.permitsSeasonalLog(java.time.Instant.ofEpochMilli(arrival.arrivedAt())))
+                    continue;
+                if (Thread.currentThread().isInterrupted())
+                    throw new java.io.IOException("Arrival query interrupted");
+                if (condition.getStartDate() != null && arrival.startDate().compareTo(condition.getStartDate()) < 0)
+                    continue;
                 FilterCondition filter = condition.getFilter();
                 if (filter != null) {
-                    if (filter.getArea() != null && !filter.getArea().contains(arrival.map())) continue;
-                    if (filter.getDeckIds() != null && !filter.getDeckIds().contains(arrival.deckId())) continue;
-                    if (Boolean.TRUE.equals(filter.getNoRetreat()) && !arrival.noRetreat()) continue;
+                    if (filter.getArea() != null && !filter.getArea().contains(arrival.map()))
+                        continue;
+                    if (filter.getDeckIds() != null && !filter.getDeckIds().contains(arrival.deckId()))
+                        continue;
+                    if (Boolean.TRUE.equals(filter.getNoRetreat()) && !arrival.noRetreat())
+                        continue;
                     if (filter.getFleet() != null) {
                         if (arrival.noRetreat()) {
                             List<ShipMst> ships = arrival.shipMasterIds().stream()
                                     .map(id -> logbook.bean.ShipMstCollection.get().getShipMap().get(id)).toList();
-                            if (!filter.getFleet().test(ships)) continue;
+                            if (!filter.getFleet().test(ships))
+                                continue;
                         } else {
                             // Legacy records alone do not prove which departure slots survived.
                             // Only a separately validated, matching observation may supply them.
                             var fleet = PortArrivalRuntime.readFleet(arrival);
-                            if (fleet.isEmpty() || !fleet.get().matches(filter.getFleet())) continue;
+                            if (fleet.isEmpty() || !fleet.get().matches(filter.getFleet()))
+                                continue;
                         }
                     }
                 }
@@ -255,17 +267,22 @@ public class QuestCollect {
 
     /** Resolve the recorded positions without promoting an escort into a missing slot. */
     private static List<ShipMst> recordedFleet(List<Ship> recorded) {
-        if (recorded == null) return null;
+        if (recorded == null)
+            return null;
         int size = recorded.size();
         // Saved fleets may contain trailing unused slots, but an interior gap is not padding.
-        while (size > 0 && recorded.get(size - 1) == null) size--;
-        if (size == 0) return null;
+        while (size > 0 && recorded.get(size - 1) == null)
+            size--;
+        if (size == 0)
+            return null;
         List<ShipMst> resolved = new ArrayList<>(size);
         for (int slot = 0; slot < size; slot++) {
             Ship member = recorded.get(slot);
-            if (member == null) return null;
+            if (member == null)
+                return null;
             ShipMst master = Ships.shipMst(member).orElse(null);
-            if (master == null) return null;
+            if (master == null)
+                return null;
             resolved.add(master);
         }
         return resolved;

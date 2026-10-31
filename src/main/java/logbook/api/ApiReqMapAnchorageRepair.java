@@ -21,8 +21,8 @@ public class ApiReqMapAnchorageRepair implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
         Optional.ofNullable(json.getJsonObject("api_data"))
-            .map(data -> data.getJsonArray("api_ship_data"))
-            .ifPresent(this::apiShipData);
+                .map(data -> data.getJsonArray("api_ship_data"))
+                .ifPresent(this::apiShipData);
     }
 
     /**

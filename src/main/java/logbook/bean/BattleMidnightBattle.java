@@ -67,7 +67,7 @@ public class BattleMidnightBattle implements IMidnightBattle, Serializable, Clon
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたBattleMidnightBattle
      */
     @Override
@@ -87,7 +87,7 @@ public class BattleMidnightBattle implements IMidnightBattle, Serializable, Clon
      */
     public static BattleMidnightBattle toBattle(JsonObject json) {
         BattleMidnightBattle bean = new BattleMidnightBattle();
-        
+
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);

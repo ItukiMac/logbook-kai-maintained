@@ -33,16 +33,22 @@ public class QuestPane extends HBox {
     private final Quest display;
     private final logbook.plugin.api.QuestLocalFilesV1.Note localNote;
     private logbook.plugin.api.FeatureUiV1.Binding definitionBinding;
-    private final javafx.beans.value.ChangeListener<javafx.stage.Window> definitionWindowListener = (o,a,b) -> attachDefinitionWindow(b);
+    private final javafx.beans.value.ChangeListener<javafx.stage.Window> definitionWindowListener = (o, a,
+            b) -> attachDefinitionWindow(b);
+
     private void attachDefinitionWindow(javafx.stage.Window window) {
-        if (definitionBinding != null) definitionBinding.close();
-        definitionBinding = window == null ? null : logbook.plugin.api.FeatureUiV1.observeDefinitions(window, this::refreshDefinitionAvailability);
+        if (definitionBinding != null)
+            definitionBinding.close();
+        definitionBinding = window == null ? null
+                : logbook.plugin.api.FeatureUiV1.observeDefinitions(window, this::refreshDefinitionAvailability);
     }
+
     private void refreshDefinitionAvailability() {
         try (var scope = LogBookCoreServices.pinDefinitions()) {
             int id = this.display.no();
-            this.condition.setVisible(LogBookCoreServices.getQuestResource(id,true) != null
-                || LogBookCoreServices.getQuestResource(id,false) != null || LogBookCoreServices.getCustomQuestResource(id) != null);
+            this.condition.setVisible(LogBookCoreServices.getQuestResource(id, true) != null
+                    || LogBookCoreServices.getQuestResource(id, false) != null
+                    || LogBookCoreServices.getCustomQuestResource(id) != null);
             getProperties().put("definitionGeneration", scope.snapshot().generation());
         }
     }
@@ -80,16 +86,19 @@ public class QuestPane extends HBox {
     /** Display an already captured immutable row; retain the legacy constructor above. */
     public QuestPane(Quest quest) {
         this(quest, Integer.valueOf(6).equals(quest.category()) || Integer.valueOf(11).equals(quest.category())
-                ? logbook.plugin.api.QuestLocalFilesV1.note(quest.no()) : null);
+                ? logbook.plugin.api.QuestLocalFilesV1.note(quest.no())
+                : null);
     }
 
     /** Render the captured note; do not reopen its file during control construction. */
     public QuestPane(Quest quest, logbook.plugin.api.QuestLocalFilesV1.Note note) {
         this.display = java.util.Objects.requireNonNull(quest);
-        if (note != null && note.questId() != quest.no()) throw new IllegalArgumentException("Note identity mismatch");
+        if (note != null && note.questId() != quest.no())
+            throw new IllegalArgumentException("Note identity mismatch");
         this.localNote = note;
         try {
-            FXMLLoader loader = logbook.plugin.api.FeatureUiV1.componentLoader(QuestPane.class, "/logbook/gui/quest.fxml");
+            FXMLLoader loader = logbook.plugin.api.FeatureUiV1.componentLoader(QuestPane.class,
+                    "/logbook/gui/quest.fxml");
             loader.setRoot(this);
             loader.setController(this);
             loader.load();
@@ -108,68 +117,70 @@ public class QuestPane extends HBox {
             Quest quest = this.display;
 
             switch (quest.category() == null ? 0 : quest.category()) {
-                case 1:
-                    this.getStyleClass().add("deck");
-                    break;
-                case 2:
-                case 8:
-                case 9:
-                    this.getStyleClass().add("sortie");
-                    break;
-                case 3:
-                    this.getStyleClass().add("practice");
-                    break;
-                case 4:
-                    this.getStyleClass().add("mission");
-                    break;
-                case 5:
-                    this.getStyleClass().add("supply");
-                    break;
-                case 6:
-                    this.getStyleClass().add("kousyou");
-                    break;
-                case 7:
-                    this.getStyleClass().add("kaisou");
-                    break;
-                default:
-                    break;
+            case 1:
+                this.getStyleClass().add("deck");
+                break;
+            case 2:
+            case 8:
+            case 9:
+                this.getStyleClass().add("sortie");
+                break;
+            case 3:
+                this.getStyleClass().add("practice");
+                break;
+            case 4:
+                this.getStyleClass().add("mission");
+                break;
+            case 5:
+                this.getStyleClass().add("supply");
+                break;
+            case 6:
+                this.getStyleClass().add("kousyou");
+                break;
+            case 7:
+                this.getStyleClass().add("kaisou");
+                break;
+            default:
+                break;
             }
             if (!this.display.active()) {
                 this.getStyleClass().add("inactive");
             }
             switch (quest.progressFlag() == null ? 0 : quest.progressFlag()) {
-                case 1:
-                    this.progress.setStartAngle(90);
+            case 1:
+                this.progress.setStartAngle(90);
+                this.progress.setRadiusX(5);
+                this.progress.setRadiusY(5);
+                this.progress.setLength(360 * 0.5);
+                break;
+            case 2:
+                this.progress.setStartAngle(45);
+                this.progress.setRadiusX(5);
+                this.progress.setRadiusY(5);
+                this.progress.setLength(360 * 0.8);
+                break;
+            default:
+                if (Integer.valueOf(3).equals(quest.state())) {
                     this.progress.setRadiusX(5);
                     this.progress.setRadiusY(5);
-                    this.progress.setLength(360 * 0.5);
-                    break;
-                case 2:
-                    this.progress.setStartAngle(45);
-                    this.progress.setRadiusX(5);
-                    this.progress.setRadiusY(5);
-                    this.progress.setLength(360 * 0.8);
-                    break;
-                default:
-                    if (Integer.valueOf(3).equals(quest.state())) {
-                        this.progress.setRadiusX(5);
-                        this.progress.setRadiusY(5);
-                    } else {
-                        this.progress.setRadiusX(2);
-                        this.progress.setRadiusY(2);
-                    }
-                    this.progress.setLength(360);
-                    break;
+                } else {
+                    this.progress.setRadiusX(2);
+                    this.progress.setRadiusY(2);
+                }
+                this.progress.setLength(360);
+                break;
             }
             this.name.setText(java.util.Objects.toString(quest.title(), "任務 " + quest.no()));
             this.detail.setText(java.util.Objects.toString(quest.detail(), "").replace("<br>", ""));
             this.setOnContextMenuRequested(this::showContextMenu);
 
             refreshDefinitionAvailability();
-            this.sceneProperty().addListener((o,previous,current) -> {
-                if (previous != null) previous.windowProperty().removeListener(definitionWindowListener);
+            this.sceneProperty().addListener((o, previous, current) -> {
+                if (previous != null)
+                    previous.windowProperty().removeListener(definitionWindowListener);
                 attachDefinitionWindow(current == null ? null : current.getWindow());
-                if (current != null) current.windowProperty().addListener(definitionWindowListener);
+                if (current != null)
+                    current.windowProperty().addListener(definitionWindowListener);
             });
 
             // Values and diagnostics come from the same bounded read as the refresh comparison.
@@ -185,7 +196,8 @@ public class QuestPane extends HBox {
                     this.name.setOpacity(0.5);
                     this.name.setStyle("-fx-text-fill: gray;");
                 }
-                if (this.localNote.file().problem()) showLocalDiagnostic(this.localNote.file().diagnostic());
+                if (this.localNote.file().problem())
+                    showLocalDiagnostic(this.localNote.file().diagnostic());
             }
             // カスタム任務の場合、検索リンクを表示しない
             int no = quest.no();
@@ -216,7 +228,7 @@ public class QuestPane extends HBox {
         var parent = getParent();
         var rows = parent == null ? java.util.List.of(this.display)
                 : parent.getChildrenUnmodifiable().stream().filter(QuestPane.class::isInstance)
-                    .map(QuestPane.class::cast).map(row -> row.display).toList();
+                        .map(QuestPane.class::cast).map(row -> row.display).toList();
         logbook.plugin.api.QuestUiV1.hide(this, rows);
     }
 
@@ -227,7 +239,8 @@ public class QuestPane extends HBox {
                     .submit(() -> {
                         Desktop.getDesktop()
                                 .browse(URI.create("https://www.google.co.jp/search?q="
-                                        + URLEncoder.encode(java.util.Objects.toString(this.display.title(), "任務 " + this.display.no()), "UTF-8")));
+                                        + URLEncoder.encode(java.util.Objects.toString(this.display.title(),
+                                                "任務 " + this.display.no()), "UTF-8")));
                         return null;
                     });
         } catch (Exception e) {
@@ -249,7 +262,8 @@ public class QuestPane extends HBox {
     @FXML
     void condition(ActionEvent event) {
         try {
-            logbook.plugin.api.FeatureUiV1.showWindow("logbook/gui/quest_progress.fxml", (Stage) this.getScene().getWindow(),
+            logbook.plugin.api.FeatureUiV1.showWindow("logbook/gui/quest_progress.fxml",
+                    (Stage) this.getScene().getWindow(),
                     java.util.Objects.toString(this.display.title(), "任務 " + this.display.no()), c -> {
                         ((QuestProgress) c).setQuest(QuestListReadService.toProgressInput(this.display));
                     }, null);

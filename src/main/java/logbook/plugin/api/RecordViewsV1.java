@@ -11,8 +11,12 @@ import logbook.internal.gui.RecordViewBridgeV1;
  * existing feature bundles still require their exact host digest.
  */
 public final class RecordViewsV1 {
-    private RecordViewsV1() { }
-    public static int version() { return 1; }
+    private RecordViewsV1() {
+    }
+
+    public static int version() {
+        return 1;
+    }
 
     /**
      * Open a historical battle using the existing host reader, without repairing,

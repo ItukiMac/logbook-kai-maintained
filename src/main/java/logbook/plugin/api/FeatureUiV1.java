@@ -22,9 +22,12 @@ import logbook.internal.gui.WindowController;
  * APIs; bundles must also declare the exact compatible host artifact.</p>
  */
 public final class FeatureUiV1 {
-    private FeatureUiV1() { }
+    private FeatureUiV1() {
+    }
 
-    public static int version() { return 1; }
+    public static int version() {
+        return 1;
+    }
 
     /** Public lifecycle base; existing WindowController plugins remain supported. */
     public abstract static class Window extends WindowController {
@@ -57,21 +60,28 @@ public final class FeatureUiV1 {
 
     /** Tree layout only: existing width/order/sort keys are preserved; visibility is not invented. */
     public static final class Trees {
-        private Trees() { }
+        private Trees() {
+        }
+
         public static void restoreLayout(javafx.scene.control.TreeTableView<?> table, String key) {
             FeatureUiBridgeV1.restoreTree(table, key);
         }
     }
 
     /** Window-lifetime definition observation. Closing is idempotent on the FX thread. */
-    public interface Binding extends AutoCloseable { @Override void close(); }
+    public interface Binding extends AutoCloseable {
+        @Override
+        void close();
+    }
+
     public static Binding observeDefinitions(javafx.stage.Window window, Runnable refresh) {
         return FeatureUiBridgeV1.observeDefinitions(window, refresh);
     }
 
     /** Table helpers keep the existing persisted keys and shortcuts. */
     public static final class Tables {
-        private Tables() { }
+        private Tables() {
+        }
 
         /** Same explicit save dialog/CSV behavior as the host table tool. */
         public static void store(TableView<?> table, String title, Stage owner) throws IOException {
@@ -112,7 +122,8 @@ public final class FeatureUiV1 {
     }
 
     public static final class Controls {
-        private Controls() { }
+        private Controls() {
+        }
 
         /** Preserve the existing explicit save dialog and PNG output. Invoke only on user action. */
         public static void storeSnapshot(javafx.scene.Node node, String title, javafx.stage.Window owner) {

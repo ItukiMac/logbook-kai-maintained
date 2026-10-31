@@ -743,7 +743,8 @@ public class ShipTablePane extends VBox {
         if (result.accepted()) {
             for (ShipItem row : this.shipItems) {
                 Set<String> values = result.displayLabels().get(row.getId());
-                if (values != null) row.setLabel(FXCollections.observableSet(new LinkedHashSet<>(values)));
+                if (values != null)
+                    row.setLabel(FXCollections.observableSet(new LinkedHashSet<>(values)));
             }
             this.updateLabel();
             this.updateFilter();
@@ -768,18 +769,21 @@ public class ShipTablePane extends VBox {
             return;
         }
         List<ShipLabelsV1.Target> targets = labelTargets();
-        if (targets == null) return;
+        if (targets == null)
+            return;
         String shipNames = this.table.getSelectionModel().getSelectedItems().stream()
                 .map(ship -> Ships.shipMst(ship.getShip()).map(ShipMst::getName).orElse(""))
                 .collect(Collectors.joining(","));
-        if (shipNames.length() > 50) shipNames = shipNames.substring(0, 50) + "...";
+        if (shipNames.length() > 50)
+            shipNames = shipNames.substring(0, 50) + "...";
         TextInputDialog dialog = new TextInputDialog("");
         dialog.initOwner((Stage) this.getScene().getWindow());
         dialog.setTitle("艦娘にラベルを追加");
         dialog.setHeaderText(shipNames + "にラベルを追加します");
         PublicAutoCompletion.bindAutoCompletion(dialog.getEditor(), new SuggestSupport(this.labelValue.getItems()));
         var result = dialog.showAndWait();
-        if (result.isPresent() && !result.get().isEmpty()) confirmedLabelEdit(targets, result.get(), true);
+        if (result.isPresent() && !result.get().isEmpty())
+            confirmedLabelEdit(targets, result.get(), true);
     }
 
     @FXML
@@ -790,11 +794,13 @@ public class ShipTablePane extends VBox {
             return;
         }
         List<ShipLabelsV1.Target> targets = labelTargets();
-        if (targets == null) return;
+        if (targets == null)
+            return;
         String shipNames = this.table.getSelectionModel().getSelectedItems().stream()
                 .map(ship -> Ships.shipMst(ship.getShip()).map(ShipMst::getName).orElse(""))
                 .collect(Collectors.joining(","));
-        if (shipNames.length() > 50) shipNames = shipNames.substring(0, 50) + "...";
+        if (shipNames.length() > 50)
+            shipNames = shipNames.substring(0, 50) + "...";
         // Event tags are game-owned and must not be offered as editable manual labels.
         Set<String> labels = new TreeSet<>();
         targets.forEach(target -> labels.addAll(target.expectedLabels()));
@@ -804,7 +810,8 @@ public class ShipTablePane extends VBox {
         dialog.setTitle("艦娘からラベルを除去");
         dialog.setHeaderText(shipNames + "からラベルを除去");
         var result = dialog.showAndWait();
-        if (result.isPresent() && !result.get().isEmpty()) confirmedLabelEdit(targets, result.get(), false);
+        if (result.isPresent() && !result.get().isEmpty())
+            confirmedLabelEdit(targets, result.get(), false);
     }
 
     /**
@@ -885,7 +892,7 @@ public class ShipTablePane extends VBox {
 
     /**
      * 艦種フィルタのチェックボックス
-     * 
+     *
      * @return 艦種フィルタのチェックボックス
      */
     private List<CheckBox> typeCheckBox() {
@@ -931,7 +938,7 @@ public class ShipTablePane extends VBox {
 
     /**
      * 艦娘フィルターを作成する
-     * 
+     *
      * @return 艦娘フィルター
      */
     private Predicate<ShipItem> createFilter() {

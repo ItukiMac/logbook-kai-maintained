@@ -13,14 +13,18 @@ final class DefinitionPackCompatibility {
     static final String NO_RETREAT = "quest-filter-no-retreat-v1";
     static final String PORT_ARRIVAL = "quest-port-arrival-v1";
     private static final Set<String> SUPPORTED = Set.of(DECK_IDS, NO_RETREAT, PORT_ARRIVAL);
-    private DefinitionPackCompatibility() { }
+
+    private DefinitionPackCompatibility() {
+    }
 
     static Set<String> requireManifest(JsonNode manifest) throws IOException {
-        if (manifest == null || !manifest.isObject()) throw new IOException("Invalid data manifest");
+        if (manifest == null || !manifest.isObject())
+            throw new IOException("Invalid data manifest");
         String format = manifest.path("format").asText();
         JsonNode required = manifest.path("required_capabilities");
         if (LEGACY_FORMAT.equals(format)) {
-            if (!required.isMissingNode()) throw new IOException("V1 must not declare capability requirements");
+            if (!required.isMissingNode())
+                throw new IOException("V1 must not declare capability requirements");
             return Set.of();
         }
         if (!CAPABILITY_FORMAT.equals(format) || !required.isArray() || required.isEmpty())
@@ -34,9 +38,11 @@ final class DefinitionPackCompatibility {
     }
 
     static void requireDefinition(String path, JsonNode definition, Set<String> declared) throws IOException {
-        if (definition == null) throw new IOException("Empty definition JSON: " + path);
+        if (definition == null)
+            throw new IOException("Empty definition JSON: " + path);
         if (!(path.startsWith("definitions/quest/") || path.startsWith("definitions/eventquest/")
-                || path.startsWith("logbook/quest/") || path.startsWith("logbook/eventquest/"))) return;
+                || path.startsWith("logbook/quest/") || path.startsWith("logbook/eventquest/")))
+            return;
         for (JsonNode condition : definition.path("conditions")) {
             if (condition.has("arrival") && !declared.contains(PORT_ARRIVAL))
                 throw new IOException("Missing port-arrival capability declaration: " + path);

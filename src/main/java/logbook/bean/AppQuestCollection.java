@@ -58,7 +58,8 @@ public class AppQuestCollection implements Serializable {
         this.update();
 
         // 今はすべての Quest が一度に送られてくるので、all のタブのデータの場合は既にある map を保持しておく必要はない
-        ConcurrentSkipListMap<Integer, AppQuest> copyMap  = all ? new ConcurrentSkipListMap<>() : new ConcurrentSkipListMap<>(this.quest);
+        ConcurrentSkipListMap<Integer, AppQuest> copyMap = all ? new ConcurrentSkipListMap<>()
+                : new ConcurrentSkipListMap<>(this.quest);
         if (questList.getList() != null) {
             for (Quest quest : questList.getList()) {
                 if (quest != null) {

@@ -95,8 +95,10 @@ public interface FeatureModule {
         @Override
         public int compareTo(Version other) {
             int result = Integer.compare(major, other.major);
-            if (result == 0) result = Integer.compare(minor, other.minor);
-            if (result == 0) result = Integer.compare(patch, other.patch);
+            if (result == 0)
+                result = Integer.compare(minor, other.minor);
+            if (result == 0)
+                result = Integer.compare(patch, other.patch);
             return result;
         }
 
@@ -106,7 +108,9 @@ public interface FeatureModule {
         }
     }
 
-    enum Group { COMMAND, CALCULATOR, EXTRA }
+    enum Group {
+        COMMAND, CALCULATOR, EXTRA
+    }
 
     record Feature(String id, String title, String fxml, Group group, int order, String accelerator) {
         public Feature {

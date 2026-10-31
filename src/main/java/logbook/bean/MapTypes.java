@@ -45,12 +45,12 @@ public class MapTypes {
          */
         public static Eventmap toEventmap(JsonObject json) {
             Eventmap bean = new Eventmap();
-            
+
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
                 unUsedKeyBindListener = new UnUsedKeyBindListener(json);
             }
-            
+
             JsonHelper.bind(json, unUsedKeyBindListener)
                     .setInteger("api_max_maphp", bean::setMaxMaphp)
                     .setInteger("api_now_maphp", bean::setNowMaphp)
@@ -254,7 +254,6 @@ public class MapTypes {
 
             JsonHelper.bind(json, unUsedKeyBindListener)
                     .setIntegerList("api_select_cells", bean::setSelectCells);
-
 
             if (LoggerHolder.get().isDebugEnabled()) {
                 Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();

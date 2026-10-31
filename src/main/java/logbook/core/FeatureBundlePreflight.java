@@ -12,7 +12,8 @@ import logbook.plugin.api.FeatureModule;
 public final class FeatureBundlePreflight {
     public static final String SUCCESS_MARKER = "FEATURE_BUNDLE_PREFLIGHT_OK";
 
-    private FeatureBundlePreflight() { }
+    private FeatureBundlePreflight() {
+    }
 
     public static void main(String[] args) {
         if (args.length != 0) {

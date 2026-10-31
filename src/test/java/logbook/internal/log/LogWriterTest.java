@@ -19,7 +19,7 @@ class LogWriterTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        dummyFile =  Files.createTempFile("testFile", ".txt");
+        dummyFile = Files.createTempFile("testFile", ".txt");
     }
 
     @Test
@@ -31,7 +31,7 @@ class LogWriterTest {
         for (int i = 0; i < 100; i++) {
             int lineNumber = i;
             executor.submit(() -> {
-                 logWriter.write("test");
+                logWriter.write("test");
             });
         }
         executor.shutdown();
@@ -53,10 +53,10 @@ class LogWriterTest {
     @AfterEach
     void tearDown() throws IOException {
         if (Files.exists(dummyFile)) {
-//            List<String> content = Files.readAllLines(this.dummyFile);
-//            for (String line : content) {
-//                System.out.println(line);
-//            }
+            //            List<String> content = Files.readAllLines(this.dummyFile);
+            //            for (String line : content) {
+            //                System.out.println(line);
+            //            }
             Files.delete(dummyFile);
         }
     }

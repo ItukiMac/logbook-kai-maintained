@@ -34,7 +34,7 @@ public class BouyomiChan {
 
     /**
      * 音量を設定します。
-     * 
+     *
      * @param volume 音量(0～100, -1)
      * @return このオブジェクトへの参照。
      */
@@ -45,7 +45,7 @@ public class BouyomiChan {
 
     /**
      * 速度を設定します。
-     * 
+     *
      * @param speed 速度(50～300, -1)
      * @return このオブジェクトへの参照。
      */
@@ -56,7 +56,7 @@ public class BouyomiChan {
 
     /**
      * 音程を設定します。
-     * 
+     *
      * @param tone 音程(50～200, -1)
      * @return このオブジェクトへの参照。
      */
@@ -67,7 +67,7 @@ public class BouyomiChan {
 
     /**
      * 声質を設定します。
-     * 
+     *
      * @param voice 声質(1～8, 0)
      * @return このオブジェクトへの参照。
      */
@@ -110,7 +110,7 @@ public class BouyomiChan {
 
     /**
      * 文章を読み上げます。
-     * 
+     *
      * @param text 文章
      * @throws IOException 接続に失敗した、または要求を送信出来ない場合。
      */
@@ -164,7 +164,7 @@ public class BouyomiChan {
 
     /**
      * 棒読みちゃんへデフォルトの設定を使って接続します。
-     * 
+     *
      * @return 棒読みちゃん
      */
     public static BouyomiChan create() {
@@ -173,7 +173,7 @@ public class BouyomiChan {
 
     /**
      * 棒読みちゃんへ接続します。
-     * 
+     *
      * @param host リモートホスト
      * @param port リモートポート
      * @return 棒読みちゃん

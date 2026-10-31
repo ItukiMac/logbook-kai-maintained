@@ -23,7 +23,8 @@ import org.mockito.MockedStatic;
 
 /** Real expedition predicates with fixture-only master/state collections. */
 class ReviewedExpeditionBoundaryTest {
-    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+    private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder()
+            .enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
 
     private static MissionCondition a5() throws Exception {
         try (var in = ReviewedExpeditionBoundaryTest.class.getResourceAsStream("/logbook/mission/1/A5.json")) {
@@ -38,11 +39,17 @@ class ReviewedExpeditionBoundaryTest {
 
     private static Ship ship(int master, int level) {
         var result = new Ship();
-        result.setId(master); result.setShipId(master); result.setLv(level);
-        result.setKaryoku(List.of(60, 60)); result.setTaiku(List.of(50, 50));
-        result.setTaisen(List.of(60, 60)); result.setSakuteki(List.of(40, 40));
+        result.setId(master);
+        result.setShipId(master);
+        result.setLv(level);
+        result.setKaryoku(List.of(60, 60));
+        result.setTaiku(List.of(50, 50));
+        result.setTaisen(List.of(60, 60));
+        result.setSakuteki(List.of(40, 40));
         result.setKyouka(List.of(0, 0, 0, 0, 0, 0, 0));
-        result.setSlot(List.of()); result.setSlotEx(-1); result.setOnslot(List.of());
+        result.setSlot(List.of());
+        result.setSlotEx(-1);
+        result.setOnslot(List.of());
         return result;
     }
 
@@ -51,7 +58,8 @@ class ReviewedExpeditionBoundaryTest {
                 ship(990002, 45), ship(990002, 45), ship(990002, total - 185)));
     }
 
-    @Test void a5RejectsFleetLevel229AndAccepts230WithAllOtherRequirementsMet() throws Exception {
+    @Test
+    void a5RejectsFleetLevel229AndAccepts230WithAllOtherRequirementsMet() throws Exception {
         try (var data = new Fixture()) {
             // Both disputed flagship minima (45 and 50) are met, isolating the agreed sum.
             var below = fleet(990003, 229);
@@ -64,14 +72,16 @@ class ReviewedExpeditionBoundaryTest {
         }
     }
 
-    @Test void a5CannotUseAnAswDestroyerAsTheRequiredEscortCarrier() throws Exception {
+    @Test
+    void a5CannotUseAnAswDestroyerAsTheRequiredEscortCarrier() throws Exception {
         try (var data = new Fixture()) {
             assertFalse(a5().test(fleet(990002, 230)), "Five destroyers match no sourced A5 alternative");
             assertTrue(a5().test(fleet(990007, 230)), "A genuine escort carrier still satisfies its branch");
         }
     }
 
-    @Test void escortCarrierPredicateRejectsOtherShipTypesEvenWithNativeAsw() throws Exception {
+    @Test
+    void escortCarrierPredicateRejectsOtherShipTypesEvenWithNativeAsw() throws Exception {
         try (var data = new Fixture()) {
             for (int type : List.of(1, 2, 3, 4, 5, 10, 11, 16, 18, 21, 22)) {
                 data.add(991000 + type, type, List.of(60));
@@ -81,9 +91,10 @@ class ReviewedExpeditionBoundaryTest {
         }
     }
 
-    @Test void escortCarrierPredicateRequiresPresentPositiveNativeAsw() throws Exception {
+    @Test
+    void escortCarrierPredicateRequiresPresentPositiveNativeAsw() throws Exception {
         try (var data = new Fixture()) {
-            for (List<Integer> asw : Arrays.asList(null, List.<Integer>of(), List.of(0), Arrays.asList(null, 0))) {
+            for (List<Integer> asw : Arrays.asList(null, List.<Integer> of(), List.of(0), Arrays.asList(null, 0))) {
                 data.add(992007, 7, asw);
                 assertFalse(escortCarrier().test(new ArrayList<>(List.of(ship(992007, 99)))), String.valueOf(asw));
             }
@@ -93,9 +104,11 @@ class ReviewedExpeditionBoundaryTest {
         }
     }
 
-    @Test void publishedMasterFixtureKeepsRemodelDependentEscortCarrierEligibility() throws Exception {
-        try (var data = new Fixture(); var in = getClass().getResourceAsStream(
-                "/logbook/config/logbook.bean.ShipMstCollection.json")) {
+    @Test
+    void publishedMasterFixtureKeepsRemodelDependentEscortCarrierEligibility() throws Exception {
+        try (var data = new Fixture();
+                var in = getClass().getResourceAsStream(
+                        "/logbook/config/logbook.bean.ShipMstCollection.json")) {
             assertNotNull(in);
             var published = JSON.readValue(in, ShipMstCollection.class).getShipMap();
             // Only these checked remodels, not certification of every ship/remodel in the game.
@@ -110,9 +123,11 @@ class ReviewedExpeditionBoundaryTest {
         }
     }
 
-    @Test void explicitAlternativeShipTypeStillWorks() throws Exception {
+    @Test
+    void explicitAlternativeShipTypeStillWorks() throws Exception {
         try (var data = new Fixture()) {
-            var condition = escortCarrier(); condition.setShipType(Set.of("護衛空母", "軽巡洋艦"));
+            var condition = escortCarrier();
+            condition.setShipType(Set.of("護衛空母", "軽巡洋艦"));
             assertTrue(condition.test(new ArrayList<>(List.of(ship(990003, 50)))));
         }
     }
@@ -126,20 +141,33 @@ class ReviewedExpeditionBoundaryTest {
         Fixture() {
             var types = new StypeCollection();
             for (ShipType type : ShipType.values()) {
-                var value = new Stype(); value.setId(type.getStype()); value.setName(type.name());
+                var value = new Stype();
+                value.setId(type.getStype());
+                value.setName(type.name());
                 types.getStypeMap().put(type.getStype(), value);
             }
             masterAccess.when(ShipMstCollection::get).thenReturn(masters);
             typeAccess.when(StypeCollection::get).thenReturn(types);
             itemAccess.when(SlotItemCollection::get).thenReturn(new SlotItemCollection());
-            add(990002, 2, List.of(60)); add(990003, 3, List.of(60)); add(990007, 7, List.of(60));
+            add(990002, 2, List.of(60));
+            add(990003, 3, List.of(60));
+            add(990007, 7, List.of(60));
         }
 
         void add(int id, int type, List<Integer> asw) {
-            var master = new ShipMst(); master.setId(id); master.setName("synthetic-" + id);
-            master.setStype(type); master.setTais(asw); masters.getShipMap().put(id, master);
+            var master = new ShipMst();
+            master.setId(id);
+            master.setName("synthetic-" + id);
+            master.setStype(type);
+            master.setTais(asw);
+            masters.getShipMap().put(id, master);
         }
 
-        @Override public void close() { itemAccess.close(); typeAccess.close(); masterAccess.close(); }
+        @Override
+        public void close() {
+            itemAccess.close();
+            typeAccess.close();
+            masterAccess.close();
+        }
     }
 }

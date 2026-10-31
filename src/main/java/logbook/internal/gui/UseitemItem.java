@@ -84,27 +84,27 @@ public class UseitemItem {
 
     /** Useitem API での ID と material ID のマッピング */
     private static final Map<Integer, Integer> MATERIALS_MAP = new HashMap<>();
-    
+
     /** Useitem API での ID と Slotitem ID のマッピング */
     private static final Map<Integer, Integer> ITEMS_MAP = new HashMap<>();
 
     static {
-        MATERIALS_MAP.put(1, 6);    // バケツ
-        MATERIALS_MAP.put(2, 5);    // バーナー
-        MATERIALS_MAP.put(3, 7);    // 釘
-        MATERIALS_MAP.put(4, 8);    // ネジ
-        MATERIALS_MAP.put(31, 1);   // 燃料
-        MATERIALS_MAP.put(32, 2);   // 弾薬
-        MATERIALS_MAP.put(33, 3);   // 鋼材
-        MATERIALS_MAP.put(34, 4);   // ボーキ
-        ITEMS_MAP.put(50, 42);  // ダメコン
-        ITEMS_MAP.put(51, 43);  // 女神
-        ITEMS_MAP.put(66, 145);  // おにぎり
-        ITEMS_MAP.put(67, 146);  // 洋上補給
-        ITEMS_MAP.put(69, 150);  // 秋刀魚の缶詰
-        ITEMS_MAP.put(76, 241);  // 特別なおにぎり
+        MATERIALS_MAP.put(1, 6); // バケツ
+        MATERIALS_MAP.put(2, 5); // バーナー
+        MATERIALS_MAP.put(3, 7); // 釘
+        MATERIALS_MAP.put(4, 8); // ネジ
+        MATERIALS_MAP.put(31, 1); // 燃料
+        MATERIALS_MAP.put(32, 2); // 弾薬
+        MATERIALS_MAP.put(33, 3); // 鋼材
+        MATERIALS_MAP.put(34, 4); // ボーキ
+        ITEMS_MAP.put(50, 42); // ダメコン
+        ITEMS_MAP.put(51, 43); // 女神
+        ITEMS_MAP.put(66, 145); // おにぎり
+        ITEMS_MAP.put(67, 146); // 洋上補給
+        ITEMS_MAP.put(69, 150); // 秋刀魚の缶詰
+        ITEMS_MAP.put(76, 241); // 特別なおにぎり
     }
-    
+
     public static UseitemItem toUseitemItem(UseitemMst item) {
         UseitemItem ret = new UseitemItem();
         ret.setId(item.getId());
@@ -117,31 +117,31 @@ public class UseitemItem {
             }
             ret.setDescription(sb.toString());
         }
-        
+
         if (MATERIALS_MAP.containsKey(item.getId())) {
             // 資材系
             ret.setCount(Optional.ofNullable(MATERIALS_MAP.get(item.getId()))
-                .map(AppCondition.get().getMaterial()::get)
-                .map(Material::getValue)
-                .orElse(0));
+                    .map(AppCondition.get().getMaterial()::get)
+                    .map(Material::getValue)
+                    .orElse(0));
         } else if (item.getId() == 44) {
             // 家具コインのみ Basic からとる
             ret.setCount(Basic.get().getFcoin());
         } else if (ITEMS_MAP.containsKey(item.getId())) {
             // 装備系
             final int slotitemId = ITEMS_MAP.get(item.getId());
-            ret.setCount((int)SlotItemCollection.get().getSlotitemMap().values().stream()
+            ret.setCount((int) SlotItemCollection.get().getSlotitemMap().values().stream()
                     .filter(slotitem -> slotitem.getSlotitemId() == slotitemId)
                     .count());
         } else {
             // その他の純粋なアイテム
             Optional.ofNullable(UseitemCollection.get().getUseitemMap().get(item.getId()))
-                .map(Useitem::getCount)
-                .ifPresent(ret::setCount);
+                    .map(Useitem::getCount)
+                    .ifPresent(ret::setCount);
         }
         return ret;
     }
-    
+
     @Override
     public String toString() {
         return new StringJoiner("\t")

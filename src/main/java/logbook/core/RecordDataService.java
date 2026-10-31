@@ -27,7 +27,8 @@ import logbook.plugin.api.RecordDataV1.PeriodKey;
 
 /** Host adapter; keeps CSV readers and mutable parser beans out of feature contracts. */
 public final class RecordDataService {
-    private RecordDataService() { }
+    private RecordDataService() {
+    }
 
     private static ZonedDateTime today() {
         return ZonedDateTime.now(ZoneId.of("GMT+04:00")).truncatedTo(ChronoUnit.DAYS);
@@ -67,7 +68,8 @@ public final class RecordDataService {
 
     public static List<DevelopmentRow> developments() {
         Path path = Path.of(AppConfig.get().getReportPath()).resolve(new CreateitemLogFormat().fileName());
-        if (!Files.exists(path)) return List.of();
+        if (!Files.exists(path))
+            return List.of();
         try (Stream<String> lines = Files.lines(path, LogWriter.DEFAULT_CHARSET)) {
             return lines.skip(1).map(RecordDataService::parseDevelopment).flatMap(Optional::stream).toList();
         } catch (Exception failure) {
@@ -77,10 +79,12 @@ public final class RecordDataService {
     }
 
     public static Optional<DevelopmentRow> parseDevelopment(String line) {
-        if (line == null) return Optional.empty();
+        if (line == null)
+            return Optional.empty();
         try {
             String[] c = line.split(",", -1);
-            if (c.length < 8) return Optional.empty();
+            if (c.length < 8)
+                return Optional.empty();
             return Optional.of(new DevelopmentRow(c[0], c[1], c[2], Integer.parseInt(c[3]),
                     Integer.parseInt(c[4]), Integer.parseInt(c[5]), Integer.parseInt(c[6]), c[7]));
         } catch (NumberFormatException malformed) {
@@ -102,16 +106,20 @@ public final class RecordDataService {
         int s = 0, a = 0, b = 0, c = 0, d = 0;
         for (BattleRow row : rows) {
             Objects.requireNonNull(row);
-            if (area != null && !area.equals(row.areaShortName())) continue;
-            if (!bossOnly && row.boss().contains("出撃")) departures++;
-            if (bossOnly && !row.boss().contains("ボス")) continue;
+            if (area != null && !area.equals(row.areaShortName()))
+                continue;
+            if (!bossOnly && row.boss().contains("出撃"))
+                departures++;
+            if (bossOnly && !row.boss().contains("ボス"))
+                continue;
             switch (row.rank()) {
-                case "S" -> s++;
-                case "A" -> a++;
-                case "B" -> b++;
-                case "C" -> c++;
-                case "D" -> d++;
-                default -> { }
+            case "S" -> s++;
+            case "A" -> a++;
+            case "B" -> b++;
+            case "C" -> c++;
+            case "D" -> d++;
+            default -> {
+            }
             }
         }
         return new BattleTotals(bossOnly ? "-" : Long.toString(departures), s + a + b, s, a, b, c, d);

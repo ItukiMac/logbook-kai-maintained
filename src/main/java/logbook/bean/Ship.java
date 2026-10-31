@@ -164,7 +164,7 @@ public class Ship implements Chara, Serializable, Cloneable {
 
     /**
      * この装備定義から{@link SlotItemType}を返します。
-     * 
+     *
      * @return {@link SlotItemType}
      */
     public Optional<ShipType> asShipType() {

@@ -366,7 +366,8 @@ public class Items {
             Map<Integer, SlotitemEquiptype> map = SlotitemEquiptypeCollection.get().getEquiptypeMap();
             List<SlotitemEquiptype> others = new ArrayList<SlotitemEquiptype>(map.values());
             types.getCategories().stream().forEach(c -> {
-                List<SlotitemEquiptype> list = IntStream.of(c.getTypes()).mapToObj(map::get).collect(Collectors.toList());
+                List<SlotitemEquiptype> list = IntStream.of(c.getTypes()).mapToObj(map::get)
+                        .collect(Collectors.toList());
                 ret.put(c.getName(), list);
                 others.removeAll(list);
             });
@@ -380,7 +381,7 @@ public class Items {
     @Data
     private static class Category {
         private String name;
-        private int [] types;
+        private int[] types;
     }
 
     @Data

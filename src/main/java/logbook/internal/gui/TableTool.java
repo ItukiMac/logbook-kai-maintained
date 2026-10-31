@@ -118,10 +118,10 @@ class TableTool {
             return cell;
         };
     }
-    
+
     static Callback<TableColumn<UseitemItem, Integer>, TableCell<UseitemItem, Integer>> createIntegerFormattedCellFactory() {
         final NumberFormat format = NumberFormat.getIntegerInstance();
-        return new Callback<TableColumn<UseitemItem,Integer>, TableCell<UseitemItem,Integer>>() {
+        return new Callback<TableColumn<UseitemItem, Integer>, TableCell<UseitemItem, Integer>>() {
             @Override
             public TableCell<UseitemItem, Integer> call(TableColumn<UseitemItem, Integer> param) {
                 return new TableCell<UseitemItem, Integer>() {

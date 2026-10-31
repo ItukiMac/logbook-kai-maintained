@@ -91,10 +91,10 @@ public class QuestList implements Serializable {
         public static Quest toQuest(JsonValue value) {
             if (value instanceof JsonObject) {
                 Quest bean = new Quest();
-                
+
                 UnUsedKeyBindListener unUsedKeyBindListener = null;
                 if (LoggerHolder.get().isDebugEnabled()) {
-                    unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject)value);
+                    unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject) value);
                 }
 
                 JsonHelper.bind((JsonObject) value, unUsedKeyBindListener)
@@ -108,7 +108,7 @@ public class QuestList implements Serializable {
                         .setInteger("api_bonus_flag", bean::setBonusFlag)
                         .setInteger("api_progress_flag", bean::setProgressFlag)
                         .setInteger("api_invalid_flag", bean::setInvalidFlag);
-                
+
                 if (LoggerHolder.get().isDebugEnabled()) {
                     Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
                     unUsedKey.removeIf("api_label_type"::equals); //任務アイコン種別 1=単発,2=デイリー,3=ウィークリー,6=マンスリー api_typeで十分

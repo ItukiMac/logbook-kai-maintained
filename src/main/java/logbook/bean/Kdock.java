@@ -60,7 +60,7 @@ public class Kdock implements Serializable {
 
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
-            unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject)json);
+            unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject) json);
         }
 
         JsonHelper.bind((JsonObject) json, unUsedKeyBindListener)

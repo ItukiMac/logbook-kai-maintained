@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-
 import tools.jackson.databind.ObjectMapper;
 
 import logbook.core.LogBookCoreServices;
@@ -59,7 +58,7 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
     /**
      * 任務(クエスト)の達成条件設定ファイルを読み込みます
-     * 
+     *
      * @param questNo 任務番号
      * @return 任務条件設定
      */
@@ -74,7 +73,8 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
     public static AppQuestCondition loadFromResource(QuestList.Quest quest,
             logbook.core.SeasonalQuestRuleService rules) {
-        if (quest == null || quest.getNo() == null) return null;
+        if (quest == null || quest.getNo() == null)
+            return null;
         return loadObserved(quest.getNo(), logbook.core.SeasonalQuestRuleService.Observation.from(quest), rules);
     }
 
@@ -83,7 +83,8 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             logbook.core.SeasonalQuestRuleService rules) {
         try (var lease = LogBookCoreServices.pinDefinitions()) {
             AppQuestCondition result = loadPinned(questNo, observation, rules);
-            if (result != null && logbook.core.GameDefinitionRuntime.active()) result.definitionSnapshot = lease.snapshot();
+            if (result != null && logbook.core.GameDefinitionRuntime.active())
+                result.definitionSnapshot = lease.snapshot();
             return result;
         }
     }
@@ -92,7 +93,8 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             logbook.core.SeasonalQuestRuleService.Observation observation,
             logbook.core.SeasonalQuestRuleService rules) {
         try (InputStream stream = LogBookCoreServices.getQuestResourceAsStream(questNo, true)) {
-            if (stream != null) return readRule(stream, questNo, "quest", observation, rules);
+            if (stream != null)
+                return readRule(stream, questNo, "quest", observation, rules);
         } catch (Exception e) {
             LoggerHolder.get().info("任務設定ファイルが読み込めませんでした。", e);
             return null;
@@ -109,7 +111,8 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             LoggerHolder.get().info("カスタム任務設定ファイルが読み込めませんでした: " + questNo, e);
         }
         try (InputStream stream = LogBookCoreServices.getQuestResourceAsStream(questNo, false)) {
-            if (stream != null) return readRule(stream, questNo, "eventquest", observation, rules);
+            if (stream != null)
+                return readRule(stream, questNo, "eventquest", observation, rules);
         } catch (Exception e) {
             LoggerHolder.get().info("任務設定ファイルが読み込めませんでした。", e);
         }
@@ -119,20 +122,22 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
     private static AppQuestCondition readRule(InputStream stream, int questNo, String origin,
             logbook.core.SeasonalQuestRuleService.Observation observation,
             logbook.core.SeasonalQuestRuleService rules) throws java.io.IOException {
-                try {
-        byte[] original = stream.readNBytes(1_048_577);
-        if (original.length > 1_048_576) throw new java.io.IOException("Quest definition size limit");
-        var resolution = rules.resolve(questNo, origin, original, observation);
-        byte[] chosen = resolution.definition();
-        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
-        AppQuestCondition result = mapper.readValue(chosen == null ? original : chosen, AppQuestCondition.class);
-        if (resolution.selection().status() != logbook.core.SeasonalQuestRuleService.Status.NOT_SEASONAL)
-            result.seasonalSelection = resolution.selection();
-        return result;
-                } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
-                    throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
-                }
-            }
+        try {
+            byte[] original = stream.readNBytes(1_048_577);
+            if (original.length > 1_048_576)
+                throw new java.io.IOException("Quest definition size limit");
+            var resolution = rules.resolve(questNo, origin, original, observation);
+            byte[] chosen = resolution.definition();
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                    .enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+            AppQuestCondition result = mapper.readValue(chosen == null ? original : chosen, AppQuestCondition.class);
+            if (resolution.selection().status() != logbook.core.SeasonalQuestRuleService.Status.NOT_SEASONAL)
+                result.seasonalSelection = resolution.selection();
+            return result;
+        } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
+            throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
+        }
+    }
 
     @com.fasterxml.jackson.annotation.JsonIgnore
     @lombok.ToString.Exclude
@@ -141,26 +146,29 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
     @com.fasterxml.jackson.annotation.JsonIgnore
     public boolean isRuleUsable() {
-        if (seasonalSelection == null) return true;
+        if (seasonalSelection == null)
+            return true;
         return seasonalSelection.usable() && !seasonalGenerationChanged();
     }
 
     public boolean isRuleUsableFor(AppQuest quest) {
         return seasonalSelection == null || isRuleUsable() && quest != null
-            && java.util.Objects.equals(quest.getNo(), seasonalSelection.questId())
-            && seasonalSelection.matches(logbook.core.SeasonalQuestRuleService.Observation.from(quest.getQuest()));
+                && java.util.Objects.equals(quest.getNo(), seasonalSelection.questId())
+                && seasonalSelection.matches(logbook.core.SeasonalQuestRuleService.Observation.from(quest.getQuest()));
     }
 
     @com.fasterxml.jackson.annotation.JsonIgnore
     public String getRuleStatusMessage() {
-        if (seasonalSelection == null) return "";
+        if (seasonalSelection == null)
+            return "";
         return seasonalGenerationChanged()
-            ? logbook.core.SeasonalQuestRuleService.Status.DEFINITION_CHANGED.message() : seasonalSelection.message();
+                ? logbook.core.SeasonalQuestRuleService.Status.DEFINITION_CHANGED.message()
+                : seasonalSelection.message();
     }
 
     private boolean seasonalGenerationChanged() {
         return definitionSnapshot != null && logbook.core.GameDefinitionRuntime.active()
-            && definitionSnapshot != LogBookCoreServices.gameDataView().snapshot();
+                && definitionSnapshot != LogBookCoreServices.gameDataView().snapshot();
     }
 
     public boolean permitsSeasonalLog(String jstDate) {
@@ -187,7 +195,8 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
         if (!isRuleUsable() || t != null && t.isSeasonalEvidenceUnavailable()) {
             return unconfirmed(!isRuleUsable() ? getRuleStatusMessage() : "未確定：集計する任務の観測が一致しません");
         }
-        try (var lease = definitionSnapshot == null ? LogBookCoreServices.pinDefinitions() : LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
+        try (var lease = definitionSnapshot == null ? LogBookCoreServices.pinDefinitions()
+                : LogBookCoreServices.pinDefinitions(definitionSnapshot)) {
             boolean passed = testPinned(t);
             return isRuleUsable() ? passed : unconfirmed(getRuleStatusMessage());
         }
@@ -271,7 +280,8 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
         public boolean test(List<ShipMst> ships) {
             // Unknown input entries are not evidence of a valid fleet. Keep them
             // distinct from the null markers consumed internally by AND clauses.
-            if (ships == null || ships.stream().anyMatch(java.util.Objects::isNull)) return false;
+            if (ships == null || ships.stream().anyMatch(java.util.Objects::isNull))
+                return false;
             return evaluate(new ArrayList<>(ships));
         }
 
@@ -289,8 +299,10 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             boolean hasSurvivor = false;
             for (int slot = 0; slot < ships.size(); slot++) {
                 boolean absent = absentSlots.contains(slot + 1);
-                if (absent != (ships.get(slot) == null)) return false;
-                if (!absent) hasSurvivor = true;
+                if (absent != (ships.get(slot) == null))
+                    return false;
+                if (!absent)
+                    hasSurvivor = true;
             }
             return hasSurvivor && evaluate(new ArrayList<>(ships));
         }
@@ -456,20 +468,20 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
         private String toStringOperator() {
             StringBuilder sb = new StringBuilder();
             switch (this.operator) {
-                case "AND":
-                    sb.append("次の条件を全て満たす");
-                    break;
-                case "OR":
-                    sb.append("次の条件のいずれか少なくとも1つを満たす");
-                    break;
-                case "NAND":
-                    sb.append("次の条件のいずれか少なくとも1つを満たさない");
-                    break;
-                case "NOR":
-                    sb.append("次の条件を全て満たさない");
-                    break;
-                default:
-                    break;
+            case "AND":
+                sb.append("次の条件を全て満たす");
+                break;
+            case "OR":
+                sb.append("次の条件のいずれか少なくとも1つを満たす");
+                break;
+            case "NAND":
+                sb.append("次の条件のいずれか少なくとも1つを満たさない");
+                break;
+            case "NOR":
+                sb.append("次の条件を全て満たさない");
+                break;
+            default:
+                break;
             }
             if (this.description != null) {
                 sb.append("(" + this.description + ")");
@@ -571,7 +583,9 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                     sb.append("任意の海域");
                 }
                 if (this.cell != null || this.cells != null) {
-                    sb.append("(セル").append(this.cell != null ? this.cell : this.cells.stream().collect(Collectors.joining("または"))).append(")");
+                    sb.append("(セル").append(
+                            this.cell != null ? this.cell : this.cells.stream().collect(Collectors.joining("または")))
+                            .append(")");
                 }
                 if (this.arrival) {
                     sb.append("の港へ").append(this.count).append("回到達（観測記録のみ）");
@@ -621,7 +635,7 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
 
         /**
          * 遠征カウント
-         * 
+         *
          * @param t 集計結果
          * @return カウント
          */
@@ -630,13 +644,14 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
             if (this.missions.size() == 0) {
                 return map.values().stream().mapToInt(Long::intValue).sum();
             } else {
-                return this.missions.stream().map(mission -> map.getOrDefault(mission, 0L)).mapToInt(Long::intValue).sum();
+                return this.missions.stream().map(mission -> map.getOrDefault(mission, 0L)).mapToInt(Long::intValue)
+                        .sum();
             }
         }
 
         /**
          * カウント
-         * 
+         *
          * @param t 集計結果
          * @return カウント
          */
@@ -675,11 +690,14 @@ public class AppQuestCondition implements Predicate<QuestCollect> {
                 // 評価
                 Rank rank;
                 if (this.cell != null) {
-                    rank = battleCount.getCell().computeIfAbsent(this.area.stream().findFirst().get() + "-" + this.cell, i -> new Rank());
+                    rank = battleCount.getCell().computeIfAbsent(this.area.stream().findFirst().get() + "-" + this.cell,
+                            i -> new Rank());
                 } else if (this.cells != null) {
                     rank = new Rank();
                     final Map<String, Rank> cellCount = battleCount.getCell();
-                    this.cells.stream().map(c -> cellCount.computeIfAbsent(this.area.stream().findFirst().get() + "-" + c, i -> new Rank())).forEach(rank::add);
+                    this.cells.stream().map(c -> cellCount
+                            .computeIfAbsent(this.area.stream().findFirst().get() + "-" + c, i -> new Rank()))
+                            .forEach(rank::add);
                 } else {
                     if (this.boss) {
                         rank = battleCount.getBoss();

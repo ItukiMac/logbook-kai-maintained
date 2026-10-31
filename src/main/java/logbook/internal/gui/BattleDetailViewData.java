@@ -24,35 +24,36 @@ import logbook.internal.kancolle.Ships;
 
 /**
  * 現在の戦闘、現在の演習、戦闘ログに表示される、戦闘ログ詳細の画面表示情報を構築、保持するクラスです
- * 
+ *
  */
 public class BattleDetailViewData {
 
     private BattleLog battleLog;
-    
+
     /**
      * 出撃/進撃情報
      */
     private MapStartNext mapStartNext;
-    
+
     /**
      * 戦闘フェイズ情報
      */
     private PhaseState phaseState;
-    
+
     /**
      * 情報の更新があるか
      */
     private boolean isNewData = false;
-    
+
     /**
      * デフォルトコンストラクタ
      */
     public BattleDetailViewData(BattleLog battleLog) {
         this.battleLog = battleLog;
-        this.mapStartNext = battleLog.getNext().size() > 0 ? battleLog.getNext().get(battleLog.getNext().size() - 1) : null;
-        this.isNewData= true;
-        
+        this.mapStartNext = battleLog.getNext().size() > 0 ? battleLog.getNext().get(battleLog.getNext().size() - 1)
+                : null;
+        this.isNewData = true;
+
         CombinedType combinedType = battleLog.getCombinedType();
         IFormation battle = battleLog.getBattle();
         Map<Integer, List<Ship>> deckMap = battleLog.getDeckMap();
@@ -71,13 +72,14 @@ public class BattleDetailViewData {
      */
     public BattleDetailViewData(BattleLog battleLog, int hashCode) {
         this.battleLog = battleLog;
-        this.mapStartNext = battleLog.getNext().size() > 0 ? battleLog.getNext().get(battleLog.getNext().size() - 1) : null;
-        
+        this.mapStartNext = battleLog.getNext().size() > 0 ? battleLog.getNext().get(battleLog.getNext().size() - 1)
+                : null;
+
         if (getHashCode() == hashCode) {
             return;
         }
         isNewData = true;
-                
+
         CombinedType combinedType = battleLog.getCombinedType();
         IFormation battle = battleLog.getBattle();
         Map<Integer, List<Ship>> deckMap = battleLog.getDeckMap();
@@ -89,13 +91,14 @@ public class BattleDetailViewData {
             this.phaseState.getAfterEnemy().forEach(enemy -> enemy.setPractice(true));
         }
     }
-    
+
     /**
      * ハッシュを返却します
      * @return
      */
     public int getHashCode() {
-        return Objects.hash(this.mapStartNext , this.battleLog.getBattle(), this.battleLog.getMidnight(), this.battleLog.getResult());
+        return Objects.hash(this.mapStartNext, this.battleLog.getBattle(), this.battleLog.getMidnight(),
+                this.battleLog.getResult());
     }
 
     /**
@@ -105,7 +108,7 @@ public class BattleDetailViewData {
     public boolean isNewData() {
         return this.isNewData;
     }
-    
+
     /**
      * 戦闘フェイズ情報を返却します
      * @return
@@ -113,11 +116,11 @@ public class BattleDetailViewData {
     public PhaseState getPhaseState() {
         return this.phaseState;
     }
-    
+
     /**
      * 出撃/進撃情報判定を行います
      * @return true:出撃/進撃情報 false:演習
-     * 
+     *
      * TODO isPractice情報との違いを確認する
      */
     public boolean isMapStartNextData() {
@@ -126,7 +129,7 @@ public class BattleDetailViewData {
         }
         return true;
     }
-    
+
     /**
      * マス文字列を返却します
      * @return
@@ -136,14 +139,16 @@ public class BattleDetailViewData {
         if (this.mapStartNext == null) {
             return "";
         }
-        
+
         String mapCell = this.mapStartNext.getMapareaId()
                 + "-" + this.mapStartNext.getMapinfoNo()
-                + "-" + Mapping.getCell(this.mapStartNext.getMapareaId(), this.mapStartNext.getMapinfoNo(), this.mapStartNext.getNo())
+                + "-"
+                + Mapping.getCell(this.mapStartNext.getMapareaId(), this.mapStartNext.getMapinfoNo(),
+                        this.mapStartNext.getNo())
                 + (boss ? "(ボス)" : "");
-        return mapCell; 
+        return mapCell;
     }
-    
+
     /**
      * ボス判定
      * @return
@@ -152,9 +157,10 @@ public class BattleDetailViewData {
         if (this.mapStartNext == null) {
             return false;
         }
-        return this.mapStartNext.getNo().equals(this.mapStartNext.getBosscellNo()) || this.mapStartNext.getEventId() == 5;
+        return this.mapStartNext.getNo().equals(this.mapStartNext.getBosscellNo())
+                || this.mapStartNext.getEventId() == 5;
     }
-    
+
     /**
      * ルート情報文字列を返却します
      * @return ルート情報文字列
@@ -165,12 +171,12 @@ public class BattleDetailViewData {
             return "";
         }
         String routeStr = routeList.stream()
-                                        .map(Mapping::getCell)
-                                        .collect(Collectors.joining("→"))
-                                        + Optional.ofNullable(this.battleLog.getBattleCount()).map(v -> "(戦闘" + v + "回)").orElse("");
+                .map(Mapping::getCell)
+                .collect(Collectors.joining("→"))
+                + Optional.ofNullable(this.battleLog.getBattleCount()).map(v -> "(戦闘" + v + "回)").orElse("");
         return routeStr;
     }
-    
+
     /**
      * 艦隊行動文字列を返却します
      * @return
@@ -178,7 +184,7 @@ public class BattleDetailViewData {
     public String getInterceptViewString() {
         return BattleTypes.Intercept.toIntercept(this.battleLog.getBattle().getFormation().get(2)).toString();
     }
-    
+
     /**
      * 味方陣形文字列を返却します
      * @return
@@ -186,7 +192,7 @@ public class BattleDetailViewData {
     public String getFriendFormationViewString() {
         return BattleTypes.Formation.toFormation(this.battleLog.getBattle().getFormation().get(0)).toString();
     }
-    
+
     /**
      * 敵陣形文字列を返却します
      * @return
@@ -213,7 +219,7 @@ public class BattleDetailViewData {
                     .filter(Objects::nonNull)
                     .mapToInt(Ships::airSuperiority)
                     .sum();
-            
+
             StringBuilder seikuSb = new StringBuilder();
             seikuSb.append(friend + friendCombined);
             seikuSb.append("(").append(friend).append("+").append(friendCombined).append(")");
@@ -226,7 +232,7 @@ public class BattleDetailViewData {
             return seikuString;
         }
     }
-    
+
     /**
      * 基礎経験値文字列を返却します
      * @return
@@ -238,7 +244,7 @@ public class BattleDetailViewData {
         }
         return String.valueOf(battleResult.getGetBaseExp());
     }
-    
+
     /**
      * 艦娘経験値文字列を返却します
      * @return
@@ -248,7 +254,7 @@ public class BattleDetailViewData {
         if (battleResult == null) {
             return "?";
         }
-        
+
         String shipExpString = String.valueOf(battleResult.getGetShipExp().stream()
                 .mapToInt(Integer::intValue)
                 .filter(i -> i > 0)
@@ -259,7 +265,7 @@ public class BattleDetailViewData {
                                 .filter(i -> i > 0)
                                 .sum())
                         .orElse(0));
-        
+
         return shipExpString;
     }
 
@@ -280,10 +286,10 @@ public class BattleDetailViewData {
         expSb.append(BigDecimal.valueOf(battleResult.getGetExp())
                 .divide(BigDecimal.valueOf(1428.571), 3, RoundingMode.FLOOR));
         expSb.append(")");
-        
+
         return expSb.toString();
     }
-    
+
     /**
      * 演習かどうか
      * @return
@@ -291,7 +297,7 @@ public class BattleDetailViewData {
     public boolean isPractice() {
         return this.battleLog.isPractice();
     }
-    
+
     /**
      * このオブジェクトの文字列表現を返却します
      */
@@ -300,7 +306,7 @@ public class BattleDetailViewData {
         String SPACE = "  ";
         StringBuilder sb = new StringBuilder();
         sb.append("Hash:").append(getHashCode()).append(System.lineSeparator());
-        sb.append("Info情報{").append(System.lineSeparator());        
+        sb.append("Info情報{").append(System.lineSeparator());
         sb.append(SPACE).append("マス:").append(getMapCellViewString()).append(System.lineSeparator());
         sb.append(SPACE).append("ルート:").append(getRouteViewString()).append(System.lineSeparator());
         sb.append(SPACE).append("艦隊行動:").append(getInterceptViewString()).append(System.lineSeparator());

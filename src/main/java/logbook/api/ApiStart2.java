@@ -73,7 +73,7 @@ public class ApiStart2 implements APIListenerSpi {
             this.apiMstEquipShip(data.getJsonObject("api_mst_equip_ship"));
             this.apiMstEquipExslotShip(data.getJsonObject("api_mst_equip_exslot_ship"));
             this.store(data);
-            
+
             if (LoggerHolder.get().isDebugEnabled()) {
                 Set<String> remainingKeys = new HashSet<>(data.keySet());
                 remainingKeys.remove("api_mst_ship");
@@ -85,18 +85,18 @@ public class ApiStart2 implements APIListenerSpi {
                 remainingKeys.remove("api_mst_mission");
                 remainingKeys.remove("api_mst_maparea");
                 remainingKeys.remove("api_mst_mapinfo");
-                
+
                 remainingKeys.remove("api_mst_equip_exslot"); //拡張Slot装備可能カテゴリ
                 remainingKeys.remove("api_mst_furniture"); //家具
                 remainingKeys.remove("api_mst_furnituregraph"); //家具
                 remainingKeys.remove("api_mst_bgm"); //BGM
                 remainingKeys.remove("api_mst_mapbgm"); //BGM
-                remainingKeys.remove("api_mst_payitem"); //アイテム屋商品一覧                
+                remainingKeys.remove("api_mst_payitem"); //アイテム屋商品一覧
                 remainingKeys.remove("api_mst_shipupgrade"); //艦娘特殊改装情報
                 remainingKeys.remove("api_mst_equip_limit_exslot"); //艦娘別補強スロット装備制限
                 remainingKeys.remove("api_mst_equip_ship"); //艦娘別装備制限
                 remainingKeys.remove("api_mst_equip_exslot_ship"); //装備別補強スロット装備追加条件
-                
+
                 if (!remainingKeys.isEmpty()) {
                     for (String key : remainingKeys) {
                         try {
@@ -220,7 +220,8 @@ public class ApiStart2 implements APIListenerSpi {
     private void apiMstShipUpgrade(JsonArray array) {
         if (array != null) {
             ShipUpgradeCollection.get()
-                    .setShipUpgradeMap(JsonHelper.toMap(array, ShipUpgrade::getCurrentShipId, ShipUpgrade::toShipUpgrade));
+                    .setShipUpgradeMap(
+                            JsonHelper.toMap(array, ShipUpgrade::getCurrentShipId, ShipUpgrade::toShipUpgrade));
         }
     }
 
@@ -270,7 +271,7 @@ public class ApiStart2 implements APIListenerSpi {
 
     /**
      * store
-     * 
+     *
      * @param root api_data
      */
     private void store(JsonObject root) {
