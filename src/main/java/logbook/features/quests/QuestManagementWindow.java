@@ -97,6 +97,8 @@ public class QuestManagementWindow implements QuestManagementUi {
         editionInput.setPromptText("開催識別子");
         periodInput.setPromptText("周期識別子");
         reasonInput.setPromptText("変更理由（必須）");
+        recordedAtInput.setPrefWidth(280);
+        reasonInput.setPrefWidth(450);
         ComboBox<State> state = new ComboBox<>();
         state.getItems().addAll(State.values());
         state.setValue(State.UNKNOWN);
@@ -130,6 +132,7 @@ public class QuestManagementWindow implements QuestManagementUi {
         QuestManagement.Table[] loadedTable = { null };
         TextField filter = new TextField();
         filter.setPromptText("ID・任務名・状態で絞り込み");
+        filter.setPrefWidth(300);
         filter.textProperty().addListener((o, a, text) -> {
             if (loadedTable[0] != null)
                 table.getItems()
