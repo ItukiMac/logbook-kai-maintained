@@ -1,85 +1,69 @@
-# Functional modules, shared export and persistent quest ledger
+# モジュール構成・任務管理・情報共有
 
-Status: implementation in PR #84; final-head CI pending. Not deployed.
-The bundled catalog has 743 provenance-bearing source records, including draft and historical entries. It is not certified exhaustive for the live game.
-Supersedes the proposal that status is a final functional module.
+PR #84 の実装。配布形式 v4。実環境への導入はこのPRの操作に含まない。
 
-## Required module boundaries
+| JAR | 責務 |
+| --- | --- |
+| core | 通信結果の反映、共有データ、永続化、公開API、起動・更新管理 |
+| ships | 艦娘一覧・編成表示・修理候補 |
+| equipment | 装備一覧・所持アイテム・基地航空隊 |
+| quests | 任務一覧・条件編集・任務管理表 |
+| records | 戦闘・遠征・開発の記録画面 |
+| charts | グラフ・統計画面 |
+| calculators | 各種計算画面 |
+| klb | 既存KLBのブラウザ連携 |
+| kqs | 情報共有・出力、既存KQS形式の任務出力 |
 
-- core: lifecycle, persistence transactions, game observations, public read snapshots and guarded commands.
-- ships: roster, filters and repair candidates.
-- equipment: equipment inventory, ownership and details.
-- quests: quest views, condition editing and persistent management table.
-- records: battle, expedition and development history views.
-- charts: graphs and aggregate views.
-- calculators: calculation views (split further only where independently cohesive).
-- kqs: repository-owned successor to KQS; export providers for every information domain, clipboard, preview and file export.
-- klb: browser transport bridge.
+status は独立した最終モジュールとして残さず、業務別に分割した。
+各機能は同じリポジトリから別JARを生成し、共通の世代管理・検証・復元機構で扱う。
+KLB/KQSの出典とライセンスはmodules以下に保持する。旧logbook-kaiに新JARを差し替える互換性は保証しない。
+新しいv4配布は別の配布世代として検証し、旧配布を上書きして読み替えない。
 
-JAR ownership, service registrations, feature descriptors, preflight, independent update,
-retained-generation rollback and source/license provenance must follow one mechanism.
-No direct internal GUI class-name/ID probing by sharing. Quest views expose an explicit
-action extension point. Core state is not duplicated into each module.
+## 使い方
 
-## Persistent quest management
+「その他」メニューの「任務管理表・完了履歴」から管理表を開く。
+一覧の行を選び、状態と変更理由を指定して「手動更新・追加」を押す。
+日時はISO-8601（例: `2026-10-31T12:00:00+09:00`）で指定できる。
+未登録任務は任務ID・開催・周期を入力して追加できる。
+履歴には変更前のイベントも残り、誤りの訂正は新しい変更として追記する。
+他の更新が先に保存された場合は再読込を求め、古い画面から上書きしない。
 
-Current ApiReqQuestClearitemget removes AppQuestCollection and AppQuestDuration
-entries. It must record a successful reward claim durably before discarding the active
-entry. HTTP success alone is insufficient: require successful game api_result.
+「情報共有・出力」から、全情報または個別の区分を選択し、JSON/CSVを確認してコピー・保存する。
+JSONは構造を保持する形式、CSVは入れ子をpath/type/valueに展開する形式。
+既存のKQS任務JSON出力は同じメニュー内に残している。
 
-Maintain catalog and observation history separately. Catalog includes single-use,
-recurring and time-limited quests; missing catalog metadata is explicitly unknown.
-The game's current quest list does not enumerate every locked or previously completed
-quest. Catalog completeness requires a provenance-bearing definition source and audit.
+## 任務の記録
 
-Identity: quest ID plus edition for reused IDs; recurring quests additionally need a
-period key. Do not infer an edition from ID alone. Retain unresolved observations for
-later reconciliation instead of assigning them to a guessed edition.
+- 未確認、未受諾、受諾中、達成・報酬未受領、報酬受領済み、期限終了を区別する。
+- 任務一覧の状態と、受諾・解除・報酬受領の成功応答を記録する。
+- 報酬受領の成功を保存してから現在の任務一覧から削除する。保存失敗は表示し、元の任務を残す。
+- 任務名も保存するため、完了後に一覧から消えても履歴を参照できる。
+- 任務ID・開催・周期をキーとし、単発や繰返しの過去の完了を上書きしない。
+- 手動状態とゲーム観測は別々に保持する。後の観測と食い違う場合は「要確認」を表示する。
+- 手動編集は管理表のみを更新する。ゲームアカウントには送信しない。
+- 一覧に出ないことだけで完了や期限終了とは判定しない。
 
-States: UNKNOWN, AVAILABLE, ACCEPTED, ACHIEVED_UNCLAIMED, CLAIMED, EXPIRED.
-Absence from a response is never proof of CLAIMED or EXPIRED. CLAIMED requires a
-successful reward-claim event or an explicit manual entry. Catalog expiry is distinct
-from completion. Do not overwrite historical completion when a recurrence begins.
+同梱台帳は出典付き743件（過去・仮定義を含む）。出典は `modules/quests/CATALOG-ORIGIN.md`。
+ライブゲームの全任務を網羅したことを保証する資料ではない。未観測の状態は「不明」で初期化する。
+資料側の開催とゲーム側の開催を照合できない場合は独立した行として保持する。
+`unresolved` は開催・周期の未照合を表す。同じ番号という理由だけで履歴を統合しない。
+外部台帳はJSON配列で読み込める。各行は `questId,title,edition,period,source` を持つ。
+同じ台帳の再読込は状態や履歴を重複作成しない。
 
-Every event retains identity, observed/effective time, source (game/manual/catalog),
-previous state and correction reason. Automatic observations and manual corrections
-remain separately visible. Manual updates use revision checking and append history;
-later contradictory evidence is surfaced for reconciliation, never silently erased.
-Manual state edits change only this application's ledger, never the game account.
+## 情報共有の範囲
 
-Management table: ID, title, category, edition/period, observed state, effective state,
-source, freshness, completion time and discrepancy indicator; filters, single/batch
-manual correction with preview, history and correction reversal by appended event.
+提督情報・戦果基準値、観測状態、艦娘と艦隊、艦娘統計、装備・艦載機、所持アイテム、修理・建造状況、
+基地航空隊、任務、任務管理表と全履歴、資源推移、戦闘・遠征・開発・建造記録、ゲーム定義と世代ID。
+未観測情報や保存されていない過去の記録を復元するものではない。
+ホスト状態は共有ロック内で取得し、ディスク履歴は別に取得する。この整合性の範囲を出力に含める。
+公開する項目を明示したデータ投影を使い、HTTPオブジェクト・接続設定・認証情報を丸ごと出力しない。
 
-Persist atomically with recovery and backup; retain unknown fields/schema versions
-where required by existing migration contracts. Completion persistence failures must
-be visible and recoverable, not swallowed. Duplicate reward events are idempotent.
+## 永続化と検証
 
-## All-information sharing
+任務履歴は `config/quest-ledger` に追記し、プロセス間ロックと原子的なファイル移動で保存する。
+履歴の破損や途中欠落を検出した場合は書込みを止める。破損した履歴を推測して自動修復しない。
+停止した実行環境を保存する既存runtime_snapshotの対象に台帳も含まれる。
 
-Inventory every data domain and map it to an export provider, including ships,
-fleets, equipment, airbases, resources, repairs/builds, quests, completion ledger,
-battles, expeditions, development and available statistics/definitions. Coverage must
-be explicit; empty, unsupported and unobserved are different outcomes.
-
-Versioned JSON is the full-fidelity format; tabular domains support CSV. Include
-capture time, observation age, origin, schema and data-generation identity. Exports
-must have consistent snapshots or explicitly identify weaker consistency. Do not
-serialize raw configuration objects: credentials, api_token, cookies and connection
-secrets are excluded by allowlisted projections. Offer per-domain and all-domain
-exports through one UI. Retain existing KQS export compatibility through a provider.
-
-## Required verification
-
-- Exact JAR ownership, provider discovery and no duplicate classes/services.
-- Each module update and whole-generation rollback; old distributions preserved.
-- Successful/failed/duplicate claim events; restart persistence and write failures.
-- Achieved versus claimed; hidden/locked/unobserved quests never guessed completed.
-- Daily/weekly/monthly/quarterly cycles and seasonal ID reuse retain prior history.
-- Offline manual completion, correction reversal, revision conflicts and later evidence.
-- Export coverage, secret exclusion, schema stability and concurrent state updates.
-- Actual management-table edits and export actions in GUI integration tests.
-
-Implementation order: ledger contracts/persistence, successful-claim capture and
-catalog identity, management table/manual commands, domain module extraction,
-shared export providers/UI, integrated update/recovery verification.
+検証対象は、実JARの所属とサービス発見、機能別の更新と復元、台帳の再起動・競合・重複・書込み失敗、
+完了後の名前保持、実画面の手動更新と競合表示、JSON/CSV切替、台帳を含むバックアップの往復。
+Java21・Java25と明示的なJavaFX27構成のCI結果はPRの最新コミットに紐付けて確認する。
