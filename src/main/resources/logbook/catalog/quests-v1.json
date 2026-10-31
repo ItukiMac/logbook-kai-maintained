@@ -4688,5 +4688,516 @@
     "edition": "kcwiki:outdated:994_【記念任務:拡張作戦】主力オブ主力、決戦ッ！",
     "period": "unresolved",
     "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/994_【記念任務:拡張作戦】主力オブ主力、決戦ッ！.json"
+  },
+  {
+    "questId": 198,
+    "title": "精強！「第七駆逐隊」抜錨準備せよ！",
+    "edition": "kcanotify:198",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1001,
+    "title": "主力オブ主力「清霜改二」、出撃せよ！",
+    "edition": "kcanotify:1001",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1003,
+    "title": "【潜水艦任務】潜水艦、戦闘哨戒！",
+    "edition": "kcanotify:1003",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1004,
+    "title": "改装航空巡洋艦「三隈」、進発せよ！",
+    "edition": "kcanotify:1004",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1006,
+    "title": "「第二駆逐隊」抜錨！",
+    "edition": "kcanotify:1006",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1007,
+    "title": "改装白露型「春雨改二」出撃です！",
+    "edition": "kcanotify:1007",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1008,
+    "title": "夕立姉さん！今度は一緒について行きますっ！",
+    "edition": "kcanotify:1008",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1013,
+    "title": "八戸の盾「稲木改二」、抜錨ッ！",
+    "edition": "kcanotify:1013",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1014,
+    "title": "哨戒部隊で近海及び南西諸島を警戒せよ！",
+    "edition": "kcanotify:1014",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1015,
+    "title": "防空水上艦、出撃せよッ！",
+    "edition": "kcanotify:1015",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1016,
+    "title": "防空駆逐艦「初月改二」、推して参る！",
+    "edition": "kcanotify:1016",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1017,
+    "title": "「第二駆逐隊(後期編成)」、出撃せよ！",
+    "edition": "kcanotify:1017",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1019,
+    "title": "激闘！「第三艦隊」精鋭第二小隊！",
+    "edition": "kcanotify:1019",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1021,
+    "title": "「早霜改二」見ているだけでは…ありません！",
+    "edition": "kcanotify:1021",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1023,
+    "title": "三十二駆「藤波改二」、鳥海を護衛せよ！",
+    "edition": "kcanotify:1023",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1025,
+    "title": "精鋭十一駆「白雪改二」、抜錨します！",
+    "edition": "kcanotify:1025",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1029,
+    "title": "三十二駆「浜波改二」抜錨！敵中を突破せよ！",
+    "edition": "kcanotify:1029",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1033,
+    "title": "二等輸送艦の積極運用",
+    "edition": "kcanotify:1033",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1036,
+    "title": "輸送船団護衛部隊、出撃せよ！",
+    "edition": "kcanotify:1036",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1010,
+    "title": "防空駆逐艦「秋月改二」、推参します！",
+    "edition": "kcanotify:1010",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1041,
+    "title": "三十二駆「早波改二」、元気に出撃せよ！",
+    "edition": "kcanotify:1041",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1042,
+    "title": "最新鋭改装空母「飛龍改三」、疾風怒涛！",
+    "edition": "kcanotify:1042",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1044,
+    "title": "三十二駆「玉波改二」、出撃いたします。",
+    "edition": "kcanotify:1044",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1047,
+    "title": "「涼波改二」ラバウルより抜錨せよ！",
+    "edition": "kcanotify:1047",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1052,
+    "title": "改装多目的搭載母艦「北上改三」、出撃ッ！",
+    "edition": "kcanotify:1052",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1053,
+    "title": "再編二十駆「天霧」「狭霧」南方へ展開せよ！",
+    "edition": "kcanotify:1053",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1005,
+    "title": "精強「第七駆逐隊」緊急出動！",
+    "edition": "kcanotify:1005",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1012,
+    "title": "鵜来型海防艦、静かな海を防衛せよ！",
+    "edition": "kcanotify:1012",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1018,
+    "title": "「第三戦隊」第二小隊、鉄底海峡へ！",
+    "edition": "kcanotify:1018",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1045,
+    "title": "「吹雪改三」抜錨します！見てくださいっ！",
+    "edition": "kcanotify:1045",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1050,
+    "title": "「第九戦隊」抜錨！前線展開せよッ！",
+    "edition": "kcanotify:1050",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1051,
+    "title": "改装「1YB3H」旗艦、敵中を突破せよ！",
+    "edition": "kcanotify:1051",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 376,
+    "title": "「第三戦隊」精鋭第二小隊、特別演習！",
+    "edition": "kcanotify:376",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 371,
+    "title": "春です！「春雨」、演習しますっ！",
+    "edition": "kcanotify:371",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 372,
+    "title": "水上艦「艦隊防空演習」を実施せよ！",
+    "edition": "kcanotify:372",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 373,
+    "title": "「フランス艦隊」演習！",
+    "edition": "kcanotify:373",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 375,
+    "title": "「第三戦隊」第二小隊、演習開始！",
+    "edition": "kcanotify:375",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 377,
+    "title": "「第二駆逐隊(後期編成)」、練度向上！",
+    "edition": "kcanotify:377",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1132,
+    "title": "改良Ｄ型砲の配備",
+    "edition": "kcanotify:1132",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1133,
+    "title": "逆探及び改良対水上電探の実戦配備",
+    "edition": "kcanotify:1133",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1134,
+    "title": "22号対水上電探の改良",
+    "edition": "kcanotify:1134",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1137,
+    "title": "鵜来型海防艦兵装の開発",
+    "edition": "kcanotify:1137",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1139,
+    "title": "【艦隊通信能力の強化】通信要員の育成",
+    "edition": "kcanotify:1139",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1140,
+    "title": "【新鋭海外艦装備】新型四連装主砲の開発",
+    "edition": "kcanotify:1140",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1141,
+    "title": "最新改修型三座水上偵察機の開発",
+    "edition": "kcanotify:1141",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1142,
+    "title": "最精鋭「天山」装備艦攻隊の配備",
+    "edition": "kcanotify:1142",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1143,
+    "title": "「霧島改二丙」改装工廠任務",
+    "edition": "kcanotify:1143",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1145,
+    "title": "【工廠任務】伊号潜水艦装備の拡充",
+    "edition": "kcanotify:1145",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1148,
+    "title": "【対空兵装の拡充】94式高射装置の増加配備",
+    "edition": "kcanotify:1148",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1151,
+    "title": "陸軍戦闘機及び海外戦闘機の増備",
+    "edition": "kcanotify:1151",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1152,
+    "title": "【対潜戦力強化】海防艦対潜兵装の強化",
+    "edition": "kcanotify:1152",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1153,
+    "title": "【続：対潜戦力強化】対潜兵装のさらなる拡充",
+    "edition": "kcanotify:1153",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1154,
+    "title": "【新型対潜兵装開発】対潜噴進爆雷砲の開発",
+    "edition": "kcanotify:1154",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1155,
+    "title": "秋月型防空駆逐艦用兵装の拡充",
+    "edition": "kcanotify:1155",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1158,
+    "title": "第三十二駆逐隊「早波」、改装準備！",
+    "edition": "kcanotify:1158",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1159,
+    "title": "【工廠任務】量産航空機の改編",
+    "edition": "kcanotify:1159",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1160,
+    "title": "【工廠任務】試製震電の艦戦型改二への改修",
+    "edition": "kcanotify:1160",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1161,
+    "title": "【工廠任務】新装備運用のための工廠整備【壱】",
+    "edition": "kcanotify:1161",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1162,
+    "title": "【工廠任務】新装備運用のための工廠整備【弐】",
+    "edition": "kcanotify:1162",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1163,
+    "title": "【工廠任務】震電の噴式推進化",
+    "edition": "kcanotify:1163",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1164,
+    "title": "【工廠任務】水雷戦隊新改装艦、改装準備！",
+    "edition": "kcanotify:1164",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1170,
+    "title": "既存装備活用による対空兵装の開発",
+    "edition": "kcanotify:1170",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1166,
+    "title": "続：装備の改修強化",
+    "edition": "kcanotify:1166",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1167,
+    "title": "装備の改修集中強化",
+    "edition": "kcanotify:1167",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1138,
+    "title": "【高射装置量産】94式高射装置の追加配備",
+    "edition": "kcanotify:1138",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 640,
+    "title": "初夏の整理整頓",
+    "edition": "kcanotify:640",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 199,
+    "title": "【期間限定任務】第三十一戦隊 特務編成！",
+    "edition": "kcanotify:199",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 382,
+    "title": "【期間限定任務】第三十一戦隊 緊急演習！",
+    "edition": "kcanotify:382",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1038,
+    "title": "【限定拡張作戦】Halloween、おかわり開始！",
+    "edition": "kcanotify:1038",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1039,
+    "title": "【限定拡張作戦】Halloween海上護衛隊出撃！",
+    "edition": "kcanotify:1039",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1040,
+    "title": "【限定拡張作戦】Halloween狼隊、夜の襲撃！",
+    "edition": "kcanotify:1040",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1002,
+    "title": "【限定拡張作戦】南瓜祭り2026、北方作戦！",
+    "edition": "kcanotify:1002",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1171,
+    "title": "【限定拡張作戦】対潜装備の整理整頓！2026",
+    "edition": "kcanotify:1171",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
   }
 ]

@@ -34,4 +34,11 @@ class QuestManagementTest {
         var file=root.resolve("import.json");java.nio.file.Files.writeString(file,"[{\"questId\":1,\"title\":\"a\",\"edition\":\"once\",\"period\":\"once\",\"source\":\"test\"},{\"questId\":1,\"title\":\"b\",\"edition\":\"once\",\"period\":\"once\",\"source\":\"test\"}]");
         assertThrows(IllegalArgumentException.class,()->QuestManagement.readCatalog(file));
     }
+    @Test void completedQuestKeepsObservedTitleAfterActiveListDisappears() throws Exception {
+        var ledger=new QuestLedger(root);var key=new Key(700,"event-2026","once");
+        QuestManagement.rememberObserved(ledger,key,"期間限定任務");
+        ledger.append(-1,"claim",key,State.CLAIMED,Source.GAME,Instant.now(),"successful claim");
+        var row=QuestManagement.project(new QuestLedger(root).snapshot(),Map.of()).rows().get(0);
+        assertEquals("期間限定任務",row.title());assertEquals(State.CLAIMED,row.effective());
+    }
 }

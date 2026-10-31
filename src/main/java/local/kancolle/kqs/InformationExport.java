@@ -17,6 +17,7 @@ public final class InformationExport {
             values.put("schema", "logbook.information.v1");
             values.put("captured_at", Instant.now().toString());
             values.put("consistency", "Host state captured under writer lock; disk histories and ledger captured separately. Legacy uncooperative writers are outside this boundary.");
+            values.put("admiral", OperationsDataV1.admiral());
             values.put("game_state", LogBookCoreServices.gameStateView().snapshot());
             values.put("ships_and_fleets", ShipRosterV1.snapshot());
             values.put("ship_statistics", ShipStatisticsV1.snapshot());
@@ -41,7 +42,9 @@ public final class InformationExport {
         result.put("battle_records", RecordDataV1.battles());
         result.put("expedition_records", RecordDataV1.missions());
         result.put("development_records", RecordDataV1.developments());
-        result.put("quest_history", new QuestLedger(java.nio.file.Path.of("config", "quest-ledger")).snapshot());
+        java.nio.file.Path construction=java.nio.file.Path.of(logbook.bean.AppConfig.get().getReportPath(),new logbook.internal.log.CreateshipLogFormat().fileName());
+        result.put("construction_history",java.nio.file.Files.isRegularFile(construction)?Map.of("status","available","csv",java.nio.file.Files.readString(construction,logbook.internal.log.LogWriter.DEFAULT_CHARSET)):Map.of("status","not_recorded"));
+        result.put("quest_management", logbook.core.quest.QuestManagement.snapshot());
         result.put("coverage", "Public read projections and locally retained histories. Unobserved game data and unavailable historical records are not reconstructed.");
         return Collections.unmodifiableMap(result);
     }

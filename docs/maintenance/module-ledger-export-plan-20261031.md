@@ -1,7 +1,7 @@
 # Functional modules, shared export and persistent quest ledger
 
 Status: implementation in PR #84; final-head CI pending. Not deployed.
-The bundled catalog has 670 provenance-bearing source records, including draft and historical entries. It is not certified exhaustive for the live game.
+The bundled catalog has 743 provenance-bearing source records, including draft and historical entries. It is not certified exhaustive for the live game.
 Supersedes the proposal that status is a final functional module.
 
 ## Required module boundaries
@@ -11,9 +11,9 @@ Supersedes the proposal that status is a final functional module.
 - equipment: equipment inventory, ownership and details.
 - quests: quest views, condition editing and persistent management table.
 - records: battle, expedition and development history views.
-- statistics: graphs and aggregate views.
+- charts: graphs and aggregate views.
 - calculators: calculation views (split further only where independently cohesive).
-- sharing: repository-owned successor to KQS; export providers for every information domain, clipboard, preview and file export.
+- kqs: repository-owned successor to KQS; export providers for every information domain, clipboard, preview and file export.
 - klb: browser transport bridge.
 
 JAR ownership, service registrations, feature descriptors, preflight, independent update,

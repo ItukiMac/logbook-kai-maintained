@@ -33,6 +33,9 @@ public final class QuestManagement {
         }
         ledger.registerCatalog(records);
     }
+    public static void rememberObserved(QuestLedger ledger,Key key,String title) throws java.io.IOException {
+        if(title!=null&&!title.isBlank())register(ledger,List.of(new CatalogEntry(key.questId(),title,key.edition(),key.period(),"observed game quest")));
+    }
     public record Row(Key key,String title,String source,State observed,State manual,State effective,boolean conflict,String recordedAt) { }
     public record Table(long revision,List<Row> rows,List<Event> history,String coverage) {
         public Table { rows=List.copyOf(rows);history=List.copyOf(history); }

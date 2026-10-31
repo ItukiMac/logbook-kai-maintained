@@ -22,6 +22,7 @@ public final class QuestObservationRecorder {
             State state=switch(q.getState()){case 1->State.AVAILABLE;case 2->State.ACCEPTED;case 3->State.ACHIEVED_UNCLAIMED;default->State.UNKNOWN;};
             var key=QuestIdentity.resolve(q.getNo(),AppQuestCollection.get().getQuest().get(q.getNo()));
             try {
+                QuestManagement.rememberObserved(ledger,key,q.getTitle());
                 var snapshot=ledger.snapshot();
                 if(snapshot.latest(key,Source.GAME).map(e->e.state()==state).orElse(false))continue;
                 ledger.append(-1,UUID.randomUUID().toString(),key,state,Source.GAME,

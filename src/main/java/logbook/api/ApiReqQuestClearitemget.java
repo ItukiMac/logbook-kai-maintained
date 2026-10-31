@@ -21,6 +21,9 @@ public class ApiReqQuestClearitemget implements APIListenerSpi {
         if (id != null) {
             Integer key = Integer.valueOf(id);
             try {
+                var app=AppQuestCollection.get().getQuest().get(key);
+                if(app!=null && app.getQuest()!=null)logbook.core.quest.QuestManagement.rememberObserved(
+                    logbook.core.quest.QuestManagement.ledger(),logbook.core.quest.QuestIdentity.resolve(key,app),app.getQuest().getTitle());
                 new logbook.core.quest.QuestCompletionRecorder(
                     new logbook.core.quest.QuestLedger(java.nio.file.Path.of("config", "quest-ledger")))
                     .record(json, logbook.core.quest.QuestIdentity.resolve(key, AppQuestCollection.get().getQuest().get(key)), java.util.UUID.randomUUID().toString(), java.time.Instant.now());
