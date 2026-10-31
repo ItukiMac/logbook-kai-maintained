@@ -66,7 +66,7 @@ jobs:
               actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
               assert actual == expected, (label, actual)
               subprocess.run(['git', 'diff', '--exit-code'], cwd=root, check=True)
-              jar = root / 'target/logbook-kai2.jar'
+              jar = root / 'target/logbook-kai.jar'
               with jar.open('rb') as stream:
                   checksum = hashlib.file_digest(stream, 'sha256').hexdigest()
               report = {'source_commit': actual, 'jar_sha256': checksum,
@@ -78,8 +78,8 @@ jobs:
         shell: bash
         env:
           LOGBOOK_LEGACY_SPLIT_TOOLS: '${{ github.workspace }}/fixtures/v2-tools'
-          LOGBOOK_MIGRATION_OLD_JAR: '${{ github.workspace }}/fixtures/old/target/logbook-kai2.jar'
-          LOGBOOK_MIGRATION_NEW_JAR: '${{ github.workspace }}/fixtures/new/target/logbook-kai2.jar'
+          LOGBOOK_MIGRATION_OLD_JAR: '${{ github.workspace }}/fixtures/old/target/logbook-kai.jar'
+          LOGBOOK_MIGRATION_NEW_JAR: '${{ github.workspace }}/fixtures/new/target/logbook-kai.jar'
         run: |
           set -euo pipefail
           mkdir -p target/verification
