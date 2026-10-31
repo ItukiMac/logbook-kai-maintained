@@ -29,7 +29,7 @@ class QuestUiIntegrationTest(unittest.TestCase):
             self.assertEqual(QUEST_UI_PROFILE,report['quest_ui_profile'])
             with ZipFile(dist/'logbook-core.jar') as core:
                 self.assertFalse(any(quest_ui_entry(n) for n in core.namelist()),'Hidden core fallback')
-            with ZipFile(dist/'features/logbook-feature-status.jar') as status:
+            with ZipFile(dist/'features/logbook-feature-quests.jar') as status:
                 self.assertTrue(quest_ui_required_entries()<=set(status.namelist()))
             classes=fixture/'classes';classes.mkdir();runtime=fixture/'runtime';runtime.mkdir()
             cp=os.pathsep.join(str(dist/name) for name in FILES if name.endswith('.jar'))
@@ -48,7 +48,7 @@ class QuestUiIntegrationTest(unittest.TestCase):
             result.update(result='passed',product_status_jar=True,quest_ui_profile=QUEST_UI_PROFILE,
                 windows=4,guarded_note_roundtrip=True,source_jar_unchanged=True,
                 host_sha256=hashlib.sha256((dist/'logbook-core.jar').read_bytes()).hexdigest(),
-                status_sha256=hashlib.sha256((dist/'features/logbook-feature-status.jar').read_bytes()).hexdigest())
+                status_sha256=hashlib.sha256((dist/'features/logbook-feature-quests.jar').read_bytes()).hexdigest())
         finally:
             (evidence/(fixture.name+'.log')).write_text('\n\n'.join(logs),encoding='utf8')
             (evidence/(fixture.name+'.json')).write_text(json.dumps(result,indent=2)+'\n',encoding='utf8')

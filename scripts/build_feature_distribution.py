@@ -38,16 +38,18 @@ def new_directory(path: Path) -> None:
 
 
 def owner(name: str, record_ui: bool = False, equipment_ui: bool = False, statistics_ui: bool = False, ship_list_ui: bool = False, quest_ui: bool = False) -> str | None:
+    if name == "logbook/catalog/quests-v1.json":
+        return "quests"
     if quest_ui and quest_ui_entry(name):
-        return 'status'
+        return 'quests'
     if ship_list_ui and ship_list_ui_entry(name):
-        return 'status'
+        return 'ships'
     if statistics_ui and ship_statistics_entry(name):
         return 'charts'
     if equipment_ui and equipment_ui_entry(name):
-        return 'status'
+        return 'equipment'
     if record_ui and record_ui_entry(name):
-        return 'charts'
+        return 'records'
     for group, (provider, controllers, resources) in GROUPS.items():
         stems = ['logbook/features/' + provider]
         stems += ['logbook/internal/gui/' + c for c in controllers]
@@ -143,6 +145,19 @@ def build(source: Path, output: Path, revision: str) -> dict:
             groups[group][name] = data
         elif name != SERVICE:
             core[name] = data
+    management_service = 'META-INF/services/logbook.plugin.api.QuestManagementUi'
+    if 'logbook/plugin/api/QuestManagementUi.class' in core and core.get(management_service, b'').decode().splitlines() != ['logbook.features.quests.QuestManagementWindow']:
+        raise ValueError('Missing or invalid quest management provider')
+    if management_service in core:
+        groups['quests'][management_service] = core.pop(management_service)
+    menu_service = 'META-INF/services/logbook.plugin.gui.MainExtMenu'
+    if menu_service in core:
+        expected_menus = {'kqs': 'local.kancolle.kqs.KqsLogbookPlugin', 'quests': 'logbook.features.quests.QuestManagementMenu'}
+        if set(core[menu_service].decode().splitlines()) != set(expected_menus.values()):
+            raise ValueError('Unexpected shared menu providers')
+        core.pop(menu_service)
+        for module, provider in expected_menus.items():
+            groups[module][menu_service] = (provider + '\n').encode()
     # Lifecycle registrations follow their owning module, never remain in core.
     plugin_providers = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp',
                         'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}
@@ -174,6 +189,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
         provider = GROUPS[group][0]
         values.update(styles)
         values['META-INF/LICENSE-logbook-kai.txt'] = license_text
+        if group == 'quests':
+            values['META-INF/NOTICE-quest-catalog.txt'] = (Path(__file__).resolve().parents[1] / 'modules/quests/CATALOG-ORIGIN.md').read_bytes()
+            values['META-INF/LICENSE-quest-catalog.txt'] = (Path(__file__).resolve().parents[1] / 'modules/quests/LICENSE').read_bytes()
         if group in plugin_providers:
             values['META-INF/LICENSE-' + group + '.txt'] = (Path(__file__).resolve().parents[1] / 'modules' / group / 'LICENSE').read_bytes()
         values[SERVICE] = ('logbook.features.' + provider + '\n').encode()

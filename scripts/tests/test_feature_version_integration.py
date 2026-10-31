@@ -165,7 +165,7 @@ class FeatureVersionIntegrationTest(unittest.TestCase):
                                       capture_output=True, text=True).stdout.strip()
             evidence['checkout'] = revision
             report = build(original, pristine, revision)
-            self.assertEqual('logbook-feature-distribution-v3', report['format'])
+            self.assertEqual('logbook-feature-distribution-v4', report['format'])
             variants = [('A', '1.0.0', 1, 2), ('B', '1.1.0', 1, 3),
                         ('C', '2.0.0', 2, 5), ('D', '1.2.0', 1, 4),
                         ('F', '1.0.0', 1, 4)]

@@ -132,7 +132,7 @@ class BundleManagerTest(unittest.TestCase):
         self.assertNotIn('JAVA_TOOL_OPTIONS',kwargs['env'])
         self.assertNotIn('CLASSPATH',kwargs['env'])
         cp=args[0][args[0].index('-cp')+1]
-        self.assertEqual(6,len(cp.split(m.os.pathsep)))
+        self.assertEqual(9,len(cp.split(m.os.pathsep)))
         self.assertTrue(all(self.aid in n for n in cp.split(m.os.pathsep)))
         self.assertTrue(kwargs['pass_fds'])
 

@@ -88,12 +88,13 @@ public final class SupportFeatureProbe {
     }
 
     private static FXMLLoader load(String fxml, Stage stage) throws Exception {
+        String module = fxml.equals("require_ndock") ? "ships" : "equipment";
         FXMLLoader loader = InternalFXMLLoader.load("logbook/gui/" + fxml + ".fxml");
-        check(loader.getLocation().toString().contains("logbook-feature-status.jar!/"), "FXML remains in core: " + fxml);
+        check(loader.getLocation().toString().contains("logbook-feature-" + module + ".jar!/"), "FXML remains in core: " + fxml);
         Parent root = loader.load();
         FeatureUiV1.Window controller = loader.getController();
         check(controller.getClass().getProtectionDomain().getCodeSource().getLocation().toString()
-                .endsWith("logbook-feature-status.jar"), "Controller remains in core: " + fxml);
+                .endsWith("logbook-feature-" + module + ".jar"), "Controller remains in core: " + fxml);
         controller.bindWindow(stage);
         stage.setScene(new Scene(root));
         stage.show(); root.applyCss(); root.layout();
@@ -127,7 +128,7 @@ public final class SupportFeatureProbe {
             TableView<UseitemItem> table = (TableView<UseitemItem>) loader.getNamespace().get("table");
             check(table.getItems().size() == 1 && table.getItems().getFirst().getCount() == 12, "Inventory count/filter failed");
             check(UseitemItem.class.getProtectionDomain().getCodeSource().getLocation().toString()
-                    .endsWith("logbook-feature-status.jar"), "Owned item row remains in core");
+                    .endsWith("logbook-feature-equipment.jar"), "Owned item row remains in core");
             ((CheckBox) loader.getNamespace().get("includeEmpty")).fire();
             check(table.getItems().size() == 2, "Include-empty action did not update rows");
             FeatureUiV1.Tables.selectAll(table);

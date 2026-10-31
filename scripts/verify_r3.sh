@@ -17,7 +17,7 @@ python3 scripts/audit_seasonal_editions.py --root . > "$EVIDENCE/seasonal-editio
 python3 scripts/definition_review_ledger.py --facts docs/maintenance/source-field-review-20261026.json > "$EVIDENCE/review-ledger.json"
 python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out "$EVIDENCE/split" --revision "$REVISION" > "$EVIDENCE/feature-manifest.json"
 python3 scripts/run_feature_distribution.py --root "$EVIDENCE/split"
-CP="$EVIDENCE/split/logbook-core.jar:$EVIDENCE/split/features/logbook-feature-calculators.jar:$EVIDENCE/split/features/logbook-feature-charts.jar:$EVIDENCE/split/features/logbook-feature-status.jar:$EVIDENCE/split/features/logbook-feature-klb.jar:$EVIDENCE/split/features/logbook-feature-kqs.jar"
+CP="$EVIDENCE/split/logbook-core.jar:$EVIDENCE/split/features/logbook-feature-calculators.jar:$EVIDENCE/split/features/logbook-feature-charts.jar:$EVIDENCE/split/features/logbook-feature-ships.jar:$EVIDENCE/split/features/logbook-feature-equipment.jar:$EVIDENCE/split/features/logbook-feature-quests.jar:$EVIDENCE/split/features/logbook-feature-records.jar:$EVIDENCE/split/features/logbook-feature-klb.jar:$EVIDENCE/split/features/logbook-feature-kqs.jar"
 mkdir "$EVIDENCE/probe-classes"
 javac -proc:none --release 21 -cp "$CP" -d "$EVIDENCE/probe-classes" scripts/java/*.java
 bash scripts/verify_bundled_plugins.sh "$EVIDENCE/split" > "$EVIDENCE/bundled-plugins.log" 2>&1
@@ -51,11 +51,11 @@ assert len(required)==1 and int(required[0].get('tests',0))==8 and int(required[
 record_reports=[json.loads(f.read_text()) for f in p.glob('record-ui-fixture-*.json')]
 assert len(record_reports)==1 and record_reports[0]['result']=='passed'
 records=record_reports[0]
-assert records['product_distribution'] and records['record_ui_profile']=='record-ui-in-charts-v1'
-assert records['record_module']=='charts' and records['windows']==3 and records['battle_rows']==3
+assert records['product_distribution'] and records['record_ui_profile']=='record-ui-in-records-v2'
+assert records['record_module']=='records' and records['windows']==3 and records['battle_rows']==3
 assert records['original_history_unchanged'] and records['settings_reread'] and records['legacy_missing_experience_bug_fixed']
 assert not records['production_accessed']
-assert json.loads((p/'feature-manifest.json').read_text())['record_ui_profile']=='record-ui-in-charts-v1'
+assert json.loads((p/'feature-manifest.json').read_text())['record_ui_profile']=='record-ui-in-records-v2'
 record_suites=[s for s in suites if s.get('name') in {'logbook.core.RecordDataContractTest','logbook.internal.gui.RecordDataViewTest'}]
 assert len(record_suites)==2 and all(int(s.get('skipped',0))==0 for s in record_suites)
 record_test_count=sum(int(s.get('tests',0)) for s in record_suites)
@@ -64,12 +64,12 @@ assert record_test_count>=24
 equipment_reports=[json.loads(f.read_text()) for f in p.glob('equipment-ui-fixture-*.json')]
 assert len(equipment_reports)==1 and equipment_reports[0]['result']=='passed'
 equipment=equipment_reports[0]
-assert equipment['product_distribution'] and equipment['equipment_ui_profile']=='equipment-ui-in-status-v1'
-assert equipment['equipment_module']=='status' and equipment['tabs']==2 and equipment['owned_instances']==6
+assert equipment['product_distribution'] and equipment['equipment_ui_profile']=='equipment-ui-in-equipment-v2'
+assert equipment['equipment_module']=='equipment' and equipment['tabs']==2 and equipment['owned_instances']==6
 assert equipment['normal_and_expansion_owner'] and equipment['locked_export']==3
 assert equipment['settings_reread'] and equipment['original_history_unchanged'] and equipment['source_jar_unchanged']
 assert not equipment['production_accessed']
-assert json.loads((p/'feature-manifest.json').read_text())['equipment_ui_profile']=='equipment-ui-in-status-v1'
+assert json.loads((p/'feature-manifest.json').read_text())['equipment_ui_profile']=='equipment-ui-in-equipment-v2'
 equipment_suites=[s for s in suites if s.get('name') in {'logbook.core.EquipmentDataContractTest','logbook.internal.gui.EquipmentProjectionTest','logbook.internal.gui.EquipmentRemodelSchemaTest'}]
 assert len(equipment_suites)==3 and all(int(s.get('skipped',0))==0 for s in equipment_suites)
 equipment_test_count=sum(int(s.get('tests',0)) for s in equipment_suites)

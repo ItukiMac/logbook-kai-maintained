@@ -16,6 +16,7 @@ class FeatureDistributionTest(unittest.TestCase):
         self.entries={'META-INF/MANIFEST.MF':b'Manifest-Version: 1.0\r\n\r\n',
           'logbook/gui/application.css':b'.root {}','logbook/internal/Launcher.class':b'core',
           SERVICE:('\n'.join('logbook.features.'+v[0] for v in GROUPS.values())+'\n').encode()}
+        self.entries['META-INF/services/logbook.plugin.gui.MainExtMenu'] = b'local.kancolle.kqs.KqsLogbookPlugin\nlogbook.features.quests.QuestManagementMenu\n'
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
             self.entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
         for provider, controllers, fxml in GROUPS.values():
@@ -24,6 +25,16 @@ class FeatureDistributionTest(unittest.TestCase):
             for f in fxml:self.entries['logbook/gui/'+f+'.fxml']=b'<fixture/>'
         for stems in EXTRA_CLASSES.values():
             for stem in stems:self.entries[stem+'.class']=b'fixture helper'
+    def test_management_registration_follows_quests_jar(self):
+        self.entries['logbook/plugin/api/QuestManagementUi.class']=b'fixture API'
+        service='META-INF/services/logbook.plugin.api.QuestManagementUi'
+        self.entries[service]=b'logbook.features.quests.QuestManagementWindow\n'
+        self.build()
+        with ZipFile(self.out/'logbook-core.jar') as core:self.assertNotIn(service,core.namelist())
+        with ZipFile(self.out/'features/logbook-feature-quests.jar') as module:self.assertEqual(self.entries[service],module.read(service))
+    def test_management_interface_without_provider_is_rejected(self):
+        self.entries['logbook/plugin/api/QuestManagementUi.class']=b'fixture API'
+        with self.assertRaisesRegex(ValueError,'quest management provider'):self.build()
     def write(self):
         with ZipFile(self.jar,'w',compression=ZIP_DEFLATED) as z:
             for n,b in self.entries.items():z.writestr(n,b)

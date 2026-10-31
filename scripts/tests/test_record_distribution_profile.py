@@ -38,7 +38,7 @@ class RecordDistributionProfileTest(unittest.TestCase):
         report=self.source();self.assertEqual(RECORD_UI_PROFILE,report['record_ui_profile']);verify(self.out)
         with ZipFile(self.out/'logbook-core.jar') as core:
             self.assertIn(RECORD_UI_API,core.namelist());self.assertFalse(any(record_ui_entry(n) for n in core.namelist()))
-        with ZipFile(self.out/'features/logbook-feature-charts.jar') as charts:
+        with ZipFile(self.out/'features/logbook-feature-records.jar') as charts:
             self.assertTrue(record_ui_required_entries().issubset(charts.namelist()))
             self.assertIn('logbook/internal/gui/BattleLogController$UnitDialog.class',charts.namelist())
     def test_legacy_v2_without_the_data_api_keeps_its_previous_layout(self):
@@ -60,11 +60,11 @@ class RecordDistributionProfileTest(unittest.TestCase):
         self.assertFalse(self.out.exists())
     def test_a_rehashed_module_cannot_omit_a_required_record_class(self):
         self.source();name='logbook/internal/gui/BattleRecordDetail.class'
-        self.rewrite('features/logbook-feature-charts.jar',lambda entries:entries.pop(name))
+        self.rewrite('features/logbook-feature-records.jar',lambda entries:entries.pop(name))
         with self.assertRaisesRegex(ValueError,'Missing required feature entry'):verify(self.out)
     def test_core_fallback_cannot_hide_the_absence_of_a_feature_class(self):
         self.source();name='logbook/internal/gui/BattleRecordDetail.class'
-        self.rewrite('features/logbook-feature-charts.jar',lambda entries:entries.pop(name))
+        self.rewrite('features/logbook-feature-records.jar',lambda entries:entries.pop(name))
         self.rewrite('logbook-core.jar',lambda entries:entries.update({name:b'fallback'}))
         # Make all hashes/metadata otherwise coherent, so this asserts ownership,
         # not an earlier unrelated rejection by the exact-host guard.

@@ -18,6 +18,7 @@ public class ApiReqQuestStop implements APIListenerSpi {
         String id = req.getParameter("api_quest_id");
         if (id != null) {
             Integer key = Integer.valueOf(id);
+            if(!logbook.core.quest.QuestObservationRecorder.transition(json,key,logbook.core.quest.QuestLedger.State.AVAILABLE))return;
             AppQuestCollection.get().getQuest().remove(key);
             AppQuestDuration.get().unset(key);
         }

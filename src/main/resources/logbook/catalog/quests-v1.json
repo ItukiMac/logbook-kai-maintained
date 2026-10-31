@@ -1,0 +1,5203 @@
+[
+  {
+    "questId": 101,
+    "title": "はじめての「編成」！",
+    "edition": "kcwiki:data:101",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/101.json"
+  },
+  {
+    "questId": 102,
+    "title": "「駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:102",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/102.json"
+  },
+  {
+    "questId": 103,
+    "title": "「水雷戦隊」を編成せよ！",
+    "edition": "kcwiki:data:103",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/103.json"
+  },
+  {
+    "questId": 104,
+    "title": "６隻編成の艦隊を編成せよ！",
+    "edition": "kcwiki:data:104",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/104.json"
+  },
+  {
+    "questId": 105,
+    "title": "軽巡２隻を擁する隊を編成せよ！",
+    "edition": "kcwiki:data:105",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/105.json"
+  },
+  {
+    "questId": 106,
+    "title": "「重巡戦隊」を編成せよ！",
+    "edition": "kcwiki:data:106",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/106.json"
+  },
+  {
+    "questId": 107,
+    "title": "「空母機動部隊」を編成せよ！",
+    "edition": "kcwiki:data:107",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/107.json"
+  },
+  {
+    "questId": 108,
+    "title": "「天龍」型軽巡姉妹の全２艦を編成せよ！",
+    "edition": "kcwiki:data:108",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/108.json"
+  },
+  {
+    "questId": 109,
+    "title": "「川内」型軽巡姉妹の全３艦を編成せよ！",
+    "edition": "kcwiki:data:109",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/109.json"
+  },
+  {
+    "questId": 110,
+    "title": "「妙高」型重巡姉妹の全４隻を編成せよ！",
+    "edition": "kcwiki:data:110",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/110.json"
+  },
+  {
+    "questId": 111,
+    "title": "「扶桑」型戦艦姉妹の全２隻を編成せよ！",
+    "edition": "kcwiki:data:111",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/111.json"
+  },
+  {
+    "questId": 112,
+    "title": "「伊勢」型戦艦姉妹の全２隻を編成せよ！",
+    "edition": "kcwiki:data:112",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/112.json"
+  },
+  {
+    "questId": 113,
+    "title": "戦艦と重巡による主力艦隊を編成せよ！",
+    "edition": "kcwiki:data:113",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/113.json"
+  },
+  {
+    "questId": 114,
+    "title": "「南雲機動部隊」を編成せよ！",
+    "edition": "kcwiki:data:114",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/114.json"
+  },
+  {
+    "questId": 115,
+    "title": "第２艦隊を編成せよ！",
+    "edition": "kcwiki:data:115",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/115.json"
+  },
+  {
+    "questId": 116,
+    "title": "「水上機母艦」を配備せよ！",
+    "edition": "kcwiki:data:116",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/116.json"
+  },
+  {
+    "questId": 117,
+    "title": "第２艦隊で空母機動部隊を編成せよ！",
+    "edition": "kcwiki:data:117",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/117.json"
+  },
+  {
+    "questId": 118,
+    "title": "「金剛」型による高速戦艦部隊を編成せよ！",
+    "edition": "kcwiki:data:118",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/118.json"
+  },
+  {
+    "questId": 119,
+    "title": "「三川艦隊」を編成せよ！",
+    "edition": "kcwiki:data:119",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/119.json"
+  },
+  {
+    "questId": 120,
+    "title": "「第六駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:120",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/120.json"
+  },
+  {
+    "questId": 121,
+    "title": "「第四戦隊」を編成せよ！",
+    "edition": "kcwiki:data:121",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/121.json"
+  },
+  {
+    "questId": 122,
+    "title": "「西村艦隊」を編成せよ！",
+    "edition": "kcwiki:data:122",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/122.json"
+  },
+  {
+    "questId": 123,
+    "title": "「第五航空戦隊」を編成せよ！",
+    "edition": "kcwiki:data:123",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/123.json"
+  },
+  {
+    "questId": 124,
+    "title": "新「三川艦隊」を編成せよ！",
+    "edition": "kcwiki:data:124",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/124.json"
+  },
+  {
+    "questId": 125,
+    "title": "潜水艦隊を編成せよ！",
+    "edition": "kcwiki:data:125",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/125.json"
+  },
+  {
+    "questId": 126,
+    "title": "航空水上打撃艦隊を編成せよ！",
+    "edition": "kcwiki:data:126",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/126.json"
+  },
+  {
+    "questId": 127,
+    "title": "中規模潜水艦隊を編成せよ！",
+    "edition": "kcwiki:data:127",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/127.json"
+  },
+  {
+    "questId": 128,
+    "title": "「第六戦隊」を編成せよ！",
+    "edition": "kcwiki:data:128",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/128.json"
+  },
+  {
+    "questId": 129,
+    "title": "「第五艦隊」を編成せよ！",
+    "edition": "kcwiki:data:129",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/129.json"
+  },
+  {
+    "questId": 130,
+    "title": "「第一水雷戦隊」を編成せよ！",
+    "edition": "kcwiki:data:130",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/130.json"
+  },
+  {
+    "questId": 131,
+    "title": "「第八駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:131",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/131.json"
+  },
+  {
+    "questId": 132,
+    "title": "「第十八駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:132",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/132.json"
+  },
+  {
+    "questId": 133,
+    "title": "「第三十駆逐隊(第一次)」を編成せよ！",
+    "edition": "kcwiki:data:133",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/133.json"
+  },
+  {
+    "questId": 134,
+    "title": "式の準備！(その参)",
+    "edition": "kcwiki:data:134",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/134.json"
+  },
+  {
+    "questId": 135,
+    "title": "新たなる旅立ち！",
+    "edition": "kcwiki:data:135",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/135.json"
+  },
+  {
+    "questId": 136,
+    "title": "「第三十駆逐隊(第二次)」を編成せよ！",
+    "edition": "kcwiki:data:136",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/136.json"
+  },
+  {
+    "questId": 137,
+    "title": "「第五戦隊」を編成せよ！",
+    "edition": "kcwiki:data:137",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/137.json"
+  },
+  {
+    "questId": 138,
+    "title": "新編「第二航空戦隊」を編成せよ！",
+    "edition": "kcwiki:data:138",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/138.json"
+  },
+  {
+    "questId": 139,
+    "title": "潜水艦隊「第六艦隊」を編成せよ！",
+    "edition": "kcwiki:data:139",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/139.json"
+  },
+  {
+    "questId": 140,
+    "title": "新型電探を配備せよ！",
+    "edition": "kcwiki:data:140",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/140.json"
+  },
+  {
+    "questId": 141,
+    "title": "再編成「第二航空戦隊」を強化せよ！",
+    "edition": "kcwiki:data:141",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/141.json"
+  },
+  {
+    "questId": 142,
+    "title": "精鋭「第三戦隊」全艦集結せよ！",
+    "edition": "kcwiki:data:142",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/142.json"
+  },
+  {
+    "questId": 143,
+    "title": "「新型正規空母」を配備せよ！",
+    "edition": "kcwiki:data:143",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/143.json"
+  },
+  {
+    "questId": 144,
+    "title": "主力戦艦部隊「第二戦隊」を編成せよ！",
+    "edition": "kcwiki:data:144",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/144.json"
+  },
+  {
+    "questId": 145,
+    "title": "戦艦を主力とした水上打撃部隊を編成せよ！",
+    "edition": "kcwiki:data:145",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/145.json"
+  },
+  {
+    "questId": 146,
+    "title": "改修工廠を準備せよ！",
+    "edition": "kcwiki:data:146",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/146.json"
+  },
+  {
+    "questId": 147,
+    "title": "「西村艦隊」を再編成せよ！",
+    "edition": "kcwiki:data:147",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/147.json"
+  },
+  {
+    "questId": 148,
+    "title": "軽快な「水上反撃部隊」を編成せよ！",
+    "edition": "kcwiki:data:148",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/148.json"
+  },
+  {
+    "questId": 149,
+    "title": "「第十一駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:149",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/149.json"
+  },
+  {
+    "questId": 150,
+    "title": "「第二一駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:150",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/150.json"
+  },
+  {
+    "questId": 151,
+    "title": "「第二二駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:151",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/151.json"
+  },
+  {
+    "questId": 152,
+    "title": "「三川艦隊」を新編、突入準備せよ！",
+    "edition": "kcwiki:data:152",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/152.json"
+  },
+  {
+    "questId": 153,
+    "title": "「第十八戦隊」を新編成せよ！",
+    "edition": "kcwiki:data:153",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/153.json"
+  },
+  {
+    "questId": 154,
+    "title": "海上突入部隊を編成せよ！",
+    "edition": "kcwiki:data:154",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/154.json"
+  },
+  {
+    "questId": 155,
+    "title": "新編「第六駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:155",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/155.json"
+  },
+  {
+    "questId": 156,
+    "title": "「第一水雷戦隊」北方突入準備！",
+    "edition": "kcwiki:data:156",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/156.json"
+  },
+  {
+    "questId": 157,
+    "title": "「第一水雷戦隊」北方再突入準備！",
+    "edition": "kcwiki:data:157",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/157.json"
+  },
+  {
+    "questId": 158,
+    "title": "精鋭無比「第一戦隊」抜錨準備！",
+    "edition": "kcwiki:data:158",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/158.json"
+  },
+  {
+    "questId": 161,
+    "title": "「第五航空戦隊」を再編成せよ！",
+    "edition": "kcwiki:data:161",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/161.json"
+  },
+  {
+    "questId": 162,
+    "title": "新編「第二一戦隊」出撃準備！",
+    "edition": "kcwiki:data:162",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/162.json"
+  },
+  {
+    "questId": 163,
+    "title": "「第十六戦隊(第一次)」を編成せよ！",
+    "edition": "kcwiki:data:163",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/163.json"
+  },
+  {
+    "questId": 164,
+    "title": "「第三航空戦隊」を編成せよ！",
+    "edition": "kcwiki:data:164",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/164.json"
+  },
+  {
+    "questId": 165,
+    "title": "「第四航空戦隊」を編成せよ！",
+    "edition": "kcwiki:data:165",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/165.json"
+  },
+  {
+    "questId": 166,
+    "title": "「小沢艦隊」を編成せよ！",
+    "edition": "kcwiki:data:166",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/166.json"
+  },
+  {
+    "questId": 167,
+    "title": "新航空戦隊を編成せよ！",
+    "edition": "kcwiki:data:167",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/167.json"
+  },
+  {
+    "questId": 168,
+    "title": "「第十六戦隊(第二次)」を編成せよ！",
+    "edition": "kcwiki:data:168",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/168.json"
+  },
+  {
+    "questId": 169,
+    "title": "「新編成航空戦隊」を編成せよ！",
+    "edition": "kcwiki:data:169",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/169.json"
+  },
+  {
+    "questId": 170,
+    "title": "精強な「水上反撃部隊」を再編成せよ！",
+    "edition": "kcwiki:data:170",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/170.json"
+  },
+  {
+    "questId": 171,
+    "title": "「第三十一戦隊(第一次)」を編成せよ！",
+    "edition": "kcwiki:data:171",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/171.json"
+  },
+  {
+    "questId": 172,
+    "title": "「第二七駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:172",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/172.json"
+  },
+  {
+    "questId": 173,
+    "title": "強行高速輸送部隊を編成せよ！",
+    "edition": "kcwiki:data:173",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/173.json"
+  },
+  {
+    "questId": 174,
+    "title": "新編「水雷戦隊」を含む艦隊を再編成せよ！",
+    "edition": "kcwiki:data:174",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/174.json"
+  },
+  {
+    "questId": 175,
+    "title": "新編「第八駆逐隊」を再編成せよ！",
+    "edition": "kcwiki:data:175",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/175.json"
+  },
+  {
+    "questId": 176,
+    "title": "精鋭！八駆第一小隊！",
+    "edition": "kcwiki:data:176",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/176.json"
+  },
+  {
+    "questId": 177,
+    "title": "「第十九駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:177",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/177.json"
+  },
+  {
+    "questId": 178,
+    "title": "「第十六戦隊(第三次)」を編成せよ！",
+    "edition": "kcwiki:data:178",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/178.json"
+  },
+  {
+    "questId": 179,
+    "title": "精鋭「第十六戦隊」を再編成せよ！",
+    "edition": "kcwiki:data:179",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/179.json"
+  },
+  {
+    "questId": 180,
+    "title": "新編「第一戦隊」を編成せよ！",
+    "edition": "kcwiki:data:180",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/180.json"
+  },
+  {
+    "questId": 181,
+    "title": "新編「第七戦隊」を編成せよ！",
+    "edition": "kcwiki:data:181",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/181.json"
+  },
+  {
+    "questId": 182,
+    "title": "精鋭「第四航空戦隊」を再編成せよ！",
+    "edition": "kcwiki:data:182",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/182.json"
+  },
+  {
+    "questId": 183,
+    "title": "新編「第四水雷戦隊」を編成せよ！",
+    "edition": "kcwiki:data:183",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/183.json"
+  },
+  {
+    "questId": 184,
+    "title": "精鋭「第二二駆逐隊」を再編成せよ！",
+    "edition": "kcwiki:data:184",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/184.json"
+  },
+  {
+    "questId": 185,
+    "title": "精強「任務部隊」を編成せよ！",
+    "edition": "kcwiki:data:185",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/185.json"
+  },
+  {
+    "questId": 186,
+    "title": "最精鋭「第八駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:186",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/186.json"
+  },
+  {
+    "questId": 187,
+    "title": "「西村艦隊」第二戦隊随伴部隊、集結せよ！",
+    "edition": "kcwiki:data:187",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/187.json"
+  },
+  {
+    "questId": 188,
+    "title": "精鋭「三一駆」第一小隊、抜錨準備！",
+    "edition": "kcwiki:data:188",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/188.json"
+  },
+  {
+    "questId": 189,
+    "title": "精鋭「四水戦」抜錨準備！",
+    "edition": "kcwiki:data:189",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/189.json"
+  },
+  {
+    "questId": 190,
+    "title": "精鋭「第二一駆逐隊」、抜錨準備！",
+    "edition": "kcwiki:data:190",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/190.json"
+  },
+  {
+    "questId": 191,
+    "title": "改装「第十七駆逐隊」、再編始め！",
+    "edition": "kcwiki:data:191",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/191.json"
+  },
+  {
+    "questId": 192,
+    "title": "精鋭「第十八駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:192",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/192.json"
+  },
+  {
+    "questId": 193,
+    "title": "最精鋭甲型駆逐艦、集結せよ！",
+    "edition": "kcwiki:data:193",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/193.json"
+  },
+  {
+    "questId": 194,
+    "title": "精鋭「第十八戦隊」を再編成せよ！",
+    "edition": "kcwiki:data:194",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/194.json"
+  },
+  {
+    "questId": 195,
+    "title": "精強「第十七駆逐隊」を編成せよ！",
+    "edition": "kcwiki:data:195",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/195.json"
+  },
+  {
+    "questId": 196,
+    "title": "精鋭「第十駆逐隊」、抜錨準備！",
+    "edition": "kcwiki:data:196",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/196.json"
+  },
+  {
+    "questId": 201,
+    "title": "敵艦隊を撃破せよ！",
+    "edition": "kcwiki:data:201",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/201.json"
+  },
+  {
+    "questId": 202,
+    "title": "はじめての「出撃」！",
+    "edition": "kcwiki:data:202",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/202.json"
+  },
+  {
+    "questId": 203,
+    "title": "鎮守府正面海域を護れ！",
+    "edition": "kcwiki:data:203",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/203.json"
+  },
+  {
+    "questId": 204,
+    "title": "南西諸島沖に出撃せよ！",
+    "edition": "kcwiki:data:204",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/204.json"
+  },
+  {
+    "questId": 205,
+    "title": "接近する「敵前衛艦隊」を迎撃せよ！",
+    "edition": "kcwiki:data:205",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/205.json"
+  },
+  {
+    "questId": 206,
+    "title": "「水雷戦隊」で出撃せよ！",
+    "edition": "kcwiki:data:206",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/206.json"
+  },
+  {
+    "questId": 207,
+    "title": "「重巡洋艦」を出撃させよ！",
+    "edition": "kcwiki:data:207",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/207.json"
+  },
+  {
+    "questId": 208,
+    "title": "「戦艦」を出撃させよ！",
+    "edition": "kcwiki:data:208",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/208.json"
+  },
+  {
+    "questId": 209,
+    "title": "「空母機動部隊」出撃せよ！",
+    "edition": "kcwiki:data:209",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/209.json"
+  },
+  {
+    "questId": 210,
+    "title": "敵艦隊を10回邀撃せよ！",
+    "edition": "kcwiki:data:210",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/210.json"
+  },
+  {
+    "questId": 211,
+    "title": "敵空母を３隻撃沈せよ！",
+    "edition": "kcwiki:data:211",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/211.json"
+  },
+  {
+    "questId": 212,
+    "title": "敵輸送船団を叩け！",
+    "edition": "kcwiki:data:212",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/212.json"
+  },
+  {
+    "questId": 213,
+    "title": "海上通商破壊作戦",
+    "edition": "kcwiki:data:213",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/213.json"
+  },
+  {
+    "questId": 214,
+    "title": "あ号作戦",
+    "edition": "kcwiki:data:214",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/214.json"
+  },
+  {
+    "questId": 215,
+    "title": "第２艦隊、出撃せよ！",
+    "edition": "kcwiki:data:215",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/215.json"
+  },
+  {
+    "questId": 216,
+    "title": "敵艦隊主力を撃滅せよ！",
+    "edition": "kcwiki:data:216",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/216.json"
+  },
+  {
+    "questId": 217,
+    "title": "敵空母を撃沈せよ！",
+    "edition": "kcwiki:data:217",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/217.json"
+  },
+  {
+    "questId": 218,
+    "title": "敵補給艦を3隻撃沈せよ！",
+    "edition": "kcwiki:data:218",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/218.json"
+  },
+  {
+    "questId": 219,
+    "title": "「三川艦隊」出撃せよ！",
+    "edition": "kcwiki:data:219",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/219.json"
+  },
+  {
+    "questId": 220,
+    "title": "い号作戦",
+    "edition": "kcwiki:data:220",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/220.json"
+  },
+  {
+    "questId": 221,
+    "title": "ろ号作戦",
+    "edition": "kcwiki:data:221",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/221.json"
+  },
+  {
+    "questId": 222,
+    "title": "「第六駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:222",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/222.json"
+  },
+  {
+    "questId": 223,
+    "title": "「第四戦隊」出撃せよ！",
+    "edition": "kcwiki:data:223",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/223.json"
+  },
+  {
+    "questId": 224,
+    "title": "「西村艦隊」出撃せよ！",
+    "edition": "kcwiki:data:224",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/224.json"
+  },
+  {
+    "questId": 225,
+    "title": "「第五航空戦隊」出撃せよ！",
+    "edition": "kcwiki:data:225",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/225.json"
+  },
+  {
+    "questId": 226,
+    "title": "南西諸島海域の制海権を握れ！",
+    "edition": "kcwiki:data:226",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/226.json"
+  },
+  {
+    "questId": 227,
+    "title": "新「三川艦隊」出撃せよ！",
+    "edition": "kcwiki:data:227",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/227.json"
+  },
+  {
+    "questId": 228,
+    "title": "海上護衛戦",
+    "edition": "kcwiki:data:228",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/228.json"
+  },
+  {
+    "questId": 229,
+    "title": "敵東方艦隊を撃滅せよ！",
+    "edition": "kcwiki:data:229",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/229.json"
+  },
+  {
+    "questId": 230,
+    "title": "敵潜水艦を制圧せよ！",
+    "edition": "kcwiki:data:230",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/230.json"
+  },
+  {
+    "questId": 231,
+    "title": "「潜水艦隊」出撃せよ！",
+    "edition": "kcwiki:data:231",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/231.json"
+  },
+  {
+    "questId": 232,
+    "title": "「航空水上打撃艦隊」出撃せよ！",
+    "edition": "kcwiki:data:232",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/232.json"
+  },
+  {
+    "questId": 233,
+    "title": "「第六戦隊」出撃せよ！",
+    "edition": "kcwiki:data:233",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/233.json"
+  },
+  {
+    "questId": 235,
+    "title": "近海哨戒を実施せよ!",
+    "edition": "kcwiki:data:235",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/235.json"
+  },
+  {
+    "questId": 236,
+    "title": "精鋭「二四駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:236",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/236.json"
+  },
+  {
+    "questId": 237,
+    "title": "「羽黒」「神風」、出撃せよ！",
+    "edition": "kcwiki:data:237",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/237.json"
+  },
+  {
+    "questId": 239,
+    "title": "「第八駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:239",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/239.json"
+  },
+  {
+    "questId": 240,
+    "title": "「第十八駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:240",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/240.json"
+  },
+  {
+    "questId": 241,
+    "title": "敵北方艦隊主力を撃滅せよ！",
+    "edition": "kcwiki:data:241",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/241.json"
+  },
+  {
+    "questId": 242,
+    "title": "敵東方中枢艦隊を撃破せよ！",
+    "edition": "kcwiki:data:242",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/242.json"
+  },
+  {
+    "questId": 243,
+    "title": "南方海域珊瑚諸島沖の制空権を握れ！",
+    "edition": "kcwiki:data:243",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/243.json"
+  },
+  {
+    "questId": 244,
+    "title": "「第三十駆逐隊(第一次)」出撃せよ！",
+    "edition": "kcwiki:data:244",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/244.json"
+  },
+  {
+    "questId": 245,
+    "title": "式の準備！(最終)",
+    "edition": "kcwiki:data:245",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/245.json"
+  },
+  {
+    "questId": 246,
+    "title": "二人でする初めての任務！",
+    "edition": "kcwiki:data:246",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/246.json"
+  },
+  {
+    "questId": 247,
+    "title": "「航空戦艦」抜錨せよ！",
+    "edition": "kcwiki:data:247",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/247.json"
+  },
+  {
+    "questId": 248,
+    "title": "「第三十駆逐隊」対潜哨戒！",
+    "edition": "kcwiki:data:248",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/248.json"
+  },
+  {
+    "questId": 249,
+    "title": "「第五戦隊」出撃せよ！",
+    "edition": "kcwiki:data:249",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/249.json"
+  },
+  {
+    "questId": 250,
+    "title": "新編「第二航空戦隊」出撃せよ！",
+    "edition": "kcwiki:data:250",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/250.json"
+  },
+  {
+    "questId": 251,
+    "title": "精鋭「第二航空戦隊」抜錨せよ！",
+    "edition": "kcwiki:data:251",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/251.json"
+  },
+  {
+    "questId": 252,
+    "title": "戦艦「榛名」出撃せよ！",
+    "edition": "kcwiki:data:252",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/252.json"
+  },
+  {
+    "questId": 253,
+    "title": "「第六〇一航空隊」出撃せよ！",
+    "edition": "kcwiki:data:253",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/253.json"
+  },
+  {
+    "questId": 254,
+    "title": "「軽空母」戦隊、出撃せよ！",
+    "edition": "kcwiki:data:254",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/254.json"
+  },
+  {
+    "questId": 255,
+    "title": "「水雷戦隊」バシー島沖緊急展開",
+    "edition": "kcwiki:data:255",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/255.json"
+  },
+  {
+    "questId": 256,
+    "title": "「潜水艦隊」出撃せよ！",
+    "edition": "kcwiki:data:256",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/256.json"
+  },
+  {
+    "questId": 257,
+    "title": "「水雷戦隊」南西へ！",
+    "edition": "kcwiki:data:257",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/257.json"
+  },
+  {
+    "questId": 258,
+    "title": "「第二戦隊」抜錨！",
+    "edition": "kcwiki:data:258",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/258.json"
+  },
+  {
+    "questId": 259,
+    "title": "「水上打撃部隊」南方へ！",
+    "edition": "kcwiki:data:259",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/259.json"
+  },
+  {
+    "questId": 260,
+    "title": "「戦艦部隊」北方海域に突入せよ！",
+    "edition": "kcwiki:data:260",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/260.json"
+  },
+  {
+    "questId": 261,
+    "title": "海上輸送路の安全確保に努めよ！",
+    "edition": "kcwiki:data:261",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/261.json"
+  },
+  {
+    "questId": 262,
+    "title": "「西村艦隊」南方海域へ進出せよ！",
+    "edition": "kcwiki:data:262",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/262.json"
+  },
+  {
+    "questId": 263,
+    "title": "「第六戦隊」南西海域へ出撃せよ！",
+    "edition": "kcwiki:data:263",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/263.json"
+  },
+  {
+    "questId": 264,
+    "title": "「空母機動部隊」西へ！",
+    "edition": "kcwiki:data:264",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/264.json"
+  },
+  {
+    "questId": 265,
+    "title": "海上護衛強化月間",
+    "edition": "kcwiki:data:265",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/265.json"
+  },
+  {
+    "questId": 266,
+    "title": "「水上反撃部隊」突入せよ！",
+    "edition": "kcwiki:data:266",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/266.json"
+  },
+  {
+    "questId": 267,
+    "title": "「第十一駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:267",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/267.json"
+  },
+  {
+    "questId": 268,
+    "title": "「第十一駆逐隊」対潜哨戒！",
+    "edition": "kcwiki:data:268",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/268.json"
+  },
+  {
+    "questId": 269,
+    "title": "「第二一駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:269",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/269.json"
+  },
+  {
+    "questId": 270,
+    "title": "「第二二駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:270",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/270.json"
+  },
+  {
+    "questId": 271,
+    "title": "「那智戦隊」抜錨せよ！",
+    "edition": "kcwiki:data:271",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/271.json"
+  },
+  {
+    "questId": 272,
+    "title": "「改装防空重巡」出撃せよ！",
+    "edition": "kcwiki:data:272",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/272.json"
+  },
+  {
+    "questId": 273,
+    "title": "新編「三川艦隊」ソロモン方面へ！",
+    "edition": "kcwiki:data:273",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/273.json"
+  },
+  {
+    "questId": 274,
+    "title": "「第六駆逐隊」対潜哨戒なのです！",
+    "edition": "kcwiki:data:274",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/274.json"
+  },
+  {
+    "questId": 275,
+    "title": "抜錨！「第十八戦隊」",
+    "edition": "kcwiki:data:275",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/275.json"
+  },
+  {
+    "questId": 276,
+    "title": "海上突入部隊、進発せよ！",
+    "edition": "kcwiki:data:276",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/276.json"
+  },
+  {
+    "questId": 277,
+    "title": "「第六駆逐隊」対潜哨戒を徹底なのです！",
+    "edition": "kcwiki:data:277",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/277.json"
+  },
+  {
+    "questId": 278,
+    "title": "「第一水雷戦隊」ケ号作戦、突入せよ！",
+    "edition": "kcwiki:data:278",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/278.json"
+  },
+  {
+    "questId": 279,
+    "title": "「第一水雷戦隊」北方ケ号作戦、再突入！",
+    "edition": "kcwiki:data:279",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/279.json"
+  },
+  {
+    "questId": 280,
+    "title": "兵站線確保！海上警備を強化実施せよ！",
+    "edition": "kcwiki:data:280",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/280.json"
+  },
+  {
+    "questId": 281,
+    "title": "精鋭無比「第一戦隊」まかり通る！",
+    "edition": "kcwiki:data:281",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/281.json"
+  },
+  {
+    "questId": 282,
+    "title": "精鋭無比「第一戦隊」まかり通る！【拡張作戦】",
+    "edition": "kcwiki:data:282",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/282.json"
+  },
+  {
+    "questId": 283,
+    "title": "精強！'第一航空戦隊'出撃せよ！",
+    "edition": "kcwiki:data:283",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/283.json"
+  },
+  {
+    "questId": 284,
+    "title": "南西諸島方面「海上警備行動」発令！",
+    "edition": "kcwiki:data:284",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/284.json"
+  },
+  {
+    "questId": 285,
+    "title": "「空母機動部隊」北方海域に進出せよ！",
+    "edition": "kcwiki:data:285",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/285.json"
+  },
+  {
+    "questId": 286,
+    "title": "鎮守府正面の対潜哨戒を強化せよ！",
+    "edition": "kcwiki:data:286",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/286.json"
+  },
+  {
+    "questId": 287,
+    "title": "「第五航空戦隊」珊瑚諸島沖に出撃せよ！",
+    "edition": "kcwiki:data:287",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/287.json"
+  },
+  {
+    "questId": 288,
+    "title": "新編「第二一戦隊」北方へ出撃せよ！",
+    "edition": "kcwiki:data:288",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/288.json"
+  },
+  {
+    "questId": 289,
+    "title": "「第十六戦隊(第一次)」出撃せよ！",
+    "edition": "kcwiki:data:289",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/289.json"
+  },
+  {
+    "questId": 290,
+    "title": "「比叡」の出撃",
+    "edition": "kcwiki:data:290",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/290.json"
+  },
+  {
+    "questId": 291,
+    "title": "艦隊司令部の強化 【実施段階】",
+    "edition": "kcwiki:data:291",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/291.json"
+  },
+  {
+    "questId": 292,
+    "title": "重改装高速戦艦「金剛改二丙」、南方突入！",
+    "edition": "kcwiki:data:292",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/292.json"
+  },
+  {
+    "questId": 293,
+    "title": "「第三航空戦隊」南西諸島防衛線に出撃！",
+    "edition": "kcwiki:data:293",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/293.json"
+  },
+  {
+    "questId": 294,
+    "title": "「小沢艦隊」出撃せよ！",
+    "edition": "kcwiki:data:294",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/294.json"
+  },
+  {
+    "questId": 295,
+    "title": "「第十六戦隊(第二次)」出撃せよ！",
+    "edition": "kcwiki:data:295",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/295.json"
+  },
+  {
+    "questId": 296,
+    "title": "新編成航空戦隊、北方へ進出せよ！",
+    "edition": "kcwiki:data:296",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/296.json"
+  },
+  {
+    "questId": 297,
+    "title": "「礼号作戦」実施せよ！",
+    "edition": "kcwiki:data:297",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/297.json"
+  },
+  {
+    "questId": 298,
+    "title": "「第七駆逐隊」、南西諸島を駆ける！",
+    "edition": "kcwiki:data:298",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/298.json"
+  },
+  {
+    "questId": 299,
+    "title": "近海の警戒監視と哨戒活動を強化せよ！",
+    "edition": "kcwiki:data:299",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/299.json"
+  },
+  {
+    "questId": 301,
+    "title": "はじめての「演習」！",
+    "edition": "kcwiki:data:301",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/301.json"
+  },
+  {
+    "questId": 302,
+    "title": "大規模演習",
+    "edition": "kcwiki:data:302",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/302.json"
+  },
+  {
+    "questId": 303,
+    "title": "「演習」で練度向上！",
+    "edition": "kcwiki:data:303",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/303.json"
+  },
+  {
+    "questId": 304,
+    "title": "「演習」で他提督を圧倒せよ！",
+    "edition": "kcwiki:data:304",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/304.json"
+  },
+  {
+    "questId": 306,
+    "title": "式の準備！(その弐)",
+    "edition": "kcwiki:data:306",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/306.json"
+  },
+  {
+    "questId": 307,
+    "title": "艦隊の練度向上に努めよ！",
+    "edition": "kcwiki:data:307",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/307.json"
+  },
+  {
+    "questId": 308,
+    "title": "演習を強化、艦隊の練度向上に努めよ！",
+    "edition": "kcwiki:data:308",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/308.json"
+  },
+  {
+    "questId": 309,
+    "title": "北方再突入に備え、練度向上に努めよ！",
+    "edition": "kcwiki:data:309",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/309.json"
+  },
+  {
+    "questId": 311,
+    "title": "精鋭艦隊演習",
+    "edition": "kcwiki:data:311",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/311.json"
+  },
+  {
+    "questId": 312,
+    "title": "上陸部隊演習",
+    "edition": "kcwiki:data:312",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/312.json"
+  },
+  {
+    "questId": 315,
+    "title": "春季大演習",
+    "edition": "kcwiki:data:315",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/315.json"
+  },
+  {
+    "questId": 316,
+    "title": "輸送部隊の練度向上に努めよ！",
+    "edition": "kcwiki:data:316",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/316.json"
+  },
+  {
+    "questId": 317,
+    "title": "甲型駆逐艦の戦力整備計画",
+    "edition": "kcwiki:data:317",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/317.json"
+  },
+  {
+    "questId": 318,
+    "title": "給糧艦「伊良湖」の支援",
+    "edition": "kcwiki:data:318",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/318.json"
+  },
+  {
+    "questId": 319,
+    "title": "精鋭「第二一駆」、猛特訓！",
+    "edition": "kcwiki:data:319",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/319.json"
+  },
+  {
+    "questId": 320,
+    "title": "駆逐隊、特訓始め！",
+    "edition": "kcwiki:data:320",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/320.json"
+  },
+  {
+    "questId": 322,
+    "title": "海防艦、演習始め！",
+    "edition": "kcwiki:data:322",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/322.json"
+  },
+  {
+    "questId": 323,
+    "title": "最精鋭甲型駆逐艦、特訓始め！",
+    "edition": "kcwiki:data:323",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/323.json"
+  },
+  {
+    "questId": 324,
+    "title": "戦闘航空母艦一番艦、演習始め！",
+    "edition": "kcwiki:data:324",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/324.json"
+  },
+  {
+    "questId": 325,
+    "title": "改夕雲型、演習始め！",
+    "edition": "kcwiki:data:325",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/325.json"
+  },
+  {
+    "questId": 326,
+    "title": "夏季大演習",
+    "edition": "kcwiki:data:326",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/326.json"
+  },
+  {
+    "questId": 327,
+    "title": "朝潮型集合！特訓始め！",
+    "edition": "kcwiki:data:327",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/327.json"
+  },
+  {
+    "questId": 328,
+    "title": "精強「十七駆」、猛特訓！",
+    "edition": "kcwiki:data:328",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/328.json"
+  },
+  {
+    "questId": 330,
+    "title": "空母機動部隊、演習始め！",
+    "edition": "kcwiki:data:330",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/330.json"
+  },
+  {
+    "questId": 331,
+    "title": "艦載機演習",
+    "edition": "kcwiki:data:331",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/331.json"
+  },
+  {
+    "questId": 332,
+    "title": "六周年記念演習",
+    "edition": "kcwiki:data:332",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/332.json"
+  },
+  {
+    "questId": 333,
+    "title": "航空戦隊演習(その壱)",
+    "edition": "kcwiki:data:333",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/333.json"
+  },
+  {
+    "questId": 334,
+    "title": "航空戦隊演習(その弐)",
+    "edition": "kcwiki:data:334",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/334.json"
+  },
+  {
+    "questId": 335,
+    "title": "新しき盾",
+    "edition": "kcwiki:data:335",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/335.json"
+  },
+  {
+    "questId": 336,
+    "title": "輸送船団演習",
+    "edition": "kcwiki:data:336",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/336.json"
+  },
+  {
+    "questId": 337,
+    "title": "「十八駆」演習！",
+    "edition": "kcwiki:data:337",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/337.json"
+  },
+  {
+    "questId": 338,
+    "title": "睦月型集合！演習始め！",
+    "edition": "kcwiki:data:338",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/338.json"
+  },
+  {
+    "questId": 339,
+    "title": "「十九駆」演習！",
+    "edition": "kcwiki:data:339",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/339.json"
+  },
+  {
+    "questId": 401,
+    "title": "はじめての「遠征」！",
+    "edition": "kcwiki:data:401",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/401.json"
+  },
+  {
+    "questId": 402,
+    "title": "「遠征」を３回成功させよう！",
+    "edition": "kcwiki:data:402",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/402.json"
+  },
+  {
+    "questId": 403,
+    "title": "「遠征」を１０回成功させよう！",
+    "edition": "kcwiki:data:403",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/403.json"
+  },
+  {
+    "questId": 404,
+    "title": "大規模遠征作戦、発令！",
+    "edition": "kcwiki:data:404",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/404.json"
+  },
+  {
+    "questId": 405,
+    "title": "第一次潜水艦派遣作戦",
+    "edition": "kcwiki:data:405",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/405.json"
+  },
+  {
+    "questId": 406,
+    "title": "第二次潜水艦派遣作戦",
+    "edition": "kcwiki:data:406",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/406.json"
+  },
+  {
+    "questId": 408,
+    "title": "潜水艦派遣作戦による技術入手の継続！",
+    "edition": "kcwiki:data:408",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/408.json"
+  },
+  {
+    "questId": 409,
+    "title": "潜水艦派遣による海外艦との接触作戦",
+    "edition": "kcwiki:data:409",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/409.json"
+  },
+  {
+    "questId": 410,
+    "title": "南方への輸送作戦を成功させよ！",
+    "edition": "kcwiki:data:410",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/410.json"
+  },
+  {
+    "questId": 411,
+    "title": "南方への鼠輸送を継続実施せよ！",
+    "edition": "kcwiki:data:411",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/411.json"
+  },
+  {
+    "questId": 412,
+    "title": "航空火力艦の運用を強化せよ！",
+    "edition": "kcwiki:data:412",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/412.json"
+  },
+  {
+    "questId": 413,
+    "title": "(続)航空火力艦の運用を強化せよ！",
+    "edition": "kcwiki:data:413",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/413.json"
+  },
+  {
+    "questId": 414,
+    "title": "遠洋潜水艦作戦を実施せよ！",
+    "edition": "kcwiki:data:414",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/414.json"
+  },
+  {
+    "questId": 415,
+    "title": "遠洋潜水艦作戦の成果を拡大せよ！",
+    "edition": "kcwiki:data:415",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/415.json"
+  },
+  {
+    "questId": 416,
+    "title": "防空射撃演習を実施せよ！",
+    "edition": "kcwiki:data:416",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/416.json"
+  },
+  {
+    "questId": 417,
+    "title": "囮機動部隊支援作戦を実施せよ！",
+    "edition": "kcwiki:data:417",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/417.json"
+  },
+  {
+    "questId": 418,
+    "title": "観艦式予行を実施せよ！",
+    "edition": "kcwiki:data:418",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/418.json"
+  },
+  {
+    "questId": 419,
+    "title": "観艦式を敢行せよ！",
+    "edition": "kcwiki:data:419",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/419.json"
+  },
+  {
+    "questId": 420,
+    "title": "機動部隊の運用を強化せよ！",
+    "edition": "kcwiki:data:420",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/420.json"
+  },
+  {
+    "questId": 422,
+    "title": "潜水艦派遣作戦による航空機技術入手",
+    "edition": "kcwiki:data:422",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/422.json"
+  },
+  {
+    "questId": 423,
+    "title": "潜水艦派遣作戦による噴式技術の入手",
+    "edition": "kcwiki:data:423",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/423.json"
+  },
+  {
+    "questId": 424,
+    "title": "輸送船団護衛を強化せよ！",
+    "edition": "kcwiki:data:424",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/424.json"
+  },
+  {
+    "questId": 425,
+    "title": "海上護衛総隊、遠征開始！",
+    "edition": "kcwiki:data:425",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/425.json"
+  },
+  {
+    "questId": 426,
+    "title": "海上通商航路の警戒を厳とせよ！",
+    "edition": "kcwiki:data:426",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/426.json"
+  },
+  {
+    "questId": 427,
+    "title": "遠征「補給」支援体制を強化せよ！",
+    "edition": "kcwiki:data:427",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/427.json"
+  },
+  {
+    "questId": 428,
+    "title": "近海に侵入する敵潜を制圧せよ！",
+    "edition": "kcwiki:data:428",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/428.json"
+  },
+  {
+    "questId": 429,
+    "title": "「捷一号作戦」、発動準備！",
+    "edition": "kcwiki:data:429",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/429.json"
+  },
+  {
+    "questId": 430,
+    "title": "「海防艦」、進発せよ！",
+    "edition": "kcwiki:data:430",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/430.json"
+  },
+  {
+    "questId": 431,
+    "title": "艦隊司令部の強化 【準備段階】",
+    "edition": "kcwiki:data:431",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/431.json"
+  },
+  {
+    "questId": 432,
+    "title": "警備及び哨戒偵察を強化せよ！",
+    "edition": "kcwiki:data:432",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/432.json"
+  },
+  {
+    "questId": 433,
+    "title": "南方戦線遠征を実施せよ！",
+    "edition": "kcwiki:data:433",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/433.json"
+  },
+  {
+    "questId": 434,
+    "title": "特設護衛船団司令部、活動開始！",
+    "edition": "kcwiki:data:434",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/434.json"
+  },
+  {
+    "questId": 501,
+    "title": "はじめての「補給」！",
+    "edition": "kcwiki:data:501",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/501.json"
+  },
+  {
+    "questId": 502,
+    "title": "はじめての「入渠」！",
+    "edition": "kcwiki:data:502",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/502.json"
+  },
+  {
+    "questId": 503,
+    "title": "艦隊大整備！",
+    "edition": "kcwiki:data:503",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/503.json"
+  },
+  {
+    "questId": 504,
+    "title": "艦隊酒保祭り！",
+    "edition": "kcwiki:data:504",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/504.json"
+  },
+  {
+    "questId": 601,
+    "title": "はじめての「建造」！",
+    "edition": "kcwiki:data:601",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/601.json"
+  },
+  {
+    "questId": 602,
+    "title": "はじめての「開発」！",
+    "edition": "kcwiki:data:602",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/602.json"
+  },
+  {
+    "questId": 603,
+    "title": "はじめての「解体」！",
+    "edition": "kcwiki:data:603",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/603.json"
+  },
+  {
+    "questId": 604,
+    "title": "はじめての「廃棄」！",
+    "edition": "kcwiki:data:604",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/604.json"
+  },
+  {
+    "questId": 605,
+    "title": "新装備「開発」指令",
+    "edition": "kcwiki:data:605",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/605.json"
+  },
+  {
+    "questId": 606,
+    "title": "新造艦「建造」指令",
+    "edition": "kcwiki:data:606",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/606.json"
+  },
+  {
+    "questId": 607,
+    "title": "装備「開発」集中強化！",
+    "edition": "kcwiki:data:607",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/607.json"
+  },
+  {
+    "questId": 608,
+    "title": "艦娘「建造」艦隊強化！",
+    "edition": "kcwiki:data:608",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/608.json"
+  },
+  {
+    "questId": 609,
+    "title": "軍縮条約対応！",
+    "edition": "kcwiki:data:609",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/609.json"
+  },
+  {
+    "questId": 610,
+    "title": "「大型艦建造」の準備！(その弐)",
+    "edition": "kcwiki:data:610",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/610.json"
+  },
+  {
+    "questId": 611,
+    "title": "式の準備！(その壱)",
+    "edition": "kcwiki:data:611",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/611.json"
+  },
+  {
+    "questId": 612,
+    "title": "輸送用ドラム缶の準備",
+    "edition": "kcwiki:data:612",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/612.json"
+  },
+  {
+    "questId": 613,
+    "title": "資源の再利用",
+    "edition": "kcwiki:data:613",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/613.json"
+  },
+  {
+    "questId": 614,
+    "title": "機種転換",
+    "edition": "kcwiki:data:614",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/614.json"
+  },
+  {
+    "questId": 615,
+    "title": "機種転換",
+    "edition": "kcwiki:data:615",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/615.json"
+  },
+  {
+    "questId": 616,
+    "title": "機種転換",
+    "edition": "kcwiki:data:616",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/616.json"
+  },
+  {
+    "questId": 617,
+    "title": "「伊良湖」の準備",
+    "edition": "kcwiki:data:617",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/617.json"
+  },
+  {
+    "questId": 618,
+    "title": "はじめての「装備改修」！",
+    "edition": "kcwiki:data:618",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/618.json"
+  },
+  {
+    "questId": 619,
+    "title": "装備の改修強化",
+    "edition": "kcwiki:data:619",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/619.json"
+  },
+  {
+    "questId": 620,
+    "title": "一航戦精鋭「流星改」隊の編成",
+    "edition": "kcwiki:data:620",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/620.json"
+  },
+  {
+    "questId": 621,
+    "title": "陸戦用装備の艦載運用研究",
+    "edition": "kcwiki:data:621",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/621.json"
+  },
+  {
+    "questId": 622,
+    "title": "機種転換",
+    "edition": "kcwiki:data:622",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/622.json"
+  },
+  {
+    "questId": 623,
+    "title": "精鋭「九七式艦攻」部隊の編成",
+    "edition": "kcwiki:data:623",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/623.json"
+  },
+  {
+    "questId": 624,
+    "title": "試作艤装の準備",
+    "edition": "kcwiki:data:624",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/624.json"
+  },
+  {
+    "questId": 625,
+    "title": "試製航空艤装の追加試作",
+    "edition": "kcwiki:data:625",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/625.json"
+  },
+  {
+    "questId": 626,
+    "title": "精鋭「艦戦」隊の新編成",
+    "edition": "kcwiki:data:626",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/626.json"
+  },
+  {
+    "questId": 627,
+    "title": "機種転換",
+    "edition": "kcwiki:data:627",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/627.json"
+  },
+  {
+    "questId": 628,
+    "title": "機種転換",
+    "edition": "kcwiki:data:628",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/628.json"
+  },
+  {
+    "questId": 629,
+    "title": "「艦戦」隊の再編成",
+    "edition": "kcwiki:data:629",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/629.json"
+  },
+  {
+    "questId": 630,
+    "title": "「艦戦」隊の再編成",
+    "edition": "kcwiki:data:630",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/630.json"
+  },
+  {
+    "questId": 631,
+    "title": "機種転換＆部隊再編",
+    "edition": "kcwiki:data:631",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/631.json"
+  },
+  {
+    "questId": 632,
+    "title": "機種転換",
+    "edition": "kcwiki:data:632",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/632.json"
+  },
+  {
+    "questId": 633,
+    "title": "機種転換＆部隊再編",
+    "edition": "kcwiki:data:633",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/633.json"
+  },
+  {
+    "questId": 634,
+    "title": "新家具の準備",
+    "edition": "kcwiki:data:634",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/634.json"
+  },
+  {
+    "questId": 635,
+    "title": "新装備の準備",
+    "edition": "kcwiki:data:635",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/635.json"
+  },
+  {
+    "questId": 636,
+    "title": "上陸戦用新装備の調達",
+    "edition": "kcwiki:data:636",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/636.json"
+  },
+  {
+    "questId": 637,
+    "title": "「熟練搭乗員」養成",
+    "edition": "kcwiki:data:637",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/637.json"
+  },
+  {
+    "questId": 638,
+    "title": "対空機銃量産",
+    "edition": "kcwiki:data:638",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/638.json"
+  },
+  {
+    "questId": 639,
+    "title": "新型魚雷兵装の開発",
+    "edition": "kcwiki:data:639",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/639.json"
+  },
+  {
+    "questId": 641,
+    "title": "「航空基地設営」事前準備",
+    "edition": "kcwiki:data:641",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/641.json"
+  },
+  {
+    "questId": 642,
+    "title": "「陸攻」隊の増勢",
+    "edition": "kcwiki:data:642",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/642.json"
+  },
+  {
+    "questId": 643,
+    "title": "主力「陸攻」の調達",
+    "edition": "kcwiki:data:643",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/643.json"
+  },
+  {
+    "questId": 644,
+    "title": "「一式陸攻」性能向上型の調達",
+    "edition": "kcwiki:data:644",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/644.json"
+  },
+  {
+    "questId": 645,
+    "title": "「洋上補給」物資の調達",
+    "edition": "kcwiki:data:645",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/645.json"
+  },
+  {
+    "questId": 646,
+    "title": "「特注家具」の調達",
+    "edition": "kcwiki:data:646",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/646.json"
+  },
+  {
+    "questId": 647,
+    "title": "中部海域「基地航空隊」展開！",
+    "edition": "kcwiki:data:647",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/647.json"
+  },
+  {
+    "questId": 648,
+    "title": "「特注家具」の調達",
+    "edition": "kcwiki:data:648",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/648.json"
+  },
+  {
+    "questId": 649,
+    "title": "新機軸偵察機の開発",
+    "edition": "kcwiki:data:649",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/649.json"
+  },
+  {
+    "questId": 650,
+    "title": "噴式戦闘爆撃機の開発",
+    "edition": "kcwiki:data:650",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/650.json"
+  },
+  {
+    "questId": 651,
+    "title": "ネ式エンジンの増産",
+    "edition": "kcwiki:data:651",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/651.json"
+  },
+  {
+    "questId": 652,
+    "title": "「特注家具」の調達",
+    "edition": "kcwiki:data:652",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/652.json"
+  },
+  {
+    "questId": 653,
+    "title": "工廠稼働！次期作戦準備！",
+    "edition": "kcwiki:data:653",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/653.json"
+  },
+  {
+    "questId": 656,
+    "title": "六三一空「晴嵐」隊の編成",
+    "edition": "kcwiki:data:656",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/656.json"
+  },
+  {
+    "questId": 658,
+    "title": "潜水艦武装の強化",
+    "edition": "kcwiki:data:658",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/658.json"
+  },
+  {
+    "questId": 659,
+    "title": "精鋭「水戦」隊の新編成",
+    "edition": "kcwiki:data:659",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/659.json"
+  },
+  {
+    "questId": 660,
+    "title": "精鋭「水戦」隊の増勢",
+    "edition": "kcwiki:data:660",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/660.json"
+  },
+  {
+    "questId": 661,
+    "title": "新型砲墳兵装、戦力化開始！",
+    "edition": "kcwiki:data:661",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/661.json"
+  },
+  {
+    "questId": 662,
+    "title": "新型艤装の開発研究",
+    "edition": "kcwiki:data:662",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/662.json"
+  },
+  {
+    "questId": 663,
+    "title": "新型艤装の継続研究",
+    "edition": "kcwiki:data:663",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/663.json"
+  },
+  {
+    "questId": 664,
+    "title": "電探技術の射撃装置への活用",
+    "edition": "kcwiki:data:664",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/664.json"
+  },
+  {
+    "questId": 665,
+    "title": "民生産業への協力",
+    "edition": "kcwiki:data:665",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/665.json"
+  },
+  {
+    "questId": 666,
+    "title": "精鋭「瑞雲」隊の編成",
+    "edition": "kcwiki:data:666",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/666.json"
+  },
+  {
+    "questId": 667,
+    "title": "民生産業への協力を継続せよ！",
+    "edition": "kcwiki:data:667",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/667.json"
+  },
+  {
+    "questId": 668,
+    "title": "新型戦闘糧食の試作",
+    "edition": "kcwiki:data:668",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/668.json"
+  },
+  {
+    "questId": 669,
+    "title": "夜戦型艦上戦闘機の開発",
+    "edition": "kcwiki:data:669",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/669.json"
+  },
+  {
+    "questId": 670,
+    "title": "夜戦型艦上戦闘機の性能強化",
+    "edition": "kcwiki:data:670",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/670.json"
+  },
+  {
+    "questId": 671,
+    "title": "夜間作戦型艦上攻撃機の開発",
+    "edition": "kcwiki:data:671",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/671.json"
+  },
+  {
+    "questId": 672,
+    "title": "「遊撃部隊」艦隊司令部の創設",
+    "edition": "kcwiki:data:672",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/672.json"
+  },
+  {
+    "questId": 673,
+    "title": "装備開発力の整備",
+    "edition": "kcwiki:data:673",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/673.json"
+  },
+  {
+    "questId": 674,
+    "title": "工廠環境の整備",
+    "edition": "kcwiki:data:674",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/674.json"
+  },
+  {
+    "questId": 675,
+    "title": "運用装備の統合整備",
+    "edition": "kcwiki:data:675",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/675.json"
+  },
+  {
+    "questId": 676,
+    "title": "装備開発力の集中整備",
+    "edition": "kcwiki:data:676",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/676.json"
+  },
+  {
+    "questId": 677,
+    "title": "継戦支援能力の整備",
+    "edition": "kcwiki:data:677",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/677.json"
+  },
+  {
+    "questId": 678,
+    "title": "主力艦上戦闘機の更新",
+    "edition": "kcwiki:data:678",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/678.json"
+  },
+  {
+    "questId": 679,
+    "title": "対空兵装の拡充",
+    "edition": "kcwiki:data:679",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/679.json"
+  },
+  {
+    "questId": 680,
+    "title": "対空兵装の整備拡充",
+    "edition": "kcwiki:data:680",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/680.json"
+  },
+  {
+    "questId": 682,
+    "title": "「海防艦」整備計画",
+    "edition": "kcwiki:data:682",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/682.json"
+  },
+  {
+    "questId": 683,
+    "title": "航空戦艦用強化型新主砲の研究",
+    "edition": "kcwiki:data:683",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/683.json"
+  },
+  {
+    "questId": 684,
+    "title": "精鋭「航空戦艦」彗星隊の編成",
+    "edition": "kcwiki:data:684",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/684.json"
+  },
+  {
+    "questId": 685,
+    "title": "駆逐艦主砲兵装の戦時改修",
+    "edition": "kcwiki:data:685",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/685.json"
+  },
+  {
+    "questId": 686,
+    "title": "戦時改修A型高角砲の量産",
+    "edition": "kcwiki:data:686",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/686.json"
+  },
+  {
+    "questId": 687,
+    "title": "駆逐艦主砲兵装の戦時改修【II】",
+    "edition": "kcwiki:data:687",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/687.json"
+  },
+  {
+    "questId": 688,
+    "title": "航空戦力の強化",
+    "edition": "kcwiki:data:688",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/688.json"
+  },
+  {
+    "questId": 689,
+    "title": "戦闘機隊戦力の拡充",
+    "edition": "kcwiki:data:689",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/689.json"
+  },
+  {
+    "questId": 690,
+    "title": "基地航空隊戦力の拡充",
+    "edition": "kcwiki:data:690",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/690.json"
+  },
+  {
+    "questId": 691,
+    "title": "提督室のリフォーム",
+    "edition": "kcwiki:data:691",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/691.json"
+  },
+  {
+    "questId": 692,
+    "title": "水上艦艇装備工廠の整備",
+    "edition": "kcwiki:data:692",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/692.json"
+  },
+  {
+    "questId": 693,
+    "title": "回転翼機の開発",
+    "edition": "kcwiki:data:693",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/693.json"
+  },
+  {
+    "questId": 694,
+    "title": "新型航空艤装の研究",
+    "edition": "kcwiki:data:694",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/694.json"
+  },
+  {
+    "questId": 695,
+    "title": "「彗星」艦爆の新運用研究",
+    "edition": "kcwiki:data:695",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/695.json"
+  },
+  {
+    "questId": 696,
+    "title": "最精鋭「瑞雲」隊の編成",
+    "edition": "kcwiki:data:696",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/696.json"
+  },
+  {
+    "questId": 701,
+    "title": "はじめての「近代化改修」！",
+    "edition": "kcwiki:data:701",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/701.json"
+  },
+  {
+    "questId": 702,
+    "title": "艦の「近代化改修」を実施せよ！",
+    "edition": "kcwiki:data:702",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/702.json"
+  },
+  {
+    "questId": 703,
+    "title": "「近代化改修」を進め、戦備を整えよ！",
+    "edition": "kcwiki:data:703",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/703.json"
+  },
+  {
+    "questId": 704,
+    "title": "「大型艦建造」の準備！(その壱)",
+    "edition": "kcwiki:data:704",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/704.json"
+  },
+  {
+    "questId": 705,
+    "title": "航空艤装の近代化改修",
+    "edition": "kcwiki:data:705",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/705.json"
+  },
+  {
+    "questId": 805,
+    "title": "旗艦「霞」北方海域を哨戒せよ！",
+    "edition": "kcwiki:data:805",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/805.json"
+  },
+  {
+    "questId": 806,
+    "title": "旗艦「霞」出撃！敵艦隊を撃滅せよ！",
+    "edition": "kcwiki:data:806",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/806.json"
+  },
+  {
+    "questId": 807,
+    "title": "「第三十一戦隊」出撃せよ！",
+    "edition": "kcwiki:data:807",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/807.json"
+  },
+  {
+    "questId": 808,
+    "title": "「第二七駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:808",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/808.json"
+  },
+  {
+    "questId": 809,
+    "title": "強襲上陸作戦用戦力を増強せよ！",
+    "edition": "kcwiki:data:809",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/809.json"
+  },
+  {
+    "questId": 810,
+    "title": "製油所地帯を防衛せよ！",
+    "edition": "kcwiki:data:810",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/810.json"
+  },
+  {
+    "questId": 811,
+    "title": "南西諸島防衛線を強化せよ！",
+    "edition": "kcwiki:data:811",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/811.json"
+  },
+  {
+    "questId": 812,
+    "title": "オリョール海の制海権を確保せよ！",
+    "edition": "kcwiki:data:812",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/812.json"
+  },
+  {
+    "questId": 813,
+    "title": "旗艦「大潮」出撃せよ！",
+    "edition": "kcwiki:data:813",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/813.json"
+  },
+  {
+    "questId": 814,
+    "title": "強行高速輸送部隊、出撃せよ！",
+    "edition": "kcwiki:data:814",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/814.json"
+  },
+  {
+    "questId": 815,
+    "title": "「第一航空戦隊」西へ！",
+    "edition": "kcwiki:data:815",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/815.json"
+  },
+  {
+    "questId": 816,
+    "title": "艦隊、三周年！",
+    "edition": "kcwiki:data:816",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/816.json"
+  },
+  {
+    "questId": 817,
+    "title": "新編艦隊、南西諸島防衛線へ急行せよ！",
+    "edition": "kcwiki:data:817",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/817.json"
+  },
+  {
+    "questId": 818,
+    "title": "鎮守府近海航路の安全確保を強化せよ！",
+    "edition": "kcwiki:data:818",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/818.json"
+  },
+  {
+    "questId": 819,
+    "title": "「第三十一戦隊」敵潜を制圧せよ！",
+    "edition": "kcwiki:data:819",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/819.json"
+  },
+  {
+    "questId": 820,
+    "title": "新編「第八駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:820",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/820.json"
+  },
+  {
+    "questId": 821,
+    "title": "精鋭「八駆第一小隊」対潜哨戒！",
+    "edition": "kcwiki:data:821",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/821.json"
+  },
+  {
+    "questId": 822,
+    "title": "沖ノ島海域迎撃戦",
+    "edition": "kcwiki:data:822",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/822.json"
+  },
+  {
+    "questId": 823,
+    "title": "水雷戦隊、南西防衛線に反復出撃せよ！",
+    "edition": "kcwiki:data:823",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/823.json"
+  },
+  {
+    "questId": 824,
+    "title": "製油所地帯沿岸の哨戒を実施せよ！",
+    "edition": "kcwiki:data:824",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/824.json"
+  },
+  {
+    "questId": 825,
+    "title": "水雷戦隊、南西諸島海域を哨戒せよ！",
+    "edition": "kcwiki:data:825",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/825.json"
+  },
+  {
+    "questId": 826,
+    "title": "「第十九駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:826",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/826.json"
+  },
+  {
+    "questId": 827,
+    "title": "「第十九駆逐隊」敵主力に突入せよ！",
+    "edition": "kcwiki:data:827",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/827.json"
+  },
+  {
+    "questId": 828,
+    "title": "飛行場設営の準備を実施せよ！",
+    "edition": "kcwiki:data:828",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/828.json"
+  },
+  {
+    "questId": 829,
+    "title": "夜間突入！敵上陸部隊を叩け！",
+    "edition": "kcwiki:data:829",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/829.json"
+  },
+  {
+    "questId": 830,
+    "title": "夜の海を照らす「灯り」を入手せよ！",
+    "edition": "kcwiki:data:830",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/830.json"
+  },
+  {
+    "questId": 833,
+    "title": "陸戦用装備の艦載運用実戦研究",
+    "edition": "kcwiki:data:833",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/833.json"
+  },
+  {
+    "questId": 834,
+    "title": "南西諸島防衛線を増強せよ！",
+    "edition": "kcwiki:data:834",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/834.json"
+  },
+  {
+    "questId": 835,
+    "title": "「第十六戦隊(第三次)」出撃せよ！",
+    "edition": "kcwiki:data:835",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/835.json"
+  },
+  {
+    "questId": 836,
+    "title": "精鋭「第十六戦隊」突入せよ！",
+    "edition": "kcwiki:data:836",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/836.json"
+  },
+  {
+    "questId": 837,
+    "title": "輸送作戦を成功させ、帰還せよ！",
+    "edition": "kcwiki:data:837",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/837.json"
+  },
+  {
+    "questId": 838,
+    "title": "重巡戦隊、抜錨せよ！",
+    "edition": "kcwiki:data:838",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/838.json"
+  },
+  {
+    "questId": 839,
+    "title": "戦艦戦隊、出撃せよ！",
+    "edition": "kcwiki:data:839",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/839.json"
+  },
+  {
+    "questId": 842,
+    "title": "主力戦艦戦隊、抜錨せよ！",
+    "edition": "kcwiki:data:842",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/842.json"
+  },
+  {
+    "questId": 844,
+    "title": "精鋭「第八駆逐隊」突入せよ！",
+    "edition": "kcwiki:data:844",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/844.json"
+  },
+  {
+    "questId": 845,
+    "title": "発令！「西方海域作戦」",
+    "edition": "kcwiki:data:845",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/845.json"
+  },
+  {
+    "questId": 846,
+    "title": "潜水艦隊、中部海域の哨戒を実施せよ！",
+    "edition": "kcwiki:data:846",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/846.json"
+  },
+  {
+    "questId": 848,
+    "title": "重装甲巡洋艦、鉄底海峡に突入せよ！",
+    "edition": "kcwiki:data:848",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/848.json"
+  },
+  {
+    "questId": 849,
+    "title": "南西諸島方面の敵艦隊を撃破せよ！",
+    "edition": "kcwiki:data:849",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/849.json"
+  },
+  {
+    "questId": 850,
+    "title": "洋上航空戦力を拡充せよ！",
+    "edition": "kcwiki:data:850",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/850.json"
+  },
+  {
+    "questId": 851,
+    "title": "改装航空巡洋艦、出撃！",
+    "edition": "kcwiki:data:851",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/851.json"
+  },
+  {
+    "questId": 852,
+    "title": "改装攻撃型軽空母、前線展開せよ！",
+    "edition": "kcwiki:data:852",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/852.json"
+  },
+  {
+    "questId": 853,
+    "title": "鎮守府海域警戒を厳とせよ！",
+    "edition": "kcwiki:data:853",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/853.json"
+  },
+  {
+    "questId": 854,
+    "title": "戦果拡張任務！「Z作戦」前段作戦",
+    "edition": "kcwiki:data:854",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/854.json"
+  },
+  {
+    "questId": 855,
+    "title": "海上護衛体制の強化に努めよ！",
+    "edition": "kcwiki:data:855",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/855.json"
+  },
+  {
+    "questId": 856,
+    "title": "新編「第一戦隊」、抜錨せよ！",
+    "edition": "kcwiki:data:856",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/856.json"
+  },
+  {
+    "questId": 857,
+    "title": "増強海上護衛総隊、抜錨せよ！",
+    "edition": "kcwiki:data:857",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/857.json"
+  },
+  {
+    "questId": 858,
+    "title": "新編「第七戦隊」、出撃せよ！",
+    "edition": "kcwiki:data:858",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/858.json"
+  },
+  {
+    "questId": 859,
+    "title": "精鋭「第四航空戦隊」、抜錨せよ！",
+    "edition": "kcwiki:data:859",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/859.json"
+  },
+  {
+    "questId": 860,
+    "title": "旗艦「由良」、抜錨！",
+    "edition": "kcwiki:data:860",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/860.json"
+  },
+  {
+    "questId": 861,
+    "title": "強行輸送艦隊、抜錨！",
+    "edition": "kcwiki:data:861",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/861.json"
+  },
+  {
+    "questId": 862,
+    "title": "前線の航空偵察を実施せよ！",
+    "edition": "kcwiki:data:862",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/862.json"
+  },
+  {
+    "questId": 863,
+    "title": "精鋭「第二二駆逐隊」出撃せよ！",
+    "edition": "kcwiki:data:863",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/863.json"
+  },
+  {
+    "questId": 864,
+    "title": "精強大型航空母艦、抜錨！",
+    "edition": "kcwiki:data:864",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/864.json"
+  },
+  {
+    "questId": 865,
+    "title": "夜間作戦空母、前線に出撃せよ！",
+    "edition": "kcwiki:data:865",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/865.json"
+  },
+  {
+    "questId": 869,
+    "title": "補給線の安全を確保せよ！",
+    "edition": "kcwiki:data:869",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/869.json"
+  },
+  {
+    "questId": 870,
+    "title": "「第八駆逐隊」、南西へ！",
+    "edition": "kcwiki:data:870",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/870.json"
+  },
+  {
+    "questId": 871,
+    "title": "最精鋭「第八駆逐隊」、全力出撃！",
+    "edition": "kcwiki:data:871",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/871.json"
+  },
+  {
+    "questId": 872,
+    "title": "戦果拡張任務！「Z作戦」後段作戦",
+    "edition": "kcwiki:data:872",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/872.json"
+  },
+  {
+    "questId": 873,
+    "title": "北方海域警備を実施せよ！",
+    "edition": "kcwiki:data:873",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/873.json"
+  },
+  {
+    "questId": 874,
+    "title": "北方海域戦闘哨戒を実施せよ！",
+    "edition": "kcwiki:data:874",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/874.json"
+  },
+  {
+    "questId": 875,
+    "title": "精鋭「三一駆」、鉄底海域に突入せよ！",
+    "edition": "kcwiki:data:875",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/875.json"
+  },
+  {
+    "questId": 876,
+    "title": "松輸送作戦、開始せよ！",
+    "edition": "kcwiki:data:876",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/876.json"
+  },
+  {
+    "questId": 877,
+    "title": "精鋭「四水戦」、南方海域に展開せよ！",
+    "edition": "kcwiki:data:877",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/877.json"
+  },
+  {
+    "questId": 878,
+    "title": "松輸送作戦、継続実施せよ！",
+    "edition": "kcwiki:data:878",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/878.json"
+  },
+  {
+    "questId": 879,
+    "title": "新編「四航戦」、全力出撃！",
+    "edition": "kcwiki:data:879",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/879.json"
+  },
+  {
+    "questId": 880,
+    "title": "精鋭駆逐隊、獅子奮迅！",
+    "edition": "kcwiki:data:880",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/880.json"
+  },
+  {
+    "questId": 881,
+    "title": "「十八駆」、北方海域キス島へ！",
+    "edition": "kcwiki:data:881",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/881.json"
+  },
+  {
+    "questId": 884,
+    "title": "最精鋭甲型駆逐艦、突入！敵中突破！",
+    "edition": "kcwiki:data:884",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/884.json"
+  },
+  {
+    "questId": 885,
+    "title": "戦闘航空母艦、出撃せよ！",
+    "edition": "kcwiki:data:885",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/885.json"
+  },
+  {
+    "questId": 886,
+    "title": "「伊勢改二」、敵機動部隊を迎撃せよ！",
+    "edition": "kcwiki:data:886",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/886.json"
+  },
+  {
+    "questId": 887,
+    "title": "精鋭「第十八戦隊」、展開せよ！",
+    "edition": "kcwiki:data:887",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/887.json"
+  },
+  {
+    "questId": 888,
+    "title": "新編成「三川艦隊」、鉄底海峡に突入せよ！",
+    "edition": "kcwiki:data:888",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/888.json"
+  },
+  {
+    "questId": 889,
+    "title": "精鋭「二七駆」第一小隊、出撃せよ！",
+    "edition": "kcwiki:data:889",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/889.json"
+  },
+  {
+    "questId": 890,
+    "title": "精鋭「四戦隊」第二小隊、抜錨せよ！",
+    "edition": "kcwiki:data:890",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/890.json"
+  },
+  {
+    "questId": 891,
+    "title": "精強「十七駆」、北へ、南へ！",
+    "edition": "kcwiki:data:891",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/891.json"
+  },
+  {
+    "questId": 892,
+    "title": "主力オブ主力、抜錨開始！",
+    "edition": "kcwiki:data:892",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/892.json"
+  },
+  {
+    "questId": 893,
+    "title": "泊地周辺海域の安全確保を徹底せよ！",
+    "edition": "kcwiki:data:893",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/893.json"
+  },
+  {
+    "questId": 894,
+    "title": "空母戦力の投入による兵站線戦闘哨戒",
+    "edition": "kcwiki:data:894",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/894.json"
+  },
+  {
+    "questId": 895,
+    "title": "冬季北方海域作戦",
+    "edition": "kcwiki:data:895",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/895.json"
+  },
+  {
+    "questId": 896,
+    "title": "航空戦艦戦隊、戦闘哨戒！",
+    "edition": "kcwiki:data:896",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/896.json"
+  },
+  {
+    "questId": 897,
+    "title": "最精鋭「第四航空戦隊」、出撃せよ！",
+    "edition": "kcwiki:data:897",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/897.json"
+  },
+  {
+    "questId": 901,
+    "title": "「夕張改二」試してみてもいいかしら？",
+    "edition": "kcwiki:data:901",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/901.json"
+  },
+  {
+    "questId": 902,
+    "title": "新編「六水戦」出撃！後で感想、聞かせてね！",
+    "edition": "kcwiki:data:902",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/902.json"
+  },
+  {
+    "questId": 903,
+    "title": "拡張「六水戦」、最前線へ！",
+    "edition": "kcwiki:data:903",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/903.json"
+  },
+  {
+    "questId": 904,
+    "title": "精鋭「十九駆」、躍り出る！",
+    "edition": "kcwiki:data:904",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/904.json"
+  },
+  {
+    "questId": 905,
+    "title": "「海防艦」、海を護る！",
+    "edition": "kcwiki:data:905",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/905.json"
+  },
+  {
+    "questId": 911,
+    "title": "再編「第三一駆逐隊」、抜錨せよ！",
+    "edition": "kcwiki:data:911",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/911.json"
+  },
+  {
+    "questId": 914,
+    "title": "重巡戦隊、西へ！",
+    "edition": "kcwiki:data:914",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/914.json"
+  },
+  {
+    "questId": 916,
+    "title": "「比叡改二丙」見参！第三戦隊、南方突入！",
+    "edition": "kcwiki:data:916",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/data/916.json"
+  },
+  {
+    "questId": 1101,
+    "title": "海軍工廠の再整備",
+    "edition": "kcwiki:draft:1101",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1101.json"
+  },
+  {
+    "questId": 1102,
+    "title": "工廠による装備兵装の強化準備",
+    "edition": "kcwiki:draft:1102",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1102.json"
+  },
+  {
+    "questId": 1103,
+    "title": "潜水艦強化兵装の量産",
+    "edition": "kcwiki:draft:1103",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1103.json"
+  },
+  {
+    "questId": 1104,
+    "title": "潜水艦電子兵装の量産",
+    "edition": "kcwiki:draft:1104",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1104.json"
+  },
+  {
+    "questId": 1105,
+    "title": "夏の格納庫整備＆航空基地整備",
+    "edition": "kcwiki:draft:1105",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1105.json"
+  },
+  {
+    "questId": 1106,
+    "title": "精鋭三座水上偵察機隊の前線投入",
+    "edition": "kcwiki:draft:1106",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1106.json"
+  },
+  {
+    "questId": 1107,
+    "title": "【鋼材輸出】基地航空兵力を増備せよ！",
+    "edition": "kcwiki:draft:1107",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1107.json"
+  },
+  {
+    "questId": 1108,
+    "title": "調整改良型「水中探信儀」の増産",
+    "edition": "kcwiki:draft:1108",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1108.json"
+  },
+  {
+    "questId": 1109,
+    "title": "上陸作戦支援用装備の配備",
+    "edition": "kcwiki:draft:1109",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1109.json"
+  },
+  {
+    "questId": 1111,
+    "title": "精鋭「一式陸攻」隊の編成",
+    "edition": "kcwiki:draft:1111",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1111.json"
+  },
+  {
+    "questId": 1112,
+    "title": "鎮守府「大掃除」祭り！",
+    "edition": "kcwiki:draft:1112",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1112.json"
+  },
+  {
+    "questId": 1113,
+    "title": "「無線誘導弾」装備新型襲撃機の実戦配備",
+    "edition": "kcwiki:draft:1113",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1113.json"
+  },
+  {
+    "questId": 1114,
+    "title": "【工廠任務】新装備開発計画I",
+    "edition": "kcwiki:draft:1114",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1114.json"
+  },
+  {
+    "questId": 1115,
+    "title": "【工廠任務】新装備開発計画II",
+    "edition": "kcwiki:draft:1115",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1115.json"
+  },
+  {
+    "questId": 1116,
+    "title": "【工廠任務】新装備開発計画III",
+    "edition": "kcwiki:draft:1116",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1116.json"
+  },
+  {
+    "questId": 1117,
+    "title": "【工廠任務】新夜偵の実戦配備",
+    "edition": "kcwiki:draft:1117",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1117.json"
+  },
+  {
+    "questId": 1118,
+    "title": "【工廠任務】Hedgehogの配備",
+    "edition": "kcwiki:draft:1118",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1118.json"
+  },
+  {
+    "questId": 1120,
+    "title": "【機種整理統合】新型戦闘機の量産計画",
+    "edition": "kcwiki:draft:1120",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1120.json"
+  },
+  {
+    "questId": 1121,
+    "title": "【年末年始】鎮守府大掃除！良いお年を！",
+    "edition": "kcwiki:draft:1121",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1121.json"
+  },
+  {
+    "questId": 1122,
+    "title": "【年末年始】試製 鎮守府年末改修ジャンボ",
+    "edition": "kcwiki:draft:1122",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1122.json"
+  },
+  {
+    "questId": 1123,
+    "title": "改良三座水上偵察機の増備",
+    "edition": "kcwiki:draft:1123",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1123.json"
+  },
+  {
+    "questId": 1124,
+    "title": "【早春限定任務】夜間航空作戦能力の増強",
+    "edition": "kcwiki:draft:1124",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1124.json"
+  },
+  {
+    "questId": 1125,
+    "title": "【早春限定任務】試製「夜間瑞雲」の開発",
+    "edition": "kcwiki:draft:1125",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1125.json"
+  },
+  {
+    "questId": 1126,
+    "title": "【艦隊10周年記念任務:拡張任務】特別工廠",
+    "edition": "kcwiki:draft:1126",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1126.json"
+  },
+  {
+    "questId": 1127,
+    "title": "艦載用「煙幕発生装置」の改良",
+    "edition": "kcwiki:draft:1127",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1127.json"
+  },
+  {
+    "questId": 1128,
+    "title": "水上打撃戦用改良35.6cm砲の開発",
+    "edition": "kcwiki:draft:1128",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1128.json"
+  },
+  {
+    "questId": 1129,
+    "title": "潜水艦魚雷攻撃の精度向上",
+    "edition": "kcwiki:draft:1129",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1129.json"
+  },
+  {
+    "questId": 1130,
+    "title": "大規模改装の工廠準備",
+    "edition": "kcwiki:draft:1130",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1130.json"
+  },
+  {
+    "questId": 1131,
+    "title": "砲熕兵装の整備",
+    "edition": "kcwiki:draft:1131",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/1131.json"
+  },
+  {
+    "questId": 197,
+    "title": "主力オブ主力、精強「十駆」出撃準備ヨシ！",
+    "edition": "kcwiki:draft:197",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/197.json"
+  },
+  {
+    "questId": 234,
+    "title": "バレンタイン2023限定任務【一号作戦】",
+    "edition": "kcwiki:draft:234",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/234.json"
+  },
+  {
+    "questId": 235,
+    "title": "近海哨戒を実施せよ！",
+    "edition": "kcwiki:draft:235",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/235.json"
+  },
+  {
+    "questId": 238,
+    "title": "バレンタイン2023限定任務【二号作戦】",
+    "edition": "kcwiki:draft:238",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/238.json"
+  },
+  {
+    "questId": 283,
+    "title": "精強！「第一航空戦隊」出撃せよ！",
+    "edition": "kcwiki:draft:283",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/283.json"
+  },
+  {
+    "questId": 342,
+    "title": "小艦艇群演習強化任務",
+    "edition": "kcwiki:draft:342",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/342.json"
+  },
+  {
+    "questId": 343,
+    "title": "航空母艦演習",
+    "edition": "kcwiki:draft:343",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/343.json"
+  },
+  {
+    "questId": 344,
+    "title": "「第十方面艦隊」演習！",
+    "edition": "kcwiki:draft:344",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/344.json"
+  },
+  {
+    "questId": 345,
+    "title": "演習ティータイム！",
+    "edition": "kcwiki:draft:345",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/345.json"
+  },
+  {
+    "questId": 346,
+    "title": "最精鋭！主力オブ主力、演習開始！",
+    "edition": "kcwiki:draft:346",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/346.json"
+  },
+  {
+    "questId": 347,
+    "title": "奇跡の駆逐艦",
+    "edition": "kcwiki:draft:347",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/347.json"
+  },
+  {
+    "questId": 348,
+    "title": "「精鋭軽巡」演習！",
+    "edition": "kcwiki:draft:348",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/348.json"
+  },
+  {
+    "questId": 349,
+    "title": "バレンタイン2023限定任務【特別演習】",
+    "edition": "kcwiki:draft:349",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/349.json"
+  },
+  {
+    "questId": 350,
+    "title": "精鋭「第七駆逐隊」演習開始！",
+    "edition": "kcwiki:draft:350",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/350.json"
+  },
+  {
+    "questId": 351,
+    "title": "改装航空巡洋艦「最上」、進発せよ！",
+    "edition": "kcwiki:draft:351",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/351.json"
+  },
+  {
+    "questId": 352,
+    "title": "改装「矢矧」、精鋭水雷戦隊旗艦演習！",
+    "edition": "kcwiki:draft:352",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/352.json"
+  },
+  {
+    "questId": 353,
+    "title": "「巡洋艦戦隊」演習！",
+    "edition": "kcwiki:draft:353",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/353.json"
+  },
+  {
+    "questId": 354,
+    "title": "「改装特務空母」任務部隊演習！",
+    "edition": "kcwiki:draft:354",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/354.json"
+  },
+  {
+    "questId": 355,
+    "title": "精鋭「第十五駆逐隊」第一小隊演習！",
+    "edition": "kcwiki:draft:355",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/355.json"
+  },
+  {
+    "questId": 356,
+    "title": "精鋭「第十九駆逐隊」演習！",
+    "edition": "kcwiki:draft:356",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/356.json"
+  },
+  {
+    "questId": 357,
+    "title": "「大和型戦艦」第一戦隊演習、始め！",
+    "edition": "kcwiki:draft:357",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/357.json"
+  },
+  {
+    "questId": 358,
+    "title": "「Taffy Ⅲ」 This is a drill!",
+    "edition": "kcwiki:draft:358",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/358.json"
+  },
+  {
+    "questId": 359,
+    "title": "Halloween 特別演習！",
+    "edition": "kcwiki:draft:359",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/359.json"
+  },
+  {
+    "questId": 360,
+    "title": "第一線航空母艦「鳳翔改二」、演習開始！",
+    "edition": "kcwiki:draft:360",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/360.json"
+  },
+  {
+    "questId": 361,
+    "title": "【年末年始】第一護衛艦隊 特別演習！",
+    "edition": "kcwiki:draft:361",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/361.json"
+  },
+  {
+    "questId": 362,
+    "title": "特型初代「第十一駆逐隊」演習スペシャル！",
+    "edition": "kcwiki:draft:362",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/362.json"
+  },
+  {
+    "questId": 363,
+    "title": "【艦隊10周年記念任務】睦月型、演習！",
+    "edition": "kcwiki:draft:363",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/363.json"
+  },
+  {
+    "questId": 364,
+    "title": "精鋭第三戦隊、演習開始！",
+    "edition": "kcwiki:draft:364",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/364.json"
+  },
+  {
+    "questId": 365,
+    "title": "「佐世保の時雨」練度向上を図れ！",
+    "edition": "kcwiki:draft:365",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/365.json"
+  },
+  {
+    "questId": 366,
+    "title": "最精鋭！改装「時雨」演習開始！",
+    "edition": "kcwiki:draft:366",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/366.json"
+  },
+  {
+    "questId": 367,
+    "title": "【梅雨限定任務】水雷戦隊、雨中演習！",
+    "edition": "kcwiki:draft:367",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/367.json"
+  },
+  {
+    "questId": 368,
+    "title": "「十六駆」演習！",
+    "edition": "kcwiki:draft:368",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/368.json"
+  },
+  {
+    "questId": 436,
+    "title": "練習航海及び警備任務を実施せよ！",
+    "edition": "kcwiki:draft:436",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/436.json"
+  },
+  {
+    "questId": 437,
+    "title": "小笠原沖哨戒線の強化を実施せよ！",
+    "edition": "kcwiki:draft:437",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/437.json"
+  },
+  {
+    "questId": 438,
+    "title": "南西諸島方面の海上護衛を強化せよ！",
+    "edition": "kcwiki:draft:438",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/438.json"
+  },
+  {
+    "questId": 439,
+    "title": "兵站強化遠征任務【基本作戦】",
+    "edition": "kcwiki:draft:439",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/439.json"
+  },
+  {
+    "questId": 440,
+    "title": "兵站強化遠征任務【拡張作戦】",
+    "edition": "kcwiki:draft:440",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/440.json"
+  },
+  {
+    "questId": 442,
+    "title": "西方連絡作戦準備を実施せよ！",
+    "edition": "kcwiki:draft:442",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/442.json"
+  },
+  {
+    "questId": 443,
+    "title": "西方連絡作戦による航空技術獲得",
+    "edition": "kcwiki:draft:443",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/443.json"
+  },
+  {
+    "questId": 444,
+    "title": "新兵装開発資材輸送を船団護衛せよ！",
+    "edition": "kcwiki:draft:444",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/444.json"
+  },
+  {
+    "questId": 445,
+    "title": "航空基地を整備拡張せよ！",
+    "edition": "kcwiki:draft:445",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/445.json"
+  },
+  {
+    "questId": 446,
+    "title": "【作戦準備】第一段階任務(対潜整備)",
+    "edition": "kcwiki:draft:446",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/446.json"
+  },
+  {
+    "questId": 447,
+    "title": "海上輸送航路の護衛強化",
+    "edition": "kcwiki:draft:447",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/447.json"
+  },
+  {
+    "questId": 448,
+    "title": "【艦隊10周年記念任務】10周年兵站遠征",
+    "edition": "kcwiki:draft:448",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/448.json"
+  },
+  {
+    "questId": 654,
+    "title": "精鋭複葉機飛行隊の編成",
+    "edition": "kcwiki:draft:654",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/654.json"
+  },
+  {
+    "questId": 655,
+    "title": "工廠フル稼働！新兵装を開発せよ！",
+    "edition": "kcwiki:draft:655",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/655.json"
+  },
+  {
+    "questId": 657,
+    "title": "新型兵装開発整備の強化",
+    "edition": "kcwiki:draft:657",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/657.json"
+  },
+  {
+    "questId": 661,
+    "title": "新型砲熕兵装、戦力化開始！",
+    "edition": "kcwiki:draft:661",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/661.json"
+  },
+  {
+    "questId": 681,
+    "title": "航空戦力の再編増強準備",
+    "edition": "kcwiki:draft:681",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/681.json"
+  },
+  {
+    "questId": 698,
+    "title": "新鋭対潜哨戒航空戦力の導入",
+    "edition": "kcwiki:draft:698",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/698.json"
+  },
+  {
+    "questId": 710,
+    "title": "【桃の節句】菱餅改修：2021序",
+    "edition": "kcwiki:draft:710",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/710.json"
+  },
+  {
+    "questId": 711,
+    "title": "【桃の節句】菱餅改修：2021破",
+    "edition": "kcwiki:draft:711",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/711.json"
+  },
+  {
+    "questId": 712,
+    "title": "【桃の節句】菱餅改修：2021週",
+    "edition": "kcwiki:draft:712",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/712.json"
+  },
+  {
+    "questId": 713,
+    "title": "【桃の節句】菱餅改修：2021空",
+    "edition": "kcwiki:draft:713",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/713.json"
+  },
+  {
+    "questId": 714,
+    "title": "「駆逐艦」の改修工事を実施せよ！",
+    "edition": "kcwiki:draft:714",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/714.json"
+  },
+  {
+    "questId": 715,
+    "title": "続：「駆逐艦」の改修工事を実施せよ！",
+    "edition": "kcwiki:draft:715",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/715.json"
+  },
+  {
+    "questId": 716,
+    "title": "「軽巡」級の改修工事を実施せよ！",
+    "edition": "kcwiki:draft:716",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/716.json"
+  },
+  {
+    "questId": 717,
+    "title": "続：「軽巡」級の改修工事を実施せよ！",
+    "edition": "kcwiki:draft:717",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/717.json"
+  },
+  {
+    "questId": 718,
+    "title": "「最上型」改修工事を実施せよ！",
+    "edition": "kcwiki:draft:718",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/718.json"
+  },
+  {
+    "questId": 719,
+    "title": "続：「最上型」改修工事を実施せよ！",
+    "edition": "kcwiki:draft:719",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/719.json"
+  },
+  {
+    "questId": 801,
+    "title": "迎春！令和五年、艦隊抜錨！",
+    "edition": "kcwiki:draft:801",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/801.json"
+  },
+  {
+    "questId": 802,
+    "title": "2023年「南西諸島」哨戒防衛作戦、発動！",
+    "edition": "kcwiki:draft:802",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/802.json"
+  },
+  {
+    "questId": 803,
+    "title": "令和五年謹賀新年、新春特務部隊、北へ！",
+    "edition": "kcwiki:draft:803",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/803.json"
+  },
+  {
+    "questId": 804,
+    "title": "新春任務群【拡張作戦】機動部隊、縦横無尽！",
+    "edition": "kcwiki:draft:804",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/804.json"
+  },
+  {
+    "questId": 831,
+    "title": "春の海上警備行動！艦隊、抜錨せよ！",
+    "edition": "kcwiki:draft:831",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/831.json"
+  },
+  {
+    "questId": 832,
+    "title": "春！「三一駆」旗艦「長波」、出撃せよ！",
+    "edition": "kcwiki:draft:832",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/832.json"
+  },
+  {
+    "questId": 847,
+    "title": "球磨型軽巡一番艦、出撃だクマ！",
+    "edition": "kcwiki:draft:847",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/847.json"
+  },
+  {
+    "questId": 898,
+    "title": "北の海から愛をこめて",
+    "edition": "kcwiki:draft:898",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/898.json"
+  },
+  {
+    "questId": 906,
+    "title": "【桃の節句】鎮守府近海の安全確保作戦2022",
+    "edition": "kcwiki:draft:906",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/906.json"
+  },
+  {
+    "questId": 907,
+    "title": "【桃の節句】南西諸島海域、戦闘哨戒2022",
+    "edition": "kcwiki:draft:907",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/907.json"
+  },
+  {
+    "questId": 908,
+    "title": "【桃の節句】決戦！敵機動部隊を叩け！2022",
+    "edition": "kcwiki:draft:908",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/908.json"
+  },
+  {
+    "questId": 909,
+    "title": "【桃の節句：拡張作戦】春の攻勢作戦！",
+    "edition": "kcwiki:draft:909",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/909.json"
+  },
+  {
+    "questId": 912,
+    "title": "工作艦「明石」護衛任務",
+    "edition": "kcwiki:draft:912",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/912.json"
+  },
+  {
+    "questId": 913,
+    "title": "「第五航空戦隊」、縦横無尽！",
+    "edition": "kcwiki:draft:913",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/913.json"
+  },
+  {
+    "questId": 915,
+    "title": "【期間限定任務】飛べ！世界の下駄履き機！",
+    "edition": "kcwiki:draft:915",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/915.json"
+  },
+  {
+    "questId": 917,
+    "title": "改装航空軽巡「Gotland andra」、出撃！",
+    "edition": "kcwiki:draft:917",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/917.json"
+  },
+  {
+    "questId": 918,
+    "title": "「Gotland」戦隊、進撃せよ！",
+    "edition": "kcwiki:draft:918",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/918.json"
+  },
+  {
+    "questId": 919,
+    "title": "南西諸島海域合同哨戒",
+    "edition": "kcwiki:draft:919",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/919.json"
+  },
+  {
+    "questId": 920,
+    "title": "合同艦隊旗艦、改装「Fletcher」、抜錨！",
+    "edition": "kcwiki:draft:920",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/920.json"
+  },
+  {
+    "questId": 921,
+    "title": "改装護衛駆逐艦「Fletcher Mk.II」作戦開始！",
+    "edition": "kcwiki:draft:921",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/921.json"
+  },
+  {
+    "questId": 922,
+    "title": "合同艦隊作戦任務【拡張作戦】",
+    "edition": "kcwiki:draft:922",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/922.json"
+  },
+  {
+    "questId": 923,
+    "title": "合同艦隊機動部隊、出撃せよ！",
+    "edition": "kcwiki:draft:923",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/923.json"
+  },
+  {
+    "questId": 924,
+    "title": "【航空母艦特別任務】航空戦隊、精鋭無比！",
+    "edition": "kcwiki:draft:924",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/924.json"
+  },
+  {
+    "questId": 925,
+    "title": "改加賀型航空母艦「加賀改二」、抜錨！",
+    "edition": "kcwiki:draft:925",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/925.json"
+  },
+  {
+    "questId": 926,
+    "title": "最精鋭「第一航空戦隊」、出撃！鎧袖一触！",
+    "edition": "kcwiki:draft:926",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/926.json"
+  },
+  {
+    "questId": 927,
+    "title": "重巡「羽黒」、出撃！ペナン沖海戦",
+    "edition": "kcwiki:draft:927",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/927.json"
+  },
+  {
+    "questId": 928,
+    "title": "歴戦「第十方面艦隊」、全力出撃！",
+    "edition": "kcwiki:draft:928",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/928.json"
+  },
+  {
+    "questId": 929,
+    "title": "静かな海を護る「鯨」、動き出す！",
+    "edition": "kcwiki:draft:929",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/929.json"
+  },
+  {
+    "questId": 930,
+    "title": "主力オブ主力、縦横無尽ッ！",
+    "edition": "kcwiki:draft:930",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/930.json"
+  },
+  {
+    "questId": 931,
+    "title": "精鋭「二七駆」、回避運動は気をつけて！",
+    "edition": "kcwiki:draft:931",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/931.json"
+  },
+  {
+    "questId": 932,
+    "title": "【春限定】春の天津風！",
+    "edition": "kcwiki:draft:932",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/932.json"
+  },
+  {
+    "questId": 933,
+    "title": "【艦隊司令部強化】艦隊旗艦、出撃せよ！",
+    "edition": "kcwiki:draft:933",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/933.json"
+  },
+  {
+    "questId": 934,
+    "title": "奇跡の駆逐艦「雪風」、再び出撃す！",
+    "edition": "kcwiki:draft:934",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/934.json"
+  },
+  {
+    "questId": 935,
+    "title": "最精強！「呉の雪風」「佐世保の時雨」",
+    "edition": "kcwiki:draft:935",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/935.json"
+  },
+  {
+    "questId": 936,
+    "title": "改装最新鋭軽巡「能代改二」、出撃せよ！",
+    "edition": "kcwiki:draft:936",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/936.json"
+  },
+  {
+    "questId": 937,
+    "title": "精鋭「第七駆逐隊」、出撃せよ！",
+    "edition": "kcwiki:draft:937",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/937.json"
+  },
+  {
+    "questId": 938,
+    "title": "改装航空巡洋艦「最上」、抜錨せよ！",
+    "edition": "kcwiki:draft:938",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/938.json"
+  },
+  {
+    "questId": 939,
+    "title": "西村艦隊、精鋭先行掃討隊、前進せよ！",
+    "edition": "kcwiki:draft:939",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/939.json"
+  },
+  {
+    "questId": 940,
+    "title": "二水戦旗艦、この「矢矧」が預かります！",
+    "edition": "kcwiki:draft:940",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/940.json"
+  },
+  {
+    "questId": 941,
+    "title": "【春限定】春の近海哨戒お散歩！",
+    "edition": "kcwiki:draft:941",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/941.json"
+  },
+  {
+    "questId": 942,
+    "title": "【八周年限定】カタリナフェスティバル！",
+    "edition": "kcwiki:draft:942",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/942.json"
+  },
+  {
+    "questId": 943,
+    "title": "新しき翼。改装航空母艦「龍鳳」、出撃せよ！",
+    "edition": "kcwiki:draft:943",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/943.json"
+  },
+  {
+    "questId": 944,
+    "title": "鎮守府近海海域の哨戒を実施せよ！",
+    "edition": "kcwiki:draft:944",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/944.json"
+  },
+  {
+    "questId": 945,
+    "title": "南西方面の兵站航路の安全を図れ！",
+    "edition": "kcwiki:draft:945",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/945.json"
+  },
+  {
+    "questId": 946,
+    "title": "空母機動部隊、出撃！敵艦隊を迎撃せよ！",
+    "edition": "kcwiki:draft:946",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/946.json"
+  },
+  {
+    "questId": 947,
+    "title": "AL作戦",
+    "edition": "kcwiki:draft:947",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/947.json"
+  },
+  {
+    "questId": 948,
+    "title": "機動部隊決戦",
+    "edition": "kcwiki:draft:948",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/948.json"
+  },
+  {
+    "questId": 949,
+    "title": "改装特務空母「Gambier Bay Mk.II」抜錨！",
+    "edition": "kcwiki:draft:949",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/949.json"
+  },
+  {
+    "questId": 952,
+    "title": "【作戦準備】第二段階任務(対地/対空整備)",
+    "edition": "kcwiki:draft:952",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/952.json"
+  },
+  {
+    "questId": 953,
+    "title": "【梅雨限定任務】梅雨の海上輸送航路を護れ！",
+    "edition": "kcwiki:draft:953",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/953.json"
+  },
+  {
+    "questId": 954,
+    "title": "【梅雨拡張任務】雨の重巡作戦！",
+    "edition": "kcwiki:draft:954",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/954.json"
+  },
+  {
+    "questId": 955,
+    "title": "【梅雨限定月間任務】南方ソロモン方面漸減作戦",
+    "edition": "kcwiki:draft:955",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/955.json"
+  },
+  {
+    "questId": 956,
+    "title": "【地中海拡張作戦】北アフリカ作戦　(※難易度変更時は本作戦中止)",
+    "edition": "kcwiki:draft:956",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/956.json"
+  },
+  {
+    "questId": 957,
+    "title": "「山風改二」、抜錨せよ！",
+    "edition": "kcwiki:draft:957",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/957.json"
+  },
+  {
+    "questId": 958,
+    "title": "改白露型駆逐艦「山風改二」、奮戦す！",
+    "edition": "kcwiki:draft:958",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/958.json"
+  },
+  {
+    "questId": 959,
+    "title": "「鎮守府秋刀魚祭り」発動準備！",
+    "edition": "kcwiki:draft:959",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/959.json"
+  },
+  {
+    "questId": 960,
+    "title": "続：「鎮守府秋刀魚祭り」発動準備！",
+    "edition": "kcwiki:draft:960",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/960.json"
+  },
+  {
+    "questId": 961,
+    "title": "奮戦！精鋭「第十五駆逐隊」第一小隊",
+    "edition": "kcwiki:draft:961",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/961.json"
+  },
+  {
+    "questId": 966,
+    "title": "南西海域「基地航空隊」開設！",
+    "edition": "kcwiki:draft:966",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/966.json"
+  },
+  {
+    "questId": 967,
+    "title": "海上護衛！ヒ船団を護り抜け！",
+    "edition": "kcwiki:draft:967",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/967.json"
+  },
+  {
+    "questId": 968,
+    "title": "航空母艦「雲鷹」、抜錨せよ！",
+    "edition": "kcwiki:draft:968",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/968.json"
+  },
+  {
+    "questId": 969,
+    "title": "改特型駆逐艦「天霧改二」、出撃す！",
+    "edition": "kcwiki:draft:969",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/969.json"
+  },
+  {
+    "questId": 970,
+    "title": "第十六戦隊、改装「浦波改二」出撃します！",
+    "edition": "kcwiki:draft:970",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/970.json"
+  },
+  {
+    "questId": 971,
+    "title": "【限定任務】艦隊九周年、抜錨せよ！",
+    "edition": "kcwiki:draft:971",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/971.json"
+  },
+  {
+    "questId": 973,
+    "title": "日英米合同水上艦隊、抜錨せよ！",
+    "edition": "kcwiki:draft:973",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/973.json"
+  },
+  {
+    "questId": 974,
+    "title": "「磯波改二」、抜錨せよ！",
+    "edition": "kcwiki:draft:974",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/974.json"
+  },
+  {
+    "questId": 975,
+    "title": "精鋭「第十九駆逐隊」、全力出撃！",
+    "edition": "kcwiki:draft:975",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/975.json"
+  },
+  {
+    "questId": 976,
+    "title": "改大和型戦艦「大和改二」、出撃せよ！",
+    "edition": "kcwiki:draft:976",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/976.json"
+  },
+  {
+    "questId": 977,
+    "title": "見敵必殺！最精鋭大和型「第一戦隊」抜錨！",
+    "edition": "kcwiki:draft:977",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/977.json"
+  },
+  {
+    "questId": 978,
+    "title": "【拡張作戦】重改装「大和改二重」、出撃！",
+    "edition": "kcwiki:draft:978",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/978.json"
+  },
+  {
+    "questId": 979,
+    "title": "【期間限定任務】資源回復海上護衛",
+    "edition": "kcwiki:draft:979",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/979.json"
+  },
+  {
+    "questId": 980,
+    "title": "抜錨！精強「第十五駆逐隊」",
+    "edition": "kcwiki:draft:980",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/980.json"
+  },
+  {
+    "questId": 981,
+    "title": "米駆逐艦部隊の奮戦",
+    "edition": "kcwiki:draft:981",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/981.json"
+  },
+  {
+    "questId": 982,
+    "title": "Samuel B.Roberts Mk.II、抜錨せよ！",
+    "edition": "kcwiki:draft:982",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/982.json"
+  },
+  {
+    "questId": 983,
+    "title": "不屈敢闘「Taffy Ⅲ」、Weigh anchor!",
+    "edition": "kcwiki:draft:983",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/983.json"
+  },
+  {
+    "questId": 989,
+    "title": "機動部隊旗艦「鳳翔改二」、前線に出撃せよ！",
+    "edition": "kcwiki:draft:989",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/989.json"
+  },
+  {
+    "questId": 990,
+    "title": "【年末年始】機動部隊、南西諸島を哨戒せよ！",
+    "edition": "kcwiki:draft:990",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/990.json"
+  },
+  {
+    "questId": 991,
+    "title": "【早春限定任務】海上遊撃戦、展開せよ",
+    "edition": "kcwiki:draft:991",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/991.json"
+  },
+  {
+    "questId": 992,
+    "title": "「十六駆」出撃！鎮守府海域の安全を確保せよ！",
+    "edition": "kcwiki:draft:992",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/992.json"
+  },
+  {
+    "questId": 993,
+    "title": "改装駆逐艦「天津風改二」、抜錨せよ！",
+    "edition": "kcwiki:draft:993",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/993.json"
+  },
+  {
+    "questId": 994,
+    "title": "主力オブ主力、抜錨！敵艦隊を撃滅せよ！",
+    "edition": "kcwiki:draft:994",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/994.json"
+  },
+  {
+    "questId": 995,
+    "title": "改装特I型駆逐艦「深雪改二」、出撃せよ！",
+    "edition": "kcwiki:draft:995",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/995.json"
+  },
+  {
+    "questId": 996,
+    "title": "改金剛型高速戦艦「榛名改二乙/丙」、抜錨！",
+    "edition": "kcwiki:draft:996",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/996.json"
+  },
+  {
+    "questId": 997,
+    "title": "【海上護衛作戦】海上補給線を確保せよ！",
+    "edition": "kcwiki:draft:997",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/997.json"
+  },
+  {
+    "questId": 998,
+    "title": "改装白露型精鋭駆逐艦「時雨改三」出撃す！",
+    "edition": "kcwiki:draft:998",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/draft/998.json"
+  },
+  {
+    "questId": 1110,
+    "title": "秋刀魚祭り限定任務：精鋭Swordfish配備！",
+    "edition": "kcwiki:outdated:1110_2021",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/1110_2021.json"
+  },
+  {
+    "questId": 1110,
+    "title": "秋刀魚祭り限定任務：特別な「瑞雲」配備！",
+    "edition": "kcwiki:outdated:1110_2022",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/1110_2022.json"
+  },
+  {
+    "questId": 1119,
+    "title": "【期間限定任務】Halloweenはお掃除も！",
+    "edition": "kcwiki:outdated:1119",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/1119.json"
+  },
+  {
+    "questId": 234,
+    "title": "バレンタイン限定任務【1号作戦】",
+    "edition": "kcwiki:outdated:234_2019",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/234_2019.json"
+  },
+  {
+    "questId": 238,
+    "title": "バレンタイン限定任務 【２号作戦】",
+    "edition": "kcwiki:outdated:238_2019",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/238_2019.json"
+  },
+  {
+    "questId": 313,
+    "title": "秋季大演習",
+    "edition": "kcwiki:outdated:313_2016",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/313_2016.json"
+  },
+  {
+    "questId": 313,
+    "title": "秋季大演習",
+    "edition": "kcwiki:outdated:313_2018",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/313_2018.json"
+  },
+  {
+    "questId": 314,
+    "title": "冬季大演習",
+    "edition": "kcwiki:outdated:314_2016",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/314_2016.json"
+  },
+  {
+    "questId": 314,
+    "title": "冬季大演習",
+    "edition": "kcwiki:outdated:314_2017",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/314_2017.json"
+  },
+  {
+    "questId": 314,
+    "title": "冬季大演習",
+    "edition": "kcwiki:outdated:314_2018",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/314_2018.json"
+  },
+  {
+    "questId": 315,
+    "title": "春季大演習",
+    "edition": "kcwiki:outdated:315_2017",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/315_2017.json"
+  },
+  {
+    "questId": 315,
+    "title": "春季大演習",
+    "edition": "kcwiki:outdated:315_2018",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/315_2018.json"
+  },
+  {
+    "questId": 326,
+    "title": "夏季大演習",
+    "edition": "kcwiki:outdated:326_2019",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/326_2019.json"
+  },
+  {
+    "questId": 657,
+    "title": "春の準備任務：桃の節句準備！",
+    "edition": "kcwiki:outdated:657_春の準備任務2017",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/657_春の準備任務2017.json"
+  },
+  {
+    "questId": 801,
+    "title": "謹賀新年！「水雷戦隊」出撃始め！",
+    "edition": "kcwiki:outdated:801NY2018",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/801NY2018.json"
+  },
+  {
+    "questId": 801,
+    "title": "謹賀新年！亥年「水雷戦隊」出撃始め！",
+    "edition": "kcwiki:outdated:801NY2019",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/801NY2019.json"
+  },
+  {
+    "questId": 801,
+    "title": "新春！令和四年「精鋭水雷戦隊」出撃始め！",
+    "edition": "kcwiki:outdated:801_2022",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/801_2022.json"
+  },
+  {
+    "questId": 802,
+    "title": "新春「伊良湖」のお手伝い！",
+    "edition": "kcwiki:outdated:802NY2018",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/802NY2018.json"
+  },
+  {
+    "questId": 802,
+    "title": "謹賀瑞雲!「日向」と「伊勢」のお手伝い!",
+    "edition": "kcwiki:outdated:802NY2019",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/802NY2019.json"
+  },
+  {
+    "questId": 802,
+    "title": "2022年令和四年！「沖ノ島」防衛作戦、発動！",
+    "edition": "kcwiki:outdated:802_2022",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/802_2022.json"
+  },
+  {
+    "questId": 803,
+    "title": "護衛始め！「海上護衛隊」なお正月！",
+    "edition": "kcwiki:outdated:803NY2018",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/803NY2018.json"
+  },
+  {
+    "questId": 803,
+    "title": "亥年護衛始め！「海上護衛隊」なお正月！",
+    "edition": "kcwiki:outdated:803NY2019",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/803NY2019.json"
+  },
+  {
+    "questId": 803,
+    "title": "謹賀新年！特務編成機動部隊、西へ！",
+    "edition": "kcwiki:outdated:803_2022",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/803_2022.json"
+  },
+  {
+    "questId": 804,
+    "title": "迎春！「空母機動部隊」全力出撃！",
+    "edition": "kcwiki:outdated:804NY2018",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/804NY2018.json"
+  },
+  {
+    "questId": 804,
+    "title": "迎春！亥年「空母機動部隊」新春の西へ！",
+    "edition": "kcwiki:outdated:804NY2019",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/804NY2019.json"
+  },
+  {
+    "questId": 804,
+    "title": "新春任務群【拡張作戦】五航戦、迎春抜錨！",
+    "edition": "kcwiki:outdated:804_2022",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/804_2022.json"
+  },
+  {
+    "questId": 847,
+    "title": "春の準備任務：桃の節句準備を完遂せよ！",
+    "edition": "kcwiki:outdated:847_春の準備任務2017",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/847_春の準備任務2017.json"
+  },
+  {
+    "questId": 906,
+    "title": "【桃の節句】鎮守府近海、春の安全確保作戦",
+    "edition": "kcwiki:outdated:906",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/906.json"
+  },
+  {
+    "questId": 907,
+    "title": "【桃の節句】南西諸島海域、春の戦闘哨戒！",
+    "edition": "kcwiki:outdated:907",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/907.json"
+  },
+  {
+    "questId": 908,
+    "title": "【桃の節句】春の決戦！敵機動部隊を叩け！",
+    "edition": "kcwiki:outdated:908",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/908.json"
+  },
+  {
+    "questId": 910,
+    "title": "【桃の節句作戦】「沖に立つ波」出撃！",
+    "edition": "kcwiki:outdated:910",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/910.json"
+  },
+  {
+    "questId": 932,
+    "title": "【秋限定】野分の大冒険！",
+    "edition": "kcwiki:outdated:932_秋",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/932_秋.json"
+  },
+  {
+    "questId": 950,
+    "title": "【夏季限定】「渚のマーメイド」作戦！",
+    "edition": "kcwiki:outdated:950",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/950.json"
+  },
+  {
+    "questId": 951,
+    "title": "【夏季限定】「渚のシレーナ」欧州作戦！",
+    "edition": "kcwiki:outdated:951",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/951.json"
+  },
+  {
+    "questId": 953,
+    "title": "【地中海作戦】特務艦隊、遊撃部隊編成！",
+    "edition": "kcwiki:outdated:953_地中海作戦",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/953_地中海作戦.json"
+  },
+  {
+    "questId": 954,
+    "title": "【地中海作戦】地中海配備の敵戦力を叩け！",
+    "edition": "kcwiki:outdated:954_地中海作戦",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/954_地中海作戦.json"
+  },
+  {
+    "questId": 955,
+    "title": "【地中海拡張作戦】第10潜水戦隊作戦　(※難易度変更時は本作戦中止)",
+    "edition": "kcwiki:outdated:955_地中海拡張作戦",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/955_地中海拡張作戦.json"
+  },
+  {
+    "questId": 962,
+    "title": "【Xmas限定】Merry Xmas 水雷戦隊！",
+    "edition": "kcwiki:outdated:962",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/962.json"
+  },
+  {
+    "questId": 963,
+    "title": "【Xmas限定】Xmas海上護衛隊、抜錨！",
+    "edition": "kcwiki:outdated:963",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/963.json"
+  },
+  {
+    "questId": 964,
+    "title": "【Xmas限定】聖夜の翼、出撃せよ！",
+    "edition": "kcwiki:outdated:964",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/964.json"
+  },
+  {
+    "questId": 965,
+    "title": "【Xmas拡張作戦】Xmas最終作戦、発動！",
+    "edition": "kcwiki:outdated:965",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/965.json"
+  },
+  {
+    "questId": 972,
+    "title": "【限定任務】艦隊九周年、拡張作戦！",
+    "edition": "kcwiki:outdated:972",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/972.json"
+  },
+  {
+    "questId": 984,
+    "title": "【期間限定任務】艦隊南瓜秋祭り、始め！",
+    "edition": "kcwiki:outdated:984",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/984.json"
+  },
+  {
+    "questId": 985,
+    "title": "【期間限定任務】艦隊南瓜秋祭り、北方へ！",
+    "edition": "kcwiki:outdated:985",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/985.json"
+  },
+  {
+    "questId": 986,
+    "title": "【期間限定任務】艦隊南瓜秋祭り、西方へ！",
+    "edition": "kcwiki:outdated:986",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/986.json"
+  },
+  {
+    "questId": 987,
+    "title": "【甲種任務】艦隊南瓜秋祭り、拡張作戦！",
+    "edition": "kcwiki:outdated:987",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/987.json"
+  },
+  {
+    "questId": 988,
+    "title": "【Xmas限定任務】聖夜の哨戒線",
+    "edition": "kcwiki:outdated:988",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/988.json"
+  },
+  {
+    "questId": 992,
+    "title": "【艦隊10周年記念任務】吹雪型駆逐艦、抜錨！",
+    "edition": "kcwiki:outdated:992_【艦隊10周年記念任務】吹雪型駆逐艦、抜錨！",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/992_【艦隊10周年記念任務】吹雪型駆逐艦、抜錨！.json"
+  },
+  {
+    "questId": 993,
+    "title": "【艦隊10周年記念任務】白露型駆逐艦、出撃！",
+    "edition": "kcwiki:outdated:993_【艦隊10周年記念任務】白露型駆逐艦、出撃！",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/993_【艦隊10周年記念任務】白露型駆逐艦、出撃！.json"
+  },
+  {
+    "questId": 994,
+    "title": "【記念任務:拡張作戦】主力オブ主力、決戦ッ！",
+    "edition": "kcwiki:outdated:994_【記念任務:拡張作戦】主力オブ主力、決戦ッ！",
+    "period": "unresolved",
+    "source": "https://github.com/kcwikizh/kcwiki-quest-data/blob/f3a555a1326bf026fd5704d076ce145a7cdf8414/outdated/994_【記念任務:拡張作戦】主力オブ主力、決戦ッ！.json"
+  },
+  {
+    "questId": 198,
+    "title": "精強！「第七駆逐隊」抜錨準備せよ！",
+    "edition": "kcanotify:198",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1001,
+    "title": "主力オブ主力「清霜改二」、出撃せよ！",
+    "edition": "kcanotify:1001",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1003,
+    "title": "【潜水艦任務】潜水艦、戦闘哨戒！",
+    "edition": "kcanotify:1003",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1004,
+    "title": "改装航空巡洋艦「三隈」、進発せよ！",
+    "edition": "kcanotify:1004",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1006,
+    "title": "「第二駆逐隊」抜錨！",
+    "edition": "kcanotify:1006",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1007,
+    "title": "改装白露型「春雨改二」出撃です！",
+    "edition": "kcanotify:1007",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1008,
+    "title": "夕立姉さん！今度は一緒について行きますっ！",
+    "edition": "kcanotify:1008",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1013,
+    "title": "八戸の盾「稲木改二」、抜錨ッ！",
+    "edition": "kcanotify:1013",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1014,
+    "title": "哨戒部隊で近海及び南西諸島を警戒せよ！",
+    "edition": "kcanotify:1014",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1015,
+    "title": "防空水上艦、出撃せよッ！",
+    "edition": "kcanotify:1015",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1016,
+    "title": "防空駆逐艦「初月改二」、推して参る！",
+    "edition": "kcanotify:1016",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1017,
+    "title": "「第二駆逐隊(後期編成)」、出撃せよ！",
+    "edition": "kcanotify:1017",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1019,
+    "title": "激闘！「第三艦隊」精鋭第二小隊！",
+    "edition": "kcanotify:1019",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1021,
+    "title": "「早霜改二」見ているだけでは…ありません！",
+    "edition": "kcanotify:1021",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1023,
+    "title": "三十二駆「藤波改二」、鳥海を護衛せよ！",
+    "edition": "kcanotify:1023",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1025,
+    "title": "精鋭十一駆「白雪改二」、抜錨します！",
+    "edition": "kcanotify:1025",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1029,
+    "title": "三十二駆「浜波改二」抜錨！敵中を突破せよ！",
+    "edition": "kcanotify:1029",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1033,
+    "title": "二等輸送艦の積極運用",
+    "edition": "kcanotify:1033",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1036,
+    "title": "輸送船団護衛部隊、出撃せよ！",
+    "edition": "kcanotify:1036",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1010,
+    "title": "防空駆逐艦「秋月改二」、推参します！",
+    "edition": "kcanotify:1010",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1041,
+    "title": "三十二駆「早波改二」、元気に出撃せよ！",
+    "edition": "kcanotify:1041",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1042,
+    "title": "最新鋭改装空母「飛龍改三」、疾風怒涛！",
+    "edition": "kcanotify:1042",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1044,
+    "title": "三十二駆「玉波改二」、出撃いたします。",
+    "edition": "kcanotify:1044",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1047,
+    "title": "「涼波改二」ラバウルより抜錨せよ！",
+    "edition": "kcanotify:1047",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1052,
+    "title": "改装多目的搭載母艦「北上改三」、出撃ッ！",
+    "edition": "kcanotify:1052",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1053,
+    "title": "再編二十駆「天霧」「狭霧」南方へ展開せよ！",
+    "edition": "kcanotify:1053",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1005,
+    "title": "精強「第七駆逐隊」緊急出動！",
+    "edition": "kcanotify:1005",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1012,
+    "title": "鵜来型海防艦、静かな海を防衛せよ！",
+    "edition": "kcanotify:1012",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1018,
+    "title": "「第三戦隊」第二小隊、鉄底海峡へ！",
+    "edition": "kcanotify:1018",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1045,
+    "title": "「吹雪改三」抜錨します！見てくださいっ！",
+    "edition": "kcanotify:1045",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1050,
+    "title": "「第九戦隊」抜錨！前線展開せよッ！",
+    "edition": "kcanotify:1050",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1051,
+    "title": "改装「1YB3H」旗艦、敵中を突破せよ！",
+    "edition": "kcanotify:1051",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 376,
+    "title": "「第三戦隊」精鋭第二小隊、特別演習！",
+    "edition": "kcanotify:376",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 371,
+    "title": "春です！「春雨」、演習しますっ！",
+    "edition": "kcanotify:371",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 372,
+    "title": "水上艦「艦隊防空演習」を実施せよ！",
+    "edition": "kcanotify:372",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 373,
+    "title": "「フランス艦隊」演習！",
+    "edition": "kcanotify:373",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 375,
+    "title": "「第三戦隊」第二小隊、演習開始！",
+    "edition": "kcanotify:375",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 377,
+    "title": "「第二駆逐隊(後期編成)」、練度向上！",
+    "edition": "kcanotify:377",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1132,
+    "title": "改良Ｄ型砲の配備",
+    "edition": "kcanotify:1132",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1133,
+    "title": "逆探及び改良対水上電探の実戦配備",
+    "edition": "kcanotify:1133",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1134,
+    "title": "22号対水上電探の改良",
+    "edition": "kcanotify:1134",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1137,
+    "title": "鵜来型海防艦兵装の開発",
+    "edition": "kcanotify:1137",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1139,
+    "title": "【艦隊通信能力の強化】通信要員の育成",
+    "edition": "kcanotify:1139",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1140,
+    "title": "【新鋭海外艦装備】新型四連装主砲の開発",
+    "edition": "kcanotify:1140",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1141,
+    "title": "最新改修型三座水上偵察機の開発",
+    "edition": "kcanotify:1141",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1142,
+    "title": "最精鋭「天山」装備艦攻隊の配備",
+    "edition": "kcanotify:1142",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1143,
+    "title": "「霧島改二丙」改装工廠任務",
+    "edition": "kcanotify:1143",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1145,
+    "title": "【工廠任務】伊号潜水艦装備の拡充",
+    "edition": "kcanotify:1145",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1148,
+    "title": "【対空兵装の拡充】94式高射装置の増加配備",
+    "edition": "kcanotify:1148",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1151,
+    "title": "陸軍戦闘機及び海外戦闘機の増備",
+    "edition": "kcanotify:1151",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1152,
+    "title": "【対潜戦力強化】海防艦対潜兵装の強化",
+    "edition": "kcanotify:1152",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1153,
+    "title": "【続：対潜戦力強化】対潜兵装のさらなる拡充",
+    "edition": "kcanotify:1153",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1154,
+    "title": "【新型対潜兵装開発】対潜噴進爆雷砲の開発",
+    "edition": "kcanotify:1154",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1155,
+    "title": "秋月型防空駆逐艦用兵装の拡充",
+    "edition": "kcanotify:1155",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1158,
+    "title": "第三十二駆逐隊「早波」、改装準備！",
+    "edition": "kcanotify:1158",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1159,
+    "title": "【工廠任務】量産航空機の改編",
+    "edition": "kcanotify:1159",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1160,
+    "title": "【工廠任務】試製震電の艦戦型改二への改修",
+    "edition": "kcanotify:1160",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1161,
+    "title": "【工廠任務】新装備運用のための工廠整備【壱】",
+    "edition": "kcanotify:1161",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1162,
+    "title": "【工廠任務】新装備運用のための工廠整備【弐】",
+    "edition": "kcanotify:1162",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1163,
+    "title": "【工廠任務】震電の噴式推進化",
+    "edition": "kcanotify:1163",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1164,
+    "title": "【工廠任務】水雷戦隊新改装艦、改装準備！",
+    "edition": "kcanotify:1164",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1170,
+    "title": "既存装備活用による対空兵装の開発",
+    "edition": "kcanotify:1170",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1166,
+    "title": "続：装備の改修強化",
+    "edition": "kcanotify:1166",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1167,
+    "title": "装備の改修集中強化",
+    "edition": "kcanotify:1167",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1138,
+    "title": "【高射装置量産】94式高射装置の追加配備",
+    "edition": "kcanotify:1138",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 640,
+    "title": "初夏の整理整頓",
+    "edition": "kcanotify:640",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 199,
+    "title": "【期間限定任務】第三十一戦隊 特務編成！",
+    "edition": "kcanotify:199",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 382,
+    "title": "【期間限定任務】第三十一戦隊 緊急演習！",
+    "edition": "kcanotify:382",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1038,
+    "title": "【限定拡張作戦】Halloween、おかわり開始！",
+    "edition": "kcanotify:1038",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1039,
+    "title": "【限定拡張作戦】Halloween海上護衛隊出撃！",
+    "edition": "kcanotify:1039",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1040,
+    "title": "【限定拡張作戦】Halloween狼隊、夜の襲撃！",
+    "edition": "kcanotify:1040",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1002,
+    "title": "【限定拡張作戦】南瓜祭り2026、北方作戦！",
+    "edition": "kcanotify:1002",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  },
+  {
+    "questId": 1171,
+    "title": "【限定拡張作戦】対潜装備の整理整頓！2026",
+    "edition": "kcanotify:1171",
+    "period": "unresolved",
+    "source": "https://github.com/antest1/kcanotify-gamedata/blob/fa5d16aa882426e8ff370a65419cfd038552cded/files/quests-jp.json"
+  }
+]

@@ -38,7 +38,7 @@ class EquipmentDistributionProfileTest(unittest.TestCase):
         report=self.source();self.assertEqual(EQUIPMENT_UI_PROFILE,report['equipment_ui_profile']);verify(self.out)
         with ZipFile(self.out/'logbook-core.jar') as core:
             self.assertIn(EQUIPMENT_UI_API,core.namelist());self.assertFalse(any(equipment_ui_entry(n) for n in core.namelist()))
-        with ZipFile(self.out/'features/logbook-feature-status.jar') as charts:
+        with ZipFile(self.out/'features/logbook-feature-equipment.jar') as charts:
             self.assertTrue(equipment_ui_required_entries().issubset(charts.namelist()))
             self.assertIn('logbook/internal/gui/ItemItemController$ShipImageCell.class',charts.namelist())
     def test_legacy_v2_without_the_data_api_keeps_its_previous_layout(self):
@@ -60,11 +60,11 @@ class EquipmentDistributionProfileTest(unittest.TestCase):
         self.assertFalse(self.out.exists())
     def test_a_rehashed_module_cannot_omit_a_required_equipment_class(self):
         self.source();name='logbook/internal/gui/EquipmentDetailItem.class'
-        self.rewrite('features/logbook-feature-status.jar',lambda entries:entries.pop(name))
+        self.rewrite('features/logbook-feature-equipment.jar',lambda entries:entries.pop(name))
         with self.assertRaisesRegex(ValueError,'Missing required feature entry'):verify(self.out)
     def test_core_fallback_cannot_hide_the_absence_of_a_feature_class(self):
         self.source();name='logbook/internal/gui/EquipmentDetailItem.class'
-        self.rewrite('features/logbook-feature-status.jar',lambda entries:entries.pop(name))
+        self.rewrite('features/logbook-feature-equipment.jar',lambda entries:entries.pop(name))
         self.rewrite('logbook-core.jar',lambda entries:entries.update({name:b'fallback'}))
         # Make all hashes/metadata otherwise coherent, so this asserts ownership,
         # not an earlier unrelated rejection by the exact-host guard.

@@ -40,13 +40,11 @@ import logbook.net.ResponseMetaData;
 import logbook.plugin.lifecycle.StartUp;
 
 /**
- * KQS shares the full available quest snapshot without adding controls to
- * logbook-kai's main layout. Right-click any quest pane / quest area.
+ * Shared information and legacy quest exports are registered through the host menu SPI.
  */
-public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp {
+public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp, logbook.plugin.gui.MainExtMenu {
     private static final QuestStore STORE = new QuestStore();
     private static final AtomicBoolean EXPORTING = new AtomicBoolean(false);
-    private static final String FILTER_PROPERTY = "kqs.quest.contextMenuFilter.v2";
 
     @Override
     public boolean test(RequestMetaData request) {
@@ -79,55 +77,10 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp {
         }
     }
 
-    @Override
-    public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            try {
-                Platform.runLater(KqsLogbookPlugin::installFilters);
-            } catch (RuntimeException e) {
-                System.err.println("[KQS] UI not ready: " + e.getClass().getSimpleName());
-            }
-            try { Thread.sleep(2000); }
-            catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-        }
-    }
+    @Override public void run() { /* Menu lifecycle is owned by the host SPI. */ }
 
-    private static void installFilters() {
-        for (Window window : Window.getWindows()) {
-            Scene scene = window.getScene();
-            if (scene == null || scene.getRoot() == null) continue;
-            Parent root = scene.getRoot();
-            if (Boolean.TRUE.equals(root.getProperties().get(FILTER_PROPERTY))) continue;
-            if (!root.getStyleClass().contains("mainWindow")) continue;
-            root.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, event -> {
-                if (!(event.getTarget() instanceof Node node) || !insideQuestArea(node)) return;
-                // QuestPane contains an upstream "全て除去" context menu. Consume only
-                // quest-area events, preventing destructive operations by mistake.
-                event.consume();
-                showMenu(window, event.getScreenX(), event.getScreenY(), isQuestItem(node));
-            });
-            root.getProperties().put(FILTER_PROPERTY, true);
-        }
-    }
-
-    private static boolean insideQuestArea(Node node) {
-        for (Node n = node; n != null; n = n.getParent()) {
-            String id = n.getId();
-            if ("questPane".equals(id) || "questbox".equals(id)) return true;
-            if (n.getClass().getName().equals("logbook.internal.gui.QuestPane")) return true;
-            if (n instanceof TitledPane pane && "任務".equals(pane.getText())) return true;
-        }
-        return false;
-    }
-
-    private static boolean isQuestItem(Node node) {
-        for(Node n=node;n!=null;n=n.getParent()) {
-            if(n.getClass().getName().equals("logbook.internal.gui.QuestPane"))return true;
-        }
-        return false;
-    }
-
-    private static void showMenu(Window window, double x, double y, boolean showOriginal) {
+    @Override public MenuItem getContent() {
+        Window window = null;
         MenuItem copyJson = new MenuItem("KQS：現在の全任務をJSONコピー");
         copyJson.setOnAction(e -> exportAsync(window, QuestExporter::json, text->copy(text,window)));
 
@@ -140,26 +93,11 @@ public final class KqsLogbookPlugin implements ContentListenerSpi, StartUp {
         MenuItem save = new MenuItem("KQS：全任務JSONをファイル保存...");
         save.setOnAction(e -> save(window));
 
-        ContextMenu menu=new ContextMenu(copyJson,copyPrompt,preview,save);
-        if(showOriginal) {
-            Menu original=new Menu("航海日誌改（元の操作）");
-            MenuItem clear=new MenuItem("全て除去...（確認あり）");
-            clear.setOnAction(e->confirmClear(window));
-            original.getItems().add(clear);
-            menu.getItems().add(original);
-        }
-        menu.show(window, x, y);
-    }
-
-    private static void confirmClear(Window owner) {
-        Alert alert=new Alert(Alert.AlertType.CONFIRMATION,
-            "航海日誌改に記録された任務一覧を全て除去します。\nゲームの任務は変更されません。実行しますか？",
-            ButtonType.YES,ButtonType.NO);
-        alert.setTitle("航海日誌改：全て除去");
-        alert.setHeaderText("既存操作の確認");
-        if(owner!=null)alert.initOwner(owner);
-        if(alert.showAndWait().filter(ButtonType.YES::equals).isPresent())
-            AppQuestCollection.get().getQuest().clear();
+        MenuItem information = new MenuItem("全情報の共有・出力…");
+        information.setOnAction(e -> InformationShareWindow.open(window));
+        Menu menu=new Menu("情報共有・出力");
+        menu.getItems().addAll(information,copyJson,copyPrompt,preview,save);
+        return menu;
     }
 
     private static void exportAsync(Window owner, java.util.function.Function<QuestStore,String> generator,

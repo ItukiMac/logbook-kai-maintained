@@ -121,9 +121,9 @@ class FeatureVersionTest(unittest.TestCase):
         path.write_bytes(b'{ deliberately invalid synthetic metadata')
 
     def test_build_declares_versioned_module_contracts(self):
-        self.assertEqual('logbook-feature-distribution-v3', self.report['format'])
+        self.assertEqual('logbook-feature-distribution-v4', self.report['format'])
         self.assertEqual(1, self.report['host']['api'])
-        self.assertEqual({'calculators', 'charts', 'status', 'klb', 'kqs'},
+        self.assertEqual({'calculators', 'charts', 'ships', 'equipment', 'quests', 'records', 'klb', 'kqs'},
                          {m['id'] for m in self.report['modules']})
         self.assertEqual(7, sum(len(m['features']) for m in self.report['modules']))
         for module in self.report['modules']:
@@ -188,14 +188,14 @@ class FeatureVersionTest(unittest.TestCase):
         self.assertEqual(current, manager.selector(self.store)['current'])
         self.assertFalse(list((self.store / 'versions').glob('pending-*')))
 
-    def test_all_five_modules_keep_unselected_candidate_changes_out(self):
+    def test_all_eight_modules_keep_unselected_candidate_changes_out(self):
         candidate, report, _ = self.candidate(version='1.1.0')
-        for module_id in ('charts', 'status', 'klb', 'kqs'):
+        for module_id in ('charts', 'ships', 'equipment', 'quests', 'records', 'klb', 'kqs'):
             self.repack(candidate, report, module_id, version='1.1.0')
         candidate_id = self.rewrite(report, candidate)
         verify(candidate)
         current = self.start_store()
-        for module_id in ('calculators', 'charts', 'status', 'klb', 'kqs'):
+        for module_id in ('calculators', 'charts', 'ships', 'equipment', 'quests', 'records', 'klb', 'kqs'):
             with self.subTest(module=module_id):
                 result = manager.stage_feature(self.store, candidate, candidate_id, module_id, current)
                 staged = self.store / 'versions' / result['version']

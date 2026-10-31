@@ -204,7 +204,7 @@ class FeatureVersionRejectionTest(unittest.TestCase):
 
     def test_circular_dependency_is_rejected(self):
         report = deepcopy(self.report)
-        for source, target in [('calculators', 'charts'), ('charts', 'status'), ('status', 'calculators')]:
+        for source, target in [('calculators', 'charts'), ('charts', 'ships'), ('ships', 'calculators')]:
             self.module(source, report)['dependencies'] = [
                 {'id': target, 'min_version': '1.0.0', 'max_version_exclusive': '2.0.0'}]
         self.assert_manifest_refused(report)

@@ -33,8 +33,8 @@ public final class ShipListGuiProbe {
         check(args.length==1 && args[0].equals("synthetic-ship-list-only"),"Explicit fixture mode required");
         check(!Files.exists(Path.of("config")) && !Files.exists(Path.of("history-sentinel.csv")),"Refusing existing runtime");
         Files.write(Path.of("history-sentinel.csv"),history,StandardOpenOption.CREATE_NEW);
-        productClass(ShipController.class,"status");productClass(ShipTablePane.class,"status");
-        productClass(ParameterFilterPane.class,"status");productClass(StatisticsPane.class,"charts");
+        productClass(ShipController.class,"ships");productClass(ShipTablePane.class,"ships");
+        productClass(ParameterFilterPane.class,"ships");productClass(StatisticsPane.class,"charts");
         check(ShipItem.class.getProtectionDomain().getCodeSource().getLocation().toString().endsWith("/logbook-core.jar"),"Legacy shared row type changed owner");
         var errors=new CopyOnWriteArrayList<Throwable>();
         Thread.setDefaultUncaughtExceptionHandler((t,e)->{errors.add(e);e.printStackTrace();});
@@ -91,8 +91,8 @@ public final class ShipListGuiProbe {
             check(names.containsAll(List.of("全員","全艦隊","synthetic fleet","first","second","統計")),"Missing existing tabs: "+names);
             ShipTablePane all=select(tabs,"全員");all.enable();all.update();
             TableView<ShipItem> table=field(all,"table");expect(table,1,2);
-            check(ShipTablePane.class.getResource("/logbook/gui/ship_table.fxml").toString().contains("logbook-feature-status.jar"),"Ship FXML still in host");
-            check(ParameterFilterPane.class.getResource("/logbook/gui/param_filter_pane.fxml").toString().contains("logbook-feature-status.jar"),"Numeric filter FXML still in host");
+            check(ShipTablePane.class.getResource("/logbook/gui/ship_table.fxml").toString().contains("logbook-feature-ships.jar"),"Ship FXML still in host");
+            check(ParameterFilterPane.class.getResource("/logbook/gui/param_filter_pane.fxml").toString().contains("logbook-feature-ships.jar"),"Numeric filter FXML still in host");
             ShipTablePane fleet=select(tabs,"全艦隊");expect(field(fleet,"table"),2,1);
             expect(field(select(tabs,"synthetic fleet"),"table"),2,1);
             expect(field(select(tabs,"first"),"table"),1);expect(field(select(tabs,"second"),"table"),2);

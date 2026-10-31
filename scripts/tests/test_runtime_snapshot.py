@@ -26,6 +26,8 @@ class RuntimeSnapshotTest(unittest.TestCase):
         self.clone = self.base / 'restore-new'
         self.limits = Limits(reserve=0)
         self.write('config/logbook.bean.AppConfig.json', b'{"reportPath":".","battleLogDir":"battlelog"}')
+        self.write('config/quest-ledger/00000000000000000001.json', b'{"revision":1,"source":"MANUAL","state":"CLAIMED"}')
+        self.write('config/quest-ledger/ledger.lock', b'')
         self.write('customquest/905.json', b'// user comment\r\n{"value":1}\r\n')
         self.write('battlelog/old.dat', bytes(range(256)))
         self.write('plugins/old-plugin.jar', b'opaque binary sentinel; never load')

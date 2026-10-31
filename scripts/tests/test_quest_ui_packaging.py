@@ -57,7 +57,7 @@ class QuestPackagingTest(unittest.TestCase):
         source=self.source();before=source.read_bytes();root=self.root/'bundle';report=build(source,root,'a'*40)
         self.assertEqual(QUEST_UI_PROFILE,report['quest_ui_profile']);verify(root);self.assertEqual(before,source.read_bytes())
         with ZipFile(root/JARS[0]) as z:self.assertFalse(quest_ui_required_entries()&set(z.namelist()))
-        with ZipFile(root/'features/logbook-feature-status.jar') as z:self.assertTrue(quest_ui_required_entries()<=set(z.namelist()))
+        with ZipFile(root/'features/logbook-feature-quests.jar') as z:self.assertTrue(quest_ui_required_entries()<=set(z.namelist()))
     def test_incomplete_new_source_is_rejected_before_output_exists(self):
         source=self.source(missing='logbook/gui/quest_progress.fxml');out=self.root/'no-output'
         with self.assertRaisesRegex(ValueError,'Missing quest UI input'):build(source,out,'a'*40)
@@ -77,10 +77,10 @@ class QuestPackagingTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Quest UI remains in the host'):verify(out)
     def test_ship_list_UI_required_component_cannot_be_omitted(self):
         root,_=self.bundle();entry='logbook/gui/quest_progress.fxml'
-        out=self.tamper(root,{'features/logbook-feature-status.jar':lambda d:d.pop(entry)})
+        out=self.tamper(root,{'features/logbook-feature-quests.jar':lambda d:d.pop(entry)})
         with self.assertRaisesRegex(ValueError,'Missing required feature entry'):verify(out)
     def test_ship_list_UI_cannot_be_moved_to_another_module(self):
         root,_=self.bundle();entry='logbook/gui/quest_progress.fxml'
         out=self.tamper(root,{'features/logbook-feature-calculators.jar':lambda d:d.update({entry:b'wrong module'})})
-        with self.assertRaisesRegex(ValueError,'Quest UI belongs to the status'):verify(out)
+        with self.assertRaisesRegex(ValueError,'Quest UI belongs to the quests'):verify(out)
 if __name__=='__main__':unittest.main()

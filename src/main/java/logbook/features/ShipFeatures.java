@@ -3,10 +3,10 @@ package logbook.features;
 import java.util.List;
 import logbook.plugin.api.FeatureModule;
 
-public final class StatusFeatures implements FeatureModule {
+public final class ShipFeatures implements FeatureModule {
     @Override
     public Descriptor descriptor() {
-        return new Descriptor("status", "1.0.0", HOST_API_VERSION, List.of());
+        return new Descriptor("ships", "1.0.0", HOST_API_VERSION, List.of());
     }
 
     @Override
