@@ -271,7 +271,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, sys.argv[1])
 import run_feature_distribution, build_feature_distribution, feature_bundle_manager, runtime_managed_import
-assert run_feature_distribution.FORMAT == 'logbook-kai2-feature-distribution-v2'
+assert run_feature_distribution.FORMAT == 'logbook-feature-distribution-v2'
 sys.path.insert(0, sys.argv[2])
 from scripts.tests.test_runtime_migration_java import RuntimeMigrationJavaTest
 case = RuntimeMigrationJavaTest()
