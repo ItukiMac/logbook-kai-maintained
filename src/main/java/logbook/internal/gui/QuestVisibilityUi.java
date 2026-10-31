@@ -21,14 +21,19 @@ final class QuestVisibilityUi {
     private static final String RETAINED = "定義・受諾履歴・キャッシュ・カスタム任務ファイルは削除しません。\n"
             + "この起動中だけ一覧から隠します。再表示またはアプリ再起動で戻ります。\n"
             + "カスタム任務の枠は空きません。";
-    private QuestVisibilityUi() { }
+
+    private QuestVisibilityUi() {
+    }
+
     static void hide(Node source, List<Quest> rows) {
-        if (rows.isEmpty()) return;
+        if (rows.isEmpty())
+            return;
         Plan plan = QuestVisibilityV1.prepareHide(rows.stream().map(Quest::no).toList());
         String targets = rows.stream().map(q -> q.no() + " : " + java.util.Objects.toString(q.title(), "名称未記録"))
                 .collect(java.util.stream.Collectors.joining("\n"));
         confirm(source, plan, "この起動中だけ非表示", "対象: " + rows.size() + "件\n" + targets + "\n\n" + RETAINED);
     }
+
     static HBox banner(State state) {
         Label label = new Label("非表示 " + state.hiddenIds().size() + "件（この起動中のみ・データ保持）");
         label.setWrapText(true);
@@ -43,18 +48,23 @@ final class QuestVisibilityUi {
         banner.setId("quest-visibility-banner");
         return banner;
     }
+
     private static void confirm(Node source, Plan plan, String operation, String content) {
         ButtonType apply = new ButtonType(operation, ButtonData.OK_DONE);
         Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, content, apply, ButtonType.CANCEL);
-        dialog.setTitle("任務一覧の表示"); dialog.setHeaderText(operation);
-        if (source.getScene() != null) dialog.initOwner(source.getScene().getWindow());
+        dialog.setTitle("任務一覧の表示");
+        dialog.setHeaderText(operation);
+        if (source.getScene() != null)
+            dialog.initOwner(source.getScene().getWindow());
         boolean confirmed = dialog.showAndWait().filter(apply::equals).isPresent();
         var result = QuestVisibilityV1.apply(plan, confirmed);
         if (result.outcome() == QuestVisibilityV1.Outcome.CONFLICT) {
             Alert conflict = new Alert(Alert.AlertType.WARNING,
                     "確認中に非表示状態が変わりました。変更は適用していません。もう一度対象を確認してください。", ButtonType.OK);
-            if (source.getScene() != null) conflict.initOwner(source.getScene().getWindow());
-            conflict.setTitle("任務一覧の状態変更"); conflict.showAndWait();
+            if (source.getScene() != null)
+                conflict.initOwner(source.getScene().getWindow());
+            conflict.setTitle("任務一覧の状態変更");
+            conflict.showAndWait();
         }
         // Also refresh after a conflict, but never silently retry an outdated command.
         if (result.accepted() || result.outcome() == QuestVisibilityV1.Outcome.CONFLICT)

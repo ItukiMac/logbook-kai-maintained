@@ -18,7 +18,6 @@ import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 
-
 import tools.jackson.databind.ObjectMapper;
 
 import javafx.event.ActionEvent;
@@ -61,7 +60,8 @@ public class MissionCheck extends FeatureUiV1.Window {
     private Set<Mission> expanded = new HashSet<>();
 
     public MissionCheck() {
-        this.mapper = this.mapper.rebuild().configure(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS, true).build();
+        this.mapper = this.mapper.rebuild().configure(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS, true)
+                .build();
     }
 
     @FXML
@@ -94,11 +94,17 @@ public class MissionCheck extends FeatureUiV1.Window {
         this.buildTree(deck);
     }
 
-    @Override protected void onDefinitionsChanged() { update(null); }
+    @Override
+    protected void onDefinitionsChanged() {
+        update(null);
+    }
 
     private void buildTree(DeckPort deck) {
-        try(var scope = logbook.core.LogBookCoreServices.pinDefinitions()) { buildPinnedTree(deck); }
+        try (var scope = logbook.core.LogBookCoreServices.pinDefinitions()) {
+            buildPinnedTree(deck);
+        }
     }
+
     private void buildPinnedTree(DeckPort deck) {
         TreeItem<String> root = new TreeItem<>();
         if (deck != null) {
@@ -151,7 +157,7 @@ public class MissionCheck extends FeatureUiV1.Window {
         }
         this.conditionTree.setRoot(root);
     }
-    
+
     private static MissionCondition createDefaultGreatSuccessCondition() {
         MissionCondition success = new MissionCondition();
         success.setType("艦隊");
@@ -178,8 +184,8 @@ public class MissionCheck extends FeatureUiV1.Window {
             } else {
                 return null;
             }
-            
-            item.setValue(mission.toString()+" ["+Missions.getDurationText(mission) + "]");
+
+            item.setValue(mission.toString() + " [" + Missions.getDurationText(mission) + "]");
             if (mission.getDamageType() != null && mission.getDamageType().intValue() > 0) {
                 String label;
                 switch (mission.getDamageType()) {
@@ -224,24 +230,24 @@ public class MissionCheck extends FeatureUiV1.Window {
         this.setIcon(item, condition.getResult());
         // 大成功条件をチェック
         Optional.ofNullable(condition.getGreatSuccessCondition())
-            .ifPresent(cond -> {
-                TreeItem<String> greatSuccess;
-                if (condition.getResult()) {
-                    if (cond.getResult()) {
-                        greatSuccess = new TreeItem<>("大成功");
-                        setIcon(greatSuccess, true);
+                .ifPresent(cond -> {
+                    TreeItem<String> greatSuccess;
+                    if (condition.getResult()) {
+                        if (cond.getResult()) {
+                            greatSuccess = new TreeItem<>("大成功");
+                            setIcon(greatSuccess, true);
+                        } else {
+                            greatSuccess = new TreeItem<>("成功");
+                            setIcon(greatSuccess, FontAwesome.Glyph.CHECK, Color.ORANGE);
+                            setIcon(item, FontAwesome.Glyph.CHECK, Color.ORANGE);
+                        }
                     } else {
-                        greatSuccess = new TreeItem<>("成功");
-                        setIcon(greatSuccess, FontAwesome.Glyph.CHECK, Color.ORANGE);
-                        setIcon(item, FontAwesome.Glyph.CHECK, Color.ORANGE);
+                        greatSuccess = new TreeItem<>("失敗");
+                        setIcon(greatSuccess, false);
                     }
-                } else {
-                    greatSuccess = new TreeItem<>("失敗");
-                    setIcon(greatSuccess, false);
-                }
-                greatSuccess.getChildren().add(buildLeaf(cond));
-                item.getChildren().add(greatSuccess);
-            });
+                    greatSuccess.getChildren().add(buildLeaf(cond));
+                    item.getChildren().add(greatSuccess);
+                });
 
         if (condition.getConditions() != null) {
             if (condition.getConditions().size() == 1 && !condition.getOperator().startsWith("N")) {

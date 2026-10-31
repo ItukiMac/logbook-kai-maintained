@@ -253,7 +253,8 @@ public class ItemItemController extends FeatureUiV1.Window {
                 JsonObject object = (JsonObject) value;
                 String name = object.getString("SlotItem", null);
                 JsonArray days = object.getJsonArray("AllAvailableDays");
-                if (name != null && days != null) destination.put(name, JsonHelper.toStringList(days));
+                if (name != null && days != null)
+                    destination.put(name, JsonHelper.toStringList(days));
             }
         }
     }
@@ -282,9 +283,14 @@ public class ItemItemController extends FeatureUiV1.Window {
             this.allTypes.setOnAction(event -> {
                 boolean selected = this.allTypes.isSelected();
                 refreshingDefinitions = true;
-                try { this.typeFilters.values().forEach(check -> check.setSelected(selected)); }
-                finally { refreshingDefinitions = false; }
-                refreshAllTypesState(); createFilter(); saveConfig();
+                try {
+                    this.typeFilters.values().forEach(check -> check.setSelected(selected));
+                } finally {
+                    refreshingDefinitions = false;
+                }
+                refreshAllTypesState();
+                createFilter();
+                saveConfig();
             });
             this.typeFilter.selectedProperty().addListener(this::filterAction);
             this.typeFilter.selectedProperty().addListener((ob, o, n) -> {
@@ -292,7 +298,8 @@ public class ItemItemController extends FeatureUiV1.Window {
                 this.allTypes.setDisable(!n);
             });
 
-            this.parameterFilters = IntStream.range(0, 3).mapToObj(i -> new ParameterFilterPane.ItemParameterFilterPane()).collect(Collectors.toList());
+            this.parameterFilters = IntStream.range(0, 3)
+                    .mapToObj(i -> new ParameterFilterPane.ItemParameterFilterPane()).collect(Collectors.toList());
             this.filters.getChildren().addAll(this.parameterFilters);
             this.parameterFilters.forEach(f -> f.filterProperty().addListener(this::filterAction));
 
@@ -390,7 +397,8 @@ public class ItemItemController extends FeatureUiV1.Window {
      * フィルターを設定する
      */
     private void filterAction(ObservableValue<?> observable, Object oldValue, Object newValue) {
-        if (refreshingDefinitions) return;
+        if (refreshingDefinitions)
+            return;
         refreshAllTypesState();
         createFilter();
         saveConfig();
@@ -452,11 +460,18 @@ public class ItemItemController extends FeatureUiV1.Window {
 
             this.allTypes.setDisable(!this.typeFilter.isSelected());
             refreshAllTypesState();
-        } finally {refreshingDefinitions = false;}
+        } finally {
+            refreshingDefinitions = false;
+        }
     }
 
-    @Override protected void onDefinitionsChanged() {
-        if (types != null) { rebuildCategories(); createFilter(); typeTable.refresh(); }
+    @Override
+    protected void onDefinitionsChanged() {
+        if (types != null) {
+            rebuildCategories();
+            createFilter();
+            typeTable.refresh();
+        }
     }
 
     private void createFilter() {
@@ -479,7 +494,8 @@ public class ItemItemController extends FeatureUiV1.Window {
             Set<String> selectedRemodelDays = getSelectedRemodelDays();
             filter = filterAnd(filter, (item) -> {
                 if (item instanceof RemodelItem) {
-                    Set<String> itemDays = currentDays == null ? ((RemodelItem) item).getRemodelDays() : new java.util.HashSet<>(currentDays.getOrDefault(item.getName(), List.of()));
+                    Set<String> itemDays = currentDays == null ? ((RemodelItem) item).getRemodelDays()
+                            : new java.util.HashSet<>(currentDays.getOrDefault(item.getName(), List.of()));
                     // AllAvailableDays情報を持っていないItemは非表示
                     if (itemDays.isEmpty()) {
                         return false;
@@ -570,8 +586,9 @@ public class ItemItemController extends FeatureUiV1.Window {
         protected void updateItem(Integer itemId, boolean empty) {
             super.updateItem(itemId, empty);
             if (!empty) {
-                this.setGraphic(itemId == null ? null : FeatureUiV1.Controls.zoomImage(
-                        new ImageView(EquipmentImagesV1.item(itemId))));
+                this.setGraphic(itemId == null ? null
+                        : FeatureUiV1.Controls.zoomImage(
+                                new ImageView(EquipmentImagesV1.item(itemId))));
                 this.setText(itemId == null ? null : EquipmentDataV1.itemName(itemId));
             } else {
                 this.setGraphic(null);
@@ -631,7 +648,8 @@ public class ItemItemController extends FeatureUiV1.Window {
         protected void updateItem(EquipmentDataV1.Owner ship, boolean empty) {
             super.updateItem(ship, empty);
             if (!empty) {
-                this.setGraphic(FeatureUiV1.Controls.zoomImage(new ImageView(EquipmentImagesV1.owner(ship == null ? null : ship.id()))));
+                this.setGraphic(FeatureUiV1.Controls
+                        .zoomImage(new ImageView(EquipmentImagesV1.owner(ship == null ? null : ship.id()))));
                 if (ship != null) {
                     this.setText(ship.displayName());
                 } else {
@@ -787,14 +805,16 @@ public class ItemItemController extends FeatureUiV1.Window {
         AppItemTableConfig.ItemTabConfig itemTabConfig = new AppItemTableConfig.ItemTabConfig();
         itemTabConfig.setFilterExpanded(this.filter.isExpanded());
         itemTabConfig.setTextFilterEnabled(this.textFilter.isSelected());
-        Optional.ofNullable(this.textValue.getValue()).map(String::trim).filter(str -> !str.isEmpty()).ifPresent(itemTabConfig::setTextFilter);
+        Optional.ofNullable(this.textValue.getValue()).map(String::trim).filter(str -> !str.isEmpty())
+                .ifPresent(itemTabConfig::setTextFilter);
         itemTabConfig.setTypeFilterEnabled(this.typeFilter.isSelected());
         itemTabConfig.setTypeFilterExpanded(this.typeFilterTitledPane.isExpanded());
         itemTabConfig.setSelectedTypes(getSelectedTypes());
         itemTabConfig.setRemodelFilterEnabled(this.remodelFilter.isSelected());
         itemTabConfig.setRemodelDayFilterExpanded(this.allAvailableDays.isExpanded());
         itemTabConfig.setSelectedRemodelDays(getSelectedRemodelDays());
-        itemTabConfig.setParameterFilters(this.parameterFilters.stream().map(ParameterFilterPane::saveConfig).collect(Collectors.toList()));
+        itemTabConfig.setParameterFilters(
+                this.parameterFilters.stream().map(ParameterFilterPane::saveConfig).collect(Collectors.toList()));
         config.setItemTabConfig(itemTabConfig);
     }
 
@@ -814,13 +834,14 @@ public class ItemItemController extends FeatureUiV1.Window {
             return kfi;
         }
     }
-    
+
     private static class RemodelItem extends Item {
         @Getter
         @Setter
         private Set<String> remodelDays = new java.util.HashSet<>();
 
-        public static RemodelItem toRemodelItem(EquipmentDataV1.Definition slotitem, Map<String, Collection<String>> kousyouMap) {
+        public static RemodelItem toRemodelItem(EquipmentDataV1.Definition slotitem,
+                Map<String, Collection<String>> kousyouMap) {
             Item item = EquipmentProjection.item(slotitem);
             RemodelItem remodelItem = new RemodelItem();
             // Copy properties

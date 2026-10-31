@@ -32,7 +32,7 @@ jobs:
       - name: Build maintained application JAR
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package
-          test -s target/logbook-kai.jar
+          test -s target/logbook-kai2.jar
       - name: Compare official 25.0.8 JAR with local built JAR and test offline activation and restore
         shell: bash
         run: |
@@ -47,23 +47,23 @@ jobs:
           unzip -q "$TEMP/original.zip" -d "$TEMP/original"
           OFFICIAL_JAR="$(find "$TEMP/original" -type f -name logbook-kai.jar -print -quit)"
           test -n "$OFFICIAL_JAR"
-          cp "$OFFICIAL_JAR" "$TEMP/app/logbook-kai.jar"
-          cp target/logbook-kai.jar "$TEMP/app/update/logbook-kai.jar"
+          cp "$OFFICIAL_JAR" "$TEMP/app/logbook-kai2.jar"
+          cp target/logbook-kai2.jar "$TEMP/app/update/logbook-kai2.jar"
           printf 'keep user settings' > "$TEMP/app/config/existing.cfg"
           printf 'keep KLB plugin' > "$TEMP/app/plugins/klb-logbook-plugin.jar"
           printf 'keep KQS plugin' > "$TEMP/app/plugins/kqs-logbook-plugin.jar"
 
-          BEFORE="$(sha256sum "$TEMP/app/logbook-kai.jar" | cut -d ' ' -f1)"
-          AFTER="$(sha256sum "$TEMP/app/update/logbook-kai.jar" | cut -d ' ' -f1)"
+          BEFORE="$(sha256sum "$TEMP/app/logbook-kai2.jar" | cut -d ' ' -f1)"
+          AFTER="$(sha256sum "$TEMP/app/update/logbook-kai2.jar" | cut -d ' ' -f1)"
           test "$BEFORE" != "$AFTER"
 
           python3 dist-includes/helpers/apply-staged-update.py --root "$TEMP/app" --dry-run
-          test "$(sha256sum "$TEMP/app/logbook-kai.jar" | cut -d ' ' -f1)" = "$BEFORE"
+          test "$(sha256sum "$TEMP/app/logbook-kai2.jar" | cut -d ' ' -f1)" = "$BEFORE"
           python3 dist-includes/helpers/apply-staged-update.py --root "$TEMP/app"
-          test "$(sha256sum "$TEMP/app/logbook-kai.jar" | cut -d ' ' -f1)" = "$AFTER"
-          test ! -e "$TEMP/app/update/logbook-kai.jar"
+          test "$(sha256sum "$TEMP/app/logbook-kai2.jar" | cut -d ' ' -f1)" = "$AFTER"
+          test ! -e "$TEMP/app/update/logbook-kai2.jar"
 
-          BACKUP="$(find "$TEMP/app/launcher-backups/app-versions" -type f -name 'logbook-kai-*.jar' -print -quit)"
+          BACKUP="$(find "$TEMP/app/launcher-backups/app-versions" -type f -name 'logbook-kai2-*.jar' -print -quit)"
           test -n "$BACKUP"
           test "$(sha256sum "$BACKUP" | cut -d ' ' -f1)" = "$BEFORE"
 
@@ -71,7 +71,7 @@ jobs:
             --root "$TEMP/app" --restore-backup "$BACKUP" --dry-run
           python3 dist-includes/helpers/apply-staged-update.py \
             --root "$TEMP/app" --restore-backup "$BACKUP"
-          test "$(sha256sum "$TEMP/app/logbook-kai.jar" | cut -d ' ' -f1)" = "$BEFORE"
+          test "$(sha256sum "$TEMP/app/logbook-kai2.jar" | cut -d ' ' -f1)" = "$BEFORE"
           test "$(cat "$TEMP/app/config/existing.cfg")" = 'keep user settings'
           test "$(cat "$TEMP/app/plugins/klb-logbook-plugin.jar")" = 'keep KLB plugin'
           test "$(cat "$TEMP/app/plugins/kqs-logbook-plugin.jar")" = 'keep KQS plugin'

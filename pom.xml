@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <name>logbook-kai2</name>
-    <artifactId>logbook-kai</artifactId>
+    <artifactId>logbook-kai2</artifactId>
     <groupId>logbook</groupId>
     <version>25.0.10</version>
     <properties>
@@ -63,6 +63,26 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>2.29.0</version>
+                <configuration>
+                    <configFile>${project.basedir}/config-quality/eclipse-java.xml</configFile>
+                    <lineEnding>LF</lineEnding>
+                    <compilerCompliance>21</compilerCompliance>
+                    <compilerSource>21</compilerSource>
+                    <compilerTargetPlatform>21</compilerTargetPlatform>
+                    <includes><include>**/*.java</include></includes>
+                    <directories>
+                        <directory>${project.basedir}/src/main/java</directory>
+                        <directory>${project.basedir}/src/test/java</directory>
+                        <directory>${project.basedir}/scripts/java</directory>
+                        <directory>${project.basedir}/modules/sharing/tests</directory>
+                    </directories>
+                </configuration>
+                <executions><execution><id>java-style</id><goals><goal>validate</goal></goals></execution></executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.16.0</version>
@@ -98,9 +118,9 @@
                             <archive>
                                 <manifestEntries>
                                     <Bundle-License>The MIT License (MIT)</Bundle-License>
-                                    <Implementation-Title>公開日誌-改2</Implementation-Title>
-                                    <Implementation-Vendor>sakura0689</Implementation-Vendor>
-                                    <Built-By>sakura0689</Built-By>
+                                    <Implementation-Title>logbook-kai2</Implementation-Title>
+                                    <Implementation-Vendor>logbook-kai2 contributors</Implementation-Vendor>
+                                    <Built-By>logbook-kai2 build</Built-By>
                                 </manifestEntries>
                                 <manifest>
                                     <mainClass>logbook.internal.Launcher</mainClass>

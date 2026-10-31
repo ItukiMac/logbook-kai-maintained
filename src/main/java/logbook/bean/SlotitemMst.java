@@ -152,7 +152,7 @@ public class SlotitemMst implements Serializable {
 
     /**
      * この装備定義から{@link SlotItemType}を返します。
-     * 
+     *
      * @return {@link SlotItemType}
      */
     public SlotItemType asSlotItemType() {
@@ -203,7 +203,7 @@ public class SlotitemMst implements Serializable {
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             unUsedKey.remove("api_broken"); //廃棄時資材
-            
+
             for (String key : unUsedKey) {
                 LoggerHolder.get().debug("未使用のKeyを検出 : " + key);
             }

@@ -152,43 +152,48 @@ def build(source: Path, output: Path, revision: str) -> dict:
         groups['quests'][management_service] = core.pop(management_service)
     menu_service = 'META-INF/services/logbook.plugin.gui.MainExtMenu'
     if menu_service in core:
-        expected_menus = {'kqs': 'local.kancolle.kqs.KqsLogbookPlugin', 'quests': 'logbook.features.quests.QuestManagementMenu'}
+        expected_menus = {'sharing': 'logbook.features.sharing.InformationSharingPlugin', 'quests': 'logbook.features.quests.QuestManagementMenu'}
         if set(core[menu_service].decode().splitlines()) != set(expected_menus.values()):
             raise ValueError('Unexpected shared menu providers')
         core.pop(menu_service)
         for module, provider in expected_menus.items():
             groups[module][menu_service] = (provider + '\n').encode()
     # Lifecycle registrations follow their owning module, never remain in core.
-    plugin_providers = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp',
-                        'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}
+    plugin_providers = {'bridge': 'logbook.features.bridge.BrowserBridgePlugin',
+                        'sharing': 'logbook.features.sharing.InformationSharingPlugin'}
     for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
         name = 'META-INF/services/' + service
         lines = core[name].decode().splitlines()
         for group, provider in plugin_providers.items():
-            if group == 'klb' and service != 'logbook.plugin.lifecycle.StartUp':
+            if group == 'bridge' and service != 'logbook.plugin.lifecycle.StartUp':
                 continue
             if lines.count(provider) != 1:
                 raise ValueError('Missing or duplicate bundled plugin service: ' + provider)
             groups[group][name] = (provider + '\n').encode()
         core[name] = ('\n'.join(line for line in lines if line not in plugin_providers.values()) + '\n').encode()
 
-    # The managed launcher supplies an explicit six-JAR class path. Retain all
+    # The managed launcher supplies an explicit nine-JAR class path. Retain all
     # other legacy attributes but never let Class-Path silently add other JARs.
     core['META-INF/MANIFEST.MF'] = explicit_classpath_manifest(core['META-INF/MANIFEST.MF'])
     core[HOST_METADATA] = (json.dumps({'api': HOST_API, 'version': HOST_VERSION},
                                      sort_keys=True) + '\n').encode()
     license_text = (Path(__file__).resolve().parents[1] / 'LICENSE').read_bytes()
-    core['META-INF/LICENSE-logbook-kai.txt'] = license_text
+    core['META-INF/LICENSE-logbook-kai2.txt'] = license_text
+    repository = Path(__file__).resolve().parents[1]
+    for notice in sorted((repository / 'licenses').rglob('*')):
+        if notice.is_file():
+            core['META-INF/third-party/' + notice.relative_to(repository / 'licenses').as_posix()] = notice.read_bytes()
+    core['META-INF/THIRD_PARTY_NOTICES.md'] = (repository / 'THIRD_PARTY_NOTICES.md').read_bytes()
     new_directory(output)
     (output / 'features').mkdir()
-    write_jar(output / 'logbook-core.jar', core)
-    files = ['logbook-core.jar']
-    host_hash = sha((output / 'logbook-core.jar').read_bytes())
+    write_jar(output / 'logbook-kai2-core.jar', core)
+    files = ['logbook-kai2-core.jar']
+    host_hash = sha((output / 'logbook-kai2-core.jar').read_bytes())
     modules = []
     for group, values in groups.items():
         provider = GROUPS[group][0]
         values.update(styles)
-        values['META-INF/LICENSE-logbook-kai.txt'] = license_text
+        values['META-INF/LICENSE-logbook-kai2.txt'] = license_text
         if group == 'quests':
             values['META-INF/NOTICE-quest-catalog.txt'] = (Path(__file__).resolve().parents[1] / 'modules/quests/CATALOG-ORIGIN.md').read_bytes()
             values['META-INF/LICENSE-quest-catalog.txt'] = (Path(__file__).resolve().parents[1] / 'modules/quests/LICENSE').read_bytes()
@@ -200,9 +205,9 @@ def build(source: Path, output: Path, revision: str) -> dict:
                     'provider': PROVIDERS[group], 'features': list(FEATURES[group])}
         values[FEATURE_METADATA] = (json.dumps(metadata, sort_keys=True, indent=2) + '\n').encode()
         values['META-INF/MANIFEST.MF'] = (
-            'Manifest-Version: 1.0\r\nImplementation-Title: logbook-feature-' + group +
+            'Manifest-Version: 1.0\r\nImplementation-Title: logbook-kai2-feature-' + group +
             '\r\nImplementation-Version: 1.0.0\r\nBundle-License: MIT\r\n\r\n').encode()
-        name = 'features/logbook-feature-' + group + '.jar'
+        name = 'features/logbook-kai2-feature-' + group + '.jar'
         write_jar(output / name, values)
         files.append(name)
         modules.append({**metadata, 'path': name, 'sha256': sha((output / name).read_bytes())})
@@ -214,7 +219,7 @@ def build(source: Path, output: Path, revision: str) -> dict:
                 'update_policy': 'explicit managed launch; same-core independent module updates; no legacy updater integration',
                 'classloader_isolation': False,
                 'host': {'api': HOST_API, 'version': HOST_VERSION,
-                         'path': 'logbook-core.jar', 'sha256': host_hash},
+                         'path': 'logbook-kai2-core.jar', 'sha256': host_hash},
                 'modules': modules,
                 'files': {n: sha((output / n).read_bytes()) for n in files},
                 'extracted': {g: sorted(n for n in entries if owner(n, record_ui, equipment_ui, statistics_ui, ship_list_ui, quest_ui) == g) for g in GROUPS}}

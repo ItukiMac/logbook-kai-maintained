@@ -64,7 +64,7 @@ public class SlotitemEquipShips {
 
     /**
      * ItemID,List<Ship>のMap情報を返却します
-     * 
+     *
      * @return 装備可能な艦娘IDのリスト。該当がない場合は空のリストを返します。
      */
     public Map<Integer, List<Integer>> getAllSlotitemEquipShips() {

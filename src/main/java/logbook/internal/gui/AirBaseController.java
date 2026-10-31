@@ -191,9 +191,10 @@ public class AirBaseController extends FeatureUiV1.Window {
         addItem(airbases, this.areaTable.getSelectionModel().getSelectedItem());
         DeckBuilder.airbaseSelectionCopy(airbases);
     }
-    
+
     void addItem(List<AirBase> list, TreeItem<AreaTable> item) {
-        if (item == null) return;
+        if (item == null)
+            return;
         Optional.ofNullable(item.getValue()).map(AreaTable::getAirBase).ifPresent(list::add);
         Optional.ofNullable(item.getChildren()).ifPresent(children -> children.forEach(child -> addItem(list, child)));
     }
@@ -234,10 +235,13 @@ public class AirBaseController extends FeatureUiV1.Window {
      */
     void update(ActionEvent e) {
         AirBaseStatusV1.Snapshot next = AirBaseStatusV1.snapshot();
-        if (!next.equals(this.snapshot)) render(next);
+        if (!next.equals(this.snapshot))
+            render(next);
     }
 
-    private void setAirBase() { render(AirBaseStatusV1.snapshot()); }
+    private void setAirBase() {
+        render(AirBaseStatusV1.snapshot());
+    }
 
     /** One captured value set feeds the tree, details, warnings and copy text. */
     private void render(AirBaseStatusV1.Snapshot next) {
@@ -246,56 +250,94 @@ public class AirBaseController extends FeatureUiV1.Window {
         this.snapshot = next;
         TreeItem<AreaTable> root = new TreeItem<>(new AreaTable());
         this.areaTable.setRoot(root);
-        var normal = group("通常海域", "normal"); var event = group("イベント海域", "event"); var unknown = group("不明海域", "unknown");
+        var normal = group("通常海域", "normal");
+        var event = group("イベント海域", "event");
+        var unknown = group("不明海域", "unknown");
         root.getChildren().addAll(normal, event);
-        Map<String,TreeItem<AreaTable>> areas = new java.util.LinkedHashMap<>();
+        Map<String, TreeItem<AreaTable>> areas = new java.util.LinkedHashMap<>();
         TreeItem<AreaTable> restore = null;
         for (BaseView value : next.bases()) {
             String areaKey = value.key().areaId() + ":" + value.areaType();
             TreeItem<AreaTable> sea = areas.get(areaKey);
             if (sea == null) {
-                sea = group(value.areaName(), "area:" + areaKey); areas.put(areaKey, sea);
+                sea = group(value.areaName(), "area:" + areaKey);
+                areas.put(areaKey, sea);
                 (value.areaType() == null ? unknown : value.areaType() == 0 ? normal : event).getChildren().add(sea);
             }
-            AreaTable row = new AreaTable(); row.view = value; row.selectionKey = "base:" + value.key();
-            row.setName(value.name()); row.setActionKind(value.actionText());
-            row.setSeiku(AirBaseStatusV1.metric(value.airPower())); row.setDistance(AirBaseStatusV1.metric(value.distance()));
+            AreaTable row = new AreaTable();
+            row.view = value;
+            row.selectionKey = "base:" + value.key();
+            row.setName(value.name());
+            row.setActionKind(value.actionText());
+            row.setSeiku(AirBaseStatusV1.metric(value.airPower()));
+            row.setDistance(AirBaseStatusV1.metric(value.distance()));
             // Legacy public bean getters return detached copies, never the live communication state.
             row.setAirBase(legacyBase(value));
             for (PlaneView plane : value.planes()) {
-                Plane item = new Plane(); item.view = plane; item.setSlot(plane.slotId());
-                item.setCount(plane.count()); item.setMaxCount(plane.maxCount()); item.setCond(plane.condition());
-                item.setPlaneInfo(legacyPlane(plane)); row.getPlanes().add(item);
+                Plane item = new Plane();
+                item.view = plane;
+                item.setSlot(plane.slotId());
+                item.setCount(plane.count());
+                item.setMaxCount(plane.maxCount());
+                item.setCond(plane.condition());
+                item.setPlaneInfo(legacyPlane(plane));
+                row.getPlanes().add(item);
             }
-            TreeItem<AreaTable> leaf = new TreeItem<>(row); sea.getChildren().add(leaf);
+            TreeItem<AreaTable> leaf = new TreeItem<>(row);
+            sea.getChildren().add(leaf);
         }
-        if (!unknown.getChildren().isEmpty()) root.getChildren().add(unknown);
+        if (!unknown.getChildren().isEmpty())
+            root.getChildren().add(unknown);
         if (selection != null) {
-            var queue = new java.util.ArrayDeque<TreeItem<AreaTable>>(); queue.add(root);
+            var queue = new java.util.ArrayDeque<TreeItem<AreaTable>>();
+            queue.add(root);
             while (!queue.isEmpty()) {
-                var item = queue.removeFirst(); queue.addAll(item.getChildren());
-                if (selection.equals(item.getValue().selectionKey)) { restore = item; break; }
+                var item = queue.removeFirst();
+                queue.addAll(item.getChildren());
+                if (selection.equals(item.getValue().selectionKey)) {
+                    restore = item;
+                    break;
+                }
             }
         }
-        if (restore != null) this.areaTable.getSelectionModel().select(restore);
-        else plane(null, null, null);
+        if (restore != null)
+            this.areaTable.getSelectionModel().select(restore);
+        else
+            plane(null, null, null);
     }
 
     private static TreeItem<AreaTable> group(String name, String key) {
-        AreaTable value = new AreaTable(); value.setName(name); value.selectionKey = key;
-        TreeItem<AreaTable> item = new TreeItem<>(value); item.setExpanded(true); return item;
+        AreaTable value = new AreaTable();
+        value.setName(name);
+        value.selectionKey = key;
+        TreeItem<AreaTable> item = new TreeItem<>(value);
+        item.setExpanded(true);
+        return item;
     }
 
     private static PlaneInfo legacyPlane(PlaneView p) {
-        PlaneInfo copy = new PlaneInfo(); copy.setSquadronId(p.squadronId()); copy.setState(p.state());
-        copy.setSlotid(p.slotId()); copy.setCount(p.count()); copy.setMaxCount(p.maxCount()); copy.setCond(p.condition()); return copy;
+        PlaneInfo copy = new PlaneInfo();
+        copy.setSquadronId(p.squadronId());
+        copy.setState(p.state());
+        copy.setSlotid(p.slotId());
+        copy.setCount(p.count());
+        copy.setMaxCount(p.maxCount());
+        copy.setCond(p.condition());
+        return copy;
     }
 
     private static AirBase legacyBase(BaseView b) {
-        AirBase copy = new AirBase(); copy.setAreaId(b.key().areaId()); copy.setRid(b.key().baseId());
-        copy.setName(b.name()); copy.setActionKind(b.actionKind());
-        Mapinfo.Distance d = new Mapinfo.Distance(); d.setBase(b.distanceBase()); d.setBonus(b.distanceBonus()); copy.setDistance(d);
-        copy.setPlaneInfo(b.planes().stream().map(AirBaseController::legacyPlane).collect(Collectors.toList())); return copy;
+        AirBase copy = new AirBase();
+        copy.setAreaId(b.key().areaId());
+        copy.setRid(b.key().baseId());
+        copy.setName(b.name());
+        copy.setActionKind(b.actionKind());
+        Mapinfo.Distance d = new Mapinfo.Distance();
+        d.setBase(b.distanceBase());
+        d.setBonus(b.distanceBonus());
+        copy.setDistance(d);
+        copy.setPlaneInfo(b.planes().stream().map(AirBaseController::legacyPlane).collect(Collectors.toList()));
+        return copy;
     }
 
     private String actionKind(int actionKind) {
@@ -323,32 +365,49 @@ public class AirBaseController extends FeatureUiV1.Window {
      */
     private void plane(ObservableValue<? extends TreeItem<AreaTable>> observable,
             TreeItem<AreaTable> oldValue, TreeItem<AreaTable> value) {
-        this.planes.clear(); this.info.getChildren().clear();
-        this.seikuTotal.setText("—"); this.lesser.setText("—"); this.equal.setText("—");
-        this.superior.setText("—"); this.greater.setText("—");
-        if (this.snapshot != null && !this.snapshot.warnings().isEmpty()) notice("状態未確定", this.snapshot.warnings());
-        if (value == null || value.getValue() == null || value.getValue().view == null) return;
-        AreaTable row = value.getValue(); BaseView base = row.view; this.planes.addAll(row.getPlanes());
-        Integer power = base.airPower(); this.seikuTotal.setText(AirBaseStatusV1.metric(power));
+        this.planes.clear();
+        this.info.getChildren().clear();
+        this.seikuTotal.setText("—");
+        this.lesser.setText("—");
+        this.equal.setText("—");
+        this.superior.setText("—");
+        this.greater.setText("—");
+        if (this.snapshot != null && !this.snapshot.warnings().isEmpty())
+            notice("状態未確定", this.snapshot.warnings());
+        if (value == null || value.getValue() == null || value.getValue().view == null)
+            return;
+        AreaTable row = value.getValue();
+        BaseView base = row.view;
+        this.planes.addAll(row.getPlanes());
+        Integer power = base.airPower();
+        this.seikuTotal.setText(AirBaseStatusV1.metric(power));
         if (power == null) {
-            this.lesser.setText("未記録"); this.equal.setText("未記録");
-            this.superior.setText("未記録"); this.greater.setText("未記録");
+            this.lesser.setText("未記録");
+            this.equal.setText("未記録");
+            this.superior.setText("未記録");
+            this.greater.setText("未記録");
         } else {
             // Same threshold display, with long intermediates instead of overflowing int multiplication.
-            this.lesser.setText(String.valueOf((long)power * 3));
-            this.equal.setText(String.valueOf((long)(power * (3D / 2D))));
-            this.superior.setText(String.valueOf((long)(power * (2D / 3D))));
-            this.greater.setText(String.valueOf((long)(power * (1D / 3D))));
+            this.lesser.setText(String.valueOf((long) power * 3));
+            this.equal.setText(String.valueOf((long) (power * (3D / 2D))));
+            this.superior.setText(String.valueOf((long) (power * (2D / 3D))));
+            this.greater.setText(String.valueOf((long) (power * (1D / 3D))));
         }
-        if (base.lowSupply()) notice("補給不足", List.of());
-        if (base.fatigued()) notice("疲労", List.of());
-        if (base.relocating()) notice("配置転換中", List.of());
-        if (!base.warnings().isEmpty()) notice("情報不足", base.warnings());
+        if (base.lowSupply())
+            notice("補給不足", List.of());
+        if (base.fatigued())
+            notice("疲労", List.of());
+        if (base.relocating())
+            notice("配置転換中", List.of());
+        if (!base.warnings().isEmpty())
+            notice("情報不足", base.warnings());
     }
 
     private void notice(String title, List<String> messages) {
-        Button button = new Button(title); HBox.setMargin(button, new Insets(1));
-        if (!messages.isEmpty()) button.setTooltip(new javafx.scene.control.Tooltip(String.join("\n", messages)));
+        Button button = new Button(title);
+        HBox.setMargin(button, new Insets(1));
+        if (!messages.isEmpty())
+            button.setTooltip(new javafx.scene.control.Tooltip(String.join("\n", messages)));
         this.info.getChildren().add(button);
     }
 
@@ -594,9 +653,11 @@ public class AirBaseController extends FeatureUiV1.Window {
 
         @Override
         public String toString() {
-            if (this.view != null) return new StringJoiner("\t").add(this.view.name())
-                    .add(AirBaseStatusV1.metric(this.view.count())).add(AirBaseStatusV1.metric(this.view.maxCount()))
-                    .add(AirBaseStatusV1.metric(this.view.condition())).toString();
+            if (this.view != null)
+                return new StringJoiner("\t").add(this.view.name())
+                        .add(AirBaseStatusV1.metric(this.view.count()))
+                        .add(AirBaseStatusV1.metric(this.view.maxCount()))
+                        .add(AirBaseStatusV1.metric(this.view.condition())).toString();
             Map<Integer, SlotItem> itemMap = SlotItemCollection.get()
                     .getSlotitemMap();
             return new StringJoiner("\t")
@@ -623,8 +684,10 @@ public class AirBaseController extends FeatureUiV1.Window {
             if (!empty && captured != null && captured.view != null) {
                 PlaneView data = captured.view;
                 this.setText(data.name());
-                this.setGraphic(data.masterId() == null ? null : new ImageView(EquipmentImagesV1.item(data.masterId())));
-                if (data.state() != null && data.state() != 1) this.getStyleClass().add("change");
+                this.setGraphic(
+                        data.masterId() == null ? null : new ImageView(EquipmentImagesV1.item(data.masterId())));
+                if (data.state() != null && data.state() != 1)
+                    this.getStyleClass().add("change");
                 return;
             }
             if (!empty) {

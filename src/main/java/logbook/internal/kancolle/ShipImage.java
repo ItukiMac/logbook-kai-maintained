@@ -65,13 +65,16 @@ class ShipImage {
     private static final Layer ESCAPE_BADGE = new Layer(0, 0, Paths.get("common", BannerIcon.MC_BANNER_ICON10));
 
     /** 小破汚れ */
-    private static final Layer SLIGHT_DAMAGE_BACKGROUND = new Layer(0, 0, Paths.get("common", BannerIcon.MC_BANNER_SMOKE_IMG0));
+    private static final Layer SLIGHT_DAMAGE_BACKGROUND = new Layer(0, 0,
+            Paths.get("common", BannerIcon.MC_BANNER_SMOKE_IMG0));
 
     /** 中破汚れ */
-    private static final Layer HALF_DAMAGE_BACKGROUND = new Layer(0, 0, Paths.get("common", BannerIcon.MC_BANNER_SMOKE_IMG1));
+    private static final Layer HALF_DAMAGE_BACKGROUND = new Layer(0, 0,
+            Paths.get("common", BannerIcon.MC_BANNER_SMOKE_IMG1));
 
     /** 大破汚れ */
-    private static final Layer BADLY_DAMAGE_BACKGROUND = new Layer(0, 0, Paths.get("common", BannerIcon.MC_BANNER_SMOKE_IMG2));
+    private static final Layer BADLY_DAMAGE_BACKGROUND = new Layer(0, 0,
+            Paths.get("common", BannerIcon.MC_BANNER_SMOKE_IMG2));
 
     /** 疲労オレンジ背景 */
     private static final Layer ORANGE_BACKGROUND = new Layer(150, 0, Paths.get("common", BannerIcon.COMMON_MISC_35));
@@ -220,7 +223,8 @@ class ShipImage {
                 Ship ship = chara.asShip();
                 Integer sallyArea = ship.getSallyArea();
                 if (sallyArea != null && sallyArea.intValue() != 0) {
-                    Path p = Paths.get("common", JOIN_BANNER.replace("{0}", Integer.toString(SeaAreas.getImageId(sallyArea))));
+                    Path p = Paths.get("common",
+                            JOIN_BANNER.replace("{0}", Integer.toString(SeaAreas.getImageId(sallyArea))));
                     layers.add(new Layer(50, -3, p));
                 }
             }

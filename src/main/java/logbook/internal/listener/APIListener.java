@@ -49,7 +49,9 @@ public final class APIListener implements ContentListenerSpi {
     /** 全てのURLで実行される設定がされているフラグ */
     private final boolean isAllEventExec;
 
-    public APIListener() { this(LogBookCoreServices.getServiceProviders(APIListenerSpi.class)); }
+    public APIListener() {
+        this(LogBookCoreServices.getServiceProviders(APIListenerSpi.class));
+    }
 
     APIListener(Stream<APIListenerSpi> providers) {
         Function<APIListenerSpi, Stream<Pair<String, APIListenerSpi>>> mapper = impl -> {
@@ -85,19 +87,20 @@ public final class APIListener implements ContentListenerSpi {
 
     /**
      * 処理対象URIか判定を行います
-     * 
+     *
      * @param requestMetaData リクエストに含まれている情報
      * @return 処理対象URIの場合true
      */
     @Override
     public boolean test(RequestMetaData requestMetaData) {
         String uri = requestMetaData.getRequestURI();
-        return uri != null && uri.startsWith("/kcsapi/") && (this.isAllEventExec || this.targetEventExec.containsKey(uri));
+        return uri != null && uri.startsWith("/kcsapi/")
+                && (this.isAllEventExec || this.targetEventExec.containsKey(uri));
     }
 
     /**
      * レスポンスを処理します
-     * 
+     *
      * @param requestMetaData  リクエストに含まれている情報
      * @param responseMetaData レスポンスに含まれている情報
      */
@@ -141,12 +144,12 @@ public final class APIListener implements ContentListenerSpi {
 
     /**
      * APIアノテーションで設定されたURLにマッチする、各APIListenerSpiを実行します
-     * 
+     *
      * <pre>
      * &#64;API("/kcsapi/url/url")
      * public class ApiImplementsClass implements APIListenerSpi
      * </pre>
-     * 
+     *
      * @param pair
      * @param json
      * @param req
@@ -242,7 +245,8 @@ public final class APIListener implements ContentListenerSpi {
 
             String timestamp = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").format(now);
             String csv = String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d%n",
-                    timestamp, metrics.uri, metrics.receivedat, metrics.requestat, metrics.responseat, metrics.start, metrics.end,
+                    timestamp, metrics.uri, metrics.receivedat, metrics.requestat, metrics.responseat, metrics.start,
+                    metrics.end,
                     (metrics.requestat - metrics.receivedat),
                     (metrics.responseat - metrics.requestat),
                     (metrics.end - metrics.start),

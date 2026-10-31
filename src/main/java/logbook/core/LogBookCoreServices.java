@@ -15,7 +15,7 @@ import logbook.plugin.JarBasedPlugin;
  * 航海日誌で実行されるプラグイン含めた実行クラスやリソース情報を提供するサービスです
  *
  * 初期化処理は、logbook.internal.Launcherで実行されます
- * 
+ *
  * @see logbook.internal.Launcher
  */
 public final class LogBookCoreServices {
@@ -25,18 +25,32 @@ public final class LogBookCoreServices {
 
     private static boolean isInitialized = false;
 
-    public static logbook.plugin.api.GameStateView gameStateView() { return GameStateService.shared(); }
-    public static <T> T readGameState(java.util.function.Supplier<T> query) { return GameStateService.shared().read(query); }
-    public static logbook.plugin.api.GameDataView gameDataView() { return GameDefinitionRuntime.view(); }
-    public static logbook.plugin.api.GameDefinitionScope pinDefinitions() { return GameDefinitionRuntime.pin(); }
-    public static logbook.plugin.api.GameDefinitionScope pinDefinitions(logbook.plugin.api.GameDefinitionSnapshot snapshot) { return GameDefinitionRuntime.pin(snapshot); }
+    public static logbook.plugin.api.GameStateView gameStateView() {
+        return GameStateService.shared();
+    }
 
+    public static <T> T readGameState(java.util.function.Supplier<T> query) {
+        return GameStateService.shared().read(query);
+    }
+
+    public static logbook.plugin.api.GameDataView gameDataView() {
+        return GameDefinitionRuntime.view();
+    }
+
+    public static logbook.plugin.api.GameDefinitionScope pinDefinitions() {
+        return GameDefinitionRuntime.pin();
+    }
+
+    public static logbook.plugin.api.GameDefinitionScope pinDefinitions(
+            logbook.plugin.api.GameDefinitionSnapshot snapshot) {
+        return GameDefinitionRuntime.pin(snapshot);
+    }
 
     /**
      * LogBookCoreContainerの初期化処理を行います
-     * 
+     *
      * @param plugins
-     * 
+     *
      * @see logbook.internal.Launcher
      */
     public static synchronized void init(List<JarBasedPlugin> plugins) throws Exception {
@@ -80,7 +94,7 @@ public final class LogBookCoreServices {
      * @param <T>   サービスプロバイダ
      * @param clazz プラグインのインターフェイス
      * @return clazzで指定されたサービスプロバイダインスタンス
-     * 
+     *
      * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/ServiceLoader.html
      * @see src/main/resource/META-INF/service
      */
@@ -99,7 +113,8 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResource(String)
      */
     public static URL getResource(String name) {
-        if (GameDefinitionRuntime.active() && GameDefinitionRuntime.managed(name)) return GameDefinitionRuntime.url(name);
+        if (GameDefinitionRuntime.active() && GameDefinitionRuntime.managed(name))
+            return GameDefinitionRuntime.url(name);
         if (ExternalQuestDefinitions.isManagedGameDataResource(name)) {
             URL external = ExternalQuestDefinitions.resolveManagedResource(name);
             if (external != null || ExternalQuestDefinitions.hasActiveGeneration()) {
@@ -119,7 +134,8 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResourceAsStream(String)
      */
     public static InputStream getResourceAsStream(String name) {
-        if (GameDefinitionRuntime.active() && GameDefinitionRuntime.managed(name)) return GameDefinitionRuntime.open(name);
+        if (GameDefinitionRuntime.active() && GameDefinitionRuntime.managed(name))
+            return GameDefinitionRuntime.open(name);
         if (ExternalQuestDefinitions.isManagedGameDataResource(name)) {
             URL external = ExternalQuestDefinitions.resolveManagedResource(name);
             if (external != null) {
@@ -142,13 +158,15 @@ public final class LogBookCoreServices {
     /**
      * 任務のリソースを取得します。
      * （どのコードが任務のリソースを使用しているかわかりやすくするため専用のメソッドを用意）
-     * 
+     *
      * @param questNo 任務No
      * @param isRegularQuest true:恒常任務, false:期間限定任務
      * @return リソースを読み込むためのURL
      */
     public static URL getQuestResource(int questNo, boolean isRegularQuest) {
-        if (GameDefinitionRuntime.active()) return GameDefinitionRuntime.url("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
+        if (GameDefinitionRuntime.active())
+            return GameDefinitionRuntime
+                    .url("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
         URL external = ExternalQuestDefinitions.resolve(questNo, isRegularQuest);
         if (external != null || ExternalQuestDefinitions.hasActiveGeneration()) {
             return external;
@@ -158,7 +176,7 @@ public final class LogBookCoreServices {
 
     /**
      * カスタム任務のリソースを取得します。
-     * 
+     *
      * @param questNo 任務No
      * @return リソースを読み込むためのURL
      */
@@ -184,7 +202,9 @@ public final class LogBookCoreServices {
      * @see ClassLoader#getResourceAsStream(String)
      */
     public static InputStream getQuestResourceAsStream(int questNo, boolean isRegularQuest) {
-        if (GameDefinitionRuntime.active()) return GameDefinitionRuntime.open("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
+        if (GameDefinitionRuntime.active())
+            return GameDefinitionRuntime
+                    .open("logbook/" + (isRegularQuest ? "quest/" : "eventquest/") + questNo + ".json");
         URL external = ExternalQuestDefinitions.resolve(questNo, isRegularQuest);
         if (external != null) {
             try {
@@ -203,7 +223,7 @@ public final class LogBookCoreServices {
 
     /**
      * コンテナを終了します
-     * 
+     *
      * @throws Exception
      */
     public static synchronized void closeContainer() throws Exception {

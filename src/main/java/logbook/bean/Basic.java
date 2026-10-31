@@ -94,7 +94,7 @@ public class Basic implements Serializable {
             unUsedKey.removeIf("api_tutorial_progress"::equals); //チュートリアル
             unUsedKey.removeIf("api_comment_id"::equals); //
             unUsedKey.removeIf("api_nickname_id"::equals); //
-            
+
             unUsedKey.removeIf("api_st_win"::equals); //出撃勝利数
             unUsedKey.removeIf("api_st_lose"::equals); //出撃敗北数
             unUsedKey.removeIf("api_pt_win"::equals); //演習勝利数
@@ -102,7 +102,7 @@ public class Basic implements Serializable {
             unUsedKey.removeIf("api_ms_count"::equals); //遠征回数
             unUsedKey.removeIf("api_ms_success"::equals); //遠征成功回数
             unUsedKey.removeIf("api_furniture"::equals); //家具設定
-            
+
             for (String key : unUsedKey) {
                 LoggerHolder.get().debug("未使用のKeyを検出 : " + key + ":" + json.get(key));
             }

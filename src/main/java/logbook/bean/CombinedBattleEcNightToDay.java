@@ -166,7 +166,7 @@ public class CombinedBattleEcNightToDay implements ICombinedBattle, ICombinedEcB
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたCombinedBattleEcNightToDay
      */
     @Override
@@ -239,7 +239,7 @@ public class CombinedBattleEcNightToDay implements ICombinedBattle, ICombinedEcB
                 .set("api_hougeki2", bean::setHougeki2, BattleTypes.Hougeki::toHougeki)
                 .set("api_hougeki3", bean::setHougeki3, BattleTypes.Hougeki::toHougeki)
                 .set("api_raigeki", bean::setRaigeki, BattleTypes.Raigeki::toRaigeki);
-        
+
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             for (String key : unUsedKey) {

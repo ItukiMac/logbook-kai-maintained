@@ -37,10 +37,12 @@ import logbook.plugin.lifecycle.StartUp;
 /** Test-only plugin observing the real Launcher and opening its actual feature menu. */
 public final class FeatureVersionSmokeHook implements StartUp {
     private static void check(boolean value, String reason) {
-        if (!value) throw new AssertionError(reason);
+        if (!value)
+            throw new AssertionError(reason);
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         try {
             check(ManagedBundleMode.enabled(), "Managed mode is required");
             waitForApplication();
@@ -56,22 +58,25 @@ public final class FeatureVersionSmokeHook implements StartUp {
                 var bars = new ArrayList<MenuBar>();
                 collectBars(main.getScene().getRoot(), bars);
                 for (MenuBar bar : bars) {
-                    for (Menu menu : bar.getMenus()) collect(menu, candidates);
+                    for (Menu menu : bar.getMenus())
+                        collect(menu, candidates);
                 }
-                var items = candidates.stream().filter(item ->
-                        "logbook.feature.probability".equals(item.getId())).toList();
+                var items = candidates.stream().filter(item -> "logbook.feature.probability".equals(item.getId()))
+                        .toList();
                 check(items.size() == 1, "Expected exactly one actual probability menu item");
                 // Exercise the host's real action, FXMLLoader and window wiring.
                 items.get(0).fire();
                 var windows = Window.getWindows().stream()
                         .filter(window -> window != main && window instanceof Stage && window.isShowing())
                         .filter(window -> window.getScene() != null
-                                && window.getScene().getRoot().lookup("#fixtureInput") != null).toList();
+                                && window.getScene().getRoot().lookup("#fixtureInput") != null)
+                        .toList();
                 check(windows.size() == 1, "Feature menu did not create its real fixture window");
                 Stage window = (Stage) windows.get(0);
                 try {
                     var root = window.getScene().getRoot();
-                    root.applyCss(); root.layout();
+                    root.applyCss();
+                    root.layout();
                     ((TextField) root.lookup("#fixtureInput")).setText(request.getProperty("input"));
                     ((TextField) root.lookup("#fixtureRun")).setText(run);
                     ((Button) root.lookup("#fixtureCalculate")).fire();
@@ -113,7 +118,8 @@ public final class FeatureVersionSmokeHook implements StartUp {
             if (checkWindow.get(2, TimeUnit.SECONDS)) {
                 try (Socket ignored = new Socket("127.0.0.1", AppConfig.get().getListenPort())) {
                     return;
-                } catch (java.io.IOException notStartedYet) { }
+                } catch (java.io.IOException notStartedYet) {
+                }
             }
             Thread.sleep(50);
         }
@@ -139,7 +145,8 @@ public final class FeatureVersionSmokeHook implements StartUp {
     private static void collect(Menu menu, List<MenuItem> found) {
         for (MenuItem item : menu.getItems()) {
             found.add(item);
-            if (item instanceof Menu nested) collect(nested, found);
+            if (item instanceof Menu nested)
+                collect(nested, found);
         }
     }
 
@@ -149,7 +156,8 @@ public final class FeatureVersionSmokeHook implements StartUp {
             return;
         }
         for (var node : parent.getChildrenUnmodifiable()) {
-            if (node instanceof Parent child) collectBars(child, found);
+            if (node instanceof Parent child)
+                collectBars(child, found);
         }
     }
 
@@ -160,7 +168,8 @@ public final class FeatureVersionSmokeHook implements StartUp {
         check(expectedVersion.equals(descriptors.get("calculators").version()), "Wrong calculator descriptor version");
         check(registry.group(FeatureModule.Group.CALCULATOR).size() == 4, "Original calculator feature IDs changed");
         int features = 0;
-        for (FeatureModule.Group group : FeatureModule.Group.values()) features += registry.group(group).size();
+        for (FeatureModule.Group group : FeatureModule.Group.values())
+            features += registry.group(group).size();
         check(features == 7, "Original seven menu features must remain available");
         String[] jars = System.getProperty("java.class.path").split(java.util.regex.Pattern.quote(File.pathSeparator));
         check(jars.length == 9, "Launcher classpath must contain only the nine selected bundle JARs");
@@ -170,11 +179,12 @@ public final class FeatureVersionSmokeHook implements StartUp {
             Path path = Path.of(jarPath);
             check(Files.isRegularFile(path) && path.toString().contains("/versions/"),
                     "Unexpected classpath entry: " + path);
-            check(!path.getFileName().toString().equals("logbook-kai.jar"), "Original fat JAR leaked onto classpath");
+            check(!path.getFileName().toString().equals("logbook-kai2.jar"), "Original fat JAR leaked onto classpath");
             try (ZipFile jar = new ZipFile(path.toFile())) {
                 var entry = jar.getEntry("META-INF/logbook/feature.json");
                 if (entry == null) {
-                    check(path.getFileName().toString().equals("logbook-core.jar"), "Missing feature contract: " + path);
+                    check(path.getFileName().toString().equals("logbook-kai2-core.jar"),
+                            "Missing feature contract: " + path);
                     continue;
                 }
                 JsonNode document;
@@ -184,7 +194,8 @@ public final class FeatureVersionSmokeHook implements StartUp {
                 String id = document.path("id").asText();
                 FeatureModule.Descriptor descriptor = descriptors.get(id);
                 check(descriptor != null, "Undiscovered module in the selected classpath: " + id);
-                check(descriptor.version().equals(document.path("version").asText()), "JAR/Java version differs: " + id);
+                check(descriptor.version().equals(document.path("version").asText()),
+                        "JAR/Java version differs: " + id);
                 check(descriptor.hostApi() == document.path("host_api").asInt(), "JAR/Java API differs: " + id);
                 check(descriptor.dependencies().size() == document.path("dependencies").size(),
                         "JAR/Java dependency count differs: " + id);
@@ -192,20 +203,22 @@ public final class FeatureVersionSmokeHook implements StartUp {
                     var dependency = descriptor.dependencies().get(index);
                     var declared = document.path("dependencies").get(index);
                     check(dependency.id().equals(declared.path("id").asText())
-                                    && dependency.minVersion().equals(declared.path("min_version").asText())
-                                    && dependency.maxVersionExclusive().equals(declared.path("max_version_exclusive").asText()),
+                            && dependency.minVersion().equals(declared.path("min_version").asText())
+                            && dependency.maxVersionExclusive().equals(declared.path("max_version_exclusive").asText()),
                             "JAR/Java dependency differs: " + id);
                 }
                 seen.add(id);
             }
         }
-        check(seen.size() == 8 && seen.containsAll(descriptors.keySet()), "Selected classpath misses a declared module");
+        check(seen.size() == 8 && seen.containsAll(descriptors.keySet()),
+                "Selected classpath misses a declared module");
         String fxml = LogBookCoreServices.getClassLoader().getResource(registry.get("probability").fxml()).toString();
-        check(fxml.contains("/features/logbook-feature-calculators.jar!"), "FXML did not load from the selected feature JAR");
+        check(fxml.contains("/features/logbook-kai2-feature-calculators.jar!"),
+                "FXML did not load from the selected feature JAR");
         Class<?> controller = Class.forName("logbook.internal.gui.FeatureVersionFixtureController", false,
                 LogBookCoreServices.getClassLoader());
         check(controller.getProtectionDomain().getCodeSource().getLocation().toString()
-                        .endsWith("/features/logbook-feature-calculators.jar"),
+                .endsWith("/features/logbook-kai2-feature-calculators.jar"),
                 "Fixture controller did not load from the independently updated feature JAR");
     }
 }

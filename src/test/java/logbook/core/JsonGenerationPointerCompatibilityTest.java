@@ -9,7 +9,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 /** Parser failures remain checked I/O failures for the release recovery caller. */
 class JsonGenerationPointerCompatibilityTest {
-    @TempDir Path root;
+    @TempDir
+    Path root;
 
     private void rejectsWithoutWriting(String text) throws Exception {
         byte[] original = text.getBytes(StandardCharsets.UTF_8);
@@ -22,22 +23,28 @@ class JsonGenerationPointerCompatibilityTest {
         }
     }
 
-    @Test void truncatedPointerRetainsCheckedIoContractAndOriginalBytes() throws Exception {
+    @Test
+    void truncatedPointerRetainsCheckedIoContractAndOriginalBytes() throws Exception {
         rejectsWithoutWriting("{\"schema\":\"interrupted");
     }
 
-    @Test void duplicatePointerRetainsCheckedIoContractAndOriginalBytes() throws Exception {
+    @Test
+    void duplicatePointerRetainsCheckedIoContractAndOriginalBytes() throws Exception {
         rejectsWithoutWriting("{\"schema\":\"" + DefinitionPackInstaller.POINTER_FORMAT
                 + "\",\"generation\":\"" + "a".repeat(64) + "\",\"generation\":\"" + "b".repeat(64) + "\"}");
     }
 
-    @Test void trailingPointerRetainsCheckedIoContractAndOriginalBytes() throws Exception {
+    @Test
+    void trailingPointerRetainsCheckedIoContractAndOriginalBytes() throws Exception {
         rejectsWithoutWriting("{\"schema\":\"" + DefinitionPackInstaller.POINTER_FORMAT
                 + "\",\"generation\":\"" + "a".repeat(64) + "\"} {}");
     }
 
-    @Test void missingPointerSelectsTheExplicitLegacyRootWithoutWritingIt() throws Exception {
+    @Test
+    void missingPointerSelectsTheExplicitLegacyRootWithoutWritingIt() throws Exception {
         assertEquals(root.toAbsolutePath().normalize(), DefinitionPackInstaller.activeDefinitionsRoot(root));
-        try (var entries = Files.list(root)) { assertEquals(0, entries.count()); }
+        try (var entries = Files.list(root)) {
+            assertEquals(0, entries.count());
+        }
     }
 }

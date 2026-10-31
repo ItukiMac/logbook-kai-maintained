@@ -6,18 +6,26 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class SuggestSupportTest {
-    @Test void defaultsToPrefix() {
+    @Test
+    void defaultsToPrefix() {
         assertEquals(List.of("alpha"), new ArrayList<>(new SuggestSupport("alpha", "beta").suggest("al")));
     }
-    @Test void preservesContainsPredicate() {
-        assertEquals(List.of("beta"), new ArrayList<>(new SuggestSupport(String::contains, "alpha", "beta").suggest("et")));
+
+    @Test
+    void preservesContainsPredicate() {
+        assertEquals(List.of("beta"),
+                new ArrayList<>(new SuggestSupport(String::contains, "alpha", "beta").suggest("et")));
     }
-    @Test void emptyQueryDoesNotExposeProviderList() {
+
+    @Test
+    void emptyQueryDoesNotExposeProviderList() {
         var provider = new SuggestSupport("a", "b");
         provider.suggest("").clear();
         assertEquals(2, provider.suggest("").size());
     }
-    @Test void listConstructorRetainsItsSnapshot() {
+
+    @Test
+    void listConstructorRetainsItsSnapshot() {
         var input = new ArrayList<>(List.of("a"));
         var provider = new SuggestSupport(input);
         input.add("b");

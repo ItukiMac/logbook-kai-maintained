@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>logbook-kai2 Parallel Bridge</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<main>
+<h1>logbook-kai2 Parallel Bridge</h1>
+
+<h2>Chrome / CDP</h2>
+<div id="cdp" class="status">確認中…</div>
+
+<h2>航海日誌プラグイン</h2>
+<div id="plugin" class="status">確認中…</div>
+
+<div class="buttons">
+<button id="start">CDP開始 / 再接続</button>
+<button id="stop">CDP停止</button>
+<button id="health">プラグイン再確認</button>
+<button id="clear">履歴クリア</button>
+</div>
+
+<p class="note">
+/kcsapi/ に加え、旧MessageFlowが扱っていた /kcs2/ の艦娘・海域・ゲージ・common・duty・sally画像/JSONを旧版の127.0.0.1:8891とkai2の別ポート（既定8892）へ渡します。
+MessageFlow :8890 は使用しません。
+Cookie・POST本文・レスポンス本文はchrome.storageへ保存しません。
+</p>
+
+<h2>kai2への送信</h2><div id="kai2MirrorStatus">確認中…</div><p><a href="options.html" target="_blank">kai2の送信先ポートを設定</a></p><h2>直近の取得</h2>
+<div id="captures"></div>
+</main>
+<script src="popup.js"></script>
+</body>
+</html>

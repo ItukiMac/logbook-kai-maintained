@@ -58,7 +58,7 @@ public class DeckPort implements Serializable, Cloneable {
     public List<Ship> getBadlyShips() {
         return getBadlyShips(false);
     }
-    
+
     /**
      * 大破した艦娘を返します
      *
@@ -69,7 +69,7 @@ public class DeckPort implements Serializable, Cloneable {
         return this.getShip()
                 .stream()
                 .map(shipMap::get)
-                .skip(ignoreFlagship ? 1:0)
+                .skip(ignoreFlagship ? 1 : 0)
                 .filter(Objects::nonNull)
                 .filter(Ships::isBadlyDamage)
                 .filter(s -> !Ships.isEscape(s))
@@ -84,19 +84,19 @@ public class DeckPort implements Serializable, Cloneable {
      */
     public static DeckPort toDeckPort(JsonObject json) {
         DeckPort bean = new DeckPort();
-        
+
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);
         }
- 
+
         JsonHelper.bind(json, unUsedKeyBindListener)
                 .setInteger("api_flagship", bean::setFlagship)
                 .setInteger("api_id", bean::setId)
                 .setLongList("api_mission", bean::setMission)
                 .setString("api_name", bean::setName)
                 .setIntegerList("api_ship", bean::setShip);
-        
+
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             unUsedKey.removeIf("api_member_id"::equals); //提督id

@@ -49,43 +49,40 @@ class UpdateArchiveStageTest {
     void stagesValidApplicationJarWithoutTouchingActiveJar() throws Exception {
         Path jar = applicationJar();
         byte[] original = Files.readAllBytes(jar);
-        Path active = temporaryDirectory.resolve("logbook-kai.jar");
+        Path active = temporaryDirectory.resolve("logbook-kai2.jar");
         Files.writeString(active, "CURRENT_VERSION");
 
         Path staged = UpdateArchiveStage.stage(
-                archive("logbook-kai.jar", original), temporaryDirectory);
-        assertEquals(temporaryDirectory.resolve("update/logbook-kai.jar"), staged);
+                archive("logbook-kai2.jar", original), temporaryDirectory);
+        assertEquals(temporaryDirectory.resolve("update/logbook-kai2.jar"), staged);
         assertArrayEquals(original, Files.readAllBytes(staged));
         assertEquals("CURRENT_VERSION", Files.readString(active));
     }
 
     @Test
     void rejectsTraversalAndPreservesExistingStagedJar() throws Exception {
-        Path current = temporaryDirectory.resolve("update/logbook-kai.jar");
+        Path current = temporaryDirectory.resolve("update/logbook-kai2.jar");
         Files.createDirectories(current.getParent());
         Files.writeString(current, "PREVIOUS_STAGING");
 
-        assertThrows(IOException.class, () ->
-                UpdateArchiveStage.stage(
-                        archive("../logbook-kai.jar", Files.readAllBytes(applicationJar())),
-                        temporaryDirectory));
+        assertThrows(IOException.class, () -> UpdateArchiveStage.stage(
+                archive("../logbook-kai2.jar", Files.readAllBytes(applicationJar())),
+                temporaryDirectory));
         assertEquals("PREVIOUS_STAGING", Files.readString(current));
     }
 
     @Test
     void rejectsNonApplicationJar() throws Exception {
-        assertThrows(IOException.class, () ->
-                UpdateArchiveStage.stage(
-                        archive("logbook-kai.jar", new byte[] {1, 2, 3, 4}),
-                        temporaryDirectory));
-        assertTrue(Files.notExists(temporaryDirectory.resolve("update/logbook-kai.jar")));
+        assertThrows(IOException.class, () -> UpdateArchiveStage.stage(
+                archive("logbook-kai2.jar", new byte[] { 1, 2, 3, 4 }),
+                temporaryDirectory));
+        assertTrue(Files.notExists(temporaryDirectory.resolve("update/logbook-kai2.jar")));
     }
 
     @Test
     void rejectsMissingJarEntry() throws Exception {
-        assertThrows(IOException.class, () ->
-                UpdateArchiveStage.stage(
-                        archive("README.txt", new byte[] {1, 2, 3}),
-                        temporaryDirectory));
+        assertThrows(IOException.class, () -> UpdateArchiveStage.stage(
+                archive("README.txt", new byte[] { 1, 2, 3 }),
+                temporaryDirectory));
     }
 }

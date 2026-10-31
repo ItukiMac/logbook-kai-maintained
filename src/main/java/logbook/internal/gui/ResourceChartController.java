@@ -181,7 +181,7 @@ public class ResourceChartController extends FeatureUiV1.Window {
         x.play();
         this.term.setItems(FXCollections.observableArrayList(ScaleOption.values()));
         loadConfig();
-        
+
         // 資材ログのテーブル列をバインド
         this.date.setCellValueFactory(new PropertyValueFactory<>("date"));
         this.fuelGap.setCellValueFactory(new PropertyValueFactory<>("fuel"));
@@ -229,10 +229,13 @@ public class ResourceChartController extends FeatureUiV1.Window {
     }
 
     private void loadConfig() {
-        ResourceChartConfig config = Optional.ofNullable(AppViewConfig.get().getResourceChartConfig()).orElseGet(ResourceChartConfig::new);
+        ResourceChartConfig config = Optional.ofNullable(AppViewConfig.get().getResourceChartConfig())
+                .orElseGet(ResourceChartConfig::new);
         // default は今日から2週間前まで
-        this.from.setValue(Optional.ofNullable(config.getFrom()).map((l) -> LocalDate.ofEpochDay(l)).orElseGet(() -> LocalDate.from(ZonedDateTime.now(TIME_ZONE).minusDays(14))));
-        this.to.setValue(Optional.ofNullable(config.getTo()).map((l) -> LocalDate.ofEpochDay(l)).orElseGet(() -> LocalDate.from(ZonedDateTime.now(TIME_ZONE))));
+        this.from.setValue(Optional.ofNullable(config.getFrom()).map((l) -> LocalDate.ofEpochDay(l))
+                .orElseGet(() -> LocalDate.from(ZonedDateTime.now(TIME_ZONE).minusDays(14))));
+        this.to.setValue(Optional.ofNullable(config.getTo()).map((l) -> LocalDate.ofEpochDay(l))
+                .orElseGet(() -> LocalDate.from(ZonedDateTime.now(TIME_ZONE))));
         this.fuel.setSelected(config.isFuel());
         this.ammo.setSelected(config.isAmmo());
         this.metal.setSelected(config.isMetal());

@@ -117,7 +117,7 @@ public class SortieLdShooting
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたSortieLdShooting
      */
     @Override

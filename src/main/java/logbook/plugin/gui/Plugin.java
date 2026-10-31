@@ -23,10 +23,10 @@ public interface Plugin<T> {
 
     /**
      * ソート順を制御する数値を返します
-     * 
+     *
      * @return ソート順に使われる数値
      */
-    default int sortOrder () {
+    default int sortOrder() {
         return Integer.MAX_VALUE;
     }
 

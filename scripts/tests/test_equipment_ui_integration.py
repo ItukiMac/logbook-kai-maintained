@@ -17,12 +17,12 @@ from run_feature_distribution import (FILES, EQUIPMENT_UI_PROFILE,
     equipment_ui_entry, equipment_ui_required_entries)
 
 
-@unittest.skipUnless((ROOT / 'target/logbook-kai.jar').is_file()
+@unittest.skipUnless((ROOT / 'target/logbook-kai2.jar').is_file()
                      and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires built current JAR, javac and isolated display')
 class EquipmentUiIntegrationTest(unittest.TestCase):
     def test_actual_product_equipment_tabs_keep_values_filters_exports_and_settings(self):
-        original = ROOT / 'target/logbook-kai.jar'
+        original = ROOT / 'target/logbook-kai2.jar'
         before = hashlib.sha256(original.read_bytes()).hexdigest()
         fixture = Path(tempfile.mkdtemp(prefix='equipment-ui-fixture-', dir=ROOT / 'target'))
         evidence = ROOT / 'target/r3-verification'
@@ -35,8 +35,8 @@ class EquipmentUiIntegrationTest(unittest.TestCase):
             distribution = fixture / 'distribution'
             report = build(original, distribution, 'a' * 40)
             self.assertEqual(EQUIPMENT_UI_PROFILE, report.get('equipment_ui_profile'))
-            host = distribution / 'logbook-core.jar'
-            status = distribution / 'features/logbook-feature-equipment.jar'
+            host = distribution / 'logbook-kai2-core.jar'
+            status = distribution / 'features/logbook-kai2-feature-equipment.jar'
             with ZipFile(host) as core:
                 self.assertFalse(any(equipment_ui_entry(n) for n in core.namelist()), 'Host fallback copy remains')
             with ZipFile(status) as module:

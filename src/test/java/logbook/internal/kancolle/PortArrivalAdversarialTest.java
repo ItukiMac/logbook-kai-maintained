@@ -26,7 +26,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 /** Malformed and contradictory synthetic evidence must not be promoted into an observed goal. */
 class PortArrivalAdversarialTest {
-    @TempDir Path temp;
+    @TempDir
+    Path temp;
     private static final long T = Instant.parse("2026-10-27T01:00:00Z").toEpochMilli();
     private static final String START = "/kcsapi/api_req_map/start";
     private static final String NEXT = "/kcsapi/api_req_map/next";
@@ -34,15 +35,28 @@ class PortArrivalAdversarialTest {
 
     private static final class MovingClock extends Clock {
         long now = T;
-        @Override public ZoneId getZone() { return ZoneOffset.UTC; }
-        @Override public Clock withZone(ZoneId zone) { return this; }
-        @Override public Instant instant() { return Instant.ofEpochMilli(now); }
+
+        @Override
+        public ZoneId getZone() {
+            return ZoneOffset.UTC;
+        }
+
+        @Override
+        public Clock withZone(ZoneId zone) {
+            return this;
+        }
+
+        @Override
+        public Instant instant() {
+            return Instant.ofEpochMilli(now);
+        }
     }
 
     private static JsonObject node(int cell, BigDecimal event, Integer from, BigDecimal success) {
         var data = Json.createObjectBuilder().add("api_maparea_id", 1).add("api_mapinfo_no", 6)
                 .add("api_no", cell).add("api_event_id", event);
-        if (from != null) data.add("api_from_no", from);
+        if (from != null)
+            data.add("api_from_no", from);
         return Json.createObjectBuilder().add("api_result", success).add("api_data", data).build();
     }
 
@@ -56,7 +70,8 @@ class PortArrivalAdversarialTest {
                         .add(Json.createObjectBuilder().add("api_id", 11).add("api_ship_id", 101))
                         .add(Json.createObjectBuilder().add("api_id", 12).add("api_ship_id", 102)))
                 .add("api_deck_data", Json.createArrayBuilder().add(Json.createObjectBuilder().add("api_id", 1)
-                        .add("api_ship", Json.createArrayBuilder().add(11).add(12).add(-1).add(-1).add(-1).add(-1))))).build();
+                        .add("api_ship", Json.createArrayBuilder().add(11).add(12).add(-1).add(-1).add(-1).add(-1)))))
+                .build();
     }
 
     private static RequestMetaData request(long capture, Integer from) {
@@ -69,18 +84,29 @@ class PortArrivalAdversarialTest {
         return req;
     }
 
-    private interface Scenario { void run(PortArrivalStore store, MovingClock clock) throws Exception; }
+    private interface Scenario {
+        void run(PortArrivalStore store, MovingClock clock) throws Exception;
+    }
 
     private void scenario(Scenario action) throws Exception {
-        var condition = new AppCondition(); condition.setMapStart(true); condition.setDeckId(1);
-        var decks = new DeckPortCollection(); var deck = new DeckPort(); deck.setId(1);
-        deck.setShip(List.of(11, 12, -1, -1, -1, -1)); decks.getDeckPortMap().put(1, deck);
+        var condition = new AppCondition();
+        condition.setMapStart(true);
+        condition.setDeckId(1);
+        var decks = new DeckPortCollection();
+        var deck = new DeckPort();
+        deck.setId(1);
+        deck.setShip(List.of(11, 12, -1, -1, -1, -1));
+        decks.getDeckPortMap().put(1, deck);
         var ships = new ShipCollection();
         for (int i = 1; i <= 2; i++) {
-            var ship = new Ship(); ship.setId(10 + i); ship.setShipId(100 + i); ships.getShipMap().put(10 + i, ship);
+            var ship = new Ship();
+            ship.setId(10 + i);
+            ship.setShipId(100 + i);
+            ships.getShipMap().put(10 + i, ship);
         }
-        try (var state = mockStatic(AppCondition.class); var ports = mockStatic(DeckPortCollection.class);
-             var members = mockStatic(ShipCollection.class)) {
+        try (var state = mockStatic(AppCondition.class);
+                var ports = mockStatic(DeckPortCollection.class);
+                var members = mockStatic(ShipCollection.class)) {
             state.when(AppCondition::get).thenReturn(condition);
             ports.when(DeckPortCollection::get).thenReturn(decks);
             members.when(ShipCollection::get).thenReturn(ships);
@@ -88,7 +114,8 @@ class PortArrivalAdversarialTest {
         }
     }
 
-    @Test void contradictoryRequestAndResponsePredecessorsCannotResume() throws Exception {
+    @Test
+    void contradictoryRequestAndResponsePredecessorsCannotResume() throws Exception {
         scenario((store, clock) -> {
             var first = new PortArrivalRuntime(() -> store, clock);
             first.accept(START, node(2, 4, null), request(T, null), true);
@@ -101,7 +128,8 @@ class PortArrivalAdversarialTest {
         });
     }
 
-    @Test void fractionalEventIdCannotBeTruncatedIntoGoalNine() throws Exception {
+    @Test
+    void fractionalEventIdCannotBeTruncatedIntoGoalNine() throws Exception {
         scenario((store, clock) -> {
             var runtime = new PortArrivalRuntime(() -> store, clock);
             runtime.accept(START, node(2, 4, null), request(T, null), true);
@@ -111,7 +139,8 @@ class PortArrivalAdversarialTest {
         });
     }
 
-    @Test void fractionalGameResultCannotBeTruncatedIntoSuccessOne() throws Exception {
+    @Test
+    void fractionalGameResultCannotBeTruncatedIntoSuccessOne() throws Exception {
         scenario((store, clock) -> {
             var runtime = new PortArrivalRuntime(() -> store, clock);
             runtime.accept(START, node(2, 4, null), request(T, null), true);
@@ -121,11 +150,13 @@ class PortArrivalAdversarialTest {
         });
     }
 
-    @Test void missingRoutingFieldInOtherwiseValidJournalCannotBecomeAZeroDefault() throws Exception {
+    @Test
+    void missingRoutingFieldInOtherwiseValidJournalCannotBecomeAZeroDefault() throws Exception {
         scenario((store, clock) -> {
             var first = new PortArrivalRuntime(() -> store, clock);
             first.accept(START, node(2, 4, null), request(T, null), true);
-            var journal = store.journal(); var start = journal.readLatest().getLast();
+            var journal = store.journal();
+            var start = journal.readLatest().getLast();
             var payload = (ObjectNode) start.payload();
             var route = (ObjectNode) payload.get("route");
             route.put("observedAt", T + 1).put("cell", 4).put("fromCell", 2);
@@ -138,7 +169,8 @@ class PortArrivalAdversarialTest {
             restarted.accept(FLEET, fleet(), request(clock.now, null), true);
             clock.now++;
             restarted.accept(NEXT, node(0, 9, 4), request(clock.now, 4), true);
-            assertTrue(store.readRange(T, T + 100).isEmpty(), "Missing eventId must not default to a resumable event 0");
+            assertTrue(store.readRange(T, T + 100).isEmpty(),
+                    "Missing eventId must not default to a resumable event 0");
         });
     }
 

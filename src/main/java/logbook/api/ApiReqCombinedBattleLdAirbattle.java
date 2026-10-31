@@ -46,7 +46,7 @@ public class ApiReqCombinedBattleLdAirbattle implements APIListenerSpi {
                     // 艦隊を更新
                     PhaseState p = new PhaseState(log);
                     p.apply(log.getBattle());
-                    
+
                     // 艦娘情報を更新: メインパネルに反映
                     ShipCollection.get()
                             .getShipMap()

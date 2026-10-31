@@ -23,21 +23,28 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 @EnabledIfSystemProperty(named = "logbook.gui.tests", matches = "true")
 @Timeout(20)
 class FeatureUiBoundaryGuiTest {
-    @BeforeAll static void start() throws Exception { FxTestSupport.start(); }
+    @BeforeAll
+    static void start() throws Exception {
+        FxTestSupport.start();
+    }
 
-    @Test void repairWindowCanUseHostTableServicesAcrossClassLoaderBoundary() throws Exception {
+    @Test
+    void repairWindowCanUseHostTableServicesAcrossClassLoaderBoundary() throws Exception {
         openInSeparateLoader("require_ndock", "RequireNdockController", "RequireNdock");
     }
 
-    @Test void useitemWindowCanUseHostTableServicesAcrossClassLoaderBoundary() throws Exception {
+    @Test
+    void useitemWindowCanUseHostTableServicesAcrossClassLoaderBoundary() throws Exception {
         openInSeparateLoader("useitem", "UseitemController", "UseitemItem");
     }
 
-    @Test void airbaseWindowCanUseHostTableServicesAcrossClassLoaderBoundary() throws Exception {
+    @Test
+    void airbaseWindowCanUseHostTableServicesAcrossClassLoaderBoundary() throws Exception {
         openInSeparateLoader("airbase", "AirBaseController");
     }
 
-    @Test void publicDialogContractKeepsApplyAndWindowHiddenLifecycle() throws Exception {
+    @Test
+    void publicDialogContractKeepsApplyAndWindowHiddenLifecycle() throws Exception {
         FxTestSupport.fx(() -> {
             var old = AppSeaAreaExpCollection.get().getList();
             AppSeaAreaExpCollection.get().setList(java.util.List.of(new AppSeaAreaExp("synthetic area", 123)));
@@ -53,7 +60,8 @@ class FeatureUiBoundaryGuiTest {
                 assertEquals("synthetic area", AppSeaAreaExpCollection.get().getList().getFirst().getName());
                 assertEquals(123, AppSeaAreaExpCollection.get().getList().getFirst().getExp());
             } finally {
-                if (opened.get() != null) opened.get().close();
+                if (opened.get() != null)
+                    opened.get().close();
                 AppSeaAreaExpCollection.get().setList(old);
             }
             return null;
@@ -65,19 +73,25 @@ class FeatureUiBoundaryGuiTest {
                 .collect(java.util.stream.Collectors.toUnmodifiableSet());
         ClassLoader parent = getClass().getClassLoader();
         ClassLoader featureLoader = new ClassLoader(parent) {
-            @Override protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            @Override
+            protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                 boolean feature = names.stream().anyMatch(n -> name.equals(n) || name.startsWith(n + "$"));
-                if (!feature) return super.loadClass(name, resolve);
+                if (!feature)
+                    return super.loadClass(name, resolve);
                 synchronized (getClassLoadingLock(name)) {
                     Class<?> loaded = findLoadedClass(name);
                     if (loaded == null) {
                         try (InputStream in = parent.getResourceAsStream(name.replace('.', '/') + ".class")) {
-                            if (in == null) throw new ClassNotFoundException(name);
+                            if (in == null)
+                                throw new ClassNotFoundException(name);
                             byte[] bytes = in.readAllBytes();
                             loaded = defineClass(name, bytes, 0, bytes.length);
-                        } catch (IOException ex) { throw new ClassNotFoundException(name, ex); }
+                        } catch (IOException ex) {
+                            throw new ClassNotFoundException(name, ex);
+                        }
                     }
-                    if (resolve) resolveClass(loaded);
+                    if (resolve)
+                        resolveClass(loaded);
                     return loaded;
                 }
             }
@@ -103,7 +117,8 @@ class FeatureUiBoundaryGuiTest {
                 }
             } finally {
                 window.close();
-                if (controller != null) controller.setWindow(null);
+                if (controller != null)
+                    controller.setWindow(null);
             }
             return null;
         });

@@ -52,7 +52,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * 処理対象URIか判定を行います
-     * 
+     *
      * @param requestMetaData リクエストに含まれている情報
      * @return 処理対象URIの場合true
      */
@@ -64,7 +64,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * レスポンスを処理します
-     * 
+     *
      * @param requestMetaData  リクエストに含まれている情報
      * @param responseMetaData レスポンスに含まれている情報
      */
@@ -103,7 +103,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * 艦娘画像の処理を実施します
-     * 
+     *
      * @param request  リクエスト
      * @param response レスポンス
      * @throws IOException 入出力例外が発生した場合
@@ -170,7 +170,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * MD5値を計算します
-     * 
+     *
      * @param bytes
      * @return
      */
@@ -186,7 +186,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * MD5が一致するかチェックします。
-     * 
+     *
      * @param md5  MD5値
      * @param path 保存先画像ファイルのパス
      * @return 一致する場合はtrue、不一致またはファイル不在な場合はfalse
@@ -209,7 +209,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * 汎用画像（ゲージ、コモン、出撃、任務など）を保存し、必要に応じてスプライト分解を行います。
-     * 
+     *
      * @param request  リクエスト
      * @param response レスポンス
      * @param dirname  保存先のディレクトリ名
@@ -247,7 +247,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * マップ画像を保存し、必要に応じてスプライト分解を行います。
-     * 
+     *
      * @param request  リクエスト
      * @param response レスポンス
      * @param dirname  保存先のディレクトリ名
@@ -290,7 +290,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * 画像ファイルをスプライト情報に基づいて分解します。
-     * 
+     *
      * @param storeDir 分解した画像の格納先ディレクトリ
      * @param imageSrc スプライト画像（元画像）のパス
      * @param jsonSrc  スプライト情報（JSON）のパス
@@ -298,61 +298,63 @@ public class ImageListener implements ContentListenerSpi {
      */
     private void sprite(Path storeDir, Path imageSrc, Path jsonSrc) throws IOException {
         try {
-        if (!Files.exists(imageSrc) || !Files.exists(jsonSrc)) {
-            return;
-        }
-        if (!Files.exists(storeDir)) {
-            Files.createDirectories(storeDir);
-        }
-        // 画像ファイルとスプライト情報のFileTimeを比較し、双方の時間が近い場合だけ画像ファイルを分解します。
-        try {
-            FileTime imageTime = Files.getLastModifiedTime(imageSrc);
-            FileTime jsonTime = Files.getLastModifiedTime(jsonSrc);
-            if (Duration.between(imageTime.toInstant(), jsonTime.toInstant())
-                    .abs()
-                    .compareTo(Duration.ofMinutes(10)) > 0) {
+            if (!Files.exists(imageSrc) || !Files.exists(jsonSrc)) {
                 return;
             }
-        } catch (NoSuchFileException ne) {
-            LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました NoSuchFileException [src=" + imageSrc + "]");
-        } catch (Exception e) {
-            LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました[src=" + imageSrc + "]", e);
-        }
-        Spritesmith sprite;
-        try (BufferedInputStream is = new BufferedInputStream(Files.newInputStream(jsonSrc))) {
-            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
-            sprite = mapper.readValue(is, Spritesmith.class);
-        }
-        try (BufferedInputStream is = new BufferedInputStream(Files.newInputStream(imageSrc))) {
-            BufferedImage image = ImageIO.read(is);
-
-            BiConsumer<String, Spritesmith.Frame> action = (k, v) -> {
-                Spritesmith.Rect rect = v.getFrame();
-                BufferedImage subimage = image.getSubimage(rect.getX(), rect.getY(), rect.getW(), rect.getH());
-                try {
-                    Path temp = this.tempFile();
-                    Path to = storeDir.resolve(k + ".png");
-                    try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(temp))) {
-                        ImageIO.write(subimage, "png", out);
-                    }
-                    try {
-                        this.move(temp, to);
-                    } catch (IOException e) {
-                        Files.deleteIfExists(temp);
-                        throw e;
-                    }
-                } catch (NoSuchFileException ne) {
-                    LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました NoSuchFileException [src=" + imageSrc + "]");
-                } catch (AccessDeniedException ae) {
-                    LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました AccessDeniedException [src=" + imageSrc + "]");
-                } catch (FileAlreadyExistsException fe) {
-                    LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました FileAlreadyExistsException [src=" + imageSrc + "]");
-                } catch (Exception e) {
-                    LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました[src=" + imageSrc + "]", e);
+            if (!Files.exists(storeDir)) {
+                Files.createDirectories(storeDir);
+            }
+            // 画像ファイルとスプライト情報のFileTimeを比較し、双方の時間が近い場合だけ画像ファイルを分解します。
+            try {
+                FileTime imageTime = Files.getLastModifiedTime(imageSrc);
+                FileTime jsonTime = Files.getLastModifiedTime(jsonSrc);
+                if (Duration.between(imageTime.toInstant(), jsonTime.toInstant())
+                        .abs()
+                        .compareTo(Duration.ofMinutes(10)) > 0) {
+                    return;
                 }
-            };
-            sprite.getFrames().forEach(action);
-        }
+            } catch (NoSuchFileException ne) {
+                LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました NoSuchFileException [src=" + imageSrc + "]");
+            } catch (Exception e) {
+                LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました[src=" + imageSrc + "]", e);
+            }
+            Spritesmith sprite;
+            try (BufferedInputStream is = new BufferedInputStream(Files.newInputStream(jsonSrc))) {
+                ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
+                sprite = mapper.readValue(is, Spritesmith.class);
+            }
+            try (BufferedInputStream is = new BufferedInputStream(Files.newInputStream(imageSrc))) {
+                BufferedImage image = ImageIO.read(is);
+
+                BiConsumer<String, Spritesmith.Frame> action = (k, v) -> {
+                    Spritesmith.Rect rect = v.getFrame();
+                    BufferedImage subimage = image.getSubimage(rect.getX(), rect.getY(), rect.getW(), rect.getH());
+                    try {
+                        Path temp = this.tempFile();
+                        Path to = storeDir.resolve(k + ".png");
+                        try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(temp))) {
+                            ImageIO.write(subimage, "png", out);
+                        }
+                        try {
+                            this.move(temp, to);
+                        } catch (IOException e) {
+                            Files.deleteIfExists(temp);
+                            throw e;
+                        }
+                    } catch (NoSuchFileException ne) {
+                        LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました NoSuchFileException [src=" + imageSrc + "]");
+                    } catch (AccessDeniedException ae) {
+                        LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました AccessDeniedException [src=" + imageSrc + "]");
+                    } catch (FileAlreadyExistsException fe) {
+                        LoggerHolder.get()
+                                .warn("画像ファイル処理中に例外が発生しました FileAlreadyExistsException [src=" + imageSrc + "]");
+                    } catch (Exception e) {
+                        LoggerHolder.get().warn("画像ファイル処理中に例外が発生しました[src=" + imageSrc + "]", e);
+                    }
+                };
+                sprite.getFrames().forEach(action);
+            }
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
@@ -393,7 +395,7 @@ public class ImageListener implements ContentListenerSpi {
 
     /**
      * 指定されたパスのファイル名に ".md5" を付与したパスを返却します。
-     * 
+     *
      * @param path 元のパス
      * @return ".md5" が付与されたパス
      */

@@ -27,10 +27,10 @@ public abstract class LogFormatBase<T> implements LogFormat<T> {
     protected static String nowString() {
         return DateUtil.nowString();
     }
-    
+
     /**
      * 文字列を "" で囲み、" があればエスケープします
-     * 
+     *
      * @param text 元の文字列
      * @return エスケープ済みの "" で囲まれた文字列
      */

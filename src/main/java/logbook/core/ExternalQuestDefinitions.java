@@ -52,9 +52,11 @@ final class ExternalQuestDefinitions {
     }
 
     static URL resolveManagedResource(String name) {
-        if (!isManagedGameDataResource(name)) return null;
+        if (!isManagedGameDataResource(name))
+            return null;
         String rootValue = System.getProperty(ROOT_PROPERTY);
-        if (rootValue == null || rootValue.isBlank()) return null;
+        if (rootValue == null || rootValue.isBlank())
+            return null;
         try {
             Path root = Path.of(rootValue).toAbsolutePath().normalize();
             Path active = DefinitionPackInstaller.activeDefinitionsRoot(root);
@@ -67,8 +69,10 @@ final class ExternalQuestDefinitions {
             // Reject symlinked nested folders before opening any data file.
             Path parent = target.getParent();
             while (parent != null && parent.startsWith(active)) {
-                if (Files.isSymbolicLink(parent)) return null;
-                if (parent.equals(active)) break;
+                if (Files.isSymbolicLink(parent))
+                    return null;
+                if (parent.equals(active))
+                    break;
                 parent = parent.getParent();
             }
             return target.toUri().toURL();

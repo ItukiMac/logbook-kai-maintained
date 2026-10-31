@@ -11,9 +11,9 @@ public class ExpTable {
 
     /** 艦娘MaxLv */
     public static final int MAX_LEVEL = 188;
-    
+
     private static final int KEKKON_KARI_EXP = 1000000;
-    
+
     /**
      * 経験値テーブルプリセット値
      */

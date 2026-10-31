@@ -172,7 +172,7 @@ public class FleetTabPane extends ScrollPane {
     /** 艦隊速度 */
     @FXML
     private Label speed;
-    
+
     /** 耐久アイコン */
     @FXML
     private ImageView taikyuImg;
@@ -180,7 +180,7 @@ public class FleetTabPane extends ScrollPane {
     /** 耐久 */
     @FXML
     private Label taikyusum;
-    
+
     /** 雷装アイコン */
     @FXML
     private ImageView raisouImg;
@@ -197,7 +197,6 @@ public class FleetTabPane extends ScrollPane {
     @FXML
     private Label kaihisum;
 
-    
     /** 注釈 */
     @FXML
     private VBox remark;
@@ -291,7 +290,8 @@ public class FleetTabPane extends ScrollPane {
             this.ndocksHashCode = ndocksHashCode;
             this.combinedFlag = AppCondition.get().isCombinedFlag();
         }
-        if (this.condRecoverEpoch != Long.MAX_VALUE && ZonedDateTime.now(ZoneId.systemDefault()).toEpochSecond() > this.condRecoverEpoch) {
+        if (this.condRecoverEpoch != Long.MAX_VALUE
+                && ZonedDateTime.now(ZoneId.systemDefault()).toEpochSecond() > this.condRecoverEpoch) {
             this.condRecoverEpoch = Long.MAX_VALUE;
             if (!AppCondition.get().isMapStart() && this.port.getMission().get(0).intValue() == 0) { // 出撃中・遠征中だったら通知しない
                 String message = Messages.getString("cond.recover", this.port.getName());
@@ -354,21 +354,24 @@ public class FleetTabPane extends ScrollPane {
         // 艦娘レベル計
         this.lvsum.setText(Integer.toString(withoutEscape.stream().mapToInt(Ship::getLv).sum()));
         // 火力合計
-        this.karyokusum.setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getKaryoku().get(0)).sum()));
+        this.karyokusum
+                .setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getKaryoku().get(0)).sum()));
         // 対空合計
         this.taikusum.setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getTaiku().get(0)).sum()));
         // 対潜合計
         this.taissum.setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getTaisen().get(0)).sum()));
         // 索敵合計
-        this.sakutekisum.setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getSakuteki().get(0)).sum()));
+        this.sakutekisum
+                .setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getSakuteki().get(0)).sum()));
         // TP合計
         int tp = withoutEscape.stream().mapToInt(Ships::transportPoint).sum();
-        this.tpsum.setText(tp + "/" + (int)(tp*7/10));
+        this.tpsum.setText(tp + "/" + (int) (tp * 7 / 10));
 
         // 耐久合計
         this.taikyusum.setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getMaxhp()).sum()));
         // 雷装合計
-        this.raisousum.setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getRaisou().get(0)).sum()));
+        this.raisousum
+                .setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getRaisou().get(0)).sum()));
         // 回避合計
         this.kaihisum.setText(Integer.toString(withoutEscape.stream().mapToInt(ship -> ship.getKaihi().get(0)).sum()));
 
@@ -402,28 +405,36 @@ public class FleetTabPane extends ScrollPane {
         AppConfig conf = AppConfig.get();
         if (this.shipList.stream().anyMatch(Ships::isBadlyDamage)) {
             // 大破時
-            left = Optional.ofNullable(conf.getTabColorBadlyDamage()).map(String::trim).filter(color -> color.length() > 0).orElse("#FF655C");
+            left = Optional.ofNullable(conf.getTabColorBadlyDamage()).map(String::trim)
+                    .filter(color -> color.length() > 0).orElse("#FF655C");
         } else if (this.shipList.stream().anyMatch(Ships::isHalfDamage)) {
             // 中破時
-            left = Optional.ofNullable(conf.getTabColorHalfDamage()).map(String::trim).filter(color -> color.length() > 0).orElse("#FFBC5C");
+            left = Optional.ofNullable(conf.getTabColorHalfDamage()).map(String::trim)
+                    .filter(color -> color.length() > 0).orElse("#FFBC5C");
         } else if (this.shipList.stream().anyMatch(Ships::isSlightDamage)) {
             // 小破時
-            left = Optional.ofNullable(conf.getTabColorSlightDamage()).map(String::trim).filter(color -> color.length() > 0).orElse("#FFEB5C");
+            left = Optional.ofNullable(conf.getTabColorSlightDamage()).map(String::trim)
+                    .filter(color -> color.length() > 0).orElse("#FFEB5C");
         } else if (this.shipList.stream().anyMatch(s -> s.getNowhp() != s.getMaxhp())) {
             // 健在時
-            left = Optional.ofNullable(conf.getTabColorLessThanSlightDamage()).map(String::trim).filter(color -> color.length() > 0).orElse("#D0EEFF");
+            left = Optional.ofNullable(conf.getTabColorLessThanSlightDamage()).map(String::trim)
+                    .filter(color -> color.length() > 0).orElse("#D0EEFF");
         } else {
             // 無傷時
-            left = Optional.ofNullable(conf.getTabColorNoDamage()).map(String::trim).filter(color -> color.length() > 0).orElse(null);
+            left = Optional.ofNullable(conf.getTabColorNoDamage()).map(String::trim).filter(color -> color.length() > 0)
+                    .orElse(null);
         }
         if (this.shipList.stream()
                 .anyMatch(ship -> !ship.getFuel().equals(Ships.shipMst(ship).map(ShipMst::getFuelMax).orElse(0)) ||
                         !ship.getBull().equals(Ships.shipMst(ship).map(ShipMst::getBullMax).orElse(0)))) {
             // 未補給時
-            right = Optional.ofNullable(conf.getTabColorNeedRefuel()).map(String::trim).filter(color -> color.length() > 0).orElse("#FFF030");
-        } else if (this.port.getId() > 1 && this.port.getMission().get(0) == 0L && (this.port.getId() != 2 || !AppCondition.get().isCombinedFlag())) {
+            right = Optional.ofNullable(conf.getTabColorNeedRefuel()).map(String::trim)
+                    .filter(color -> color.length() > 0).orElse("#FFF030");
+        } else if (this.port.getId() > 1 && this.port.getMission().get(0) == 0L
+                && (this.port.getId() != 2 || !AppCondition.get().isCombinedFlag())) {
             // 遠征未出撃
-            right = Optional.ofNullable(conf.getTabColorNoMission()).map(String::trim).filter(color -> color.length() > 0).orElse("#87CEFA");
+            right = Optional.ofNullable(conf.getTabColorNoMission()).map(String::trim)
+                    .filter(color -> color.length() > 0).orElse("#87CEFA");
         } else {
             right = null;
         }
@@ -435,7 +446,7 @@ public class FleetTabPane extends ScrollPane {
             this.tabStyle = "-fx-background-color: -fx-outer-border, -fx-text-box-border, linear-gradient(from 40% 0% to 70% 100%, "
                     + l.orElse("-fx-color") + ", " + r.orElse("-fx-color") + ");";
         }
-        
+
         // 疲労
         int minCond = this.shipList.stream()
                 .mapToInt(Ship::getCond)
@@ -460,7 +471,7 @@ public class FleetTabPane extends ScrollPane {
                 this.cond.setText(format.format(disp));
                 // 未出撃の時のみ通知する
                 if (AppConfig.get().isUseCondRecoverToast() && !AppCondition.get().isMapStart()
-                        && this.port.getMission().get(0).intValue() == 0) {  // (0=未出撃, 1=遠征中, 2=遠征帰還, 3=遠征中止)
+                        && this.port.getMission().get(0).intValue() == 0) { // (0=未出撃, 1=遠征中, 2=遠征帰還, 3=遠征中止)
                     this.condRecoverEpoch = end;
                 }
             } else {
@@ -528,7 +539,7 @@ public class FleetTabPane extends ScrollPane {
 
     /**
      * 注釈プラグインを更新する
-     * 
+     *
      * @param port 艦隊
      */
     @SuppressWarnings("unchecked")

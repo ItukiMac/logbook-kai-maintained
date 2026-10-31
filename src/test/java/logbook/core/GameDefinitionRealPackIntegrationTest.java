@@ -20,7 +20,8 @@ import org.junit.jupiter.api.io.TempDir;
 /** Actual committed game pack -> installer -> immutable plugin API; isolated temporary storage only. */
 class GameDefinitionRealPackIntegrationTest {
     private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
-    @TempDir Path isolated;
+    @TempDir
+    Path isolated;
 
     private Path pack() {
         String name = System.getProperty("logbook.test.dataPackPath");
@@ -29,17 +30,21 @@ class GameDefinitionRealPackIntegrationTest {
         assertTrue(Files.isRegularFile(pack));
         return pack;
     }
+
     private String install(Path root, Path pack) throws Exception {
         String checksum;
         try (InputStream input = Files.newInputStream(pack)) {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] buffer = new byte[8192];
-            for (int read; (read = input.read(buffer)) != -1;) digest.update(buffer, 0, read);
+            for (int read; (read = input.read(buffer)) != -1;)
+                digest.update(buffer, 0, read);
             checksum = HexFormat.of().formatHex(digest.digest());
         }
         return DefinitionPackInstaller.install(root, pack, checksum);
     }
-    @Test void allRealDefinitionsMatchPackBytesAndAllSixCategories() throws Exception {
+
+    @Test
+    void allRealDefinitionsMatchPackBytesAndAllSixCategories() throws Exception {
         Path pack = pack();
         Path root = isolated.resolve("data");
         String generation = install(root, pack);
@@ -57,7 +62,7 @@ class GameDefinitionRealPackIntegrationTest {
                 assertTrue(expected.add(resource));
                 categories.add(resource.split("/")[1]);
                 try (InputStream actual = snapshot.openResource(resource).orElseThrow();
-                     InputStream original = zip.getInputStream(zip.getEntry(path))) {
+                        InputStream original = zip.getInputStream(zip.getEntry(path))) {
                     assertArrayEquals(original.readAllBytes(), actual.readAllBytes(), resource);
                 }
             }
@@ -66,16 +71,19 @@ class GameDefinitionRealPackIntegrationTest {
         assertEquals(expected, snapshot.resourceNames());
         assertTrue(expected.size() >= 152, "Committed game definition coverage unexpectedly shrank");
         assertArrayEquals(pointer, Files.readAllBytes(root.resolve("active.json")));
-        assertFalse(Files.exists(isolated.resolve("logbook-kai.jar")));
+        assertFalse(Files.exists(isolated.resolve("logbook-kai2.jar")));
         System.out.println("SNAPSHOT_REAL_PACK_BYTE_EQUIVALENCE " + expected.size());
     }
-    @Test void allRealQuestDefinitionsDecodeThroughSnapshotStreams() throws Exception {
+
+    @Test
+    void allRealQuestDefinitionsDecodeThroughSnapshotStreams() throws Exception {
         Path root = isolated.resolve("data");
         install(root, pack());
         var snapshot = new GameDefinitionService(error -> fail(error)).reload(root);
         int count = 0;
         for (String name : snapshot.resourceNames()) {
-            if (!name.startsWith("logbook/quest/") && !name.startsWith("logbook/eventquest/")) continue;
+            if (!name.startsWith("logbook/quest/") && !name.startsWith("logbook/eventquest/"))
+                continue;
             try (InputStream input = snapshot.openResource(name).orElseThrow()) {
                 assertNotNull(JSON.readValue(input, AppQuestCondition.class), name);
             }
@@ -84,26 +92,33 @@ class GameDefinitionRealPackIntegrationTest {
         assertTrue(count >= 85);
         System.out.println("SNAPSHOT_REAL_QUEST_MODEL_DECODE " + count);
     }
-    @Test void corruptInstalledFileDoesNotReplacePreviouslyPublishedRealPack() throws Exception {
+
+    @Test
+    void corruptInstalledFileDoesNotReplacePreviouslyPublishedRealPack() throws Exception {
         Path root = isolated.resolve("data");
         String generation = install(root, pack());
         var service = new GameDefinitionService(error -> fail(error));
         var old = service.reload(root);
         String name = "logbook/quest/1045.json";
         byte[] retained;
-        try (var input = old.openResource(name).orElseThrow()) { retained = input.readAllBytes(); }
+        try (var input = old.openResource(name).orElseThrow()) {
+            retained = input.readAllBytes();
+        }
         // Change this test's isolated installation only, never the repository or a real installation.
-        Files.writeString(root.resolve("generations").resolve(generation).resolve("definitions/quest/1045.json"), "{broken");
+        Files.writeString(root.resolve("generations").resolve(generation).resolve("definitions/quest/1045.json"),
+                "{broken");
         assertThrows(java.io.IOException.class, () -> service.reload(root));
         assertSame(old, service.snapshot());
         try (var input = service.snapshot().openResource(name).orElseThrow()) {
             assertArrayEquals(retained, input.readAllBytes());
         }
     }
-    @Test void repeatLoadIsANoOpAndUserSentinelsAreUnchanged() throws Exception {
+
+    @Test
+    void repeatLoadIsANoOpAndUserSentinelsAreUnchanged() throws Exception {
         Path root = isolated.resolve("data");
         install(root, pack());
-        for (String path : new String[] {"config/user.json", "plugins/plugin.jar", "history/battle.csv"}) {
+        for (String path : new String[] { "config/user.json", "plugins/plugin.jar", "history/battle.csv" }) {
             Path file = isolated.resolve(path);
             Files.createDirectories(file.getParent());
             Files.writeString(file, "keep:" + path, StandardCharsets.UTF_8);
@@ -114,7 +129,7 @@ class GameDefinitionRealPackIntegrationTest {
         var first = service.reload(root);
         assertSame(first, service.reload(root));
         assertEquals(1, events.get());
-        for (String path : new String[] {"config/user.json", "plugins/plugin.jar", "history/battle.csv"}) {
+        for (String path : new String[] { "config/user.json", "plugins/plugin.jar", "history/battle.csv" }) {
             assertEquals("keep:" + path, Files.readString(isolated.resolve(path), StandardCharsets.UTF_8));
         }
     }

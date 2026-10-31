@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-
 import tools.jackson.databind.ObjectMapper;
 
 import javafx.scene.SnapshotParameters;
@@ -32,7 +31,7 @@ public class Missions {
 
     /**
      * 遠征IDから{@link Mission}を返します。
-     * 
+     *
      * @param missionId 遠征ID
      * @return {@link Mission}
      */
@@ -44,7 +43,7 @@ public class Missions {
 
     /**
      * 遠征IDから{@link MissionCondition}を返します。
-     * 
+     *
      * @param missionId 遠征ID
      * @return {@link MissionCondition}
      * @throws IOException
@@ -52,38 +51,42 @@ public class Missions {
     public static Optional<MissionCondition> getMissionCondition(Integer missionId) throws IOException {
         try (var lease = LogBookCoreServices.pinDefinitions()) {
             var result = getPinnedMissionCondition(missionId);
-            if (logbook.core.GameDefinitionRuntime.active()) result.ifPresent(c -> c.bindDefinitionSnapshot(lease.snapshot()));
+            if (logbook.core.GameDefinitionRuntime.active())
+                result.ifPresent(c -> c.bindDefinitionSnapshot(lease.snapshot()));
             return result;
         }
     }
+
     private static Optional<MissionCondition> getPinnedMissionCondition(Integer missionId) throws IOException {
         try {
-        Mission mission = Missions.getMission(missionId);
+            Mission mission = Missions.getMission(missionId);
 
-        if (mission == null) {
-            return Optional.empty();
-        }
+            if (mission == null) {
+                return Optional.empty();
+            }
 
-        if ("前衛支援任務".equals(mission.getName())) {
-            mission = Missions.getMission(33);
-        } else if ("艦隊決戦支援任務".equals(mission.getName())) {
-            mission = Missions.getMission(34);
-        }
+            if ("前衛支援任務".equals(mission.getName())) {
+                mission = Missions.getMission(33);
+            } else if ("艦隊決戦支援任務".equals(mission.getName())) {
+                mission = Missions.getMission(34);
+            }
 
-        InputStream is = LogBookCoreServices
-                .getResourceAsStream("logbook/mission/" + mission.getMapareaId() + "/" + mission.getDispNo() + ".json");
-        if (is == null) {
-            return Optional.empty();
-        }
-        MissionCondition condition;
-        try {
-            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
-            condition = mapper.readValue(is, MissionCondition.class);
-        } finally {
-            is.close();
-        }
+            InputStream is = LogBookCoreServices
+                    .getResourceAsStream(
+                            "logbook/mission/" + mission.getMapareaId() + "/" + mission.getDispNo() + ".json");
+            if (is == null) {
+                return Optional.empty();
+            }
+            MissionCondition condition;
+            try {
+                ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                        .enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+                condition = mapper.readValue(is, MissionCondition.class);
+            } finally {
+                is.close();
+            }
 
-        return Optional.ofNullable(condition);
+            return Optional.ofNullable(condition);
         } catch (tools.jackson.core.JacksonException jsonCompatibilityFailure) {
             throw new java.io.IOException("Invalid or unreadable JSON", jsonCompatibilityFailure);
         }
@@ -97,16 +100,16 @@ public class Missions {
     public static String getDurationText(Mission mission) {
         if (mission.getTime() != null) {
             int minutes = mission.getTime();
-            final int DAY_IN_MINUTE = 60*24;
+            final int DAY_IN_MINUTE = 60 * 24;
             StringBuilder sb = new StringBuilder(16);
             if (minutes >= DAY_IN_MINUTE) {
-                int days = minutes/DAY_IN_MINUTE;
-                minutes -= days*DAY_IN_MINUTE;
+                int days = minutes / DAY_IN_MINUTE;
+                minutes -= days * DAY_IN_MINUTE;
                 sb.append(days).append("日");
             }
             if (minutes >= 60) {
-                int hours = minutes/60;
-                minutes -= hours*60;
+                int hours = minutes / 60;
+                minutes -= hours * 60;
                 sb.append(hours).append("時間");
             }
             if (minutes > 0) {
@@ -138,7 +141,7 @@ public class Missions {
         Path dir = Paths.get(AppConfig.get().getResourcesDir());
         Path p = dir.resolve(Paths.get("sally", "sally_expedition/sally_expedition_" + id + ".png"));
 
-        return CACHE.get(p.toUri().toString()+"@"+prefWidth+"x"+prefHeight, (url, status) -> {
+        return CACHE.get(p.toUri().toString() + "@" + prefWidth + "x" + prefHeight, (url, status) -> {
             Image image = new Image(url.substring(0, url.lastIndexOf("@")));
             if (image.isError()) {
                 status.setDoCache(false);

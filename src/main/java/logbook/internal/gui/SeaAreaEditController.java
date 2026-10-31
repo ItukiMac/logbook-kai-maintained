@@ -59,7 +59,9 @@ public class SeaAreaEditController extends WindowController {
                 Image baseImage = new Image(eventPngPath.toUri().toString());
                 if (Files.exists(eventJsonPath)) {
                     try (Reader reader = Files.newBufferedReader(eventJsonPath, StandardCharsets.UTF_8)) {
-                        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).build();
+                        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                                .disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                                .build();
                         Spritesmith sprites = mapper.readValue(reader, Spritesmith.class);
                         if (sprites != null && sprites.getFrames() != null) {
                             double width = baseImage.getWidth();
@@ -116,7 +118,9 @@ public class SeaAreaEditController extends WindowController {
             if (Files.exists(customJsonPath)) {
                 try (Reader reader = Files.newBufferedReader(customJsonPath, StandardCharsets.UTF_8)) {
                     ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().build();
-                    List<SeaAreaCustomEntry> customEntries = mapper.readValue(reader, new TypeReference<List<SeaAreaCustomEntry>>() {});
+                    List<SeaAreaCustomEntry> customEntries = mapper.readValue(reader,
+                            new TypeReference<List<SeaAreaCustomEntry>>() {
+                            });
                     if (customEntries != null) {
                         for (SeaAreaCustomEntry entry : customEntries) {
                             customMap.put(entry.getArea(), entry);
@@ -141,7 +145,7 @@ public class SeaAreaEditController extends WindowController {
         this.gridPane.add(new Label("札名"), 1, 0);
         this.gridPane.add(new Label("画像No"), 2, 0);
         this.gridPane.add(new Label("画像"), 3, 0);
-        
+
         // エリア1〜14の編集行を構築
         for (int area = 1; area <= 14; area++) {
             final int currentArea = area;
@@ -303,7 +307,8 @@ public class SeaAreaEditController extends WindowController {
 
             Path file = dir.resolve("common_event_custom.json");
 
-            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
+            ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(SerializationFeature.INDENT_OUTPUT)
+                    .build();
 
             try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
                 mapper.writeValue(writer, entries);
@@ -334,8 +339,6 @@ public class SeaAreaEditController extends WindowController {
             alert.showAndWait();
         }
     }
-
-
 
     public static class SeaAreaCustomEntry {
         private int area;

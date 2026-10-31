@@ -17,7 +17,7 @@ import java.util.zip.ZipFile;
  */
 final class UpdateArchiveStage {
     static final long MAX_BYTES = 256L * 1024 * 1024;
-    static final String JAR_NAME = "logbook-kai.jar";
+    static final String JAR_NAME = "logbook-kai2.jar";
 
     private UpdateArchiveStage() {
     }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate a versioned split bundle before executing Java or touching runtime data.
 
-The three module JARs use a shared application class loader. Host API 1 and an
+The eight feature JARs use a shared application class loader. Host API 1 and an
 exact core digest are both required: existing public model types are not yet an
 independently versioned ABI. Hashes establish identity, not publisher trust.
 """
@@ -13,28 +13,28 @@ from pathlib import Path, PurePosixPath
 import re
 from zipfile import ZipFile
 
-FORMAT = 'logbook-feature-distribution-v4'
+FORMAT = 'logbook-kai2-feature-distribution-v4'
 HOST_API = 1
 HOST_VERSION = '1.0.0'
 SERVICE = 'META-INF/services/logbook.plugin.api.FeatureModule'
 FEATURE_METADATA = 'META-INF/logbook/feature.json'
 HOST_METADATA = 'META-INF/logbook/host-api.json'
-PLUGIN_PROVIDERS = {'klb': 'local.kancolle.bridge.KancolleBridgeStartUp',
-                    'kqs': 'local.kancolle.kqs.KqsLogbookPlugin'}
+PLUGIN_PROVIDERS = {'bridge': 'logbook.features.bridge.BrowserBridgePlugin',
+                    'sharing': 'logbook.features.sharing.InformationSharingPlugin'}
 PLUGIN_SERVICES = ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi')
 FEATURES = {
     'calculators': ('experience', 'mission-check', 'probability', 'last-dance'),
     'charts': ('resource-chart', 'experience-chart'),
     'ships': ('repair-list',),
     'equipment': (), 'quests': (), 'records': (),
-    'klb': (),
-    'kqs': (),
+    'bridge': (),
+    'sharing': (),
 }
 PROVIDERS = {'calculators': 'logbook.features.CalculatorFeatures',
              'charts': 'logbook.features.ChartFeatures',
              'ships': 'logbook.features.ShipFeatures',
              'equipment': 'logbook.features.EquipmentFeatures', 'quests': 'logbook.features.QuestFeatures', 'records': 'logbook.features.RecordFeatures',
-             'klb': 'logbook.features.KlbFeatures', 'kqs': 'logbook.features.KqsFeatures'}
+             'bridge': 'logbook.features.BridgeFeatures', 'sharing': 'logbook.features.SharingFeatures'}
 # API 1 retains these entry points used by host menus and feature FXML. Moving
 # any of them requires a new packaging contract, not silently dropping a window.
 GROUPS = {
@@ -48,9 +48,9 @@ GROUPS = {
     'equipment': ('EquipmentFeatures', ('AirBaseController', 'UseitemController', 'UseitemItem'), ('airbase', 'useitem')),
     'quests': ('QuestFeatures', (), ()), 'records': ('RecordFeatures', (), ()),
 }
-GROUPS.update({'klb': ('KlbFeatures', (), ()), 'kqs': ('KqsFeatures', (), ())})
-EXTRA_CLASSES = {'quests': ('logbook/features/quests/QuestManagementWindow', 'logbook/features/quests/QuestManagementMenu'), 'klb': ('local/kancolle/bridge/KancolleBridgeStartUp',),
-                 'kqs': ('local/kancolle/kqs/KqsLogbookPlugin', 'local/kancolle/kqs/QuestStore', 'local/kancolle/kqs/QuestExporter', 'local/kancolle/kqs/InformationExport', 'local/kancolle/kqs/InformationShareWindow'), 'calculators': ('logbook/internal/calc/ProbabilityCalculator',
+GROUPS.update({'bridge': ('BridgeFeatures', (), ()), 'sharing': ('SharingFeatures', (), ())})
+EXTRA_CLASSES = {'quests': ('logbook/features/quests/QuestManagementWindow', 'logbook/features/quests/QuestManagementMenu'), 'bridge': ('logbook/features/bridge/BrowserBridgePlugin',),
+                 'sharing': ('logbook/features/sharing/InformationSharingPlugin', 'logbook/features/sharing/QuestStore', 'logbook/features/sharing/QuestExporter', 'logbook/features/sharing/InformationExport', 'logbook/features/sharing/InformationSharingWindow'), 'calculators': ('logbook/internal/calc/ProbabilityCalculator',
                                  'logbook/internal/calc/ProbabilityInput')}
 METADATA_KEYS = {'id', 'version', 'host_api', 'host_sha256', 'dependencies',
                  'provider', 'features'}
@@ -60,7 +60,7 @@ VERSION = re.compile(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)')
 MAX_JAR = 192 * 1024 * 1024
 MAX_BUNDLE = 256 * 1024 * 1024
 
-FILES = ('logbook-core.jar',) + tuple('features/logbook-feature-' + name + '.jar' for name in FEATURES) + ('run_feature_distribution.py',)
+FILES = ('logbook-kai2-core.jar',) + tuple('features/logbook-kai2-feature-' + name + '.jar' for name in FEATURES) + ('run_feature_distribution.py',)
 JARS = tuple(name for name in FILES if name.endswith('.jar'))
 
 
@@ -253,7 +253,7 @@ def validate_manifest(report):
             raise ValueError('Module requires an unavailable host API: ' + name)
         if module['host_sha256'] != host['sha256']:
             raise ValueError('Module was built for a different host: ' + name)
-        path = 'features/logbook-feature-' + name + '.jar'
+        path = 'features/logbook-kai2-feature-' + name + '.jar'
         if module['path'] != path or module['sha256'] != files[path]:
             raise ValueError('Module identity does not match its JAR: ' + name)
         provider = module['provider']
@@ -382,7 +382,7 @@ def verify_jars(root, report, catalog):
                 service_path = 'META-INF/services/' + service
                 lines = jar.read(service_path).decode().splitlines() if service_path in names else []
                 for module_id, provider in PLUGIN_PROVIDERS.items():
-                    expected = path == 'features/logbook-feature-' + module_id + '.jar' and (module_id == 'kqs' or service == 'logbook.plugin.lifecycle.StartUp')
+                    expected = path == 'features/logbook-kai2-feature-' + module_id + '.jar' and (module_id == 'sharing' or service == 'logbook.plugin.lifecycle.StartUp')
                     if lines.count(provider) != int(expected):
                         raise ValueError('Bundled plugin service has wrong owner: ' + provider)
             management_service = 'META-INF/services/logbook.plugin.api.QuestManagementUi'
@@ -390,12 +390,12 @@ def verify_jars(root, report, catalog):
                 management_profile = 'logbook/plugin/api/QuestManagementUi.class' in names
             if management_profile:
                 lines = jar.read(management_service).decode().splitlines() if management_service in names else []
-                expected = ['logbook.features.quests.QuestManagementWindow'] if path == 'features/logbook-feature-quests.jar' else []
+                expected = ['logbook.features.quests.QuestManagementWindow'] if path == 'features/logbook-kai2-feature-quests.jar' else []
                 if lines != expected:
                     raise ValueError('Quest management service has wrong owner')
                 menu_service = 'META-INF/services/logbook.plugin.gui.MainExtMenu'
                 lines = jar.read(menu_service).decode().splitlines() if menu_service in names else []
-                menu_owner = {'features/logbook-feature-kqs.jar': 'local.kancolle.kqs.KqsLogbookPlugin', 'features/logbook-feature-quests.jar': 'logbook.features.quests.QuestManagementMenu'}
+                menu_owner = {'features/logbook-kai2-feature-sharing.jar': 'logbook.features.sharing.InformationSharingPlugin', 'features/logbook-kai2-feature-quests.jar': 'logbook.features.quests.QuestManagementMenu'}
                 expected = [menu_owner[path]] if path in menu_owner else []
                 if lines != expected:
                     raise ValueError('Domain menu service has wrong owner')

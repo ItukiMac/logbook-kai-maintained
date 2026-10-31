@@ -78,34 +78,48 @@ public class MainMenuController extends WindowController {
         for (var feature : features.group(group)) {
             MenuItem item = new MenuItem(feature.title());
             item.setId("logbook.feature." + feature.id());
-            if (!feature.accelerator().isEmpty()) item.setAccelerator(javafx.scene.input.KeyCombination.keyCombination(feature.accelerator()));
+            if (!feature.accelerator().isEmpty())
+                item.setAccelerator(javafx.scene.input.KeyCombination.keyCombination(feature.accelerator()));
             item.setOnAction(event -> openFeature(feature.id()));
             items.add(item);
         }
-        if (prepend) menu.getItems().addAll(0, items); else menu.getItems().addAll(items);
+        if (prepend)
+            menu.getItems().addAll(0, items);
+        else
+            menu.getItems().addAll(items);
     }
+
     private void openFeature(String id) {
         try {
             var feature = features.get(id);
             InternalFXMLLoader.showWindow(feature.fxml(), this.parentController.getWindow(), feature.title());
-        } catch (Exception error) {LoggerHolder.get().error("機能の初期化に失敗しました: " + id, error);}
+        } catch (Exception error) {
+            LoggerHolder.get().error("機能の初期化に失敗しました: " + id, error);
+        }
     }
+
     private void reloadDefinitions(ActionEvent event) {
-        if (!RELOADING.compareAndSet(false, true)) return;
+        if (!RELOADING.compareAndSet(false, true))
+            return;
         Thread worker = new Thread(() -> {
             String text;
             try {
                 var snapshot = logbook.core.GameDefinitionRuntime.reloadConfigured();
                 text = "定義を再読み込みしました。\n世代: " + snapshot.generation() + "\nファイル数: " + snapshot.resourceNames().size();
-            } catch (Exception error) {text = "定義を変更しませんでした。\n" + error.getMessage();}
+            } catch (Exception error) {
+                text = "定義を変更しませんでした。\n" + error.getMessage();
+            }
             final String result = text;
             javafx.application.Platform.runLater(() -> {
                 RELOADING.set(false);
                 var alert = new javafx.scene.control.Alert(AlertType.INFORMATION, result);
-                alert.setTitle("ゲーム定義");alert.setHeaderText(null);alert.show();
+                alert.setTitle("ゲーム定義");
+                alert.setHeaderText(null);
+                alert.show();
             });
         }, "logbook-explicit-definition-reload");
-        worker.setDaemon(true); worker.start();
+        worker.setDaemon(true);
+        worker.start();
     }
 
     public void setParentController(MainController parentController) {
@@ -169,7 +183,7 @@ public class MainMenuController extends WindowController {
 
     /**
      * 現在の演習
-     * 
+     *
      * @param e ActionEvent
      */
     @FXML
@@ -369,7 +383,8 @@ public class MainMenuController extends WindowController {
     @FXML
     void questConditionEdit(ActionEvent e) {
         try {
-            InternalFXMLLoader.showWindow("logbook/gui/quest_condition_edit.fxml", this.parentController.getWindow(), "戦闘任務条件編集");
+            InternalFXMLLoader.showWindow("logbook/gui/quest_condition_edit.fxml", this.parentController.getWindow(),
+                    "戦闘任務条件編集");
         } catch (Exception ex) {
             LoggerHolder.get().error("戦闘任務条件編集の初期化に失敗しました", ex);
         }

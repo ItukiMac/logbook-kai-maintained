@@ -41,7 +41,7 @@ public class ApiReqSortieBattleresult implements APIListenerSpi {
         JsonObject data = json.getJsonObject("api_data");
         //戦闘結果反映時エラー発生フラグ
         boolean isApplyResultError = false;
-        
+
         if (data != null) {
             BattleResult result = BattleResult.toBattleResult(data);
             BattleLog log = AppCondition.get().getBattleResult();
@@ -71,7 +71,7 @@ public class ApiReqSortieBattleresult implements APIListenerSpi {
                     p.apply(log.getBattle());
                     p.apply(log.getMidnight());
 
-                    if (AppConfig.get().isApplyResult()) {                        
+                    if (AppConfig.get().isApplyResult()) {
                         // 戦闘終了毎に艦隊情報を更新
                         // 艦娘情報を更新: メインパネルに反映
                         ShipCollection.get()
@@ -117,7 +117,7 @@ public class ApiReqSortieBattleresult implements APIListenerSpi {
                 }
             }
         }
-        
+
         if (!isApplyResultError) {
             // 戦闘結果APIの前後は他のAPIが呼ばれることがなくconflictの可能性が低いためデータ保存する
             Config.getDefault().store();

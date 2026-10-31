@@ -26,7 +26,10 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 class QuestObservationUiBindingGuiTest {
     private static final String QUEST_API = "/kcsapi/api_get_member/questlist";
 
-    @BeforeAll static void start() throws Exception { FxTestSupport.start(); }
+    @BeforeAll
+    static void start() throws Exception {
+        FxTestSupport.start();
+    }
 
     private static GameStateSnapshot snapshot(long sequence, String api, boolean success) {
         return new GameStateSnapshot(sequence, Instant.ofEpochSecond(sequence), api, "synthetic", success,
@@ -37,16 +40,27 @@ class QuestObservationUiBindingGuiTest {
         private volatile GameStateSnapshot current = QuestObservationUiBindingGuiTest.snapshot(
                 0, "/kcsapi/api_start2/getData", true);
         private final CopyOnWriteArrayList<Consumer<GameStateSnapshot>> listeners = new CopyOnWriteArrayList<>();
-        @Override public GameStateSnapshot snapshot() { return current; }
-        @Override public AutoCloseable subscribe(Consumer<GameStateSnapshot> listener) {
+
+        @Override
+        public GameStateSnapshot snapshot() {
+            return current;
+        }
+
+        @Override
+        public AutoCloseable subscribe(Consumer<GameStateSnapshot> listener) {
             listeners.add(listener);
             return () -> listeners.remove(listener);
         }
+
         void emit(GameStateSnapshot value) {
             current = value;
-            for (var listener : listeners) listener.accept(value);
+            for (var listener : listeners)
+                listener.accept(value);
         }
-        int listenerCount() { return listeners.size(); }
+
+        int listenerCount() {
+            return listeners.size();
+        }
     }
 
     private static final class Fixture implements AutoCloseable {
@@ -55,6 +69,7 @@ class QuestObservationUiBindingGuiTest {
         final AtomicBoolean allOnFxThread = new AtomicBoolean(true);
         final Stage stage;
         final AutoCloseable binding;
+
         Fixture() throws Exception {
             stage = FxTestSupport.fx(() -> {
                 Stage result = new Stage();
@@ -66,26 +81,48 @@ class QuestObservationUiBindingGuiTest {
                     // Also compiles before the new binding exists, preserving the failing regression.
                     Class<?> type = Class.forName("logbook.internal.gui.QuestObservationUiBinding");
                     Consumer<GameStateSnapshot> callback = value -> {
-                        if (!Platform.isFxApplicationThread()) allOnFxThread.set(false);
+                        if (!Platform.isFxApplicationThread())
+                            allOnFxThread.set(false);
                         delivered.add(value);
                     };
-                    return (AutoCloseable) type.getDeclaredConstructor(Window.class, GameStateView.class, Consumer.class)
+                    return (AutoCloseable) type
+                            .getDeclaredConstructor(Window.class, GameStateView.class, Consumer.class)
                             .newInstance(stage, view, callback);
                 });
             } catch (Exception failure) {
-                FxTestSupport.fx(() -> { stage.close(); return null; });
+                FxTestSupport.fx(() -> {
+                    stage.close();
+                    return null;
+                });
                 throw failure;
             }
         }
-        void show() throws Exception { FxTestSupport.fx(() -> { stage.show(); return null; }); flush(); }
-        void flush() throws Exception { FxTestSupport.fx(() -> null); }
-        @Override public void close() throws Exception {
-            FxTestSupport.fx(() -> { binding.close(); stage.close(); return null; });
+
+        void show() throws Exception {
+            FxTestSupport.fx(() -> {
+                stage.show();
+                return null;
+            });
+            flush();
+        }
+
+        void flush() throws Exception {
+            FxTestSupport.fx(() -> null);
+        }
+
+        @Override
+        public void close() throws Exception {
+            FxTestSupport.fx(() -> {
+                binding.close();
+                stage.close();
+                return null;
+            });
             flush();
         }
     }
 
-    @Test void subscribesOnlyWhileVisibleAndDeliversQuestUpdatesOnFxThread() throws Exception {
+    @Test
+    void subscribesOnlyWhileVisibleAndDeliversQuestUpdatesOnFxThread() throws Exception {
         try (var f = new Fixture()) {
             assertEquals(0, f.view.listenerCount());
             f.show();
@@ -96,12 +133,16 @@ class QuestObservationUiBindingGuiTest {
             f.flush();
             assertEquals(List.of(actual), f.delivered);
             assertTrue(f.allOnFxThread.get());
-            FxTestSupport.fx(() -> { f.stage.hide(); return null; });
+            FxTestSupport.fx(() -> {
+                f.stage.hide();
+                return null;
+            });
             assertEquals(0, f.view.listenerCount());
         }
     }
 
-    @Test void otherApiSnapshotsNeverManufactureAQuestObservation() throws Exception {
+    @Test
+    void otherApiSnapshotsNeverManufactureAQuestObservation() throws Exception {
         try (var f = new Fixture()) {
             f.show();
             f.view.emit(snapshot(1, "/kcsapi/api_port/port", true));
@@ -112,7 +153,8 @@ class QuestObservationUiBindingGuiTest {
         }
     }
 
-    @Test void failedQuestUpdateIsDeliveredForControllerInvalidation() throws Exception {
+    @Test
+    void failedQuestUpdateIsDeliveredForControllerInvalidation() throws Exception {
         try (var f = new Fixture()) {
             f.show();
             var failed = snapshot(1, QUEST_API, false);
@@ -123,7 +165,8 @@ class QuestObservationUiBindingGuiTest {
         }
     }
 
-    @Test void queuedQuestUpdatesCoalesceToNewestSequenceIncludingFailure() throws Exception {
+    @Test
+    void queuedQuestUpdatesCoalesceToNewestSequenceIncludingFailure() throws Exception {
         try (var f = new Fixture()) {
             f.show();
             var newest = snapshot(3, QUEST_API, false);
@@ -139,7 +182,8 @@ class QuestObservationUiBindingGuiTest {
         }
     }
 
-    @Test void hideInvalidatesQueuedCallbackAndReshowUsesTheLatestQuestSnapshot() throws Exception {
+    @Test
+    void hideInvalidatesQueuedCallbackAndReshowUsesTheLatestQuestSnapshot() throws Exception {
         try (var f = new Fixture()) {
             f.show();
             var reopened = snapshot(2, QUEST_API, true);
@@ -152,15 +196,20 @@ class QuestObservationUiBindingGuiTest {
                 return null;
             });
             f.flush();
-            assertEquals(List.of(reopened), f.delivered, "The old queued callback must not revive an earlier observation");
+            assertEquals(List.of(reopened), f.delivered,
+                    "The old queued callback must not revive an earlier observation");
             assertEquals(1, f.view.listenerCount());
         }
     }
 
-    @Test void reshowDoesNotReclassifyLatestNonQuestStateAsFreshQuestData() throws Exception {
+    @Test
+    void reshowDoesNotReclassifyLatestNonQuestStateAsFreshQuestData() throws Exception {
         try (var f = new Fixture()) {
             f.show();
-            FxTestSupport.fx(() -> { f.stage.hide(); return null; });
+            FxTestSupport.fx(() -> {
+                f.stage.hide();
+                return null;
+            });
             f.view.emit(snapshot(1, QUEST_API, true));
             f.view.emit(snapshot(2, "/kcsapi/api_port/port", true));
             f.show();
@@ -172,22 +221,37 @@ class QuestObservationUiBindingGuiTest {
         }
     }
 
-    @Test void hostReplayKeepsLastRealQuestReceiptAfterUnrelatedTraffic() throws Exception {
-        var service=new logbook.core.GameStateService();var delivered=new java.util.concurrent.CopyOnWriteArrayList<GameStateSnapshot>();
-        service.applyApiUpdate(QUEST_API,()->true);var receipt=service.latestQuestReceipt();
-        service.applyApiUpdate("/kcsapi/api_port/port",()->true);
-        var stage=FxTestSupport.fx(()->{
-            var window=new Stage();window.setScene(new javafx.scene.Scene(new javafx.scene.layout.VBox()));
-            var binding=new QuestObservationUiBinding(window,service,delivered::add);
-            window.getProperties().put("fixture-binding",binding);window.show();return window;
+    @Test
+    void hostReplayKeepsLastRealQuestReceiptAfterUnrelatedTraffic() throws Exception {
+        var service = new logbook.core.GameStateService();
+        var delivered = new java.util.concurrent.CopyOnWriteArrayList<GameStateSnapshot>();
+        service.applyApiUpdate(QUEST_API, () -> true);
+        var receipt = service.latestQuestReceipt();
+        service.applyApiUpdate("/kcsapi/api_port/port", () -> true);
+        var stage = FxTestSupport.fx(() -> {
+            var window = new Stage();
+            window.setScene(new javafx.scene.Scene(new javafx.scene.layout.VBox()));
+            var binding = new QuestObservationUiBinding(window, service, delivered::add);
+            window.getProperties().put("fixture-binding", binding);
+            window.show();
+            return window;
         });
         try {
-            FxTestSupport.fx(()->null);FxTestSupport.fx(()->null);
-            assertEquals(List.of(receipt),delivered);assertSame(receipt,delivered.getFirst());
-        }finally{FxTestSupport.fx(()->{((QuestObservationUiBinding)stage.getProperties().get("fixture-binding")).close();stage.close();return null;});}
+            FxTestSupport.fx(() -> null);
+            FxTestSupport.fx(() -> null);
+            assertEquals(List.of(receipt), delivered);
+            assertSame(receipt, delivered.getFirst());
+        } finally {
+            FxTestSupport.fx(() -> {
+                ((QuestObservationUiBinding) stage.getProperties().get("fixture-binding")).close();
+                stage.close();
+                return null;
+            });
+        }
     }
 
-    @Test void closeIsIdempotentAndQueuedWorkCannotResubscribeOrDeliver() throws Exception {
+    @Test
+    void closeIsIdempotentAndQueuedWorkCannotResubscribeOrDeliver() throws Exception {
         try (var f = new Fixture()) {
             f.show();
             FxTestSupport.fx(() -> {

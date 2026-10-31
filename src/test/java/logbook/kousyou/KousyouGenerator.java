@@ -64,7 +64,8 @@ public class KousyouGenerator {
             }
         }
 
-        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
+        ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(SerializationFeature.INDENT_OUTPUT)
+                .build();
 
         File file = new File("src/main/resources/logbook/kousyou/kousyou.json");
         // Ensure parent directory exists
@@ -102,7 +103,8 @@ public class KousyouGenerator {
             System.out.println("Verification Successful: All SlotItems found in Master Data.");
         } else {
             System.err.println("Verification Failed: The following SlotItems were NOT found in Master Data:");
-            System.err.println("[Update this file]test/resources/logbook/config/logbook.bean.SlotitemMstCollection.json");
+            System.err
+                    .println("[Update this file]test/resources/logbook/config/logbook.bean.SlotitemMstCollection.json");
             for (String s : missing) {
                 System.err.println(" - " + s);
             }

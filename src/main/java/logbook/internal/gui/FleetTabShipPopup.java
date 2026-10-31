@@ -44,7 +44,7 @@ public class FleetTabShipPopup extends VBox {
     private final Chara chara;
 
     private final Map<Integer, SlotItem> itemMap;
-    
+
     /**
      * 艦隊タブポップアップのコンストラクタ
      *
@@ -78,12 +78,12 @@ public class FleetTabShipPopup extends VBox {
         if (this.chara.isShip()) {
             Ship ship = this.chara.asShip();
             Ships.shipMst(this.chara).map(ShipMst::getFuelMax).ifPresent(max -> {
-                this.fuel.setText(ship.getFuel()*100/max+"%");
-                this.fuelDesc.setText("("+ship.getFuel()+"/"+max+")");
+                this.fuel.setText(ship.getFuel() * 100 / max + "%");
+                this.fuelDesc.setText("(" + ship.getFuel() + "/" + max + ")");
             });
             Ships.shipMst(this.chara).map(ShipMst::getBullMax).ifPresent(max -> {
-                this.bull.setText(ship.getBull()*100/max+"%");
-                this.bullDesc.setText("("+ship.getBull()+"/"+max+")");
+                this.bull.setText(ship.getBull() * 100 / max + "%");
+                this.bullDesc.setText("(" + ship.getBull() + "/" + max + ")");
             });
             int maxPlane = Ships.shipMst(this.chara)
                     .map(ShipMst::getMaxeq)
@@ -97,8 +97,8 @@ public class FleetTabShipPopup extends VBox {
                 if (total >= maxPlane) {
                     this.plane.setText("なし");
                 } else {
-                    this.plane.setText((maxPlane-total) + "機");
-                    this.planeDesc.setText("(要ボーキ"+(maxPlane-total)*5 + ")");
+                    this.plane.setText((maxPlane - total) + "機");
+                    this.planeDesc.setText("(要ボーキ" + (maxPlane - total) * 5 + ")");
                 }
             }
             for (int i = 0; i < ship.getSlotnum(); i++) {
@@ -191,7 +191,8 @@ public class FleetTabShipPopup extends VBox {
                 Ship ship = this.chara.asShip();
 
                 Integer itemId = this.slotIndex == SLOT_EX
-                        ? ship.getSlotEx() : this.chara.getSlot().get(this.slotIndex);
+                        ? ship.getSlotEx()
+                        : this.chara.getSlot().get(this.slotIndex);
 
                 SlotItem item = this.itemMap.get(itemId);
 

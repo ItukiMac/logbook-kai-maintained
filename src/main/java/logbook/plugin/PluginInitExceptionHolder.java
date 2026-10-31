@@ -8,15 +8,15 @@ import java.util.List;
  */
 public class PluginInitExceptionHolder {
     private List<Exception> exceptionList = new ArrayList<Exception>();
-    
+
     public void putException(Exception e) {
         exceptionList.add(e);
     }
-    
+
     public boolean isInitError() {
         return this.exceptionList.size() > 0;
     }
-    
+
     public List<Exception> getException() {
         return this.exceptionList;
     }

@@ -40,7 +40,8 @@ public final class Config {
      * @param dir アプリケーション設定ディレクトリ
      */
     public Config(Path dir) {
-        this.mapper = logbook.internal.json.JsonMappers.builder().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
+        this.mapper = logbook.internal.json.JsonMappers.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
         this.dir = dir;
     }
 

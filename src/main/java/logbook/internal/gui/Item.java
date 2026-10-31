@@ -76,7 +76,6 @@ public class Item implements Comparable<Item> {
     /** 装甲 */
     private IntegerProperty souk = new SimpleIntegerProperty();
 
-
     /**
      * 装備定義を取得します。
      * @return 装備定義

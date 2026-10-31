@@ -15,11 +15,11 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from build_feature_distribution import build
 from run_feature_distribution import FILES, SHIP_LIST_UI_PROFILE, ship_list_ui_entry, ship_list_ui_required_entries, verify
 
-@unittest.skipUnless((ROOT/'target/logbook-kai.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
+@unittest.skipUnless((ROOT/'target/logbook-kai2.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires built candidate, javac and isolated Xvfb')
 class ShipListUiIntegrationTest(unittest.TestCase):
     def test_real_product_ship_window_filters_exports_and_settings(self):
-        original=ROOT/'target/logbook-kai.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
+        original=ROOT/'target/logbook-kai2.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
         fixture=Path(tempfile.mkdtemp(prefix='ship-list-fixture-',dir=ROOT/'target'))
         evidence=ROOT/'target/r3-verification';evidence.mkdir(exist_ok=True)
         result={'fixture':str(fixture),'production_accessed':False,'result':'not_completed',
@@ -27,9 +27,9 @@ class ShipListUiIntegrationTest(unittest.TestCase):
         try:
             dist=fixture/'distribution';report=build(original,dist,'a'*40);verify(dist)
             self.assertEqual(SHIP_LIST_UI_PROFILE,report['ship_list_ui_profile'])
-            with ZipFile(dist/'logbook-core.jar') as core:
+            with ZipFile(dist/'logbook-kai2-core.jar') as core:
                 self.assertFalse(any(ship_list_ui_entry(n) for n in core.namelist()),'Hidden core fallback')
-            with ZipFile(dist/'features/logbook-feature-ships.jar') as status:
+            with ZipFile(dist/'features/logbook-kai2-feature-ships.jar') as status:
                 self.assertTrue(ship_list_ui_required_entries()<=set(status.namelist()))
             classes=fixture/'classes';classes.mkdir();runtime=fixture/'runtime';runtime.mkdir()
             cp=os.pathsep.join(str(dist/name) for name in FILES if name.endswith('.jar'))
@@ -49,8 +49,8 @@ class ShipListUiIntegrationTest(unittest.TestCase):
                 all_rows=2,ordered_fleet=True,label_tabs=True,filters=6,numeric_controls=True,
                 sorted_copy=True,deck_export=True,settings_reread=True,timeline_stopped=True,
                 original_history_unchanged=True,source_jar_unchanged=True,
-                host_sha256=hashlib.sha256((dist/'logbook-core.jar').read_bytes()).hexdigest(),
-                status_sha256=hashlib.sha256((dist/'features/logbook-feature-ships.jar').read_bytes()).hexdigest())
+                host_sha256=hashlib.sha256((dist/'logbook-kai2-core.jar').read_bytes()).hexdigest(),
+                status_sha256=hashlib.sha256((dist/'features/logbook-kai2-feature-ships.jar').read_bytes()).hexdigest())
         finally:
             (evidence/(fixture.name+'.log')).write_text('\n\n'.join(logs),encoding='utf8')
             (evidence/(fixture.name+'.json')).write_text(json.dumps(result,indent=2)+'\n',encoding='utf8')

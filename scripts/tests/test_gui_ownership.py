@@ -17,7 +17,7 @@ class GuiOwnershipTest(unittest.TestCase):
         self.file.write_text(json.dumps(data));return check(self.root,self.file)
     def test_actual_complete_source_has_zero_unclassified_and_matches_packaging(self):
         report=self.run_catalog(self.catalog)
-        self.assertEqual(95,report['components']);self.assertEqual(0,report['unclassified']);self.assertEqual(57,report['owners']['host'])
+        self.assertEqual(96,report['components']);self.assertEqual(0,report['unclassified']);self.assertEqual(58,report['owners']['host'])
     def test_missing_component_is_not_silently_assigned_to_host(self):
         self.catalog['components'].pop()
         with self.assertRaises(ValueError):self.run_catalog(self.catalog)

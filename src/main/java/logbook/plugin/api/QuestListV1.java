@@ -13,10 +13,20 @@ import logbook.core.QuestListReadService;
  * Cached custom IDs are omitted from this observed list, never removed from storage.
  */
 public final class QuestListV1 {
-    private QuestListV1() { }
-    public static int version() { return 1; }
-    public static Listing snapshot() { return QuestListReadService.snapshot(); }
-    public static boolean isCustomId(int id) { return id >= 10001 && id <= 10005; }
+    private QuestListV1() {
+    }
+
+    public static int version() {
+        return 1;
+    }
+
+    public static Listing snapshot() {
+        return QuestListReadService.snapshot();
+    }
+
+    public static boolean isCustomId(int id) {
+        return id >= 10001 && id <= 10005;
+    }
 
     public record Listing(List<Quest> quests, List<String> diagnostics) {
         public Listing {
@@ -31,7 +41,8 @@ public final class QuestListV1 {
             Integer progressFlag, Integer invalidFlag, Instant observedAt,
             String expire, boolean active) {
         public Quest {
-            if (no <= 0) throw new IllegalArgumentException("Positive quest identity required");
+            if (no <= 0)
+                throw new IllegalArgumentException("Positive quest identity required");
             // Some old input lists contain null elements: preserve rather than repair them.
             materials = materials == null ? null : Collections.unmodifiableList(new ArrayList<>(materials));
         }

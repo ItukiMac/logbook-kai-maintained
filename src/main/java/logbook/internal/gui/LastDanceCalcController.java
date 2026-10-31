@@ -59,7 +59,7 @@ public class LastDanceCalcController extends FeatureUiV1.Window {
 
         // 入力条件からフィルタを設定
         Predicate<SimpleBattleLog> predicate = getBattleLogFilter(areaInput, cellInput, startTimeStr);
-        
+
         // 海域ドロップ報告書の読み込み
         List<SimpleBattleLog> matchedLogs;
         try {
@@ -77,7 +77,7 @@ public class LastDanceCalcController extends FeatureUiV1.Window {
 
         List<HpPair> hpPairs = new ArrayList<>();
         String bossName = "";
-        
+
         for (SimpleBattleLog simpleLog : matchedLogs) {
             if ("".equals(bossName)) {
                 bossName = simpleLog.getEName1();
@@ -124,7 +124,7 @@ public class LastDanceCalcController extends FeatureUiV1.Window {
 
     /**
      * BattleLogのFilter条件を設定
-     * 
+     *
      * @return
      */
     private Predicate<SimpleBattleLog> getBattleLogFilter(String areaInput, String cellInput, String startTimeStr) {
@@ -138,7 +138,7 @@ public class LastDanceCalcController extends FeatureUiV1.Window {
                     return false;
                 }
             }
-            
+
             // 海域チェック
             if (!areaInput.isEmpty()) {
                 String areaShort = log.getAreaShortName();
@@ -168,7 +168,7 @@ public class LastDanceCalcController extends FeatureUiV1.Window {
 
         return predicate;
     }
-    
+
     private ZonedDateTime parseZonedDateTime(String text) {
         if (text == null || text.trim().isEmpty()) {
             return null;
@@ -181,7 +181,7 @@ public class LastDanceCalcController extends FeatureUiV1.Window {
             try {
                 str = str.replace('/', '-');
                 TemporalAccessor ta = DateUtil.DATE_FORMAT.parse(str);
-                return ZonedDateTime.of(LocalDateTime.from(ta), ZoneId.of("Asia/Tokyo"));                        
+                return ZonedDateTime.of(LocalDateTime.from(ta), ZoneId.of("Asia/Tokyo"));
             } catch (Exception ignored) {
             }
         }

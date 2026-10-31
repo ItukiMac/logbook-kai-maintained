@@ -11,8 +11,13 @@ import javafx.stage.Stage;
  * This GUI contract does not claim a new immutable row model or global state lock.
  */
 public final class ShipListUiV1 {
-    private ShipListUiV1() { }
-    public static int version() { return 1; }
+    private ShipListUiV1() {
+    }
+
+    public static int version() {
+        return 1;
+    }
+
     /** Invoke on the JavaFX thread. Opening does not start a game request or install anything. */
     public static void open(Stage owner, String title, Consumer<FeatureUiV1.Window> controller,
             Consumer<Stage> window) throws IOException {

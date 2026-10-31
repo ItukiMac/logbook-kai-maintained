@@ -20,7 +20,7 @@ class ShipStatisticsPackagingTest(unittest.TestCase):
         entries={'META-INF/MANIFEST.MF':b'Manifest-Version: 1.0\r\n\r\n',
                  SERVICE:('\n'.join(PROVIDERS.values())+'\n').encode()}
         for service in ('logbook.plugin.lifecycle.StartUp', 'logbook.listener.ContentListenerSpi'):
-            entries['META-INF/services/' + service] = (b'local.kancolle.bridge.KancolleBridgeStartUp\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'local.kancolle.kqs.KqsLogbookPlugin\n'
+            entries['META-INF/services/' + service] = (b'logbook.features.bridge.BrowserBridgePlugin\n' if service == 'logbook.plugin.lifecycle.StartUp' else b'') + b'logbook.features.sharing.InformationSharingPlugin\n'
         for group in GROUPS:
             entries.update({name:b'synthetic' for name in required_entries(group)})
         entries.update({name:b'synthetic statistics' for name in ship_statistics_required_entries()})
@@ -57,7 +57,7 @@ class ShipStatisticsPackagingTest(unittest.TestCase):
         source=self.source();before=source.read_bytes();root=self.root/'bundle';report=build(source,root,'a'*40)
         self.assertEqual(SHIP_STATISTICS_PROFILE,report['ship_statistics_profile']);verify(root);self.assertEqual(before,source.read_bytes())
         with ZipFile(root/JARS[0]) as z:self.assertFalse(ship_statistics_required_entries()&set(z.namelist()))
-        with ZipFile(root/'features/logbook-feature-charts.jar') as z:self.assertTrue(ship_statistics_required_entries()<=set(z.namelist()))
+        with ZipFile(root/'features/logbook-kai2-feature-charts.jar') as z:self.assertTrue(ship_statistics_required_entries()<=set(z.namelist()))
     def test_incomplete_new_source_is_rejected_before_output_exists(self):
         source=self.source(missing='logbook/gui/statistics.fxml');out=self.root/'no-output'
         with self.assertRaisesRegex(ValueError,'Missing ship statistics input'):build(source,out,'a'*40)
@@ -77,10 +77,10 @@ class ShipStatisticsPackagingTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'statistics UI remains in the host'):verify(out)
     def test_statistics_required_component_cannot_be_omitted(self):
         root,_=self.bundle();entry='logbook/gui/statistics.fxml'
-        out=self.tamper(root,{'features/logbook-feature-charts.jar':lambda d:d.pop(entry)})
+        out=self.tamper(root,{'features/logbook-kai2-feature-charts.jar':lambda d:d.pop(entry)})
         with self.assertRaisesRegex(ValueError,'Missing required feature entry'):verify(out)
     def test_statistics_cannot_be_moved_to_another_module(self):
         root,_=self.bundle();entry='logbook/gui/statistics.fxml'
-        out=self.tamper(root,{'features/logbook-feature-calculators.jar':lambda d:d.update({entry:b'wrong module'})})
+        out=self.tamper(root,{'features/logbook-kai2-feature-calculators.jar':lambda d:d.update({entry:b'wrong module'})})
         with self.assertRaisesRegex(ValueError,'statistics UI belongs to the charts'):verify(out)
 if __name__=='__main__':unittest.main()

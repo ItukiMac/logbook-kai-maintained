@@ -119,7 +119,7 @@ public class ExpChartController extends FeatureUiV1.Window {
 
     /**
      * グラフデータを読み込み
-     * 
+     *
      * @param type 種類
      * @param scale 期間
      * @param min 期間の最小(自身を含む)

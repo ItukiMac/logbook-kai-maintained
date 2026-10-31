@@ -94,8 +94,9 @@ public class CheckUpdate {
 
     private static void run(boolean isStartUp, Stage stage) {
         if (ManagedBundleMode.enabled()) {
-            if (!isStartUp) Tools.Controls.alert(AlertType.INFORMATION, "分割版の更新",
-                    "専用管理ツールで一式を更新してください。単体JAR更新は無効です。", stage);
+            if (!isStartUp)
+                Tools.Controls.alert(AlertType.INFORMATION, "分割版の更新",
+                        "専用管理ツールで一式を更新してください。単体JAR更新は無効です。", stage);
             return;
         }
         Version remoteVersion = remoteVersion();
@@ -160,7 +161,8 @@ public class CheckUpdate {
                     .findFirst()
                     .map(tagname -> {
                         Matcher m = TAG_REGIX.matcher(tagname);
-                        if (!m.matches()) return Version.UNKNOWN;
+                        if (!m.matches())
+                            return Version.UNKNOWN;
                         return new Version(m.group(1));
                     })
                     .orElse(Version.UNKNOWN);
@@ -265,7 +267,7 @@ public class CheckUpdate {
                 new Text("航海日誌 v" + version + "への更新を行います。\n"),
                 new Text("更新の準備が出来ましたら[更新]を押して更新を行ってください。"));
         label.getStyleClass().add("info-label");
-        
+
         // "Github Releaseページを開く" リンク
         Hyperlink githubLink = new Hyperlink("Github Releaseページを開く");
         githubLink.setOnAction(event -> {
@@ -275,14 +277,14 @@ public class CheckUpdate {
                 LoggerHolder.get().error("Github Releaseページ表示時にエラー発生", e);
             }
         });
-        
+
         Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS); 
-        
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
         HBox labelBox = new HBox(5, label, spacer, githubLink);
         labelBox.setAlignment(Pos.CENTER_LEFT);
         vbox.getChildren().add(labelBox);
-        
+
         // WebViewコンテナ
         StackPane stackPane1 = new StackPane();
         stackPane1.getStyleClass().add("webview-container");
@@ -323,7 +325,7 @@ public class CheckUpdate {
             Stage stage = (Stage) closeButton.getScene().getWindow();
             stage.close(); // 現在のウィンドウを閉じる
         });
-        
+
         buttonBox.getChildren().addAll(updateButton, closeButton);
         stackPane2.getChildren().add(buttonBox);
 
@@ -351,42 +353,43 @@ public class CheckUpdate {
                 while ((line = reader.readLine()) != null) {
                     response.append(line).append("\n");
                 }
-                
+
                 String releaseJson = response.toString();
                 try {
                     String releaseNotes = extractReleaseNotes(releaseJson);
-                    
+
                     // JavaScript内でエスケープするために、リリースノートの内容を処理
                     String escapedReleaseNotes = releaseNotes
-                            .replace("'", "\\'")   // シングルクォートのエスケープ
-                            .replace("\\", "\\\\") // バックスラッシュのエスケープ                        
+                            .replace("'", "\\'") // シングルクォートのエスケープ
+                            .replace("\\", "\\\\") // バックスラッシュのエスケープ
                             .replace("\"", "\\\"") // ダブルクォートのエスケープ
-                            .replace("\r", "")     // キャリッジリターンを削除
+                            .replace("\r", "") // キャリッジリターンを削除
                             .replace("\n", "\\n"); // 改行をJavaScript用のエスケープに変換
-    
+
                     // WebViewにリリースノートを挿入
                     webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
                         if (newState == Worker.State.SUCCEEDED) {
                             webEngine.executeScript(
                                     "(function() {" +
                                             "if (window.marked && document.body) {" +
-                                              "document.body.innerHTML = window.marked('" + escapedReleaseNotes + "');" +
+                                            "document.body.innerHTML = window.marked('" + escapedReleaseNotes + "');" +
                                             "}" +
-                                        "})();");
+                                            "})();");
                         }
                     });
 
                 } catch (Exception e) {
                     LoggerHolder.get().error("releaseJson:" + releaseJson, e);
-                    
+
                     webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
                         if (newState == Worker.State.SUCCEEDED) {
                             webEngine.executeScript(
                                     "(function() {" +
                                             "if (window.marked && document.body) {" +
-                                              "document.body.innerHTML = '<p>リリース情報の解析中にエラーが発生しました。Githubのリリースノートから確認してください。</p>';" +
+                                            "document.body.innerHTML = '<p>リリース情報の解析中にエラーが発生しました。Githubのリリースノートから確認してください。</p>';"
+                                            +
                                             "}" +
-                                          "})();");
+                                            "})();");
                         }
                     });
                 }
@@ -398,14 +401,14 @@ public class CheckUpdate {
                 if (newState == Worker.State.SUCCEEDED) {
                     webEngine.executeScript(
                             "(function() {" +
-                                  "if (window.marked && document.body) {" +
+                                    "if (window.marked && document.body) {" +
                                     "document.body.innerHTML = '<p>リリース情報の取得に失敗しました。Githubのリリースノートから確認してください。</p>';" +
-                                  "}" +
-                                "})();");
+                                    "}" +
+                                    "})();");
                 }
             });
         }
-                
+
         // スタイルシートを適用
         Scene scene = new Scene(pane);
 
@@ -438,7 +441,7 @@ public class CheckUpdate {
         }
         return "";
     }
-    
+
     private static String findReleaseDigest(String version, String assetName) throws IOException {
         byte[] response = readURI(URI.create(RELEASES + "v" + version));
         try (JsonReader reader = Json.createReader(new ByteArrayInputStream(response))) {
@@ -507,24 +510,24 @@ public class CheckUpdate {
 
         Path targetDir;
         try {
-            //MainClassであるLauncher.classの実行場所が、logbook-kai.jarのある場所
+            //MainClassであるLauncher.classの実行場所が、logbook-kai2.jarのある場所
             targetDir = new File(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-                .toPath()
-                .getParent();
+                    .toPath()
+                    .getParent();
         } catch (Exception e) {
-            LoggerHolder.get().error("logbook-kai.jarの実行場所が見つかりませんでした" , e);
+            LoggerHolder.get().error("logbook-kai2.jarの実行場所が見つかりませんでした", e);
             return;
         }
-        
+
         Map<WebEngine, Stage> logStages = new HashMap<WebEngine, Stage>();
-        
+
         Task<String> updateTask = new Task<String>() {
             @Override
             protected String call() throws Exception {
                 Path tempDir = Files.createTempDirectory("logbook-kai");
                 try {
                     Path tempZip = tempDir.resolve("update.zip");
-                    String assetName = "logbook-kai_" + version + ".zip";
+                    String assetName = "logbook-kai2_" + version + ".zip";
                     String downloadURL = OPEN_URL + "/download/v" + version + "/" + assetName;
 
                     updateMessage("リリース情報を検証しています...");
@@ -558,11 +561,11 @@ public class CheckUpdate {
                     // 親ウィンドウの中央位置に表示
                     logStage.setX(mainStage.getX() + (mainStage.getWidth() - 600) / 2);
                     logStage.setY(mainStage.getY() + (mainStage.getHeight() - 400) / 2);
-                    
+
                     logStage.setScene(new Scene(listView, 400, 300));
                     logStage.initOwner(mainStage);
                     logStage.setTitle("更新ログ");
-                    
+
                     logStage.show();
                     logStages.put(webEngine, logStage);
                 }
@@ -571,21 +574,21 @@ public class CheckUpdate {
                 listView.getItems().add(newMessage);
             });
         });
-        
+
         updateTask.setOnSucceeded(event -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("更新完了");
             alert.setContentText(updateTask.getValue());
-            
+
             Stage logStage = logStages.get(webEngine);
             if (logStage != null) {
                 alert.initOwner(logStage);
                 alert.setX(logStage.getX());
                 alert.setY(logStage.getY());
             }
-            
+
             alert.showAndWait();
-            
+
             // logStageを閉じる
             if (logStage != null) {
                 logStage.close();
@@ -603,7 +606,7 @@ public class CheckUpdate {
                 alert.setX(logStage.getX());
                 alert.setY(logStage.getY());
             }
-            
+
             alert.showAndWait();
         });
 

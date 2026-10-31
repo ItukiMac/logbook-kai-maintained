@@ -73,7 +73,7 @@ public class AppCondition implements Serializable {
     public static AppCondition get() {
         return Config.getDefault().get(AppCondition.class, AppCondition::new);
     }
-    
+
     /**
      * 有効な戦闘結果を取得します。
      * battleResultがnullの場合はbattleResultConfirmを返却します。

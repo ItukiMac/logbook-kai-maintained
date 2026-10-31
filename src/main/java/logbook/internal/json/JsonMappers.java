@@ -8,7 +8,9 @@ import tools.jackson.databind.json.JsonMapper;
  * are added by the caller and are never disabled by this factory.
  */
 public final class JsonMappers {
-    private JsonMappers() { }
+    private JsonMappers() {
+    }
+
     public static JsonMapper.Builder builder() {
         return JsonMapper.builderWithJackson2Defaults();
     }

@@ -9,7 +9,7 @@ import tempfile
 import unittest
 
 ROOT=Path(__file__).resolve().parents[2]
-JAR=ROOT/'target/logbook-kai.jar'
+JAR=ROOT/'target/logbook-kai2.jar'
 
 @unittest.skipUnless(JAR.is_file() and shutil.which('javac') and shutil.which('java'),
                      'Requires built JAR and Java21+, mandatory within comprehensive verification')

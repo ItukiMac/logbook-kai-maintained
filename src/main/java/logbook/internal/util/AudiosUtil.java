@@ -43,7 +43,7 @@ public final class AudiosUtil {
 
     /**
      * デフォルトサウンドを取得します。
-     * 
+     *
      * @return デフォルトサウンドのパス、存在しない場合null
      * @throws IOException 入出力エラーが発生した場合
      */
@@ -60,7 +60,7 @@ public final class AudiosUtil {
 
     /**
      * デフォルトサウンドを再生するタスクを返します。
-     * 
+     *
      * @return デフォルトサウンドを再生するタスク
      */
     public static Runnable playDefaultNotifySound() {

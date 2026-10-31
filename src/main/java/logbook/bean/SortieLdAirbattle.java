@@ -81,7 +81,7 @@ public class SortieLdAirbattle
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたSortieLdAirbattle
      */
     @Override

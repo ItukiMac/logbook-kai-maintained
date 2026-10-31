@@ -23,12 +23,7 @@ public class BouyomiChanUtils {
     private static final AtomicBoolean tryExecute = new AtomicBoolean(false);
 
     public enum Type {
-        MapStartNextAlert,
-        MissionStartAlert,
-        MissionComplete,
-        NdockComplete,
-        AchievementGimmick1,
-        AchievementGimmick2;
+        MapStartNextAlert, MissionStartAlert, MissionComplete, NdockComplete, AchievementGimmick1, AchievementGimmick2;
     }
 
     @SafeVarargs

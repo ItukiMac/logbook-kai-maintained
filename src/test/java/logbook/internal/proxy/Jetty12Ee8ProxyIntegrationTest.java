@@ -31,8 +31,8 @@ class Jetty12Ee8ProxyIntegrationTest {
         upstream.createContext("/proxy-check", exchange -> {
             byte[] requestBody = exchange.getRequestBody().readAllBytes();
             byte[] output = (exchange.getRequestMethod() + ":" +
-                exchange.getRequestHeaders().getFirst("X-Test-Header") + ":" +
-                new String(requestBody, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8);
+                    exchange.getRequestHeaders().getFirst("X-Test-Header") + ":" +
+                    new String(requestBody, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, output.length);
             try (OutputStream stream = exchange.getResponseBody()) {
                 stream.write(output);
@@ -69,7 +69,7 @@ class Jetty12Ee8ProxyIntegrationTest {
     void tunnelConnectForwardsBytes() throws Exception {
         try (ServerSocket echoServer = new ServerSocket(0, 1,
                 java.net.InetAddress.getByName("127.0.0.1"));
-             ExecutorService executor = Executors.newSingleThreadExecutor()) {
+                ExecutorService executor = Executors.newSingleThreadExecutor()) {
             Future<?> echo = executor.submit(() -> {
                 try (Socket peer = echoServer.accept()) {
                     byte[] bytes = peer.getInputStream().readNBytes(4);
@@ -96,7 +96,7 @@ class Jetty12Ee8ProxyIntegrationTest {
                         assertTrue(headers.size() < 4096);
                     }
                     assertTrue(headers.toString(StandardCharsets.US_ASCII).contains(" 200 "),
-                        headers.toString(StandardCharsets.US_ASCII));
+                            headers.toString(StandardCharsets.US_ASCII));
                     client.getOutputStream().write("PING".getBytes(StandardCharsets.US_ASCII));
                     client.getOutputStream().flush();
                     assertArrayEquals("PING".getBytes(StandardCharsets.US_ASCII), in.readNBytes(4));

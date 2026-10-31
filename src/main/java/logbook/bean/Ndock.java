@@ -50,7 +50,7 @@ public class Ndock implements Serializable {
      */
     public static Ndock toNdock(JsonObject json) {
         Ndock bean = new Ndock();
-        
+
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);
@@ -65,7 +65,7 @@ public class Ndock implements Serializable {
                 .setInteger("api_item4", bean::setItem4)
                 .setInteger("api_ship_id", bean::setShipId)
                 .setInteger("api_state", bean::setState);
-        
+
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             unUsedKey.removeIf("api_member_id"::equals); //提督id

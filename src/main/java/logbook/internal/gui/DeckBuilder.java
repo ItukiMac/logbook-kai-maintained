@@ -63,7 +63,7 @@ public class DeckBuilder {
     /**
      * 選択された基地航空隊の機体リストをクリップボードにコピーする。
      * 艦隊部分は現在の艦隊が入る。
-     * 
+     *
      * @param table テーブル
      */
     public static void airbaseSelectionCopy(TableView<AirBaseItem> table) {
@@ -83,7 +83,7 @@ public class DeckBuilder {
     /**
      * 選択された基地航空隊をクリップボードにコピーする。
      * 艦隊部分は現在の艦隊が入る。
-     * 
+     *
      * @param airbases 基地航空隊
      */
     public static void airbaseSelectionCopy(List<AirBase> airbases) {

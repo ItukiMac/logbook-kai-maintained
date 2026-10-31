@@ -30,6 +30,7 @@ public class SlotitemEquipLimitExslotCollection implements Serializable {
      * @return {@link SlotitemEquipLimitExslotCollection}
      */
     public static SlotitemEquipLimitExslotCollection get() {
-        return Config.getDefault().get(SlotitemEquipLimitExslotCollection.class, SlotitemEquipLimitExslotCollection::new);
+        return Config.getDefault().get(SlotitemEquipLimitExslotCollection.class,
+                SlotitemEquipLimitExslotCollection::new);
     }
 }

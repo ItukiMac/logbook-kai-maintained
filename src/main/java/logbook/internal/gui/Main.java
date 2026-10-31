@@ -20,7 +20,7 @@ public class Main extends Application {
 
     /**
      * Launcherから呼び出され、アプリケーションの画面設定をロードします
-     * 
+     *
      * @see logbook.internal.Lancher
      */
     @Override
@@ -40,7 +40,7 @@ public class Main extends Application {
         // 最前面に表示する
         stage.setAlwaysOnTop(AppConfig.get().isOnTop());
 
-        stage.setTitle("公開日誌-改2 " + Version.getCurrent());
+        stage.setTitle("logbook-kai2 " + Version.getCurrent());
 
         stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
             if (AppConfig.get().isCheckDoit()) {
@@ -50,7 +50,7 @@ public class Main extends Application {
                 alert.initOwner(stage);
                 alert.setTitle("終了の確認");
                 alert.setHeaderText("終了の確認");
-                alert.setContentText("公開日誌-改2を終了しますか？");
+                alert.setContentText("logbook-kai2を終了しますか？");
                 alert.getButtonTypes().clear();
                 alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
                 alert.showAndWait()

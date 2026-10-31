@@ -1,0 +1,523 @@
+{
+  "source_revisions": {
+    "openjfx": "ba6a406466297926dc39fa7df7b3ac3402fdda12",
+    "jetty": "15cecbd757a2f6b0fdc6a8944f4c6d0020b17da0",
+    "controlsfx": "4c003e9850a5044720bf14f192209b00d5554b43"
+  },
+  "runtime_dependencies": [
+    {
+      "artifact": "javafx-controls-21.0.13.jar",
+      "sha256_linux": "c87221f287e5bafcc0230d7e83f9a04b9e1d208872b35353d1de88887eddf4a3",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-controls-21.0.13-linux.jar",
+      "sha256_linux": "b9689b32529274bd512aaf0028871c857a0e25c723ca3263cb0f79d3b10f4699",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-graphics-21.0.13.jar",
+      "sha256_linux": "e91d1cf83bfd0ae687c3b6c338e35be83235be24f2adb441e15b1d5eb83d9686",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-graphics-21.0.13-linux.jar",
+      "sha256_linux": "106f3969512c1279a456a3b931bcfff367d7a916e02d71492adad84651fb1f3f",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-base-21.0.13.jar",
+      "sha256_linux": "709bbc95904092b7d324403306ad302a5f887294f29948fc2ae291c16cf2e595",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-base-21.0.13-linux.jar",
+      "sha256_linux": "2e48f3e7db2dd60187087fe660167854e4a55f9489f2dce7b5fb920bf3f730bb",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-fxml-21.0.13.jar",
+      "sha256_linux": "7fdd0b8c3734abbc281c6046e73ed1d737075983a8412d9002cb084bc044f854",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-fxml-21.0.13-linux.jar",
+      "sha256_linux": "94e8448e32eb38abfd2e20f1768a0789c5c3f240f1f69372542234b48aeb6147",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-media-21.0.13.jar",
+      "sha256_linux": "0069120917081164e4bbe4be366a82a24bcb994309c110ce521cdf8c054d018f",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-media-21.0.13-linux.jar",
+      "sha256_linux": "0b3ec932e59dde61608835cb29bfbe10752997b7512887729062e865e9f119c0",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-web-21.0.13.jar",
+      "sha256_linux": "9d6e16baba9eea8862aa54edfabee10284db0bbd81cf344ccae4b3cc1908ff72",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-web-21.0.13-linux.jar",
+      "sha256_linux": "60de5c3df7dacf4901a01b45e2b199f59cf141e678126d5f4432d9b15a5063ae",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-swing-21.0.13.jar",
+      "sha256_linux": "5a44fe4a13e9e11923dbedaac9805b321807250dec06004ea6c0f762afbe70ad",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "javafx-swing-21.0.13-linux.jar",
+      "sha256_linux": "5fa772cdc68b784be6c86eac8139ada2fc14aa8d2733687aa7cbe20687b77257",
+      "notices": [
+        "runtime/openjfx/ADDITIONAL_LICENSE_INFO",
+        "runtime/openjfx/ASSEMBLY_EXCEPTION",
+        "runtime/openjfx/LICENSE",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/jpeg_fx.md",
+        "runtime/openjfx/modules/javafx.graphics/src/main/legal/mesa3d.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/directshow.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/glib.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/gstreamer.md",
+        "runtime/openjfx/modules/javafx.media/src/main/legal/libffi.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/icu_web.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxml2.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/libxslt.md",
+        "runtime/openjfx/modules/javafx.web/src/main/legal/webkit.md"
+      ]
+    },
+    {
+      "artifact": "jakarta.json-api-2.1.3.jar",
+      "sha256_linux": "bc934142805ea1d794f1440563965a3861a2a9fb7414ecd3fe44f26500734414",
+      "notices": [
+        "runtime/jakarta.json-api-2.1.3/embedded/META-INF/LICENSE.md",
+        "runtime/jakarta.json-api-2.1.3/embedded/META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "artifact": "parsson-1.1.9.jar",
+      "sha256_linux": "03dc4dc834a928730d52a50952de0f30c35e0daf048889132be19ee1e5053a6c",
+      "notices": [
+        "runtime/parsson-1.1.9/embedded/META-INF/LICENSE.md",
+        "runtime/parsson-1.1.9/embedded/META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "artifact": "jetty-server-12.1.14.jar",
+      "sha256_linux": "62a2c691ecb3b60178e7b1a64d498261d31bcef76dd19147b89dcb2c6f784f30",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-http-12.1.14.jar",
+      "sha256_linux": "a898f3dad99c2505409047d849cac7f652eced5853f9dad711395a26cd681e13",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-io-12.1.14.jar",
+      "sha256_linux": "9a41452f362f5bd96e017f16d6b66d19d2d60a5981eafd3729367c1d535eb5e9",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "slf4j-api-2.0.20.jar",
+      "sha256_linux": "7e1446499b359675d8aabe6af2de86b85e72ae8a2a932c0b40d0e5ba57097439",
+      "notices": [
+        "runtime/slf4j-api-2.0.20/embedded/META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-ee8-servlet-12.1.14.jar",
+      "sha256_linux": "75104e5c4adb6ca091023d09d56c6f255a66d86e9909229706754ab26b0306c4",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-ee8-nested-12.1.14.jar",
+      "sha256_linux": "efcf298c279b3bf8f12d2bfa92314333786f0ca0f81b41cd454d6b32e86f6866",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-security-12.1.14.jar",
+      "sha256_linux": "62d4a246b978adee64d081025546466a05ee7b57b1dd6293d93953a80ba4cbe7",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-session-12.1.14.jar",
+      "sha256_linux": "5b091e6132ba30a56ce872e07cdc0de263163e46f88d5dea99310d3a6d00899a",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-servlet-api-4.0.9.jar",
+      "sha256_linux": "89916c0360ad8be8b0b6bab41d9f0d5d03b742abb5e13aeeac06817c14fdf037",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-ee8-security-12.1.14.jar",
+      "sha256_linux": "803ed433bbd52c16b0912216e664765b1cbeb1ac6219a38f0176459c33682b56",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-ee8-proxy-12.1.14.jar",
+      "sha256_linux": "1945ec3514bbd92e0ada9a44915ca762c77f83e51e51df9cb6f21370309081b4",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-client-12.1.14.jar",
+      "sha256_linux": "70db0a8101390818022466da64110aa25e06d78892cc4dce9353d8647c92c2ec",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-alpn-client-12.1.14.jar",
+      "sha256_linux": "b19fc6145005c2978f1d886267cea17b2dc2499afd1aa3f3c3d29f6004f338c5",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-compression-gzip-12.1.14.jar",
+      "sha256_linux": "d0994b3a821d2946c1d1c881be4b3997e95a05d7381328d79b7c1b7b042e9186",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-compression-common-12.1.14.jar",
+      "sha256_linux": "121a28a3aad2a036c9f97073ddc37f11cb3e9f3da13425f2c08c380ead93a6db",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "jetty-util-12.1.14.jar",
+      "sha256_linux": "deb2a47bb9659c69076da1020d058c0ededba61dcd1aebccf83fce4719164adc",
+      "notices": [
+        "runtime/jetty/LICENSE",
+        "runtime/jetty/NOTICE.txt",
+        "runtime/jetty/embedded/META-INF/LICENSE.md",
+        "runtime/jetty/embedded/META-INF/NOTICE.md",
+        "runtime/jetty/jetty-home/src/main/resources/LICENSE.txt",
+        "runtime/jetty/jetty-home/src/main/resources/NOTICE.txt"
+      ]
+    },
+    {
+      "artifact": "controlsfx-11.2.6.jar",
+      "sha256_linux": "94b98cc00b40b647f1d768af9fade53e6a544322ad09b430f1061d1bd8e9e469",
+      "notices": [
+        "runtime/controlsfx/LICENSE.txt",
+        "runtime/controlsfx/embedded/org/controlsfx/dialog/license.txt"
+      ]
+    },
+    {
+      "artifact": "jackson-annotations-2.22.jar",
+      "sha256_linux": "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0",
+      "notices": [
+        "runtime/jackson-annotations-2.22/embedded/META-INF/LICENSE",
+        "runtime/jackson-annotations-2.22/embedded/META-INF/NOTICE"
+      ]
+    },
+    {
+      "artifact": "jackson-databind-3.2.4.jar",
+      "sha256_linux": "c4af37223d5024f1294a5450598b01b65f30c53d9e906f02c3955ba1fb14a67d",
+      "notices": [
+        "runtime/jackson-databind-3.2.4/embedded/META-INF/LICENSE",
+        "runtime/jackson-databind-3.2.4/embedded/META-INF/NOTICE"
+      ]
+    },
+    {
+      "artifact": "jackson-core-3.2.4.jar",
+      "sha256_linux": "494b9f5fccf008042d5a72c5bf00629b144c0ba7362a9864cbb02234c9772651",
+      "notices": [
+        "runtime/jackson-core-3.2.4/embedded/META-INF/FastDoubleParser-LICENSE",
+        "runtime/jackson-core-3.2.4/embedded/META-INF/FastDoubleParser-ThirdParty-LICENSE",
+        "runtime/jackson-core-3.2.4/embedded/META-INF/LICENSE",
+        "runtime/jackson-core-3.2.4/embedded/META-INF/NOTICE",
+        "runtime/jackson-core-3.2.4/embedded/META-INF/Schubfach-LICENSE"
+      ]
+    },
+    {
+      "artifact": "log4j-api-2.26.1.jar",
+      "sha256_linux": "f1810a4704ccce019d02bba029dc02a4f2ac0c997f647b465e7d409c1927f822",
+      "notices": [
+        "runtime/log4j-api-2.26.1/embedded/META-INF/LICENSE",
+        "runtime/log4j-api-2.26.1/embedded/META-INF/NOTICE"
+      ]
+    },
+    {
+      "artifact": "log4j-core-2.26.1.jar",
+      "sha256_linux": "2ec8c3bf5a6d7c89be8620116a2fc973f7dda1ad0261ad393c4d4726edfd3dcb",
+      "notices": [
+        "runtime/log4j-core-2.26.1/embedded/META-INF/LICENSE",
+        "runtime/log4j-core-2.26.1/embedded/META-INF/NOTICE"
+      ]
+    },
+    {
+      "artifact": "log4j-slf4j2-impl-2.26.1.jar",
+      "sha256_linux": "cbdfb4c2bcc10f0927c61036db54924250f3924ecd13ea913cefe4f99c08fa66",
+      "notices": [
+        "runtime/log4j-slf4j2-impl-2.26.1/embedded/META-INF/LICENSE",
+        "runtime/log4j-slf4j2-impl-2.26.1/embedded/META-INF/NOTICE"
+      ]
+    }
+  ]
+}

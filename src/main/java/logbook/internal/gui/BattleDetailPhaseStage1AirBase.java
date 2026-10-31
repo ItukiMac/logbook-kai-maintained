@@ -48,7 +48,7 @@ public class BattleDetailPhaseStage1AirBase extends VBox {
 
     /**
      * 基地航空隊情報から編成機のカンマ区切り文字列を返却します
-     * 
+     *
      * @param airbase
      * @return
      */
@@ -63,7 +63,7 @@ public class BattleDetailPhaseStage1AirBase extends VBox {
         }
         return sj.toString();
     }
-    
+
     @FXML
     void initialize() {
         if (this.stage1 != null) {

@@ -78,7 +78,7 @@ public class BattleMidnightSpMidnight implements IMidnightBattle, IFormation, IN
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたBattleMidnightSpMidnight
      */
     @Override
@@ -98,7 +98,7 @@ public class BattleMidnightSpMidnight implements IMidnightBattle, IFormation, IN
      */
     public static BattleMidnightSpMidnight toBattle(JsonObject json) {
         BattleMidnightSpMidnight bean = new BattleMidnightSpMidnight();
-        
+
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);
@@ -124,7 +124,7 @@ public class BattleMidnightSpMidnight implements IMidnightBattle, IFormation, IN
                 .set("api_hougeki", bean::setHougeki, BattleTypes.MidnightHougeki::toMidnightHougeki)
                 .setInteger("api_n_support_flag", bean::setNSupportFlag)
                 .set("api_n_support_info", bean::setNSupportInfo, BattleTypes.SupportInfo::toSupportInfo);
-        
+
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             for (String key : unUsedKey) {

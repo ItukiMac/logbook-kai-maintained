@@ -323,7 +323,7 @@ public class ShipsJsonCreateBuilder {
 
     /**
      * Wikiの装備名表記(全角記号など)をマスターデータの表記(半角等)に合わせるための正規化を行います。
-     * 
+     *
      * @param itemName Wikiから抽出した装備名
      * @return 正規化後の装備名
      */

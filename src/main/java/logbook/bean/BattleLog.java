@@ -74,7 +74,7 @@ public class BattleLog implements Serializable {
 
     /**
      * 艦隊スナップショットを作成します
-     * 
+     *
      * @param log     戦闘ログ
      * @param dockIds 艦隊ID
      */

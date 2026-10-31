@@ -149,7 +149,7 @@ public class MainController extends WindowController {
     private VBox questbox;
 
     private AudioClip clip;
-    
+
     //所属装備:現在値
     private Integer lastSlotitem = 0;
     //所属装備:最大値
@@ -158,13 +158,13 @@ public class MainController extends WindowController {
     private Integer lastChara = 0;
     //所属艦娘:最大値
     private Integer lastMaxChara = 0;
-    
+
     @FXML
     void initialize() {
         try {
             // サーバーの起動に失敗した場合にダイアログを表示するために、UIスレッドの初期化後にサーバーを起動する必要がある
             ProxyHolder.getInstance().start();
-            
+
             this.itemFormat = this.item.getText();
             this.shipFormat = this.ship.getText();
 
@@ -175,14 +175,12 @@ public class MainController extends WindowController {
             logbook.core.QuestListReadService.refreshExpiredQuests();
 
             Timeline labelTimeline = new Timeline(
-                    new KeyFrame(javafx.util.Duration.seconds(3), this::labelUpdate)
-                );
+                    new KeyFrame(javafx.util.Duration.seconds(3), this::labelUpdate));
             labelTimeline.setCycleCount(Animation.INDEFINITE);
             labelTimeline.play();
 
             Timeline timeline = new Timeline(
-                    new KeyFrame(javafx.util.Duration.millis(500), this::update)
-                );
+                    new KeyFrame(javafx.util.Duration.millis(500), this::update));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
 
@@ -315,11 +313,11 @@ public class MainController extends WindowController {
                 .getShipMap()
                 .size();
         Integer maxChara = Basic.get().getMaxChara();
-        
+
         if (!chara.equals(lastChara) || !maxChara.equals(lastMaxChara)) {
             lastChara = chara;
             lastMaxChara = maxChara;
-            
+
             this.ship.setText(MessageFormat.format(this.shipFormat, chara, maxChara));
 
             boolean shipFully = maxChara - chara <= AppConfig.get().getShipFullyThreshold();
@@ -356,16 +354,17 @@ public class MainController extends WindowController {
         AppExpRecords records = AppExpRecords.get();
         if (records.getExp12h() != null) {
             ZonedDateTime start = Instant.ofEpochMilli(records.getTime12h()).atZone(JST);
-            this.achievementLabel2.setText(start.format(dateFormatter) + "(" + (start.getHour()+2) + "- )");
-            this.achievementValue2.setText(format.format((exp - records.getExp12h())*7f/10000));
+            this.achievementLabel2.setText(start.format(dateFormatter) + "(" + (start.getHour() + 2) + "- )");
+            this.achievementValue2.setText(format.format((exp - records.getExp12h()) * 7f / 10000));
         } else {
             this.achievementLabel2.setText("");
             this.achievementValue2.setText("");
         }
         if (records.getExp1d() != null && records.getTime1d() != records.getTime12h()) {
             ZonedDateTime start = Instant.ofEpochMilli(records.getTime1d()).atZone(JST);
-            this.achievementLabel1.setText(start.format(dateFormatter) + "(" + (start.getHour()+2) + "-" + (start.getHour()/12*12+14)+")");
-            this.achievementValue1.setText(format.format((records.getExp12h()-records.getExp1d())*7f/10000));
+            this.achievementLabel1.setText(start.format(dateFormatter) + "(" + (start.getHour() + 2) + "-"
+                    + (start.getHour() / 12 * 12 + 14) + ")");
+            this.achievementValue1.setText(format.format((records.getExp12h() - records.getExp1d()) * 7f / 10000));
         } else {
             this.achievementLabel1.setText("");
             this.achievementValue1.setText("");
@@ -531,7 +530,10 @@ public class MainController extends WindowController {
      */
     private void quest() {
         if (!this.questVisibilityListenerInstalled) {
-            this.questbox.addEventHandler(QuestVisibilityUi.CHANGED, event -> { this.quest(); event.consume(); });
+            this.questbox.addEventHandler(QuestVisibilityUi.CHANGED, event -> {
+                this.quest();
+                event.consume();
+            });
             this.questVisibilityListenerInstalled = true;
         }
         var visibility = logbook.plugin.api.QuestVisibilityV1.snapshot();
@@ -549,7 +551,8 @@ public class MainController extends WindowController {
             // ハッシュ・コードが変わっている場合任務の更新
             ObservableList<Node> quest = this.questbox.getChildren();
             quest.clear();
-            if (!visibility.hiddenIds().isEmpty()) quest.add(QuestVisibilityUi.banner(visibility));
+            if (!visibility.hiddenIds().isEmpty())
+                quest.add(QuestVisibilityUi.banner(visibility));
 
             // 1. 受領中の任務を追加
             listing.quests().stream().filter(row -> !visibility.hiddenIds().contains(row.no()))
@@ -561,7 +564,8 @@ public class MainController extends WindowController {
             for (var custom : localFiles.customs()) {
                 if (custom.file().present() && !visibility.hiddenIds().contains(custom.questId())) {
                     var pane = new QuestPane(custom.display(), null);
-                    if (custom.file().problem()) pane.showLocalDiagnostic(custom.file().diagnostic());
+                    if (custom.file().problem())
+                        pane.showLocalDiagnostic(custom.file().diagnostic());
                     quest.add(pane);
                 }
             }

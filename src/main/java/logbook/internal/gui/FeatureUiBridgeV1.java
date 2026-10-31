@@ -15,7 +15,8 @@ import logbook.plugin.api.FeatureUiV1;
 
 /** Host implementation of the public FeatureUiV1 contract; stays in the core JAR. */
 public final class FeatureUiBridgeV1 {
-    private FeatureUiBridgeV1() { }
+    private FeatureUiBridgeV1() {
+    }
 
     public static void bindWindow(FeatureUiV1.Window controller, Stage stage) {
         ((WindowController) controller).initWindow(stage);
@@ -32,7 +33,8 @@ public final class FeatureUiBridgeV1 {
         if (resource == null || !resource.startsWith("/"))
             throw new IOException("An absolute component resource is required");
         var url = owner.getResource(resource);
-        if (url == null) throw new IOException("Missing component resource: " + resource);
+        if (url == null)
+            throw new IOException("Missing component resource: " + resource);
         var loader = InternalFXMLLoader.load(url);
         loader.setClassLoader(owner.getClassLoader());
         return loader;
@@ -43,7 +45,8 @@ public final class FeatureUiBridgeV1 {
     }
 
     public static FeatureUiV1.Binding observeDefinitions(javafx.stage.Window window, Runnable refresh) {
-        var binding = new DefinitionUiBinding(java.util.Objects.requireNonNull(window), java.util.Objects.requireNonNull(refresh));
+        var binding = new DefinitionUiBinding(java.util.Objects.requireNonNull(window),
+                java.util.Objects.requireNonNull(refresh));
         return binding::close;
     }
 
@@ -60,7 +63,9 @@ public final class FeatureUiBridgeV1 {
         Tools.Controls.bindChildCheckBoxes(parent, children);
     }
 
-    public static String columnName(TableColumn<?, ?> column) { return Tools.Tables.getColumnName(column); }
+    public static String columnName(TableColumn<?, ?> column) {
+        return Tools.Tables.getColumnName(column);
+    }
 
     public static java.util.Optional<javafx.scene.control.ButtonType> alert(
             javafx.scene.control.Alert.AlertType type, String title, String message, Stage owner) {
@@ -71,10 +76,21 @@ public final class FeatureUiBridgeV1 {
         Tools.Controls.storeSnapshot(node, title, owner);
     }
 
-    public static void restoreTable(TableView<?> table, String key) { TableTool.setVisible(table, key); }
-    public static void selectionCopy(TableView<?> table) { TableTool.selectionCopy(table); }
-    public static void selectAll(TableView<?> table) { TableTool.selectAll(table); }
-    public static void tableKeyPressed(KeyEvent event) { TableTool.defaultOnKeyPressedHandler(event); }
+    public static void restoreTable(TableView<?> table, String key) {
+        TableTool.setVisible(table, key);
+    }
+
+    public static void selectionCopy(TableView<?> table) {
+        TableTool.selectionCopy(table);
+    }
+
+    public static void selectAll(TableView<?> table) {
+        TableTool.selectAll(table);
+    }
+
+    public static void tableKeyPressed(KeyEvent event) {
+        TableTool.defaultOnKeyPressedHandler(event);
+    }
 
     public static void showVisibleSetting(TableView<?> table, String key, Stage owner) throws IOException {
         TableTool.showVisibleSetting(table, key, owner);
@@ -88,13 +104,19 @@ public final class FeatureUiBridgeV1 {
     public static <T> Callback<TableColumn<T, Integer>, TableCell<T, Integer>> integerCellFactory() {
         NumberFormat format = NumberFormat.getIntegerInstance();
         return column -> new TableCell<>() {
-            @Override protected void updateItem(Integer item, boolean empty) {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : format.format(item));
             }
         };
     }
 
-    public static void restoreSplit(SplitPane pane, String key) { Tools.Controls.setSplitWidth(pane, key); }
-    public static ImageView zoomImage(ImageView view) { return Tools.Controls.zoomImage(view); }
+    public static void restoreSplit(SplitPane pane, String key) {
+        Tools.Controls.setSplitWidth(pane, key);
+    }
+
+    public static ImageView zoomImage(ImageView view) {
+        return Tools.Controls.zoomImage(view);
+    }
 }

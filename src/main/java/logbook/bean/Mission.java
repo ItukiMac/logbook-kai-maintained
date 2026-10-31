@@ -85,7 +85,7 @@ public class Mission implements Serializable {
      */
     public static Mission toMission(JsonObject json) {
         Mission bean = new Mission();
-        
+
         UnUsedKeyBindListener unUsedKeyBindListener = null;
         if (LoggerHolder.get().isDebugEnabled()) {
             unUsedKeyBindListener = new UnUsedKeyBindListener(json);
@@ -109,7 +109,7 @@ public class Mission implements Serializable {
                 .setIntegerList("api_win_item1", bean::setWinItem1)
                 .setIntegerList("api_win_item2", bean::setWinItem2)
                 .setIntegerList("api_win_mat_level", bean::setWinMatLevel);
-        
+
         if (LoggerHolder.get().isDebugEnabled()) {
             Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
             for (String key : unUsedKey) {

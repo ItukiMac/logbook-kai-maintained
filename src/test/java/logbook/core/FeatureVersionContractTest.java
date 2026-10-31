@@ -23,12 +23,15 @@ class FeatureVersionContractTest {
     }
 
     private FeatureModule module(String id, String version, int api, List<Dependency> dependencies,
-                                 AtomicBoolean accessed) {
+            AtomicBoolean accessed) {
         return new FeatureModule() {
-            @Override public Descriptor descriptor() {
+            @Override
+            public Descriptor descriptor() {
                 return new Descriptor(id, version, api, dependencies);
             }
-            @Override public List<Feature> features() {
+
+            @Override
+            public List<Feature> features() {
                 accessed.set(true);
                 return List.of(new Feature(id + ".window", id, FXML, Group.EXTRA, 0, ""));
             }
@@ -39,16 +42,18 @@ class FeatureVersionContractTest {
         return module(id, version, FeatureModule.HOST_API_VERSION, List.of(dependencies), new AtomicBoolean());
     }
 
-    @Test void builtinsDeclareTheirOwnStableVersions() {
+    @Test
+    void builtinsDeclareTheirOwnStableVersions() {
         var catalog = registry(new CalculatorFeatures(), new ChartFeatures(), new ShipFeatures());
         assertEquals(List.of("calculators", "charts", "ships"),
                 catalog.descriptors().stream().map(Descriptor::id).toList());
-        assertTrue(catalog.descriptors().stream().allMatch(d ->
-                d.version().equals("1.0.0") && d.hostApi() == 1 && d.dependencies().isEmpty()));
+        assertTrue(catalog.descriptors().stream()
+                .allMatch(d -> d.version().equals("1.0.0") && d.hostApi() == 1 && d.dependencies().isEmpty()));
         assertThrows(UnsupportedOperationException.class, () -> catalog.descriptors().clear());
     }
 
-    @Test void unversionedFunctionalProvidersRemainSupportedOutsideManagedMode() {
+    @Test
+    void unversionedFunctionalProvidersRemainSupportedOutsideManagedMode() {
         FeatureModule legacy = () -> List.of(new FeatureModule.Feature("legacy", "legacy", FXML,
                 FeatureModule.Group.EXTRA, 0, ""));
         assertNull(legacy.descriptor());
@@ -56,7 +61,8 @@ class FeatureVersionContractTest {
         assertTrue(registry(legacy).descriptors().isEmpty());
     }
 
-    @Test void unknownHostApiFailsBeforePublishingAnyFeatures() {
+    @Test
+    void unknownHostApiFailsBeforePublishingAnyFeatures() {
         var first = new AtomicBoolean();
         var second = new AtomicBoolean();
         assertThrows(IllegalArgumentException.class, () -> registry(
@@ -66,7 +72,8 @@ class FeatureVersionContractTest {
         assertFalse(second.get());
     }
 
-    @Test void duplicateModuleIdsFailEvenWhenTheirFeatureIdsWouldDiffer() {
+    @Test
+    void duplicateModuleIdsFailEvenWhenTheirFeatureIdsWouldDiffer() {
         var first = new AtomicBoolean();
         var second = new AtomicBoolean();
         var error = assertThrows(IllegalArgumentException.class, () -> registry(
@@ -77,7 +84,8 @@ class FeatureVersionContractTest {
         assertFalse(second.get());
     }
 
-    @Test void missingDependencyFailsBeforePublishingFeatures() {
+    @Test
+    void missingDependencyFailsBeforePublishingFeatures() {
         var accessed = new AtomicBoolean();
         var dependency = new Dependency("absent", "1.0.0", "2.0.0");
         var error = assertThrows(IllegalArgumentException.class,
@@ -86,20 +94,23 @@ class FeatureVersionContractTest {
         assertFalse(accessed.get());
     }
 
-    @Test void dependencyVersionBelowMinimumIsRejected() {
+    @Test
+    void dependencyVersionBelowMinimumIsRejected() {
         var error = assertThrows(IllegalArgumentException.class, () -> registry(
                 module("consumer", "1.0.0", new Dependency("base", "1.2.0", "2.0.0")),
                 module("base", "1.1.9")));
         assertTrue(error.getMessage().contains("Incompatible dependency"));
     }
 
-    @Test void dependencyUpperBoundIsExclusive() {
+    @Test
+    void dependencyUpperBoundIsExclusive() {
         assertThrows(IllegalArgumentException.class, () -> registry(
                 module("consumer", "1.0.0", new Dependency("base", "1.2.0", "2.0.0")),
                 module("base", "2.0.0")));
     }
 
-    @Test void compatibleUpdateIsAcceptedAndReportsActualVersion() {
+    @Test
+    void compatibleUpdateIsAcceptedAndReportsActualVersion() {
         for (String version : List.of("1.2.0", "1.2.1", "1.10.0", "1.999.999")) {
             var catalog = registry(
                     module("consumer", "1.0.0", new Dependency("base", "1.2.0", "2.0.0")),
@@ -110,7 +121,8 @@ class FeatureVersionContractTest {
         }
     }
 
-    @Test void circularDependenciesAreRejectedWithoutExecutingFeatures() {
+    @Test
+    void circularDependenciesAreRejectedWithoutExecutingFeatures() {
         var accessed = new AtomicBoolean();
         var error = assertThrows(IllegalArgumentException.class, () -> registry(
                 module("one", "1.0.0", 1,
@@ -123,12 +135,14 @@ class FeatureVersionContractTest {
         assertFalse(accessed.get());
     }
 
-    @Test void directSelfDependencyIsRejected() {
+    @Test
+    void directSelfDependencyIsRejected() {
         assertThrows(IllegalArgumentException.class, () -> registry(
                 module("self", "1.0.0", new Dependency("self", "1.0.0", "2.0.0"))));
     }
 
-    @Test void dependencyGraphMayHaveSharedAncestors() {
+    @Test
+    void dependencyGraphMayHaveSharedAncestors() {
         var catalog = registry(
                 module("one", "1.0.0", new Dependency("base", "1.0.0", "2.0.0")),
                 module("two", "1.0.0", new Dependency("base", "1.0.0", "2.0.0")),
@@ -136,7 +150,8 @@ class FeatureVersionContractTest {
         assertEquals(3, catalog.descriptors().size());
     }
 
-    @Test void descriptorAndDependencyMetadataAreImmutableSnapshots() {
+    @Test
+    void descriptorAndDependencyMetadataAreImmutableSnapshots() {
         var dependencies = new ArrayList<Dependency>();
         dependencies.add(new Dependency("base", "1.0.0", "2.0.0"));
         var descriptor = new Descriptor("consumer", "1.0.0", 1, dependencies);
@@ -145,7 +160,8 @@ class FeatureVersionContractTest {
         assertThrows(UnsupportedOperationException.class, () -> descriptor.dependencies().clear());
     }
 
-    @Test void duplicateDependenciesAndMalformedRangesAreRejected() {
+    @Test
+    void duplicateDependenciesAndMalformedRangesAreRejected() {
         var dependency = new Dependency("base", "1.0.0", "2.0.0");
         assertThrows(IllegalArgumentException.class,
                 () -> new Descriptor("consumer", "1.0.0", 1, List.of(dependency, dependency)));
@@ -155,7 +171,8 @@ class FeatureVersionContractTest {
                 () -> new Dependency("base", "2.0.0", "1.0.0"));
     }
 
-    @Test void versionsUseNumericOrderingAndRejectAmbiguousForms() {
+    @Test
+    void versionsUseNumericOrderingAndRejectAmbiguousForms() {
         assertTrue(Version.parse("1.10.0").compareTo(Version.parse("1.9.99")) > 0);
         assertTrue(Version.parse("2.0.0").compareTo(Version.parse("1.999.999")) > 0);
         assertEquals(0, Version.parse("2147483647.0.0").compareTo(Version.parse("2147483647.0.0")));
@@ -167,7 +184,8 @@ class FeatureVersionContractTest {
         assertThrows(IllegalArgumentException.class, () -> new Version(-1, 0, 0));
     }
 
-    @Test void missingAndInvalidMetadataAreRejected() {
+    @Test
+    void missingAndInvalidMetadataAreRejected() {
         for (String invalid : List.of("", "A", "a/b", "../a", "a b")) {
             assertThrows(IllegalArgumentException.class,
                     () -> new Descriptor(invalid, "1.0.0", 1, List.of()));
@@ -180,7 +198,8 @@ class FeatureVersionContractTest {
         assertThrows(IllegalArgumentException.class, () -> new Descriptor("valid", "1.0.0", 1, null));
     }
 
-    @Test void nullModuleAndFeatureListsFailWithActionableValidationErrors() {
+    @Test
+    void nullModuleAndFeatureListsFailWithActionableValidationErrors() {
         assertThrows(IllegalArgumentException.class, () -> registry((FeatureModule) null));
         assertThrows(IllegalArgumentException.class, () -> registry((FeatureModule) () -> null));
         assertThrows(IllegalArgumentException.class, () -> registry(

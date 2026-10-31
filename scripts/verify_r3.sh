@@ -15,9 +15,9 @@ python3 scripts/check_gui_ownership.py --root . > "$EVIDENCE/gui-ownership.json"
 python3 scripts/audit_game_json.py --root . > "$EVIDENCE/json-audit.json"
 python3 scripts/audit_seasonal_editions.py --root . > "$EVIDENCE/seasonal-editions.json"
 python3 scripts/definition_review_ledger.py --facts docs/maintenance/source-field-review-20261026.json > "$EVIDENCE/review-ledger.json"
-python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out "$EVIDENCE/split" --revision "$REVISION" > "$EVIDENCE/feature-manifest.json"
+python3 scripts/build_feature_distribution.py --jar target/logbook-kai2.jar --out "$EVIDENCE/split" --revision "$REVISION" > "$EVIDENCE/feature-manifest.json"
 python3 scripts/run_feature_distribution.py --root "$EVIDENCE/split"
-CP="$EVIDENCE/split/logbook-core.jar:$EVIDENCE/split/features/logbook-feature-calculators.jar:$EVIDENCE/split/features/logbook-feature-charts.jar:$EVIDENCE/split/features/logbook-feature-ships.jar:$EVIDENCE/split/features/logbook-feature-equipment.jar:$EVIDENCE/split/features/logbook-feature-quests.jar:$EVIDENCE/split/features/logbook-feature-records.jar:$EVIDENCE/split/features/logbook-feature-klb.jar:$EVIDENCE/split/features/logbook-feature-kqs.jar"
+CP="$EVIDENCE/split/logbook-kai2-core.jar:$EVIDENCE/split/features/logbook-kai2-feature-calculators.jar:$EVIDENCE/split/features/logbook-kai2-feature-charts.jar:$EVIDENCE/split/features/logbook-kai2-feature-ships.jar:$EVIDENCE/split/features/logbook-kai2-feature-equipment.jar:$EVIDENCE/split/features/logbook-kai2-feature-quests.jar:$EVIDENCE/split/features/logbook-kai2-feature-records.jar:$EVIDENCE/split/features/logbook-kai2-feature-bridge.jar:$EVIDENCE/split/features/logbook-kai2-feature-sharing.jar"
 mkdir "$EVIDENCE/probe-classes"
 javac -proc:none --release 21 -cp "$CP" -d "$EVIDENCE/probe-classes" scripts/java/*.java
 bash scripts/verify_bundled_plugins.sh "$EVIDENCE/split" > "$EVIDENCE/bundled-plugins.log" 2>&1
@@ -26,7 +26,7 @@ ISOLATED="$(mktemp -d "${RUNNER_TEMP:-/tmp}/logbook-r3-check.XXXXXX")"
 (cd "$ISOLATED" && LC_ALL=C.UTF-8 LANG=C.UTF-8 timeout 120s xvfb-run -a java -cp "$CP:$EVIDENCE/probe-classes" logbook.internal.gui.FeatureDistributionProbe) > "$EVIDENCE/split-gui.log" 2>&1
 python3 scripts/exercise_isolated_stage.py --out "$ISOLATED/stage" > "$EVIDENCE/stage-fixture.json"
 java -cp "$CP:$EVIDENCE/probe-classes" logbook.core.IsolatedDefinitionValidationProbe "$ISOLATED/stage" "$ISOLATED/validation" > "$EVIDENCE/stage-java.log"
-java -cp target/logbook-kai.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
+java -cp target/logbook-kai2.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
 python3 - <<'PY'
 import json, xml.etree.ElementTree as ET
 from pathlib import Path
@@ -193,7 +193,7 @@ for name,count in [('logbook.internal.gui.ScreenCaptureImageTest',6),('logbook.i
     suite=auxiliary[name]
     assert int(suite.get('tests',0))==count and all(int(suite.get(k,0))==0 for k in ('failures','errors','skipped')),name
 ownership=json.loads((p/'gui-ownership.json').read_text())
-assert ownership['components']==95 and ownership['unclassified']==0 and ownership['owners']['host']==57
+assert ownership['components']==96 and ownership['unclassified']==0 and ownership['owners']['host']==58
 report={'timer_notification_gui_tests':5,'auxiliary_image_tests':6,'auxiliary_gui_tests':3,'offline_editor_gui_tests':3,'gui_ownership':ownership,'host_state_boundary_tests':int(host_state[0].get('tests',0)),'quest_observation_gui_tests':int(quest_replay[0].get('tests',0)),'quest_ui_packaging':quest_ui,'arsenal_document_tests':sum(int(x.get('tests',0)) for x in arsenal_suites),'quest_editor_read_tests':editor_read_count,'quest_editor_read_gui_tests':6,'quest_local_files':local_quests,'migration_readiness':readiness,'quest_document_command_tests':document_test_count,'quest_document_gui_tests':int(document_gui[0].get('tests',0)),'quest_visibility':quest_visibility,'airbase_status':airbase[0],'quest_list_read':quest_list,'ship_list_ui':ship_list,'ship_statistics':statistics[0],'parallel_integration':combined[0],'seasonal_retreat_integration_tests':8,'checkout':(p/'checkout.txt').read_text().strip(),'java_tests':totals,
         'split_features':7,'split_gui_windows':8,'isolated_typed_definitions':152,
         'record_ui_packaging':records,'record_data_contract_tests':record_test_count,

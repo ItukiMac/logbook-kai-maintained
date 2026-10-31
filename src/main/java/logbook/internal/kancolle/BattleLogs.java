@@ -66,7 +66,8 @@ public class BattleLogs {
     private static final ObjectMapper mapper;
 
     static {
-        mapper = logbook.internal.json.JsonMappers.builder().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
+        mapper = logbook.internal.json.JsonMappers.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build();
     }
 
     /**
@@ -366,7 +367,7 @@ public class BattleLogs {
 
     /**
      * 任意条件のログを取得します。
-     * 
+     *
      * @param predicate 条件
      * @return ログ
      */
@@ -432,9 +433,13 @@ public class BattleLogs {
         var totals = logbook.plugin.api.RecordDataV1.summarizeBattles(logs.stream()
                 .map(logbook.core.RecordDataService::copyBattle).toList(), areaShortName, bossOnly);
         BattleLogCollect value = new BattleLogCollect();
-        value.setStart(totals.departures()); value.setWin(totals.wins());
-        value.setS(totals.s()); value.setA(totals.a()); value.setB(totals.b());
-        value.setC(totals.c()); value.setD(totals.d());
+        value.setStart(totals.departures());
+        value.setWin(totals.wins());
+        value.setS(totals.s());
+        value.setA(totals.a());
+        value.setB(totals.b());
+        value.setC(totals.c());
+        value.setD(totals.d());
         return value;
     }
 
@@ -537,7 +542,7 @@ public class BattleLogs {
             ZonedDateTime date = ZonedDateTime.of(LocalDateTime.from(ta), ZoneId.of("Asia/Tokyo"))
                     .withZoneSameInstant(ZoneId.of("GMT+04:00"));
             this.setDate(date);
-            // 旧フォーマットは"海域名"のみ(例:"鎮守府正面海域")、新フォーマットは"略称 海域名"(例:"1-1 鎮守府正面海域") 
+            // 旧フォーマットは"海域名"のみ(例:"鎮守府正面海域")、新フォーマットは"略称 海域名"(例:"1-1 鎮守府正面海域")
             Matcher m = AREA_PATTERN.matcher(columns[1]);
             if (m.matches()) {
                 this.setArea(m.group(2));
@@ -556,7 +561,7 @@ public class BattleLogs {
             this.setEtouch(columns[10]);
             if ("深海5".equals(columns[11]) && "500t級軽巡洋艦".equals(columns[12])) {
                 columns = Arrays.copyOfRange(columns, 1, columns.length);
-                columns[11] = columns[10]+","+columns[11];
+                columns[11] = columns[10] + "," + columns[11];
             }
             this.setEfleet(columns[11]);
             this.setDropType(columns[12]);
@@ -575,8 +580,8 @@ public class BattleLogs {
                 this.setExp(columns[64]);
             }
         }
-        
-        private static final String [] parseLine(String line) {
+
+        private static final String[] parseLine(String line) {
             List<String> tmp = new ArrayList<String>(line.length());
             for (int i = 0; i < line.length(); i++) {
                 char c = line.charAt(i);
@@ -587,35 +592,35 @@ public class BattleLogs {
                     break;
                 case '"':
                     // ", 次の単独の " まで
-                    int dq = line.indexOf('"', i+1);
-                    while (dq > 0 && dq < line.length()-1 && line.charAt(dq+1) =='"') {
-                        dq = line.indexOf('"', dq+2);
+                    int dq = line.indexOf('"', i + 1);
+                    while (dq > 0 && dq < line.length() - 1 && line.charAt(dq + 1) == '"') {
+                        dq = line.indexOf('"', dq + 2);
                     }
                     if (dq < 0) {
                         // 異常
-                        tmp.add(line.substring(i+1));
-                        i = line.length()-1;
+                        tmp.add(line.substring(i + 1));
+                        i = line.length() - 1;
                     } else {
-                        tmp.add(line.substring(i+1, dq).replaceAll("\"\"", "\""));
-                        i = dq+1;
+                        tmp.add(line.substring(i + 1, dq).replaceAll("\"\"", "\""));
+                        i = dq + 1;
                         // もし " の後がカンマじゃないと一文字捨てることになるがどのみち異常なのでそのまま
                     }
                     break;
                 default:
                     // 次のカンマまで
-                    int comma = line.indexOf(',', i+1);
+                    int comma = line.indexOf(',', i + 1);
                     if (comma < 0) {
                         comma = line.length();
                     }
                     tmp.add(line.substring(i, comma));
-                    i=comma;
+                    i = comma;
                     break;
                 }
             }
-            if (line.length() > 0 && line.charAt(line.length()-1) == ',') {
+            if (line.length() > 0 && line.charAt(line.length() - 1) == ',') {
                 tmp.add("");
             }
-            return tmp.toArray(new String [0]);
+            return tmp.toArray(new String[0]);
         }
     }
 

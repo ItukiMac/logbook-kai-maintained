@@ -77,7 +77,7 @@ public class CombinedBattleMidnightBattle implements ICombinedBattle, IMidnightB
 
     /**
      * 自分自身の複製を作成します。
-     * 
+     *
      * @return 複製されたCombinedBattleMidnightBattle
      */
     @Override

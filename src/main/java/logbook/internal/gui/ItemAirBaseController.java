@@ -52,7 +52,7 @@ public class ItemAirBaseController extends FeatureUiV1.Window {
     /** グルーピングをしない */
     @FXML
     private ToggleSwitch disableGrouping;
-    
+
     @FXML
     private FlowPane filters;
 
@@ -150,11 +150,12 @@ public class ItemAirBaseController extends FeatureUiV1.Window {
     void initialize() {
         try {
             FeatureUiV1.Tables.setVisible(this.itemTable, this.getClass().toString() + "#" + "airBaseItemTable");
-            
+
             this.filter.expandedProperty().addListener((ob, o, n) -> saveConfig());
 
             // フィルター 初期化
-            this.parameterFilters = IntStream.range(0, 5).mapToObj(i -> new ParameterFilterPane.AirBaseParameterFilterPane()).collect(Collectors.toList());
+            this.parameterFilters = IntStream.range(0, 5)
+                    .mapToObj(i -> new ParameterFilterPane.AirBaseParameterFilterPane()).collect(Collectors.toList());
             this.parameterFilters.forEach(f -> f.filterProperty().addListener(this::filterAction));
             this.filters.getChildren().addAll(this.parameterFilters);
 
@@ -207,16 +208,16 @@ public class ItemAirBaseController extends FeatureUiV1.Window {
     private void setItems() {
         // 一覧を作る
         Stream<AirBaseItem> listItems = EquipmentDataV1.aircraft().stream().map(EquipmentProjection::aircraft);
-        
+
         if (!this.disableGrouping.isSelected()) {
             listItems = listItems
-                .collect(Collectors.groupingBy(e -> e))
-                .entrySet().stream()
-                .map(e -> {
-                    AirBaseItem v = e.getKey();
-                    v.setCount(e.getValue().size());
-                    return v;
-                });
+                    .collect(Collectors.groupingBy(e -> e))
+                    .entrySet().stream()
+                    .map(e -> {
+                        AirBaseItem v = e.getKey();
+                        v.setCount(e.getValue().size());
+                        return v;
+                    });
         }
 
         List<AirBaseItem> items = this.items;
@@ -242,11 +243,11 @@ public class ItemAirBaseController extends FeatureUiV1.Window {
      */
     private void createFilter() {
         this.filteredItems.setPredicate(this.parameterFilters.stream()
-            .map(ParameterFilterPane::filterProperty)
-            .map(ReadOnlyObjectProperty::get)
-            .filter(Objects::nonNull)
-            .reduce((acc, val) -> this.filterAnd(acc, val))
-            .orElse(null));
+                .map(ParameterFilterPane::filterProperty)
+                .map(ReadOnlyObjectProperty::get)
+                .filter(Objects::nonNull)
+                .reduce((acc, val) -> this.filterAnd(acc, val))
+                .orElse(null));
     }
 
     private <T> Predicate<T> filterAnd(Predicate<T> base, Predicate<T> add) {
@@ -264,8 +265,9 @@ public class ItemAirBaseController extends FeatureUiV1.Window {
         protected void updateItem(Integer itemId, boolean empty) {
             super.updateItem(itemId, empty);
             if (!empty) {
-                this.setGraphic(itemId == null ? null : FeatureUiV1.Controls.zoomImage(
-                        new ImageView(EquipmentImagesV1.item(itemId))));
+                this.setGraphic(itemId == null ? null
+                        : FeatureUiV1.Controls.zoomImage(
+                                new ImageView(EquipmentImagesV1.item(itemId))));
                 this.setText(itemId == null ? null : EquipmentDataV1.itemName(itemId));
             } else {
                 this.setGraphic(null);
@@ -369,15 +371,16 @@ public class ItemAirBaseController extends FeatureUiV1.Window {
     private void loadConfig() {
         this.disableFilterUpdate = true;
         try {
-            Optional.ofNullable(AppItemTableConfig.get()).map(AppItemTableConfig::getAirbaseTabConfig).ifPresent((config) -> {
-                this.filter.setExpanded(config.isFilterExpanded());
-                this.disableGrouping.setSelected(config.isDisableGrouping());
-                Optional.ofNullable(config.getParameterFilters()).ifPresent((list) -> {
-                    for (int i = 0; i < Math.min(list.size(), this.parameterFilters.size()); i++) {
-                        this.parameterFilters.get(i).loadConfig(list.get(i));
-                    }
-                });
-            });
+            Optional.ofNullable(AppItemTableConfig.get()).map(AppItemTableConfig::getAirbaseTabConfig)
+                    .ifPresent((config) -> {
+                        this.filter.setExpanded(config.isFilterExpanded());
+                        this.disableGrouping.setSelected(config.isDisableGrouping());
+                        Optional.ofNullable(config.getParameterFilters()).ifPresent((list) -> {
+                            for (int i = 0; i < Math.min(list.size(), this.parameterFilters.size()); i++) {
+                                this.parameterFilters.get(i).loadConfig(list.get(i));
+                            }
+                        });
+                    });
         } finally {
             this.disableFilterUpdate = false;
         }
@@ -392,7 +395,8 @@ public class ItemAirBaseController extends FeatureUiV1.Window {
         AppItemTableConfig.AirbaseTabConfig airbaseTabConfig = new AppItemTableConfig.AirbaseTabConfig();
         airbaseTabConfig.setFilterExpanded(this.filter.isExpanded());
         airbaseTabConfig.setDisableGrouping(this.disableGrouping.isSelected());
-        airbaseTabConfig.setParameterFilters(this.parameterFilters.stream().map(ParameterFilterPane::saveConfig).collect(Collectors.toList()));
+        airbaseTabConfig.setParameterFilters(
+                this.parameterFilters.stream().map(ParameterFilterPane::saveConfig).collect(Collectors.toList()));
         config.setAirbaseTabConfig(airbaseTabConfig);
     }
 }

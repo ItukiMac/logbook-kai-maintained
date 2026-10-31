@@ -283,12 +283,15 @@ public class Ships {
         SLOTITEM_TYPE_HEIINTPE5_MAP.put(SlotItemMst.戦闘糧食_特別なおにぎり.getItemid(), 0.8D);
 
         // 付加的な情報の読み込み
-        InputStream is = (logbook.core.GameDefinitionRuntime.active() ? LogBookCoreServices.getClassLoader().getResourceAsStream("logbook/supplemental/ships.json") : LogBookCoreServices.getResourceAsStream("logbook/supplemental/ships.json"));
+        InputStream is = (logbook.core.GameDefinitionRuntime.active()
+                ? LogBookCoreServices.getClassLoader().getResourceAsStream("logbook/supplemental/ships.json")
+                : LogBookCoreServices.getResourceAsStream("logbook/supplemental/ships.json"));
         Optional<Map<Integer, ShipSupplementalInfo>> map = Optional.empty();
         if (is != null) {
             try {
                 try {
-                    ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+                    ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                            .enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
                     tools.jackson.databind.JsonNode rootNode = mapper.readTree(is);
                     List<ShipSupplementalInfo> list = null;
                     if (rootNode != null) {
@@ -596,7 +599,7 @@ public class Ships {
 
     /**
      * 指定された艦船IDの初期装備一覧（ShipSupplementalInfo から）を取得します
-     * 
+     *
      * @param shipId 艦船ID
      * @return 装備IDのリスト。情報がない場合はOptional.empty()
      */
@@ -924,7 +927,7 @@ public class Ships {
     /**
      * 触接開始率
      * 参考 http://wikiwiki.jp/kancolle/?%B9%D2%B6%F5%C0%EF
-     * 
+     *
      * @param ships 艦娘達
      * @return 触接開始率
      */
@@ -977,13 +980,13 @@ public class Ships {
             Integer houm = item.getHoum();
             if (houm != null) {
                 switch (houm) {
-                    case 0:
-                    case 1:
-                        return 1.12D;
-                    case 2:
-                        return 1.17D;
-                    default:
-                        return 1.2D;
+                case 0:
+                case 1:
+                    return 1.12D;
+                case 2:
+                    return 1.17D;
+                default:
+                    return 1.2D;
                 }
             }
         }
@@ -1124,16 +1127,16 @@ public class Ships {
         if (soku == null)
             return "";
         switch (soku) {
-            case 0:
-                return "基地";
-            case 5:
-                return "低速";
-            case 10:
-                return "高速";
-            case 15:
-                return "高速+";
-            case 20:
-                return "最速";
+        case 0:
+            return "基地";
+        case 5:
+            return "低速";
+        case 10:
+            return "高速";
+        case 15:
+            return "高速+";
+        case 20:
+            return "最速";
         }
         return "";
     }
@@ -1148,14 +1151,14 @@ public class Ships {
         if (leng == null)
             return "";
         switch (leng) {
-            case 1:
-                return "短";
-            case 2:
-                return "中";
-            case 3:
-                return "長";
-            case 4:
-                return "超長";
+        case 1:
+            return "短";
+        case 2:
+            return "中";
+        case 3:
+            return "長";
+        case 4:
+            return "超長";
         }
         return "";
     }
@@ -1168,20 +1171,20 @@ public class Ships {
      */
     private static int skillLevel(int level) {
         switch (level) {
-            case 1:
-                return 10;
-            case 2:
-                return 25;
-            case 3:
-                return 40;
-            case 4:
-                return 55;
-            case 5:
-                return 70;
-            case 6:
-                return 85;
-            case 7:
-                return 100;
+        case 1:
+            return 10;
+        case 2:
+            return 25;
+        case 3:
+            return 40;
+        case 4:
+            return 55;
+        case 5:
+            return 70;
+        case 6:
+            return 85;
+        case 7:
+            return 100;
         }
         return 0;
     }
@@ -1194,18 +1197,18 @@ public class Ships {
      */
     private static int skillBonus1(int skill) {
         switch (skill) {
-            case 2:
-                return 2;
-            case 3:
-                return 5;
-            case 4:
-                return 9;
-            case 5:
-                return 14;
-            case 6:
-                return 14;
-            case 7:
-                return 22;
+        case 2:
+            return 2;
+        case 3:
+            return 5;
+        case 4:
+            return 9;
+        case 5:
+            return 14;
+        case 6:
+            return 14;
+        case 7:
+            return 22;
         }
         return 0;
     }
@@ -1218,18 +1221,18 @@ public class Ships {
      */
     private static int skillBonus2(int skill) {
         switch (skill) {
-            case 2:
-                return 1;
-            case 3:
-                return 1;
-            case 4:
-                return 1;
-            case 5:
-                return 3;
-            case 6:
-                return 3;
-            case 7:
-                return 6;
+        case 2:
+            return 1;
+        case 3:
+            return 1;
+        case 4:
+            return 1;
+        case 5:
+            return 3;
+        case 6:
+            return 3;
+        case 7:
+            return 6;
         }
         return 0;
     }
@@ -1258,7 +1261,7 @@ public class Ships {
 
     /**
      * キャラクターのHP割合
-     * 
+     *
      * @param chara キャラクター
      * @return HP割合
      */
@@ -1295,7 +1298,7 @@ public class Ships {
 
     /**
      * 装備のパラメータを合計する
-     * 
+     *
      * @param ship   艦娘
      * @param mapper 合計するパラメータを返す mapper
      * @return
@@ -1306,7 +1309,7 @@ public class Ships {
 
     /**
      * 装備のパラメータを合計する
-     * 
+     *
      * @param ship                 艦娘
      * @param mapper               合計するパラメータを返す mapper
      * @param excludeEmptyAircraft 搭載数が0のスロットを除外するかどうか
@@ -1341,7 +1344,7 @@ public class Ships {
 
     /**
      * 対潜値（素）を計算します。
-     * 
+     *
      * @param ship 艦娘
      * @return 対潜値（素）
      */
@@ -1358,7 +1361,7 @@ public class Ships {
 
     /**
      * 索敵値（素）を計算します。
-     * 
+     *
      * @param ship 艦娘
      * @return 索敵値（素）
      */
@@ -1374,7 +1377,7 @@ public class Ships {
 
     /**
      * 回避値（素）を計算します。
-     * 
+     *
      * @param ship 艦娘
      * @return 回避値（素）
      */
@@ -1390,13 +1393,18 @@ public class Ships {
 
     private static ShipSupplementalInfo supplemental(int id) {
         try (var lease = LogBookCoreServices.pinDefinitions()) {
-        if (!logbook.core.GameDefinitionRuntime.active()) return ships.get(id);
-        int[] values = logbook.core.GameDefinitionRuntime.shipMinimums(id);
-        if (values == null) return null;
-        ShipSupplementalInfo info = new ShipSupplementalInfo();
-        info.setId(id); info.setMinTaisen(values[0]); info.setMinSakuteki(values[1]); info.setMinKaihi(values[2]);
-        info.setItem(logbook.core.GameDefinitionRuntime.shipItems(id));
-        return info;
+            if (!logbook.core.GameDefinitionRuntime.active())
+                return ships.get(id);
+            int[] values = logbook.core.GameDefinitionRuntime.shipMinimums(id);
+            if (values == null)
+                return null;
+            ShipSupplementalInfo info = new ShipSupplementalInfo();
+            info.setId(id);
+            info.setMinTaisen(values[0]);
+            info.setMinSakuteki(values[1]);
+            info.setMinKaihi(values[2]);
+            info.setItem(logbook.core.GameDefinitionRuntime.shipItems(id));
+            return info;
         }
     }
 

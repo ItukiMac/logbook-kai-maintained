@@ -30,11 +30,13 @@ final class QuestObservationUiBinding implements AutoCloseable {
         this.callback = Objects.requireNonNull(callback);
         window.addEventHandler(WindowEvent.WINDOW_SHOWN, shown);
         window.addEventHandler(WindowEvent.WINDOW_HIDDEN, hidden);
-        if (window.isShowing()) subscribe();
+        if (window.isShowing())
+            subscribe();
     }
 
     private void subscribe() {
-        if (closed || current != null || !window.isShowing()) return;
+        if (closed || current != null || !window.isShowing())
+            return;
         Token token = new Token();
         current = token;
         try {
@@ -49,12 +51,15 @@ final class QuestObservationUiBinding implements AutoCloseable {
     }
 
     private void offer(Token token, GameStateSnapshot value) {
-        if (value == null || !value.sourceApi().endsWith("/api_get_member/questlist")) return;
+        if (value == null || !value.sourceApi().endsWith("/api_get_member/questlist"))
+            return;
         synchronized (token) {
-            if (closed || current != token || !token.active || value.sequence() <= token.lastSequence) return;
+            if (closed || current != token || !token.active || value.sequence() <= token.lastSequence)
+                return;
             token.lastSequence = value.sequence();
             token.pending = value;
-            if (token.queued) return;
+            if (token.queued)
+                return;
             token.queued = true;
         }
         Platform.runLater(() -> deliver(token));
@@ -66,9 +71,11 @@ final class QuestObservationUiBinding implements AutoCloseable {
             token.queued = false;
             value = token.pending;
             token.pending = null;
-            if (!token.active) return;
+            if (!token.active)
+                return;
         }
-        if (closed || current != token || !window.isShowing() || value == null) return;
+        if (closed || current != token || !window.isShowing() || value == null)
+            return;
         try {
             callback.accept(value);
         } catch (RuntimeException failure) {
@@ -79,7 +86,8 @@ final class QuestObservationUiBinding implements AutoCloseable {
     private void unsubscribe() {
         Token token = current;
         current = null;
-        if (token == null) return;
+        if (token == null)
+            return;
         AutoCloseable subscription;
         synchronized (token) {
             token.active = false;
@@ -87,15 +95,18 @@ final class QuestObservationUiBinding implements AutoCloseable {
             subscription = token.subscription;
             token.subscription = null;
         }
-        if (subscription != null) try {
-            subscription.close();
-        } catch (Exception failure) {
-            LoggerHolder.get().warn("任務観測の購読を解除できません", failure);
-        }
+        if (subscription != null)
+            try {
+                subscription.close();
+            } catch (Exception failure) {
+                LoggerHolder.get().warn("任務観測の購読を解除できません", failure);
+            }
     }
 
-    @Override public void close() {
-        if (closed) return;
+    @Override
+    public void close() {
+        if (closed)
+            return;
         closed = true;
         unsubscribe();
         window.removeEventHandler(WindowEvent.WINDOW_SHOWN, shown);

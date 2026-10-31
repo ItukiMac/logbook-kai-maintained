@@ -60,7 +60,6 @@ public class MissionLogs {
                     .collect(Collectors.toList());
         }
     }
-    
 
     /**
      * 遠征統計のベース
@@ -105,12 +104,12 @@ public class MissionLogs {
          */
         public SimpleMissionLog(String line) {
             String[] columns = line.split(",", -1);
-            
+
             boolean isNewFormat = true;
             if (columns.length == 7) {
                 isNewFormat = false;
             }
-            
+
             this.setDateString(columns[0]);
             // 任務の更新時間が午前5時のため
             // 日付文字列を日本時間として解釈した後、GMT+04:00のタイムゾーンに変更します
@@ -133,7 +132,7 @@ public class MissionLogs {
                 this.setAmmo(columns[4].equals("") ? 0 : Integer.parseInt(columns[4]));
                 this.setMetal(columns[5].equals("") ? 0 : Integer.parseInt(columns[5]));
                 this.setBauxite(columns[6].equals("") ? 0 : Integer.parseInt(columns[6]));
-            }            
+            }
             if (columns.length > 8)
                 this.setItem1name(columns[8]);
             if (columns.length > 9)

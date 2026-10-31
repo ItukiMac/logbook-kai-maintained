@@ -1,10 +1,12 @@
 package logbook.internal.updatecheck;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.InvocationTargetException;
 import org.junit.jupiter.api.Test;
 
 class ManagedBundleModeTest {
-    @Test void managedStartupAndDirectUpdateAreGuardedWithoutStartingJavaFx() throws Exception {
+    @Test
+    void managedStartupAndDirectUpdateAreGuardedWithoutStartingJavaFx() throws Exception {
         String old = System.getProperty(ManagedBundleMode.PROPERTY);
         try {
             System.setProperty(ManagedBundleMode.PROPERTY, "true");
@@ -18,8 +20,10 @@ class ManagedBundleModeTest {
             assertFalse(ManagedBundleMode.enabled());
             assertDoesNotThrow(ManagedBundleMode::requireLegacyUpdater);
         } finally {
-            if (old == null) System.clearProperty(ManagedBundleMode.PROPERTY);
-            else System.setProperty(ManagedBundleMode.PROPERTY, old);
+            if (old == null)
+                System.clearProperty(ManagedBundleMode.PROPERTY);
+            else
+                System.setProperty(ManagedBundleMode.PROPERTY, old);
         }
     }
 }

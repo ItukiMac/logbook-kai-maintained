@@ -18,9 +18,16 @@ import logbook.core.ShipRosterService;
  * resolves legacy ships for its existing editor and rendering path.
  */
 public final class ShipRosterV1 {
-    private ShipRosterV1() { }
-    public static int version() { return 1; }
-    public static Snapshot snapshot() { return ShipRosterService.snapshot(); }
+    private ShipRosterV1() {
+    }
+
+    public static int version() {
+        return 1;
+    }
+
+    public static Snapshot snapshot() {
+        return ShipRosterService.snapshot();
+    }
 
     public record ShipView(int id, int masterId, Integer level, int sortOrder,
             Integer sallyArea, List<Integer> equipmentIds, Integer expansionEquipmentId,

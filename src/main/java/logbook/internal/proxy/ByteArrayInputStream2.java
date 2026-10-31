@@ -14,9 +14,17 @@ public class ByteArrayInputStream2 extends InputStream {
     private int markIndex;
     private int markOffset;
 
-    public ByteArrayInputStream2(byte[] bytes) { this(Collections.singletonList(bytes)); }
-    public ByteArrayInputStream2(byte[]... bytes) { this(Arrays.asList(bytes)); }
-    public ByteArrayInputStream2(List<byte[]> bytes) { this.chunks = List.copyOf(bytes); }
+    public ByteArrayInputStream2(byte[] bytes) {
+        this(Collections.singletonList(bytes));
+    }
+
+    public ByteArrayInputStream2(byte[]... bytes) {
+        this(Arrays.asList(bytes));
+    }
+
+    public ByteArrayInputStream2(List<byte[]> bytes) {
+        this.chunks = List.copyOf(bytes);
+    }
 
     private boolean advance() {
         while (index < chunks.size() && offset == chunks.get(index).length) {
@@ -25,15 +33,22 @@ public class ByteArrayInputStream2 extends InputStream {
         }
         return index < chunks.size();
     }
-    @Override public int read() {
-        if (!advance()) return -1;
+
+    @Override
+    public int read() {
+        if (!advance())
+            return -1;
         return chunks.get(index)[offset++] & 0xff;
     }
-    @Override public int read(byte[] bytes, int off, int len) {
+
+    @Override
+    public int read(byte[] bytes, int off, int len) {
         Objects.requireNonNull(bytes);
         Objects.checkFromIndexSize(off, len, bytes.length);
-        if (len == 0) return 0; // also required at EOF
-        if (!advance()) return -1;
+        if (len == 0)
+            return 0; // also required at EOF
+        if (!advance())
+            return -1;
         int copied = 0;
         while (copied < len && advance()) {
             byte[] current = chunks.get(index);
@@ -44,16 +59,36 @@ public class ByteArrayInputStream2 extends InputStream {
         }
         return copied;
     }
-    @Override public int available() {
+
+    @Override
+    public int available() {
         long count = -offset;
         for (int n = index; n < chunks.size(); n++) {
             count += chunks.get(n).length;
-            if (count >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
+            if (count >= Integer.MAX_VALUE)
+                return Integer.MAX_VALUE;
         }
         return (int) Math.max(0, count);
     }
-    @Override public void mark(int readlimit) { markIndex = index; markOffset = offset; }
-    @Override public boolean markSupported() { return true; }
-    @Override public void reset() { index = markIndex; offset = markOffset; }
-    @Override public void close() { /* Like ByteArrayInputStream, no external resources. */ }
+
+    @Override
+    public void mark(int readlimit) {
+        markIndex = index;
+        markOffset = offset;
+    }
+
+    @Override
+    public boolean markSupported() {
+        return true;
+    }
+
+    @Override
+    public void reset() {
+        index = markIndex;
+        offset = markOffset;
+    }
+
+    @Override
+    public void close() {
+        /* Like ByteArrayInputStream, no external resources. */ }
 }

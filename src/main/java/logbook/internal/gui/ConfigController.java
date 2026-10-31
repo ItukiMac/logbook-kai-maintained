@@ -142,7 +142,7 @@ public class ConfigController extends WindowController {
     /** 任務ペインの表示 */
     @FXML
     private CheckBox showQuest;
-    
+
     /** 遠征完了時のリマインド */
     @FXML
     private CheckBox useRemind;
@@ -154,7 +154,7 @@ public class ConfigController extends WindowController {
     /** 音量 */
     @FXML
     private TextField soundLevel;
-    
+
     /** 資材ログ保存間隔 */
     @FXML
     private TextField materialLogInterval;
@@ -232,7 +232,7 @@ public class ConfigController extends WindowController {
     /** 艦隊タブの色（要補給） */
     @FXML
     private TextField tabColorNeedRefuel;
-    
+
     /** 最前面に表示する */
     @FXML
     private CheckBox onTop;
@@ -397,7 +397,7 @@ public class ConfigController extends WindowController {
         this.toastLocation.getItems().add(Tuple.of("右上", "TOP_RIGHT"));
         this.toastLocation.getItems().add(Tuple.of("右下", "BOTTOM_RIGHT"));
         this.toastLocation.setConverter(ToStringConverter.of(Pair::getKey));
-        
+
         AppConfig conf = AppConfig.get();
         this.windowStyleSmart.setSelected("main".equals(conf.getWindowStyle()));
         this.windowStyleWide.setSelected("main_wide".equals(conf.getWindowStyle()));
@@ -412,7 +412,9 @@ public class ConfigController extends WindowController {
         this.useSound.setSelected(conf.isUseSound());
         this.defaultNotifySound.setText(conf.getDefaultNotifySound());
         this.useToast.setSelected(conf.isUseToast());
-        this.toastLocation.setValue(this.toastLocation.getItems().stream().filter(value -> value.getValue().equals(conf.getToastLocation())).findAny().orElse(this.toastLocation.getItems().get(3)));
+        this.toastLocation.setValue(
+                this.toastLocation.getItems().stream().filter(value -> value.getValue().equals(conf.getToastLocation()))
+                        .findAny().orElse(this.toastLocation.getItems().get(3)));
         this.showAchievement.setSelected(conf.isShowAchievement());
         this.showMission.setSelected(conf.isShowMission());
         this.showNdock.setSelected(conf.isShowNdock());
@@ -496,7 +498,8 @@ public class ConfigController extends WindowController {
         this.pluginTable.setItems(this.plugins);
 
         this.toastLocation.getSelectionModel().selectedItemProperty().addListener(
-                (ob, o, n) -> Tools.Controls.showNotify(null, "確認", "この位置に表示されます。", Duration.seconds(5), Pos.valueOf(n.getValue()), WindowHolder.getInstance().getMainWindow()));
+                (ob, o, n) -> Tools.Controls.showNotify(null, "確認", "この位置に表示されます。", Duration.seconds(5),
+                        Pos.valueOf(n.getValue()), WindowHolder.getInstance().getMainWindow()));
 
         this.bouyomiChanInit();
     }
@@ -554,7 +557,7 @@ public class ConfigController extends WindowController {
         conf.setCheckDoit(this.checkDoit.isSelected());
         conf.setCheckUpdate(this.checkUpdate.isSelected());
         conf.setReportPath(this.reportDir.getText());
-        
+
         conf.setApplyBattle(this.applyBattle.isSelected());
         conf.setApplyResult(this.applyResult.isSelected());
         conf.setBattleLogExpires(this.toInt(this.battleLogExpires.getText()));
@@ -575,7 +578,7 @@ public class ConfigController extends WindowController {
         conf.setTabColorBadlyDamage(this.tabColorBadlyDamage.getText());
         conf.setTabColorNoMission(this.tabColorNoMission.getText());
         conf.setTabColorNeedRefuel(this.tabColorNeedRefuel.getText());
-        
+
         ShipImageCacheStrategy shipImageCacheStrategy = ShipImageCacheStrategy.ALL;
         if (this.shipImageCacheStrategyAll.isSelected())
             shipImageCacheStrategy = ShipImageCacheStrategy.ALL;
@@ -588,7 +591,7 @@ public class ConfigController extends WindowController {
         conf.setHideShipImageFromShipTablePane(this.hideShipImageFromShipTablePane.isSelected());
         conf.setHideItemImageFromShipTablePane(this.hideItemImageFromShipTablePane.isSelected());
         conf.setVisiblePoseImageOnFleetTab(this.visiblePoseImageOnFleetTab.isSelected());
-        
+
         conf.setConnectionClose(this.connectionClose.isSelected());
         conf.setListenPort(this.toInt(this.listenPort.getText()));
         conf.setAllowOnlyFromLocalhost(this.allowOnlyFromLocalhost.isSelected());
@@ -598,7 +601,7 @@ public class ConfigController extends WindowController {
         conf.setPerformanceLog(this.performanceLog.isSelected());
         conf.setStoreApiStart2(this.storeApiStart2.isSelected());
         conf.setStoreApiStart2Dir(this.storeApiStart2Dir.getText());
-        
+
         conf.setFfmpegPath(this.ffmpegPath.getText());
         conf.setFfmpegArgs(this.ffmpegArgs.getText());
         conf.setFfmpegExt(this.ffmpegExt.getText());

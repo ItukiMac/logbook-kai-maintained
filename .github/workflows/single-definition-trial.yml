@@ -36,12 +36,12 @@ jobs:
           python3 scripts/build_single_definition_trial.py --baseline target/definition-trial/baseline.zip \
             --out target/definition-trial/trial.zip > target/definition-trial/receipt.json
           mvn --batch-mode --no-transfer-progress -DskipTests package
-          cp target/logbook-kai.jar target/definition-trial/logbook-kai.jar
+          cp target/logbook-kai2.jar target/definition-trial/logbook-kai2.jar
           python3 - <<'PY'
           import hashlib,json
           from pathlib import Path
           p=Path('target/definition-trial/receipt.json');r=json.loads(p.read_text())
-          r['candidate_jar_sha256']=hashlib.sha256(Path('target/definition-trial/logbook-kai.jar').read_bytes()).hexdigest()
+          r['candidate_jar_sha256']=hashlib.sha256(Path('target/definition-trial/logbook-kai2.jar').read_bytes()).hexdigest()
           p.write_text(json.dumps(r,indent=2)+'\n')
           PY
           git diff --exit-code
@@ -76,18 +76,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p target/definition-trial-evidence target/trial-probe
-          javac -proc:none --release 21 -cp target/received-trial/logbook-kai.jar -d target/trial-probe scripts/java/DefinitionTrialLifecycleProbe.java
+          javac -proc:none --release 21 -cp target/received-trial/logbook-kai2.jar -d target/trial-probe scripts/java/DefinitionTrialLifecycleProbe.java
           python3 - <<'PY'
           import hashlib,json,os,subprocess,tempfile
           from pathlib import Path
           root=Path('target/received-trial').resolve();r=json.loads((root/'receipt.json').read_text())
           assert r['source_revision']==os.environ['GITHUB_SHA']
-          for name,key in [('baseline.zip','baseline_sha256'),('trial.zip','trial_sha256'),('logbook-kai.jar','candidate_jar_sha256')]:
+          for name,key in [('baseline.zip','baseline_sha256'),('trial.zip','trial_sha256'),('logbook-kai2.jar','candidate_jar_sha256')]:
               assert hashlib.sha256((root/name).read_bytes()).hexdigest()==r[key],name
           store=Path(tempfile.mkdtemp(prefix='single-definition-',dir=os.environ['RUNNER_TEMP']))/'new-data-only-store'
-          run=subprocess.run(['java','-cp',str(root/'logbook-kai.jar')+':target/trial-probe',
+          run=subprocess.run(['java','-cp',str(root/'logbook-kai2.jar')+':target/trial-probe',
               'logbook.core.DefinitionTrialLifecycleProbe',str(root/'baseline.zip'),r['baseline_sha256'],
-              str(root/'trial.zip'),r['trial_sha256'],str(store),str(root/'logbook-kai.jar')],capture_output=True,text=True,check=True,timeout=90)
+              str(root/'trial.zip'),r['trial_sha256'],str(store),str(root/'logbook-kai2.jar')],capture_output=True,text=True,check=True,timeout=90)
           evidence=Path('target/definition-trial-evidence');(evidence/'lifecycle.log').write_text(run.stdout+run.stderr)
           assert 'SINGLE_DEFINITION_LIFECYCLE_OK files=152 changed=1 apply=true restore=true original_retained=true jar_unchanged=true production=false' in run.stdout
           r.update(result='passed',checkout=os.environ['GITHUB_SHA'],actual_artifact_delivery=True,actual_generation_restore=True,native_mint_tested=False)

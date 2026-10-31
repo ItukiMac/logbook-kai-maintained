@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -27,12 +26,15 @@ public class Mapping {
     private Map<String, String> mapping;
 
     private Mapping() {
-        InputStream is = (logbook.core.GameDefinitionRuntime.active() ? LogBookCoreServices.getClassLoader().getResourceAsStream("logbook/map/mapping.json") : LogBookCoreServices.getResourceAsStream("logbook/map/mapping.json"));
+        InputStream is = (logbook.core.GameDefinitionRuntime.active()
+                ? LogBookCoreServices.getClassLoader().getResourceAsStream("logbook/map/mapping.json")
+                : LogBookCoreServices.getResourceAsStream("logbook/map/mapping.json"));
         Map<String, String> mapping = Collections.emptyMap();
         if (is != null) {
             try {
                 try {
-                    ObjectMapper mapper = logbook.internal.json.JsonMappers.builder().enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
+                    ObjectMapper mapper = logbook.internal.json.JsonMappers.builder()
+                            .enable(tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS).build();
                     mapping = mapper.readValue(is, new TypeReference<LinkedHashMap<String, String>>() {
                     });
                 } finally {
@@ -46,13 +48,13 @@ public class Mapping {
     }
 
     public Map<String, String> getMapping() {
-        Map<String,String> current = logbook.core.GameDefinitionRuntime.mapping();
+        Map<String, String> current = logbook.core.GameDefinitionRuntime.mapping();
         return current != null ? current : this.mapping;
     }
 
     /**
      * 対象セルの記号を返します
-     * 
+     *
      * @param key 海域-マップ番号-セル形式のキー
      * @return 対象セルの記号
      */
@@ -66,7 +68,7 @@ public class Mapping {
 
     /**
      * 対象セルの記号を返します
-     * 
+     *
      * @param mapareaId 海域
      * @param mapinfoNo マップ番号
      * @param no セル

@@ -30,7 +30,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class DataReleaseTransportIntegrationTest {
     private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
 
-    @TempDir Path temp;
+    @TempDir
+    Path temp;
 
     private static byte[] packageQuest(String condition) throws Exception {
         byte[] data = condition.getBytes(StandardCharsets.UTF_8);

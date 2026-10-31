@@ -22,22 +22,28 @@ class LogBookCoreServicesTest {
 
     @Test
     void testGetServiceProviders() throws Exception {
-        List<APIListenerSpi> apiListenerSpiList =  LogBookCoreServices.getServiceProviders(APIListenerSpi.class).collect(Collectors.toList());
+        List<APIListenerSpi> apiListenerSpiList = LogBookCoreServices.getServiceProviders(APIListenerSpi.class)
+                .collect(Collectors.toList());
         Assertions.assertEquals(68, apiListenerSpiList.size());
 
-        List<StartUp> startUpList =  LogBookCoreServices.getServiceProviders(StartUp.class).collect(Collectors.toList());
+        List<StartUp> startUpList = LogBookCoreServices.getServiceProviders(StartUp.class).collect(Collectors.toList());
         Assertions.assertEquals(java.util.Set.of(
                 "logbook.internal.updatecheck.CheckUpdateStartUp",
-                "local.kancolle.bridge.KancolleBridgeStartUp",
-                "local.kancolle.kqs.KqsLogbookPlugin"),
+                "logbook.features.bridge.BrowserBridgePlugin",
+                "logbook.features.sharing.InformationSharingPlugin"),
                 startUpList.stream().map(x -> x.getClass().getName()).collect(Collectors.toSet()));
         Assertions.assertEquals(3, startUpList.size());
 
-        List<ContentListenerSpi> contentListenerSpiList =  LogBookCoreServices.getServiceProviders(ContentListenerSpi.class).collect(Collectors.toList());
+        List<ContentListenerSpi> contentListenerSpiList = LogBookCoreServices
+                .getServiceProviders(ContentListenerSpi.class).collect(Collectors.toList());
         Assertions.assertEquals(3, contentListenerSpiList.size());
-        Assertions.assertEquals(1, contentListenerSpiList.stream().filter(x -> x.getClass().getName().startsWith("local.kancolle.")).count());
+        Assertions.assertEquals(1,
+                contentListenerSpiList.stream()
+                        .filter(x -> x.getClass().getName().equals("logbook.features.sharing.InformationSharingPlugin"))
+                        .count());
 
-        List<ProxyServerSpi> proxyServerSpiList =  LogBookCoreServices.getServiceProviders(ProxyServerSpi.class).collect(Collectors.toList());
+        List<ProxyServerSpi> proxyServerSpiList = LogBookCoreServices.getServiceProviders(ProxyServerSpi.class)
+                .collect(Collectors.toList());
         Assertions.assertEquals(1, proxyServerSpiList.size());
     }
 }

@@ -19,12 +19,15 @@ class GameDefinitionConcurrencyTest {
         return new GameDefinitionSnapshot("generation-" + number,
                 Map.of("logbook/quest/1.json", payload, "logbook/map/mapping.json", payload));
     }
+
     private static String read(GameDefinitionSnapshot view, String name) throws Exception {
         try (var stream = view.openResource(name).orElseThrow()) {
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
-    @Test void fourReadersNeverMixTwoResourcesFromDifferentGenerations() throws Exception {
+
+    @Test
+    void fourReadersNeverMixTwoResourcesFromDifferentGenerations() throws Exception {
         var service = new GameDefinitionService(error -> fail(error));
         service.publish(snapshot(0));
         CountDownLatch start = new CountDownLatch(1);
@@ -47,18 +50,22 @@ class GameDefinitionConcurrencyTest {
             }
             workers.add(executor.submit(() -> {
                 assertTrue(start.await(5, TimeUnit.SECONDS));
-                for (int generation = 1; generation <= 500; generation++) service.publish(snapshot(generation));
+                for (int generation = 1; generation <= 500; generation++)
+                    service.publish(snapshot(generation));
                 return null;
             }));
             start.countDown();
-            for (var worker : workers) worker.get(15, TimeUnit.SECONDS);
+            for (var worker : workers)
+                worker.get(15, TimeUnit.SECONDS);
             assertEquals("generation-500", service.snapshot().generation());
         } finally {
             executor.shutdownNow();
             assertTrue(executor.awaitTermination(5, TimeUnit.SECONDS));
         }
     }
-    @Test void concurrentPublishersProduceUniqueOrderedChangeSequences() throws Exception {
+
+    @Test
+    void concurrentPublishersProduceUniqueOrderedChangeSequences() throws Exception {
         var service = new GameDefinitionService(error -> fail(error));
         List<Long> sequences = new ArrayList<>();
         service.subscribe(event -> {
@@ -70,19 +77,22 @@ class GameDefinitionConcurrencyTest {
         try {
             var first = executor.submit(() -> {
                 assertTrue(start.await(5, TimeUnit.SECONDS));
-                for (int n = 0; n < 100; n++) service.publish(snapshot(n));
+                for (int n = 0; n < 100; n++)
+                    service.publish(snapshot(n));
                 return null;
             });
             var second = executor.submit(() -> {
                 assertTrue(start.await(5, TimeUnit.SECONDS));
-                for (int n = 100; n < 200; n++) service.publish(snapshot(n));
+                for (int n = 100; n < 200; n++)
+                    service.publish(snapshot(n));
                 return null;
             });
             start.countDown();
             first.get(15, TimeUnit.SECONDS);
             second.get(15, TimeUnit.SECONDS);
             assertEquals(200, sequences.size());
-            for (int index = 0; index < sequences.size(); index++) assertEquals(index + 1L, sequences.get(index));
+            for (int index = 0; index < sequences.size(); index++)
+                assertEquals(index + 1L, sequences.get(index));
         } finally {
             executor.shutdownNow();
             assertTrue(executor.awaitTermination(5, TimeUnit.SECONDS));

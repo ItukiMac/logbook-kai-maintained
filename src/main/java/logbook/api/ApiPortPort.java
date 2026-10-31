@@ -232,7 +232,7 @@ public class ApiPortPort implements APIListenerSpi {
 
     /**
      * api_data.api_event_object
-     * 
+     *
      * @param object api_data
      */
     private void detectGimmick(JsonObject object) {

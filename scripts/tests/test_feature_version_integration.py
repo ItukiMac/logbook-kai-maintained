@@ -28,7 +28,7 @@ from build_feature_distribution import build, write_jar
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = Path(__file__).with_name('fixtures') / 'feature_version'
 HOOK = 'logbook/internal/logger/FeatureVersionSmokeHook.class'
-CALCULATORS = 'features/logbook-feature-calculators.jar'
+CALCULATORS = 'features/logbook-kai2-feature-calculators.jar'
 DESCRIPTOR = 'META-INF/logbook/feature.json'
 
 
@@ -46,7 +46,7 @@ def clean_environment():
         'JAVA_TOOL_OPTIONS', 'JDK_JAVA_OPTIONS', '_JAVA_OPTIONS', 'CLASSPATH')}
 
 
-@unittest.skipUnless((ROOT / 'target/logbook-kai.jar').is_file()
+@unittest.skipUnless((ROOT / 'target/logbook-kai2.jar').is_file()
                     and shutil.which('javac') and shutil.which('xvfb-run'),
                     'Requires built current JAR, javac, and isolated Xvfb')
 class FeatureVersionIntegrationTest(unittest.TestCase):
@@ -153,19 +153,19 @@ class FeatureVersionIntegrationTest(unittest.TestCase):
     def test_real_module_update_refusal_failure_and_whole_rollback(self):
         # Keep the running store separate from Maven's output tree; parallel
         # builds must not treat an in-use fixture JAR as a build artifact.
-        base = Path(tempfile.mkdtemp(prefix='logbook-feature-version-fixture-'))
+        base = Path(tempfile.mkdtemp(prefix='logbook-kai2-feature-version-fixture-'))
         logs = []
         evidence = {'fixture_root': str(base), 'production_accessed': False,
                     'original_and_failed_outputs_retained': True}
         try:
-            original = ROOT / 'target/logbook-kai.jar'
+            original = ROOT / 'target/logbook-kai2.jar'
             original_hash = digest(original)
             pristine = base / 'pristine'
             revision = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, check=True,
                                       capture_output=True, text=True).stdout.strip()
             evidence['checkout'] = revision
             report = build(original, pristine, revision)
-            self.assertEqual('logbook-feature-distribution-v4', report['format'])
+            self.assertEqual('logbook-kai2-feature-distribution-v4', report['format'])
             variants = [('A', '1.0.0', 1, 2), ('B', '1.1.0', 1, 3),
                         ('C', '2.0.0', 2, 5), ('D', '1.2.0', 1, 4),
                         ('F', '1.0.0', 1, 4)]

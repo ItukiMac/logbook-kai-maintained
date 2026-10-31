@@ -18,12 +18,12 @@ public class ApiReqHenseiCombined implements APIListenerSpi {
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
         Optional.ofNullable(req.getParameter("api_combined_type"))
-            .map(Integer::valueOf)
-            .ifPresent(type -> {
-                AppCondition app = AppCondition.get();
-                app.setCombinedType(type);
-                app.setCombinedFlag(type != 0);
-            });
+                .map(Integer::valueOf)
+                .ifPresent(type -> {
+                    AppCondition app = AppCondition.get();
+                    app.setCombinedType(type);
+                    app.setCombinedFlag(type != 0);
+                });
     }
 
 }

@@ -15,8 +15,9 @@ public class ApiGetMemberQuestlist implements APIListenerSpi {
 
     @Override
     public void accept(JsonObject json, RequestMetaData req, ResponseMetaData res) {
-        if(json==null || !(json.get("api_result") instanceof jakarta.json.JsonNumber result)
-            || result.bigDecimalValue().compareTo(java.math.BigDecimal.ONE)!=0)return;
+        if (json == null || !(json.get("api_result") instanceof jakarta.json.JsonNumber result)
+                || result.bigDecimalValue().compareTo(java.math.BigDecimal.ONE) != 0)
+            return;
         JsonObject data = json.getJsonObject("api_data");
         if (data != null) {
             QuestList quest = QuestList.toQuestList(data);

@@ -39,7 +39,8 @@ class SeasonalQuestObservationTest {
         QuestList.Quest.class.getMethod("setObservedAt", Instant.class).invoke(quest, value);
     }
 
-    @Test void actualApiDecodeRecordsReceiptTimeAndRetainsObservedFields() throws Exception {
+    @Test
+    void actualApiDecodeRecordsReceiptTimeAndRetainsObservedFields() throws Exception {
         Instant before = Instant.now();
         QuestList.Quest quest = QuestList.Quest.toQuest(apiQuest());
         Instant after = Instant.now();
@@ -55,7 +56,8 @@ class SeasonalQuestObservationTest {
         assertEquals(observation, observedAt(quest), "Reading a retained quest must not refresh its receipt time");
     }
 
-    @Test void manuallyConstructedAndSavedBeansDoNotInventAReceiptTime() throws Exception {
+    @Test
+    void manuallyConstructedAndSavedBeansDoNotInventAReceiptTime() throws Exception {
         QuestList.Quest manual = new QuestList.Quest();
         manual.setNo(840);
         manual.setTitle("Synthetic seasonal quest");
@@ -64,7 +66,8 @@ class SeasonalQuestObservationTest {
         assertNull(observedAt(restored));
     }
 
-    @Test void configJsonRoundtripDoesNotCarryLiveObservationIntoRestart() throws Exception {
+    @Test
+    void configJsonRoundtripDoesNotCarryLiveObservationIntoRestart() throws Exception {
         QuestList.Quest live = QuestList.Quest.toQuest(apiQuest());
         assertNotNull(observedAt(live));
         String saved = JSON.writeValueAsString(live);
@@ -74,14 +77,16 @@ class SeasonalQuestObservationTest {
         assertEquals(live, restored, "Observation metadata must not change the saved quest value");
     }
 
-    @Test void suppliedJsonTimestampCannotPretendToBeALiveReceipt() throws Exception {
+    @Test
+    void suppliedJsonTimestampCannotPretendToBeALiveReceipt() throws Exception {
         QuestList.Quest restored = JSON.readValue(
                 "{\"no\":840,\"observedAt\":\"2026-10-27T01:00:00Z\"}", QuestList.Quest.class);
         assertEquals(840, restored.getNo());
         assertNull(observedAt(restored));
     }
 
-    @Test void javaSerializationAlsoRequiresNewObservationAfterRestore() throws Exception {
+    @Test
+    void javaSerializationAlsoRequiresNewObservationAfterRestore() throws Exception {
         QuestList.Quest live = QuestList.Quest.toQuest(apiQuest());
         assertNotNull(observedAt(live));
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -96,7 +101,8 @@ class SeasonalQuestObservationTest {
         assertEquals(live, restored);
     }
 
-    @Test void receiptMetadataDoesNotChangeEqualityHashOrDiagnosticString() throws Exception {
+    @Test
+    void receiptMetadataDoesNotChangeEqualityHashOrDiagnosticString() throws Exception {
         QuestList.Quest first = QuestList.Quest.toQuest(apiQuest());
         QuestList.Quest second = QuestList.Quest.toQuest(apiQuest());
         observedAt(first, Instant.parse("2026-01-01T00:00:00Z"));
@@ -107,7 +113,8 @@ class SeasonalQuestObservationTest {
         assertFalse(first.toString().contains("observedAt"));
     }
 
-    @Test void listApiDecoderStampsRealEntriesAndIgnoresEmptySlots() throws Exception {
+    @Test
+    void listApiDecoderStampsRealEntriesAndIgnoresEmptySlots() throws Exception {
         QuestList list = QuestList.toQuestList(Json.createObjectBuilder()
                 .add("api_count", 1)
                 .add("api_list", Json.createArrayBuilder().add(apiQuest()).add(-1))

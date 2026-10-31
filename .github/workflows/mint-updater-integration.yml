@@ -38,10 +38,10 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           from zipfile import ZipFile
-          archives = list(Path('target').glob('logbook-kai_*.zip'))
+          archives = list(Path('target').glob('logbook-kai2_*.zip'))
           assert len(archives) == 1, archives
           with ZipFile(archives[0]) as archive:
               assert 'helpers/apply-staged-update.py' in archive.namelist()
-              assert 'logbook-kai.jar' in archive.namelist()
+              assert 'logbook-kai2.jar' in archive.namelist()
           print('Linux updater helper included in application distribution')
           PY

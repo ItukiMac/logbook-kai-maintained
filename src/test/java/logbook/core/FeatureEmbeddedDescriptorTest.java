@@ -31,26 +31,29 @@ class FeatureEmbeddedDescriptorTest {
             {"id":"fixture","version":"1.0.0","host_api":1,"host_sha256":"%HOST_SHA%","dependencies":[],
              "provider":"fixture.VersionedModule","features":["fixture.window"]}
             """;
-    @TempDir Path directory;
+    @TempDir
+    Path directory;
     private byte[] providerClass;
     private Path hostJar;
     private String hostSha;
     private int sequence;
 
-    @BeforeEach void compileProvider() throws Exception {
+    @BeforeEach
+    void compileProvider() throws Exception {
         Path source = directory.resolve("src/fixture/VersionedModule.java");
         Files.createDirectories(source.getParent());
-        Files.writeString(source, """
-                package fixture;
-                import logbook.plugin.api.FeatureModule;
-                import java.util.List;
-                public final class VersionedModule implements FeatureModule {
-                    public Descriptor descriptor() { return new Descriptor("fixture", "1.0.0", 1, List.of()); }
-                    public List<Feature> features() {
-                        return List.of(new Feature("fixture.window", "Fixture", "logbook/gui/prob_calc.fxml", Group.EXTRA, 0, ""));
-                    }
-                }
-                """);
+        Files.writeString(source,
+                """
+                        package fixture;
+                        import logbook.plugin.api.FeatureModule;
+                        import java.util.List;
+                        public final class VersionedModule implements FeatureModule {
+                            public Descriptor descriptor() { return new Descriptor("fixture", "1.0.0", 1, List.of()); }
+                            public List<Feature> features() {
+                                return List.of(new Feature("fixture.window", "Fixture", "logbook/gui/prob_calc.fxml", Group.EXTRA, 0, ""));
+                            }
+                        }
+                        """);
         Path classes = directory.resolve("classes");
         Files.createDirectories(classes);
         Path api = Path.of(FeatureModule.class.getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -60,10 +63,12 @@ class FeatureEmbeddedDescriptorTest {
         providerClass = Files.readAllBytes(classes.resolve("fixture/VersionedModule.class"));
         hostJar = directory.resolve("host-api.jar");
         try (var output = new JarOutputStream(Files.newOutputStream(hostJar))) {
-            for (String name : List.of("logbook/core/FeatureRegistry.class", "logbook/core/FeatureBundlePreflight.class",
+            for (String name : List.of("logbook/core/FeatureRegistry.class",
+                    "logbook/core/FeatureBundlePreflight.class",
                     "logbook/gui/prob_calc.fxml", "logbook/plugin/api/FeatureModule.class",
                     "logbook/plugin/api/FeatureModule$Feature.class", "logbook/plugin/api/FeatureModule$Group.class",
-                    "logbook/plugin/api/FeatureModule$Version.class", "logbook/plugin/api/FeatureModule$Descriptor.class",
+                    "logbook/plugin/api/FeatureModule$Version.class",
+                    "logbook/plugin/api/FeatureModule$Descriptor.class",
                     "logbook/plugin/api/FeatureModule$Dependency.class")) {
                 output.putNextEntry(new JarEntry(name));
                 try (var input = getClass().getClassLoader().getResourceAsStream(name)) {
@@ -96,22 +101,27 @@ class FeatureEmbeddedDescriptorTest {
         return path;
     }
 
-    private record Catalog(String version, String featureId) { }
+    private record Catalog(String version, String featureId) {
+    }
 
     private Catalog registry(Path... paths) throws Exception {
         URL[] urls = new URL[paths.length + 1];
         urls[0] = hostJar.toUri().toURL();
-        for (int i = 0; i < paths.length; i++) urls[i + 1] = paths[i].toUri().toURL();
+        for (int i = 0; i < paths.length; i++)
+            urls[i + 1] = paths[i].toUri().toURL();
         // Only the API and registry use child-first lookup. They are the actual
         // compiled production classes, loaded from an actual synthetic host JAR.
         try (var loader = new URLClassLoader(urls, FeatureModule.class.getClassLoader()) {
-            @Override protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            @Override
+            protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                 if (name.equals("logbook.core.FeatureRegistry") || name.equals("logbook.plugin.api.FeatureModule")
                         || name.startsWith("logbook.plugin.api.FeatureModule$")) {
                     synchronized (getClassLoadingLock(name)) {
                         Class<?> result = findLoadedClass(name);
-                        if (result == null) result = findClass(name);
-                        if (resolve) resolveClass(result);
+                        if (result == null)
+                            result = findClass(name);
+                        if (resolve)
+                            resolveClass(result);
                         return result;
                     }
                 }
@@ -126,7 +136,8 @@ class FeatureEmbeddedDescriptorTest {
             try {
                 registry = constructor.newInstance(Stream.of(module), loader, true);
             } catch (InvocationTargetException error) {
-                if (error.getCause() instanceof RuntimeException cause) throw cause;
+                if (error.getCause() instanceof RuntimeException cause)
+                    throw cause;
                 throw error;
             }
             var descriptors = (List<?>) registryType.getMethod("descriptors").invoke(registry);
@@ -138,19 +149,22 @@ class FeatureEmbeddedDescriptorTest {
         }
     }
 
-    @Test void acceptsMetadataFromTheProvidersOwnArchive() throws Exception {
+    @Test
+    void acceptsMetadataFromTheProvidersOwnArchive() throws Exception {
         Path decoy = jar(METADATA.replace("1.0.0", "99.0.0"), false);
         var catalog = registry(decoy, jar(METADATA, true));
         assertEquals("1.0.0", catalog.version());
         assertEquals("fixture.window", catalog.featureId());
     }
 
-    @Test void missingEmbeddedMetadataIsRejected() throws Exception {
+    @Test
+    void missingEmbeddedMetadataIsRejected() throws Exception {
         Path path = jar(null, true);
         assertThrows(IllegalArgumentException.class, () -> registry(path));
     }
 
-    @Test void mismatchedVersionsProviderAndFeatureIdsAreRejected() throws Exception {
+    @Test
+    void mismatchedVersionsProviderAndFeatureIdsAreRejected() throws Exception {
         for (String invalid : List.of(
                 METADATA.replace("1.0.0", "1.1.0"),
                 METADATA.replace("fixture.VersionedModule", "fixture.OtherModule"),
@@ -162,7 +176,8 @@ class FeatureEmbeddedDescriptorTest {
         }
     }
 
-    @Test void duplicateKeysExtraFieldsTrailingJsonAndNonintegerApiAreRejected() throws Exception {
+    @Test
+    void duplicateKeysExtraFieldsTrailingJsonAndNonintegerApiAreRejected() throws Exception {
         for (String invalid : List.of(
                 METADATA.replace("\"host_api\":1", "\"host_api\":1,\"host_api\":1"),
                 METADATA.replace("\"host_api\":1", "\"host_api\":1.0"),
@@ -174,13 +189,15 @@ class FeatureEmbeddedDescriptorTest {
         }
     }
 
-    @Test void aFeatureBuiltForAnotherHostIsRejected() throws Exception {
+    @Test
+    void aFeatureBuiltForAnotherHostIsRejected() throws Exception {
         Path path = jar(METADATA.replace("%HOST_SHA%", "0".repeat(64)), true);
         var error = assertThrows(IllegalArgumentException.class, () -> registry(path));
         assertTrue(error.getMessage().contains("different host JAR"));
     }
 
-    @Test void unexpectedEmbeddedDependenciesAreRejected() throws Exception {
+    @Test
+    void unexpectedEmbeddedDependenciesAreRejected() throws Exception {
         String invalid = METADATA.replace("\"dependencies\":[]", """
                 "dependencies":[{"id":"base","min_version":"1.0.0","max_version_exclusive":"2.0.0"}]
                 """);
@@ -188,12 +205,14 @@ class FeatureEmbeddedDescriptorTest {
         assertThrows(IllegalArgumentException.class, () -> registry(path));
     }
 
-    @Test void oversizedEmbeddedMetadataIsRejected() throws Exception {
+    @Test
+    void oversizedEmbeddedMetadataIsRejected() throws Exception {
         Path path = jar(METADATA + " ".repeat(65536), true);
         assertThrows(IllegalArgumentException.class, () -> registry(path));
     }
 
-    private record PreflightResult(int exitCode, String output) { }
+    private record PreflightResult(int exitCode, String output) {
+    }
 
     private PreflightResult preflight(Path moduleJar) throws Exception {
         Path runtime = directory.resolve("preflight-runtime-" + sequence++);
@@ -218,7 +237,8 @@ class FeatureEmbeddedDescriptorTest {
             assertEquals(before, inventory(runtime), "preflight must not initialize or write application state");
             return new PreflightResult(process.exitValue(), output);
         } finally {
-            if (process.isAlive()) process.destroyForcibly();
+            if (process.isAlive())
+                process.destroyForcibly();
         }
     }
 
@@ -228,29 +248,40 @@ class FeatureEmbeddedDescriptorTest {
             for (Path path : files.toList()) {
                 String key = root.relativize(path).toString();
                 values.put(key, Files.isDirectory(path) ? "directory"
-                        : HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(path))));
+                        : HexFormat.of()
+                                .formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(path))));
             }
         }
         return values;
     }
 
-    @Test void separateJvmPreflightAcceptsValidContractsWithoutApplicationClasses() throws Exception {
+    @Test
+    void separateJvmPreflightAcceptsValidContractsWithoutApplicationClasses() throws Exception {
         var result = preflight(jar(METADATA, true));
         assertEquals(0, result.exitCode(), result.output());
         assertEquals(List.of("FEATURE_BUNDLE_PREFLIGHT_OK"), result.output().lines().toList());
     }
 
-    @Test void separateJvmPreflightRejectsMetadataThatDisagreesWithRealCode() throws Exception {
+    @Test
+    void separateJvmPreflightRejectsMetadataThatDisagreesWithRealCode() throws Exception {
         var result = preflight(jar(METADATA.replace("1.0.0", "1.1.0"), true));
         assertNotEquals(0, result.exitCode(), result.output());
         assertFalse(result.output().contains("FEATURE_BUNDLE_PREFLIGHT_OK"));
         assertTrue(result.output().contains("differs from provider contract"), result.output());
     }
 
-    @Test void managedDiscoveryDoesNotAcceptAnExplodedProvider() {
+    @Test
+    void managedDiscoveryDoesNotAcceptAnExplodedProvider() {
         FeatureModule module = new FeatureModule() {
-            @Override public Descriptor descriptor() { return new Descriptor("exploded", "1.0.0", 1, List.of()); }
-            @Override public List<Feature> features() { return List.of(); }
+            @Override
+            public Descriptor descriptor() {
+                return new Descriptor("exploded", "1.0.0", 1, List.of());
+            }
+
+            @Override
+            public List<Feature> features() {
+                return List.of();
+            }
         };
         assertThrows(IllegalArgumentException.class,
                 () -> new FeatureRegistry(Stream.of(module), getClass().getClassLoader(), true));

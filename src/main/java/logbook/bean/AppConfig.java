@@ -114,7 +114,7 @@ public final class AppConfig implements Serializable {
     private String tabColorNoMission;
     /** 艦隊タブの色（要補給） */
     private String tabColorNeedRefuel;
-    
+
     /** 音量 */
     private int soundLevel = 85;
 
@@ -143,7 +143,7 @@ public final class AppConfig implements Serializable {
     private boolean connectionClose = true;
 
     /** ポート番号 */
-    private int listenPort = 8888;
+    private int listenPort = 8889;
 
     /** ローカルループバックアドレスからの接続のみ受け入れる */
     private boolean allowOnlyFromLocalhost = true;

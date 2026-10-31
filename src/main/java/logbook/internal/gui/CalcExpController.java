@@ -432,7 +432,7 @@ public class CalcExpController extends FeatureUiV1.Window {
 
     /**
      * 表示対象の未改修艦かの判定結果を返却します
-     * 
+     *
      * @param ship
      * @return
      */
@@ -567,7 +567,7 @@ public class CalcExpController extends FeatureUiV1.Window {
 
         /**
          * 艦娘を取得します。
-         * 
+         *
          * @return 艦娘
          */
         public Ship getShip() {

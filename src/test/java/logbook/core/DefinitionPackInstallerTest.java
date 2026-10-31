@@ -16,7 +16,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 class DefinitionPackInstallerTest {
-    @TempDir Path temp;
+    @TempDir
+    Path temp;
 
     @AfterEach
     void clear() {
@@ -27,7 +28,8 @@ class DefinitionPackInstallerTest {
         return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
     }
 
-    private record Pack(Path zip, String sha256) { }
+    private record Pack(Path zip, String sha256) {
+    }
 
     private Pack makePack(String name, String definition, boolean wrongFileHash,
             boolean extraUnsafeEntry, boolean omitData) throws Exception {
@@ -41,8 +43,10 @@ class DefinitionPackInstallerTest {
         Path zip = Files.createTempFile(temp, "pack-", ".zip");
         try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zip))) {
             put(out, "manifest.json", manifest.getBytes(StandardCharsets.UTF_8));
-            if (!omitData) put(out, name, body);
-            if (extraUnsafeEntry) put(out, "../attack.txt", "malicious".getBytes(StandardCharsets.UTF_8));
+            if (!omitData)
+                put(out, name, body);
+            if (extraUnsafeEntry)
+                put(out, "../attack.txt", "malicious".getBytes(StandardCharsets.UTF_8));
         }
         return new Pack(zip, hash(Files.readAllBytes(zip)));
     }
@@ -77,19 +81,18 @@ class DefinitionPackInstallerTest {
         assertThrows(IOException.class, () -> DefinitionPackInstaller.install(store, broken.zip, broken.sha256));
         System.setProperty(ExternalQuestDefinitions.ROOT_PROPERTY, store.toString());
         assertEquals("{\"type\":\"before\"}", read(ExternalQuestDefinitions.resolve(1045, true)));
-        assertEquals(previous, DefinitionPackInstaller.activeDefinitionsRoot(store).getParent().getFileName().toString());
+        assertEquals(previous,
+                DefinitionPackInstaller.activeDefinitionsRoot(store).getParent().getFileName().toString());
     }
 
     @Test
     void rejectsMissingOrTamperedArchiveBeforeActivation() throws Exception {
         Path store = temp.resolve("store");
         Pack pack = makePack("definitions/quest/1045.json", "{}", false, false, false);
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.install(store, pack.zip, "0".repeat(64)));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.install(store, pack.zip, "0".repeat(64)));
         assertFalse(Files.exists(store.resolve("active.json")));
         Pack missing = makePack("definitions/quest/1045.json", "{}", false, false, true);
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.install(store, missing.zip, missing.sha256));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.install(store, missing.zip, missing.sha256));
         assertFalse(Files.exists(store.resolve("active.json")));
     }
 
@@ -97,11 +100,9 @@ class DefinitionPackInstallerTest {
     void rejectsUnlistedTraversalAndUnexpectedCategory() throws Exception {
         Path store = temp.resolve("store");
         Pack attack = makePack("definitions/quest/1045.json", "{}", false, true, false);
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.install(store, attack.zip, attack.sha256));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.install(store, attack.zip, attack.sha256));
         Pack unknown = makePack("definitions/executable/1045.json", "{}", false, false, false);
-        assertThrows(IOException.class, () ->
-                DefinitionPackInstaller.install(store, unknown.zip, unknown.sha256));
+        assertThrows(IOException.class, () -> DefinitionPackInstaller.install(store, unknown.zip, unknown.sha256));
         assertFalse(Files.exists(store.resolve("active.json")));
     }
 

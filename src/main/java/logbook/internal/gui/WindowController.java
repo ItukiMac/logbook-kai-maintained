@@ -28,13 +28,17 @@ public abstract class WindowController {
      * @param window このコントローラーに紐づくウインドウ
      */
     public void setWindow(Stage window) {
-        if (definitions != null) definitions.close();
+        if (definitions != null)
+            definitions.close();
         this.window = window;
+        if (window != null)
+            WindowPresentation.install(window);
         definitions = window == null ? null : new DefinitionUiBinding(window, this::onDefinitionsChanged);
     }
 
     /** Called on the FX thread under one pinned definition generation. */
-    protected void onDefinitionsChanged() {}
+    protected void onDefinitionsChanged() {
+    }
 
     /**
      * ウインドウの位置とサイズを設定します。

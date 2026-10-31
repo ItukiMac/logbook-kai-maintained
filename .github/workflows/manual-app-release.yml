@@ -65,19 +65,19 @@ jobs:
           ns = {"m":"http://maven.apache.org/POM/4.0.0"}
           version = root.findtext("m:version", namespaces=ns)
           assert version == "25.0.10", "Unexpected unexpected application version"
-          path = Path(f"target/logbook-kai_{version}.zip")
+          path = Path(f"target/logbook-kai2_{version}.zip")
           assert path.is_file(), f"Missing release ZIP {path}"
           with zipfile.ZipFile(path) as archive:
               names = set(archive.namelist())
               assert archive.testzip() is None, "Distribution CRC failure"
-              assert "logbook-kai.jar" in names
+              assert "logbook-kai2.jar" in names
               assert "helpers/apply-staged-update.py" in names
               assert all(".." not in Path(x).parts and not x.startswith("/")
                          for x in names), "Distribution has unsafe path"
               assert not any(x.endswith((".env", ".token", ".key")) for x in names)
               assert not any(x.startswith("plugins/") and x.endswith(".jar")
                              for x in names), "Never bundle users' plugins"
-              application = archive.read("logbook-kai.jar")
+              application = archive.read("logbook-kai2.jar")
           with zipfile.ZipFile(io.BytesIO(application)) as jar:
               manifest = jar.read("META-INF/MANIFEST.MF").decode("utf-8")
               assert "Main-Class: logbook.internal.Launcher" in manifest
@@ -93,7 +93,7 @@ jobs:
         with:
           name: verified-application-for-release
           path: |
-            target/logbook-kai_25.0.10.zip
+            target/logbook-kai2_25.0.10.zip
             target/SHA256SUMS-application.txt
           if-no-files-found: error
           retention-days: 14
@@ -137,7 +137,7 @@ jobs:
           cd dist
           sha256sum -c SHA256SUMS-application.txt
           {
-            echo "Maintained logbook-kai application candidate at $GITHUB_SHA"
+            echo "logbook-kai2 application candidate at $GITHUB_SHA"
             echo
             echo "This is an explicitly published PRERELEASE. It is not automatically"
             echo "installed on any user's machine. Linux Mint auto.sh should remain"
@@ -145,5 +145,5 @@ jobs:
             echo
             cat SHA256SUMS-application.txt
           } > release-notes.txt
-          gh release create "$APP_TAG"             logbook-kai_25.0.10.zip SHA256SUMS-application.txt             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "公開日誌-改2 25.0.10 (prerelease)"             --notes-file release-notes.txt             --prerelease             --latest=false
+          gh release create "$APP_TAG"             logbook-kai2_25.0.10.zip SHA256SUMS-application.txt             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "logbook-kai2 25.0.10 (prerelease)"             --notes-file release-notes.txt             --prerelease             --latest=false
           gh release view "$APP_TAG" --repo "$GITHUB_REPOSITORY"             --json tagName,isPrerelease,assets

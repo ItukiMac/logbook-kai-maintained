@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Apply an already staged logbook-kai JAR at the next Linux launcher start.
+"""Apply an already staged logbook-kai2 JAR at the next Linux launcher start.
 
 This tool is NOT a replacement launcher. It is intentionally inert unless
-update/logbook-kai.jar exists. Intended to be called by the existing auto.sh
+update/logbook-kai2.jar exists. Intended to be called by the existing auto.sh
 *before* it starts Java. It does not interact with Chrome, KLB, or game data.
 """
 from __future__ import annotations
@@ -18,7 +18,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-JAR_NAME = "logbook-kai.jar"
+JAR_NAME = "logbook-kai2.jar"
 MAX_JAR_SIZE = 256 * 1024 * 1024
 MAX_EXPANDED_SIZE = 768 * 1024 * 1024
 
@@ -59,7 +59,7 @@ def validate_jar(path: Path) -> None:
             if bad is not None:
                 raise ValueError(f"Corrupt JAR entry: {bad}")
     except (OSError, KeyError, UnicodeError, zipfile.BadZipFile) as exc:
-        raise ValueError("Staged file is not a valid logbook-kai JAR") from exc
+        raise ValueError("Staged file is not a valid logbook-kai2 JAR") from exc
 
 
 def copied_temporary(source: Path, directory: Path, prefix: str) -> Path:
@@ -109,7 +109,7 @@ def apply_staged(root: Path, *, dry_run: bool = False) -> str:
     backup_dir.mkdir(parents=True, exist_ok=True)
     timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     backup_fd, backup_path = tempfile.mkstemp(
-        prefix=f"logbook-kai-{timestamp}-{existing_digest[:12]}-",
+        prefix=f"logbook-kai2-{timestamp}-{existing_digest[:12]}-",
         suffix=".jar", dir=backup_dir)
     os.close(backup_fd)
     backup = Path(backup_path)
@@ -123,7 +123,7 @@ def apply_staged(root: Path, *, dry_run: bool = False) -> str:
         if sha256(backup) != existing_digest:
             raise OSError("Existing version backup did not verify")
 
-        candidate = copied_temporary(staged, root, ".next-logbook-kai-")
+        candidate = copied_temporary(staged, root, ".next-logbook-kai2-")
         validate_jar(candidate)
         # Same directory; rename is atomic on ordinary local filesystems.
         os.replace(candidate, active)
@@ -158,7 +158,7 @@ def restore_backup(root: Path, backup_arg: Path, *, dry_run: bool = False) -> st
     if backup.parent != folder or not is_regular_no_link(backup):
         raise ValueError("Backup must be an ordinary file directly in the backup directory")
     matched = re.fullmatch(
-        r"logbook-kai-\d{8}T\d{6}Z-([0-9a-f]{12})-[^/]+\.jar",
+        r"logbook-kai2-\d{8}T\d{6}Z-([0-9a-f]{12})-[^/]+\.jar",
         backup.name,
     )
     if matched is None:
@@ -190,7 +190,7 @@ def restore_backup(root: Path, backup_arg: Path, *, dry_run: bool = False) -> st
         shutil.copy2(active, current_snapshot)
         if sha256(current_snapshot) != active_digest:
             raise OSError("Snapshot of current JAR did not verify")
-        replacement = copied_temporary(backup, root, ".restore-logbook-kai-")
+        replacement = copied_temporary(backup, root, ".restore-logbook-kai2-")
         validate_jar(replacement)
         os.replace(replacement, active)
         replacement = None

@@ -58,7 +58,7 @@ public class LogWriter<T> {
 
     /** 排他制御用のロック */
     private final Lock lock = new ReentrantLock();
-    
+
     /**
      * ログ情報
      *
@@ -211,7 +211,7 @@ public class LogWriter<T> {
                 Files.createDirectories(parent);
             }
         }
-        
+
         // 排他制御の開始
         lock.lock();
         try {

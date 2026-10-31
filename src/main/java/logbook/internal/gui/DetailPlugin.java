@@ -151,7 +151,7 @@ public class DetailPlugin {
      * @param plugin Jarファイルベースのプラグイン
      * @return プラグイン詳細
      */
-    public static DetailPlugin toDetailPlugin (JarBasedPlugin plugin) {
+    public static DetailPlugin toDetailPlugin(JarBasedPlugin plugin) {
         DetailPlugin detail = new DetailPlugin();
         detail.setName(plugin.getName());
         detail.setVendor(plugin.getVendor());

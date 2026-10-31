@@ -14,41 +14,59 @@ class EquipmentRemodelSchemaTest {
     private static ByteArrayInputStream bytes(String source) {
         return new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8));
     }
+
     private static Map<String, Collection<String>> read(String source) {
         Map<String, Collection<String>> result = new HashMap<>();
         ItemItemController.readRemodelDays(bytes(source), result);
         return result;
     }
-    @Test void originalSlotItemFieldRetainsAllAvailableDays() {
+
+    @Test
+    void originalSlotItemFieldRetainsAllAvailableDays() {
         assertEquals(Map.of("fixture", List.of("月", "金")), read(
-  "[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"月\",\"金\"]}]"));
+                "[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"月\",\"金\"]}]"));
     }
-    @Test void javaTypeNamesAreNotExternalDataFieldNames() {
+
+    @Test
+    void javaTypeNamesAreNotExternalDataFieldNames() {
         assertTrue(read("[{\"EquipmentDataV1.Owned\":\"fixture\",\"AllAvailableDays\":[\"月\"]}]").isEmpty());
     }
-    @Test void laterDuplicateKeepsTheExistingLastEntryPolicy() {
+
+    @Test
+    void laterDuplicateKeepsTheExistingLastEntryPolicy() {
         assertEquals(Map.of("fixture", List.of("木")), read(
-  "[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"月\"]},"
-  + "{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"木\"]}]"));
+                "[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"月\"]},"
+                        + "{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"木\"]}]"));
     }
-    @Test void missingNameOrDaysDoesNotInventAvailability() {
+
+    @Test
+    void missingNameOrDaysDoesNotInventAvailability() {
         assertTrue(read("[{\"SlotItem\":\"fixture\"},{\"AllAvailableDays\":[\"月\"]},{}]").isEmpty());
     }
-    @Test void resourceStreamIsClosed() {
-        boolean[] closed = {false};
+
+    @Test
+    void resourceStreamIsClosed() {
+        boolean[] closed = { false };
         var input = new ByteArrayInputStream("[]".getBytes(StandardCharsets.UTF_8)) {
-  @Override public void close() { closed[0] = true; }
+            @Override
+            public void close() {
+                closed[0] = true;
+            }
         };
         ItemItemController.readRemodelDays(input, new HashMap<>());
         assertTrue(closed[0]);
     }
-    @Test void malformedJsonIsNotReportedAsAnEmptySuccessfulRead() {
+
+    @Test
+    void malformedJsonIsNotReportedAsAnEmptySuccessfulRead() {
         assertThrows(JsonException.class, () -> read("["));
     }
-    @Test void entriesReadBeforeABadRowRemainAvailableToTheCaller() {
+
+    @Test
+    void entriesReadBeforeABadRowRemainAvailableToTheCaller() {
         Map<String, Collection<String>> result = new HashMap<>();
         assertThrows(ClassCastException.class, () -> ItemItemController.readRemodelDays(
-  bytes("[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"火\"]},17]"),result));
-        assertEquals(Map.of("fixture",List.of("火")),result);
+                bytes("[{\"SlotItem\":\"fixture\",\"AllAvailableDays\":[\"火\"]},17]"), result));
+        assertEquals(Map.of("fixture", List.of("火")), result);
     }
 }

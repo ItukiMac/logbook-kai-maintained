@@ -65,9 +65,9 @@ public class Mapinfo implements Serializable {
 
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
-                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject)json);
+                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject) json);
             }
-            
+
             JsonHelper.bind((JsonObject) json, unUsedKeyBindListener)
                     .setInteger("api_id", bean::setId)
                     .setInteger("api_cleared", bean::setCleared)
@@ -81,7 +81,7 @@ public class Mapinfo implements Serializable {
                 unUsedKey.removeIf("api_gauge_num"::equals); //ゲージ本数 1,2,3..
                 unUsedKey.removeIf("api_gauge_type"::equals); //1=撃破ゲージ 2=HPゲージ 3=揚陸(TP)ゲージ
                 for (String key : unUsedKey) {
-                    LoggerHolder.get().debug("未使用のKeyを検出 : " + key + ":" + ((JsonObject)json).get(key));
+                    LoggerHolder.get().debug("未使用のKeyを検出 : " + key + ":" + ((JsonObject) json).get(key));
                 }
             }
 
@@ -123,12 +123,12 @@ public class Mapinfo implements Serializable {
          */
         public static AirBase toAirBase(JsonValue json) {
             AirBase bean = new AirBase();
-            
+
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
-                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject)json);
+                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject) json);
             }
-            JsonHelper.bind((JsonObject)json, unUsedKeyBindListener)
+            JsonHelper.bind((JsonObject) json, unUsedKeyBindListener)
                     .setInteger("api_area_id", bean::setAreaId)
                     .setInteger("api_rid", bean::setRid)
                     .setString("api_name", bean::setName)
@@ -171,13 +171,13 @@ public class Mapinfo implements Serializable {
 
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
-                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject)json);
+                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject) json);
             }
 
             JsonHelper.bind((JsonObject) json, unUsedKeyBindListener)
                     .setInteger("api_base", bean::setBase)
                     .setInteger("api_bonus", bean::setBonus);
-            
+
             if (LoggerHolder.get().isDebugEnabled()) {
                 Set<String> unUsedKey = unUsedKeyBindListener.getUnusedKeys();
                 for (String key : unUsedKey) {
@@ -226,7 +226,7 @@ public class Mapinfo implements Serializable {
 
             UnUsedKeyBindListener unUsedKeyBindListener = null;
             if (LoggerHolder.get().isDebugEnabled()) {
-                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject)json);
+                unUsedKeyBindListener = new UnUsedKeyBindListener((JsonObject) json);
             }
 
             JsonHelper.bind((JsonObject) json, unUsedKeyBindListener)

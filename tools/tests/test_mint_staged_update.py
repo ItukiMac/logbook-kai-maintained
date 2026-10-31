@@ -26,13 +26,13 @@ def new_jar(path):
 class StagedUpdateTest(unittest.TestCase):
     def setUp(self):
         self.holder = tempfile.TemporaryDirectory()
-        self.root = pathlib.Path(self.holder.name) / "logbook-kai"
+        self.root = pathlib.Path(self.holder.name) / "logbook-kai2"
         self.root.mkdir()
-        self.active = self.root / "logbook-kai.jar"
+        self.active = self.root / "logbook-kai2.jar"
         self.active.write_bytes(b"PREVIOUS_LIVE_JAR")
         self.update = self.root / "update"
         self.update.mkdir()
-        self.stage = self.update / "logbook-kai.jar"
+        self.stage = self.update / "logbook-kai2.jar"
 
     def tearDown(self):
         self.holder.cleanup()
@@ -107,7 +107,7 @@ class StagedUpdateTest(unittest.TestCase):
         self.assertNotEqual(original, changed)
 
         self.assertTrue(updater.apply_staged(self.root).startswith("UPDATED "))
-        backups = list((self.root / "launcher-backups/app-versions").glob("logbook-kai-*.jar"))
+        backups = list((self.root / "launcher-backups/app-versions").glob("logbook-kai2-*.jar"))
         self.assertEqual(len(backups), 1)
         old = backups[0]
         self.assertEqual(old.read_bytes(), original)
@@ -128,7 +128,7 @@ class StagedUpdateTest(unittest.TestCase):
             jar.writestr("version-marker.txt", "UPDATED")
         updater.apply_staged(self.root)
         current_active = self.active.read_bytes()
-        old = next((self.root / "launcher-backups/app-versions").glob("logbook-kai-*.jar"))
+        old = next((self.root / "launcher-backups/app-versions").glob("logbook-kai2-*.jar"))
 
         outside = pathlib.Path(self.holder.name) / "copy.jar"
         outside.write_bytes(old.read_bytes())

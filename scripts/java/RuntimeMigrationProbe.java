@@ -110,21 +110,24 @@ public final class RuntimeMigrationProbe {
         settings.put("soundLevel", 85);
         byte[] config = jsonBytes(settings);
         String configName = "config/logbook.bean.AppConfig.json";
-        if (!backupOnly) Files.write(root.resolve(configName), config, StandardOpenOption.CREATE_NEW);
+        if (!backupOnly)
+            Files.write(root.resolve(configName), config, StandardOpenOption.CREATE_NEW);
         Files.write(root.resolve(configName + ".backup"), config, StandardOpenOption.CREATE_NEW);
         fresh(root.resolve("customquest/10001.json"), CUSTOM);
         fresh(root.resolve("plugins/retained.jar"), PLUGIN);
         fresh(root.resolve("retained-old-application/generation-A.txt"), "synthetic-A/current-schema\n");
-        Files.write(root.resolve("retained-old-application/image.bin"), new byte[] {0, 1, 2, (byte) 255},
+        Files.write(root.resolve("retained-old-application/image.bin"), new byte[] { 0, 1, 2, (byte) 255 },
                 StandardOpenOption.CREATE_NEW);
         AppQuestDuration periods = new AppQuestDuration();
         AppQuestDuration.Duration duration = new AppQuestDuration.Duration();
         duration.setFrom("2025-05-10 09:00:00");
         duration.setTo("2025-05-11 00:00:00");
         periods.getMap().put(EXPIRY, Map.of(905, List.of(duration)));
-        Files.write(root.resolve("config/logbook.bean.AppQuestDuration.json"), jsonBytes(periods), java.nio.file.StandardOpenOption.CREATE_NEW);
+        Files.write(root.resolve("config/logbook.bean.AppQuestDuration.json"), jsonBytes(periods),
+                java.nio.file.StandardOpenOption.CREATE_NEW);
         PortArrivalStore journal = new PortArrivalStore(root.resolve("sortie-arrivals-v1"));
-        for (PortArrival record : originals()) journal.append(record);
+        for (PortArrival record : originals())
+            journal.append(record);
         System.out.println("MIGRATION_FIXTURE_SEEDED records=3 accepted=2 backup_only=" + backupOnly);
     }
 
@@ -151,7 +154,8 @@ public final class RuntimeMigrationProbe {
         }
         for (var reference : paths(AppConfig.get()).entrySet()) {
             String value = reference.getValue();
-            if (value == null || value.isBlank()) throw new AssertionError("Missing explicit path: " + reference.getKey());
+            if (value == null || value.isBlank())
+                throw new AssertionError("Missing explicit path: " + reference.getKey());
             Path raw = Path.of(value);
             Path actual = root.resolve(raw).normalize();
             if (raw.isAbsolute() || !actual.startsWith(root)) {
@@ -161,8 +165,10 @@ public final class RuntimeMigrationProbe {
                 throw new IllegalArgumentException("Symbolic path escapes the copied runtime");
             }
         }
-        if (AppConfig.get().isUsePlugin()) throw new AssertionError("Opaque fixture plugin must stay disabled");
-        if (AppConfig.get().isCheckUpdate()) throw new AssertionError("Fixture updater must stay disabled");
+        if (AppConfig.get().isUsePlugin())
+            throw new AssertionError("Opaque fixture plugin must stay disabled");
+        if (AppConfig.get().isCheckUpdate())
+            throw new AssertionError("Fixture updater must stay disabled");
     }
 
     private static void verify(Path root, boolean changed) throws Exception {
@@ -170,7 +176,8 @@ public final class RuntimeMigrationProbe {
         List<PortArrival> records = new PortArrivalStore(root.resolve("sortie-arrivals-v1"))
                 .readRange(time("2025-05-01 00:00:00"), time("2025-06-01 00:00:00"));
         List<PortArrival> expected = new ArrayList<>(originals());
-        if (changed) expected.add(added());
+        if (changed)
+            expected.add(added());
         if (records.size() != expected.size() || !Set.copyOf(records).equals(Set.copyOf(expected))) {
             throw new AssertionError("Arrival records lost or changed");
         }
@@ -180,13 +187,17 @@ public final class RuntimeMigrationProbe {
         List<PortArrival> accepted = AppQuestDuration.get().getArrivalCondition(quest);
         Set<String> expectedAccepted = changed ? Set.of(added().sortieId())
                 : Set.of(originals().get(0).sortieId(), originals().get(1).sortieId());
-        Set<String> actualAccepted = accepted.stream().map(PortArrival::sortieId).collect(java.util.stream.Collectors.toSet());
+        Set<String> actualAccepted = accepted.stream().map(PortArrival::sortieId)
+                .collect(java.util.stream.Collectors.toSet());
         if (!expectedAccepted.equals(actualAccepted) || accepted.size() != expectedAccepted.size()) {
             throw new AssertionError("Actual acceptance/arrival join changed");
         }
-        if (!Files.readString(root.resolve("customquest/10001.json")).equals(CUSTOM)) throw new AssertionError("Custom quest bytes lost");
-        if (!Files.readString(root.resolve("plugins/retained.jar")).equals(PLUGIN)) throw new AssertionError("Plugin bytes lost");
-        if (!Files.readString(root.resolve("retained-old-application/generation-A.txt")).equals("synthetic-A/current-schema\n")) {
+        if (!Files.readString(root.resolve("customquest/10001.json")).equals(CUSTOM))
+            throw new AssertionError("Custom quest bytes lost");
+        if (!Files.readString(root.resolve("plugins/retained.jar")).equals(PLUGIN))
+            throw new AssertionError("Plugin bytes lost");
+        if (!Files.readString(root.resolve("retained-old-application/generation-A.txt"))
+                .equals("synthetic-A/current-schema\n")) {
             throw new AssertionError("Old application marker lost");
         }
         try (var entries = Files.list(root.resolve("sortie-arrivals-v1/2025-05"))) {
@@ -195,8 +206,10 @@ public final class RuntimeMigrationProbe {
             }
         }
         if (changed) {
-            if (AppConfig.get().getSoundLevel() != 42) throw new AssertionError("Real Config.store write lost");
-            if (!Files.isRegularFile(root.resolve("generation-B-added.txt"))) throw new AssertionError("New generation marker lost");
+            if (AppConfig.get().getSoundLevel() != 42)
+                throw new AssertionError("Real Config.store write lost");
+            if (!Files.isRegularFile(root.resolve("generation-B-added.txt")))
+                throw new AssertionError("New generation marker lost");
         } else if (AppConfig.get().getSoundLevel() != 85) {
             throw new AssertionError("Old setting was not restored");
         }
@@ -238,7 +251,8 @@ public final class RuntimeMigrationProbe {
 
     private static void launcher(Path root) throws Exception {
         verify(root, false);
-        if (!ManagedBundleMode.enabled()) throw new AssertionError("Managed updater guard is required");
+        if (!ManagedBundleMode.enabled())
+            throw new AssertionError("Managed updater guard is required");
         // Local socket use begins only inside the explicitly approved Launcher command.
         try (ServerSocket port = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
             AppConfig.get().setListenPort(port.getLocalPort());
@@ -258,12 +272,15 @@ public final class RuntimeMigrationProbe {
                             try (Socket ignored = new Socket("127.0.0.1", AppConfig.get().getListenPort())) {
                                 ready = true;
                                 break;
-                            } catch (java.io.IOException notYetListening) { }
+                            } catch (java.io.IOException notYetListening) {
+                            }
                         }
-                    } catch (IllegalStateException notYetInitialized) { }
+                    } catch (IllegalStateException notYetInitialized) {
+                    }
                     Thread.sleep(50);
                 }
-                if (!ready) throw new AssertionError("Actual Launcher window/local proxy did not become ready");
+                if (!ready)
+                    throw new AssertionError("Actual Launcher window/local proxy did not become ready");
                 mutate(root);
                 System.out.println("MIGRATION_REAL_LAUNCHER_OK main_window=true localhost_proxy=true");
                 Platform.runLater(Platform::exit);
@@ -276,22 +293,25 @@ public final class RuntimeMigrationProbe {
         observer.start();
         Launcher.main(new String[0]);
         observer.join(30_000);
-        if (observer.isAlive()) throw new AssertionError("Launcher observer did not finish");
+        if (observer.isAlive())
+            throw new AssertionError("Launcher observer did not finish");
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) throw new IllegalArgumentException("mode and NEW synthetic runtime required");
+        if (args.length < 2)
+            throw new IllegalArgumentException("mode and NEW synthetic runtime required");
         Path root = Path.of(args[1]).toAbsolutePath().normalize();
         switch (args[0]) {
-            case "seed", "seed-backup" -> {
-                if (args.length != 3) throw new IllegalArgumentException("New external fixture path required");
-                seed(root, Path.of(args[2]).toAbsolutePath().normalize(), args[0].equals("seed-backup"));
-            }
-            case "verify" -> verify(root, false);
-            case "verify-changed" -> verify(root, true);
-            case "mutate" -> mutate(root);
-            case "launcher" -> launcher(root);
-            default -> throw new IllegalArgumentException("Unknown synthetic probe mode");
+        case "seed", "seed-backup" -> {
+            if (args.length != 3)
+                throw new IllegalArgumentException("New external fixture path required");
+            seed(root, Path.of(args[2]).toAbsolutePath().normalize(), args[0].equals("seed-backup"));
+        }
+        case "verify" -> verify(root, false);
+        case "verify-changed" -> verify(root, true);
+        case "mutate" -> mutate(root);
+        case "launcher" -> launcher(root);
+        default -> throw new IllegalArgumentException("Unknown synthetic probe mode");
         }
     }
 }

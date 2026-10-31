@@ -1,0 +1,6 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>並行接続の設定</title>
+<h1>logbook-kai2 並行接続</h1><p>旧版への送信先は127.0.0.1:8891です。</p>
+<label>kai2のポート <input id="port" type="number" min="1024" max="65535" value="8892"></label>
+<button id="save">保存</button><p id="status" role="status"></p>
+<p>アプリの --bridge-port と同じ値にしてください。設定変更後は拡張を再読み込みし、ゲームを再読込して現在情報を揃えてください。送信失敗や待機枠超過で欠落した通信は自動再送しません。</p>
+<script src="options.js"></script></html>
