@@ -1,9 +1,5 @@
-# 航海日誌 設定
+# ブラウザ接続
 
-2025/10/17
+[Linux並行接続の手順](docs/user/linux-parallel-test.md)を参照してください。
 
-艦これのSSL対応に伴い、Proxyでは情報の取得が出来なくなりました。
-
-航海日誌を使用しながら艦これで遊ぶには、logbook-kai-messageflowの設定が必要となります。
-
-[logbook-kai-messageflowの設定はこちら](https://github.com/sakura0689/logbook-kai-messageflow/blob/main/how-to-preference.md)
+新拡張で取得済み通信を渡す方式では、旧版用・新版用の拡張を同じタブへ二重接続しません。

@@ -24,11 +24,11 @@ import logbook.plugin.lifecycle.StartUp;
 
 /**
  * Receives already-captured Kancolle traffic from the Chrome extension on
- * 127.0.0.1:8891 and feeds it into logbook-kai's existing ContentListenerSpi
+ * 127.0.0.1 (configurable port) and feeds it into logbook-kai's existing ContentListenerSpi
  * pipeline. It does not make requests to the Kancolle servers.
  */
 public final class BrowserBridgePlugin implements StartUp {
-    private static final int PORT = 8891;
+    private static final int PORT = logbook.core.RuntimePorts.bridge();
     private static final int MAGIC = 0x4B435031; // "KCP1"
     private static final int VERSION_V1 = 1;
     private static final int VERSION_V2 = 2;
@@ -52,23 +52,20 @@ public final class BrowserBridgePlugin implements StartUp {
     private ScheduledExecutorService watchdog;
 
     private enum ChromeState {
-        WAITING,
-        CONNECTED,
-        LOST
+        WAITING, CONNECTED, LOST
     }
 
     @Override
     public void run() {
         ThreadPoolExecutor workers = new ThreadPoolExecutor(
-            1, 4, 30L, TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(64),
-            r -> {
-                Thread t = new Thread(r, "kancolle-cdp-bridge-worker");
-                t.setDaemon(true);
-                return t;
-            },
-            new ThreadPoolExecutor.CallerRunsPolicy()
-        );
+                1, 4, 30L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(64),
+                r -> {
+                    Thread t = new Thread(r, "kancolle-cdp-bridge-worker");
+                    t.setDaemon(true);
+                    return t;
+                },
+                new ThreadPoolExecutor.CallerRunsPolicy());
 
         try (ServerSocket ss = new ServerSocket()) {
             ss.setReuseAddress(true);
@@ -81,9 +78,8 @@ public final class BrowserBridgePlugin implements StartUp {
                 return t;
             });
             this.watchdog.scheduleAtFixedRate(
-                BrowserBridgePlugin::watchdogTick,
-                5L, 5L, TimeUnit.SECONDS
-            );
+                    BrowserBridgePlugin::watchdogTick,
+                    5L, 5L, TimeUnit.SECONDS);
             updateMainWindowStatus();
 
             while (running && !Thread.currentThread().isInterrupted()) {
@@ -94,10 +90,9 @@ public final class BrowserBridgePlugin implements StartUp {
             ERRORS.incrementAndGet();
             log("ERROR: port " + PORT + " is already in use: " + e);
             notifyDesktop(
-                "艦これ環境",
-                "ブラウザ接続 :8891 の待受に失敗しました。航海日誌連携を確認してください。",
-                true
-            );
+                    "艦これ環境",
+                    "ブラウザ接続 :" + PORT + " の待受に失敗しました。ポートの使用状況を確認してください。",
+                    true);
         } catch (SocketException e) {
             if (running) {
                 ERRORS.incrementAndGet();
@@ -121,7 +116,8 @@ public final class BrowserBridgePlugin implements StartUp {
             OutputStream out = socket.getOutputStream();
 
             String requestLine = readAsciiLine(in);
-            if (requestLine == null || requestLine.isBlank()) return;
+            if (requestLine == null || requestLine.isBlank())
+                return;
 
             String[] parts = requestLine.split(" ", 3);
             if (parts.length < 2) {
@@ -142,7 +138,8 @@ public final class BrowserBridgePlugin implements StartUp {
                     if (name.equalsIgnoreCase("Content-Length")) {
                         try {
                             contentLength = Integer.parseInt(value);
-                        } catch (NumberFormatException ignored) {}
+                        } catch (NumberFormatException ignored) {
+                        }
                     }
                 }
             }
@@ -170,8 +167,7 @@ public final class BrowserBridgePlugin implements StartUp {
                 }
 
                 String heartbeat = new String(
-                    heartbeatBody, StandardCharsets.UTF_8
-                ).trim();
+                        heartbeatBody, StandardCharsets.UTF_8).trim();
 
                 if ("active=true".equals(heartbeat)) {
                     markHeartbeat(true);
@@ -221,21 +217,20 @@ public final class BrowserBridgePlugin implements StartUp {
     private static String healthBody() {
         long heartbeat = LAST_HEARTBEAT_NANOS.get();
         long ageSeconds = heartbeat == 0L
-            ? -1L
-            : Math.max(
-                0L,
-                TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - heartbeat)
-            );
+                ? -1L
+                : Math.max(
+                        0L,
+                        TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - heartbeat));
 
         return "OK received=" + RECEIVED.get()
-            + " accepted=" + ACCEPTED.get()
-            + " api=" + API_COUNT.get()
-            + " image=" + IMAGE_COUNT.get()
-            + " json=" + JSON_COUNT.get()
-            + " errors=" + ERRORS.get()
-            + " chrome=" + chromeState.name().toLowerCase(Locale.ROOT)
-            + " heartbeatAge=" + ageSeconds
-            + " timeout=30";
+                + " accepted=" + ACCEPTED.get()
+                + " api=" + API_COUNT.get()
+                + " image=" + IMAGE_COUNT.get()
+                + " json=" + JSON_COUNT.get()
+                + " errors=" + ERRORS.get()
+                + " chrome=" + chromeState.name().toLowerCase(Locale.ROOT)
+                + " heartbeatAge=" + ageSeconds
+                + " timeout=30";
     }
 
     private static synchronized void markHeartbeat(boolean active) {
@@ -252,10 +247,9 @@ public final class BrowserBridgePlugin implements StartUp {
 
         if (previous == ChromeState.LOST) {
             notifyDesktop(
-                "艦これ環境",
-                "ブラウザ接続が復旧しました。",
-                false
-            );
+                    "艦これ環境",
+                    "ブラウザ接続が復旧しました。",
+                    false);
         }
         updateMainWindowStatus();
     }
@@ -269,10 +263,9 @@ public final class BrowserBridgePlugin implements StartUp {
 
         if (previous == ChromeState.LOST) {
             notifyDesktop(
-                "艦これ環境",
-                "ブラウザ接続が復旧しました。",
-                false
-            );
+                    "艦これ環境",
+                    "ブラウザ接続が復旧しました。",
+                    false);
         }
         updateMainWindowStatus();
     }
@@ -285,10 +278,9 @@ public final class BrowserBridgePlugin implements StartUp {
                 if (age >= HEARTBEAT_TIMEOUT_NANOS) {
                     chromeState = ChromeState.LOST;
                     notifyDesktop(
-                        "艦これ環境",
-                        "ブラウザから30秒以上 heartbeat がありません。艦これの通信取得を確認してください。",
-                        true
-                    );
+                            "艦これ環境",
+                            "ブラウザから30秒以上 heartbeat がありません。艦これの通信取得を確認してください。",
+                            true);
                 }
             }
         }
@@ -307,42 +299,41 @@ public final class BrowserBridgePlugin implements StartUp {
                 label = findOrInstallStatusLabel();
                 statusLabel = label;
             }
-            if (label == null) return;
+            if (label == null)
+                return;
 
             long heartbeat = LAST_HEARTBEAT_NANOS.get();
             long ageSeconds = heartbeat == 0L
-                ? -1L
-                : Math.max(
-                    0L,
-                    TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - heartbeat)
-                );
+                    ? -1L
+                    : Math.max(
+                            0L,
+                            TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - heartbeat));
 
             String stateText;
             String color;
             switch (chromeState) {
-                case CONNECTED -> {
-                    stateText = "接続中";
-                    color = "#137333";
-                }
-                case LOST -> {
-                    stateText = "接続断";
-                    color = "#b3261e";
-                }
-                default -> {
-                    stateText = "待機中";
-                    color = "#8a5a00";
-                }
+            case CONNECTED -> {
+                stateText = "接続中";
+                color = "#137333";
+            }
+            case LOST -> {
+                stateText = "接続断";
+                color = "#b3261e";
+            }
+            default -> {
+                stateText = "待機中";
+                color = "#8a5a00";
+            }
             }
 
             String ageText = ageSeconds < 0L ? "-" : ageSeconds + "秒";
             label.setText(
-                stateText
-                    + " | HB " + ageText
-                    + " | API " + API_COUNT.get()
-                    + " / 画像 " + IMAGE_COUNT.get()
-                    + " / JSON " + JSON_COUNT.get()
-                    + " | エラー " + ERRORS.get()
-            );
+                    stateText
+                            + " | HB " + ageText
+                            + " | API " + API_COUNT.get()
+                            + " / 画像 " + IMAGE_COUNT.get()
+                            + " / JSON " + JSON_COUNT.get()
+                            + " | エラー " + ERRORS.get());
             label.setStyle("-fx-text-fill:" + color + "; -fx-font-weight:bold;");
         } catch (Throwable t) {
             log("main-window status unavailable: " + t);
@@ -352,11 +343,14 @@ public final class BrowserBridgePlugin implements StartUp {
     private static Label findOrInstallStatusLabel() {
         for (Window window : Window.getWindows()) {
             Scene scene = window.getScene();
-            if (scene == null) continue;
+            if (scene == null)
+                continue;
 
             Parent root = scene.getRoot();
-            if (!(root instanceof VBox rootBox)) continue;
-            if (!root.getStyleClass().contains("mainWindow")) continue;
+            if (!(root instanceof VBox rootBox))
+                continue;
+            if (!root.getStyleClass().contains("mainWindow"))
+                continue;
 
             for (Node node : rootBox.getChildren()) {
                 if (STATUS_BAR_ID.equals(node.getId()) && node instanceof HBox bar) {
@@ -371,11 +365,10 @@ public final class BrowserBridgePlugin implements StartUp {
             HBox bar = new HBox(8.0);
             bar.setId(STATUS_BAR_ID);
             bar.setStyle(
-                "-fx-padding:4 8 4 8;"
-                    + "-fx-background-color:#f1f3f4;"
-                    + "-fx-border-color:#d0d4d8;"
-                    + "-fx-border-width:0 0 1 0;"
-            );
+                    "-fx-padding:4 8 4 8;"
+                            + "-fx-background-color:#f1f3f4;"
+                            + "-fx-border-color:#d0d4d8;"
+                            + "-fx-border-width:0 0 1 0;");
 
             Label title = new Label("ブラウザ接続:");
             title.setStyle("-fx-font-weight:bold;");
@@ -394,14 +387,13 @@ public final class BrowserBridgePlugin implements StartUp {
     private static void notifyDesktop(String title, String message, boolean warning) {
         try {
             new ProcessBuilder(
-                "notify-send",
-                "--app-name=航海日誌改",
-                "--urgency=" + (warning ? "critical" : "normal"),
-                "--expire-time=" + (warning ? "0" : "10000"),
-                "--icon=" + (warning ? "dialog-warning" : "dialog-information"),
-                title,
-                message
-            ).start();
+                    "notify-send",
+                    "--app-name=航海日誌改",
+                    "--urgency=" + (warning ? "critical" : "normal"),
+                    "--expire-time=" + (warning ? "0" : "10000"),
+                    "--icon=" + (warning ? "dialog-warning" : "dialog-information"),
+                    title,
+                    message).start();
         } catch (IOException e) {
             log("notify-send unavailable: " + e.getMessage());
         }
@@ -427,11 +419,10 @@ public final class BrowserBridgePlugin implements StartUp {
                 validateUri(uri);
 
                 return new Packet(
-                    method, uri, queryString, postData,
-                    "", "text/plain; charset=UTF-8", 200,
-                    responseBody.getBytes(StandardCharsets.UTF_8),
-                    receivedAt
-                );
+                        method, uri, queryString, postData,
+                        "", "text/plain; charset=UTF-8", 200,
+                        responseBody.getBytes(StandardCharsets.UTF_8),
+                        receivedAt);
             }
 
             if (version == VERSION_V2) {
@@ -449,7 +440,8 @@ public final class BrowserBridgePlugin implements StartUp {
                 int status = 200;
                 try {
                     status = Integer.parseInt(statusString);
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
 
                 byte[] responseBytes;
                 if ("base64".equalsIgnoreCase(responseEncoding)) {
@@ -467,10 +459,9 @@ public final class BrowserBridgePlugin implements StartUp {
                 }
 
                 return new Packet(
-                    method, uri, queryString, postData,
-                    responseEncoding, contentType, status,
-                    responseBytes, receivedAt
-                );
+                        method, uri, queryString, postData,
+                        responseEncoding, contentType, status,
+                        responseBytes, receivedAt);
             }
 
             throw new IOException("unsupported packet version: " + version);
@@ -478,23 +469,27 @@ public final class BrowserBridgePlugin implements StartUp {
     }
 
     private static void validateUri(String uri) throws IOException {
-        if (uri.startsWith("/kcsapi/")) return;
-        if (isSupportedKcs2Uri(uri)) return;
+        if (uri.startsWith("/kcsapi/"))
+            return;
+        if (isSupportedKcs2Uri(uri))
+            return;
         throw new IOException("unsupported URI: " + uri);
     }
 
     private static boolean isSupportedKcs2Uri(String uri) {
         return uri.startsWith("/kcs2/resources/ship/")
-            || uri.startsWith("/kcs2/resources/map/")
-            || uri.startsWith("/kcs2/resources/gauge/")
-            || uri.startsWith("/kcs2/img/common/")
-            || uri.startsWith("/kcs2/img/duty/")
-            || uri.startsWith("/kcs2/img/sally/");
+                || uri.startsWith("/kcs2/resources/map/")
+                || uri.startsWith("/kcs2/resources/gauge/")
+                || uri.startsWith("/kcs2/img/common/")
+                || uri.startsWith("/kcs2/img/duty/")
+                || uri.startsWith("/kcs2/img/sally/");
     }
 
     private static String inferContentType(String uri, String encoding) {
-        if (uri.endsWith(".json")) return "application/json";
-        if ("base64".equalsIgnoreCase(encoding)) return "image/png";
+        if (uri.endsWith(".json"))
+            return "application/json";
+        if ("base64".equalsIgnoreCase(encoding))
+            return "image/png";
         return "text/plain; charset=UTF-8";
     }
 
@@ -512,14 +507,12 @@ public final class BrowserBridgePlugin implements StartUp {
         long requestAt = System.currentTimeMillis();
         RequestMetaData req = new Req(packet, requestAt);
         ResponseMetaData res = new Res(
-            packet.responseBytes(),
-            packet.status(),
-            packet.contentType(),
-            System.currentTimeMillis()
-        );
+                packet.responseBytes(),
+                packet.status(),
+                packet.contentType(),
+                System.currentTimeMillis());
 
-        List<ContentListenerSpi> listeners =
-            LogBookCoreServices.getServiceProviders(ContentListenerSpi.class).toList();
+        List<ContentListenerSpi> listeners = LogBookCoreServices.getServiceProviders(ContentListenerSpi.class).toList();
 
         int matched = 0;
         for (ContentListenerSpi listener : listeners) {
@@ -532,26 +525,26 @@ public final class BrowserBridgePlugin implements StartUp {
             } catch (Throwable t) {
                 ERRORS.incrementAndGet();
                 log("ERROR: listener " + listener.getClass().getName()
-                    + " for " + packet.uri() + ": " + t);
+                        + " for " + packet.uri() + ": " + t);
             }
         }
 
         log("accepted " + packet.method() + " " + packet.uri()
-            + " listeners=" + matched
-            + " response=" + packet.responseBytes().length);
+                + " listeners=" + matched
+                + " response=" + packet.responseBytes().length);
     }
 
     private record Packet(
-        String method,
-        String uri,
-        String queryString,
-        String postData,
-        String responseEncoding,
-        String contentType,
-        int status,
-        byte[] responseBytes,
-        long receivedAt
-    ) {}
+            String method,
+            String uri,
+            String queryString,
+            String postData,
+            String responseEncoding,
+            String contentType,
+            int status,
+            byte[] responseBytes,
+            long receivedAt) {
+    }
 
     private static final class Req implements RequestMetaData {
         private final Packet p;
@@ -596,7 +589,8 @@ public final class BrowserBridgePlugin implements StartUp {
 
         @Override
         public Optional<InputStream> getRequestBody() {
-            if (requestBody.length == 0) return Optional.empty();
+            if (requestBody.length == 0)
+                return Optional.empty();
             return Optional.of(new ByteArrayInputStream(requestBody));
         }
 
@@ -661,12 +655,15 @@ public final class BrowserBridgePlugin implements StartUp {
     }
 
     private static void addEncodedParams(Map<String, List<String>> map, String encoded) {
-        if (encoded == null || encoded.isEmpty()) return;
+        if (encoded == null || encoded.isEmpty())
+            return;
         String s = encoded.startsWith("?") ? encoded.substring(1) : encoded;
-        if (s.isEmpty()) return;
+        if (s.isEmpty())
+            return;
 
         for (String pair : s.split("&")) {
-            if (pair.isEmpty()) continue;
+            if (pair.isEmpty())
+                continue;
             int eq = pair.indexOf('=');
             String rawKey = eq >= 0 ? pair.substring(0, eq) : pair;
             String rawVal = eq >= 0 ? pair.substring(eq + 1) : "";
@@ -703,27 +700,30 @@ public final class BrowserBridgePlugin implements StartUp {
 
         while ((c = in.read()) != -1) {
             gotAny = true;
-            if (c == '\n') break;
-            if (c != '\r') b.write(c);
-            if (b.size() > 8192) throw new IOException("header line too long");
+            if (c == '\n')
+                break;
+            if (c != '\r')
+                b.write(c);
+            if (b.size() > 8192)
+                throw new IOException("header line too long");
         }
 
-        if (!gotAny && b.size() == 0) return null;
+        if (!gotAny && b.size() == 0)
+            return null;
         return b.toString(StandardCharsets.ISO_8859_1);
     }
 
     private static void sendText(OutputStream out, int code, String reason, String body)
             throws IOException {
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-        String headers =
-            "HTTP/1.1 " + code + " " + reason + "\r\n"
-            + "Content-Type: text/plain; charset=UTF-8\r\n"
-            + "Content-Length: " + bytes.length + "\r\n"
-            + "Access-Control-Allow-Origin: *\r\n"
-            + "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
-            + "Access-Control-Allow-Headers: Content-Type\r\n"
-            + "Connection: close\r\n"
-            + "\r\n";
+        String headers = "HTTP/1.1 " + code + " " + reason + "\r\n"
+                + "Content-Type: text/plain; charset=UTF-8\r\n"
+                + "Content-Length: " + bytes.length + "\r\n"
+                + "Access-Control-Allow-Origin: *\r\n"
+                + "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
+                + "Access-Control-Allow-Headers: Content-Type\r\n"
+                + "Connection: close\r\n"
+                + "\r\n";
 
         out.write(headers.getBytes(StandardCharsets.ISO_8859_1));
         out.write(bytes);

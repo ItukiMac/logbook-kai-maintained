@@ -15,7 +15,7 @@ python3 scripts/check_gui_ownership.py --root . > "$EVIDENCE/gui-ownership.json"
 python3 scripts/audit_game_json.py --root . > "$EVIDENCE/json-audit.json"
 python3 scripts/audit_seasonal_editions.py --root . > "$EVIDENCE/seasonal-editions.json"
 python3 scripts/definition_review_ledger.py --facts docs/maintenance/source-field-review-20261026.json > "$EVIDENCE/review-ledger.json"
-python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out "$EVIDENCE/split" --revision "$REVISION" > "$EVIDENCE/feature-manifest.json"
+python3 scripts/build_feature_distribution.py --jar target/logbook-kai2.jar --out "$EVIDENCE/split" --revision "$REVISION" > "$EVIDENCE/feature-manifest.json"
 python3 scripts/run_feature_distribution.py --root "$EVIDENCE/split"
 CP="$EVIDENCE/split/logbook-kai2-core.jar:$EVIDENCE/split/features/logbook-kai2-feature-calculators.jar:$EVIDENCE/split/features/logbook-kai2-feature-charts.jar:$EVIDENCE/split/features/logbook-kai2-feature-ships.jar:$EVIDENCE/split/features/logbook-kai2-feature-equipment.jar:$EVIDENCE/split/features/logbook-kai2-feature-quests.jar:$EVIDENCE/split/features/logbook-kai2-feature-records.jar:$EVIDENCE/split/features/logbook-kai2-feature-bridge.jar:$EVIDENCE/split/features/logbook-kai2-feature-sharing.jar"
 mkdir "$EVIDENCE/probe-classes"
@@ -26,7 +26,7 @@ ISOLATED="$(mktemp -d "${RUNNER_TEMP:-/tmp}/logbook-r3-check.XXXXXX")"
 (cd "$ISOLATED" && LC_ALL=C.UTF-8 LANG=C.UTF-8 timeout 120s xvfb-run -a java -cp "$CP:$EVIDENCE/probe-classes" logbook.internal.gui.FeatureDistributionProbe) > "$EVIDENCE/split-gui.log" 2>&1
 python3 scripts/exercise_isolated_stage.py --out "$ISOLATED/stage" > "$EVIDENCE/stage-fixture.json"
 java -cp "$CP:$EVIDENCE/probe-classes" logbook.core.IsolatedDefinitionValidationProbe "$ISOLATED/stage" "$ISOLATED/validation" > "$EVIDENCE/stage-java.log"
-java -cp target/logbook-kai.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
+java -cp target/logbook-kai2.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
 python3 - <<'PY'
 import json, xml.etree.ElementTree as ET
 from pathlib import Path

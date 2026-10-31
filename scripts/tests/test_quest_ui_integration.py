@@ -15,11 +15,11 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from build_feature_distribution import build
 from run_feature_distribution import FILES, QUEST_UI_PROFILE, quest_ui_entry, quest_ui_required_entries, verify
 
-@unittest.skipUnless((ROOT/'target/logbook-kai.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
+@unittest.skipUnless((ROOT/'target/logbook-kai2.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires built candidate, javac and isolated Xvfb')
 class QuestUiIntegrationTest(unittest.TestCase):
     def test_real_product_quest_windows_and_guarded_note_roundtrip(self):
-        original=ROOT/'target/logbook-kai.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
+        original=ROOT/'target/logbook-kai2.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
         fixture=Path(tempfile.mkdtemp(prefix='quest-ui-fixture-',dir=ROOT/'target'))
         evidence=ROOT/'target/r3-verification';evidence.mkdir(exist_ok=True)
         result={'fixture':str(fixture),'production_accessed':False,'result':'not_completed',

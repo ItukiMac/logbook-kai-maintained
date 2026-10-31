@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HOOK = 'logbook/internal/logger/ManagedLauncherSmokeHook.class'
 MARK = 'META-INF/managed-generation-test.txt'
 
-@unittest.skipUnless((ROOT/'target/logbook-kai.jar').is_file()
+@unittest.skipUnless((ROOT/'target/logbook-kai2.jar').is_file()
     and (ROOT/'target/test-classes'/HOOK).is_file() and shutil.which('xvfb-run'),
     'Requires built current JAR/test hook and isolated Xvfb')
 class ManagedLauncherIntegrationTest(unittest.TestCase):
@@ -31,7 +31,7 @@ class ManagedLauncherIntegrationTest(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='logbook-managed-fixture-') as tmp:
             base = Path(tmp)
             store = base/'store'
-            original = ROOT/'target/logbook-kai.jar'
+            original = ROOT/'target/logbook-kai2.jar'
             before = hashlib.sha256(original.read_bytes()).hexdigest()
             pristine = base/'pristine'
             build(original, pristine, 'a'*40)

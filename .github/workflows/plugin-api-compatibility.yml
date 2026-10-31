@@ -39,8 +39,8 @@ jobs:
       - name: Build local host application without user settings
         run: |
           mvn --batch-mode --no-transfer-progress -DskipTests package
-          test -s target/logbook-kai.jar
+          test -s target/logbook-kai2.jar
       - name: Build and verify the managed six-JAR distribution
         run: |
-          python3 scripts/build_feature_distribution.py --jar target/logbook-kai.jar --out target/bundled-plugin-check --revision "$GITHUB_SHA"
+          python3 scripts/build_feature_distribution.py --jar target/logbook-kai2.jar --out target/bundled-plugin-check --revision "$GITHUB_SHA"
           bash scripts/verify_bundled_plugins.sh target/bundled-plugin-check

@@ -6,11 +6,11 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from build_feature_distribution import build
 from run_feature_distribution import FILES,verify
 
-@unittest.skipUnless((ROOT/'target/logbook-kai.jar').is_file() and shutil.which('javac') and shutil.which('xvfb-run'),
+@unittest.skipUnless((ROOT/'target/logbook-kai2.jar').is_file() and shutil.which('javac') and shutil.which('xvfb-run'),
                      'Requires built product JAR and an isolated display')
 class QuestVisibilityUiTest(unittest.TestCase):
     def test_confirm_cancel_conflict_restore_and_process_reset_preserve_originals(self):
-        source=ROOT/'target/logbook-kai.jar';digest=hashlib.sha256(source.read_bytes()).hexdigest()
+        source=ROOT/'target/logbook-kai2.jar';digest=hashlib.sha256(source.read_bytes()).hexdigest()
         fixture=Path(tempfile.mkdtemp(prefix='quest-visibility-fixture-',dir=ROOT/'target'))
         evidence=ROOT/'target/r3-verification';evidence.mkdir(exist_ok=True)
         logs=[];report={'result':'not_completed','production_accessed':False,'persisted_hide_state':False,'physical_module_added':False}

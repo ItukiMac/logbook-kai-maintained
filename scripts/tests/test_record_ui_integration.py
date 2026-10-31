@@ -28,12 +28,12 @@ def record_entry(name):
         for family in FAMILIES)
 
 
-@unittest.skipUnless((ROOT / 'target/logbook-kai.jar').is_file()
+@unittest.skipUnless((ROOT / 'target/logbook-kai2.jar').is_file()
                      and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires the current built JAR, javac and isolated Xvfb')
 class RecordUiIntegrationTest(unittest.TestCase):
     def test_records_use_public_gui_boundary_with_unchanged_synthetic_history(self):
-        original = ROOT / 'target/logbook-kai.jar'
+        original = ROOT / 'target/logbook-kai2.jar'
         source_hash = hashlib.sha256(original.read_bytes()).hexdigest()
         fixture = Path(tempfile.mkdtemp(prefix='record-ui-fixture-', dir=ROOT / 'target'))
         evidence = ROOT / 'target/r3-verification'

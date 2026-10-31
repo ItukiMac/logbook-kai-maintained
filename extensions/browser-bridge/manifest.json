@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "logbook-kai2 Parallel Bridge",
+  "version": "2.0.0",
+  "description": "取得した通信を旧logbookとlogbook-kai2へ分岐して送ります。",
+  "minimum_chrome_version": "125",
+  "permissions": [
+    "debugger",
+    "tabs",
+    "storage",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8891/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_title": "logbook-kai2 Parallel Bridge",
+    "default_popup": "popup.html",
+    "default_icon": "icon128.png"
+  },
+  "options_page": "options.html"
+}

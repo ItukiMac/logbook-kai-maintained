@@ -46,7 +46,7 @@ def clean_environment():
         'JAVA_TOOL_OPTIONS', 'JDK_JAVA_OPTIONS', '_JAVA_OPTIONS', 'CLASSPATH')}
 
 
-@unittest.skipUnless((ROOT / 'target/logbook-kai.jar').is_file()
+@unittest.skipUnless((ROOT / 'target/logbook-kai2.jar').is_file()
                     and shutil.which('javac') and shutil.which('xvfb-run'),
                     'Requires built current JAR, javac, and isolated Xvfb')
 class FeatureVersionIntegrationTest(unittest.TestCase):
@@ -158,7 +158,7 @@ class FeatureVersionIntegrationTest(unittest.TestCase):
         evidence = {'fixture_root': str(base), 'production_accessed': False,
                     'original_and_failed_outputs_retained': True}
         try:
-            original = ROOT / 'target/logbook-kai.jar'
+            original = ROOT / 'target/logbook-kai2.jar'
             original_hash = digest(original)
             pristine = base / 'pristine'
             revision = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, check=True,

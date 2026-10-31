@@ -2,7 +2,7 @@
 """Apply an already staged logbook-kai JAR at the next Linux launcher start.
 
 This tool is NOT a replacement launcher. It is intentionally inert unless
-update/logbook-kai.jar exists. Intended to be called by the existing auto.sh
+update/logbook-kai2.jar exists. Intended to be called by the existing auto.sh
 *before* it starts Java. It does not interact with Chrome, KLB, or game data.
 """
 from __future__ import annotations
@@ -18,7 +18,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-JAR_NAME = "logbook-kai.jar"
+JAR_NAME = "logbook-kai2.jar"
 MAX_JAR_SIZE = 256 * 1024 * 1024
 MAX_EXPANDED_SIZE = 768 * 1024 * 1024
 

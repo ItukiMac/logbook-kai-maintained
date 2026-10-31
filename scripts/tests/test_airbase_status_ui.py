@@ -6,11 +6,11 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from build_feature_distribution import build
 from run_feature_distribution import FILES,verify
 
-@unittest.skipUnless((ROOT/'target/logbook-kai.jar').is_file() and shutil.which('javac') and shutil.which('xvfb-run'),
+@unittest.skipUnless((ROOT/'target/logbook-kai2.jar').is_file() and shutil.which('javac') and shutil.which('xvfb-run'),
                      'Requires built JAR and isolated display')
 class AirBaseStatusUiTest(unittest.TestCase):
     def test_frozen_values_refresh_unknowns_and_identity_in_product_window(self):
-        source=ROOT/'target/logbook-kai.jar';before=hashlib.sha256(source.read_bytes()).hexdigest()
+        source=ROOT/'target/logbook-kai2.jar';before=hashlib.sha256(source.read_bytes()).hexdigest()
         fixture=Path(tempfile.mkdtemp(prefix='airbase-status-fixture-',dir=ROOT/'target'))
         evidence=ROOT/'target/r3-verification';evidence.mkdir(exist_ok=True)
         report={'fixture':str(fixture),'result':'not_completed','production_accessed':False};logs=[]

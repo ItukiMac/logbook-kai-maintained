@@ -42,3 +42,13 @@ jobs:
           path: target/r3-verification/split/
           retention-days: 14
           if-no-files-found: error
+
+      - if: success() && matrix.java == '21'
+        run: python3 scripts/build_parallel_kit.py --bundle target/r3-verification/split --out target/logbook-kai2-linux-test.zip
+      - uses: actions/upload-artifact@v7.0.2
+        if: success() && matrix.java == '21'
+        with:
+          name: logbook-kai2-linux-parallel-test-candidate
+          path: target/logbook-kai2-linux-test.zip
+          retention-days: 14
+          if-no-files-found: error

@@ -33,7 +33,13 @@ public final class Launcher {
         if (LoggerHolder.get().isDebugEnabled()) {
             LoggerHolder.get().debug("アプリケーションを起動します");
         }
-        
+
+        int bridgePort = logbook.core.RuntimePorts.bridge();
+        int proxyPort = System.getProperty("logbook.proxy.port") == null
+                ? AppConfig.get().getListenPort()
+                : logbook.core.RuntimePorts.proxy();
+        logbook.core.RuntimePorts.validatePair(bridgePort, proxyPort);
+        AppConfig.get().setListenPort(proxyPort);
         Launcher launcher = new Launcher();
         try {
             try {
@@ -78,7 +84,7 @@ public final class Launcher {
      */
     void initPlugin(String[] args) throws Exception {
         PluginInitExceptionHolder pluginInitExceptionHolder = new PluginInitExceptionHolder();
-        
+
         Path dir = Paths.get(AppConfig.get().getPluginsDir());
         List<JarBasedPlugin> plugins = Collections.emptyList();
         if (AppConfig.get().isUsePlugin() && Files.isDirectory(dir)) {

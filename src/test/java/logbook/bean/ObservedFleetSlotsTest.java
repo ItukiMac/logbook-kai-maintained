@@ -37,42 +37,50 @@ class ObservedFleetSlotsTest {
         return (Boolean) method.invoke(condition, slots, absentSlots);
     }
 
-    @Test void provenMiddleVacancyDoesNotPromoteThirdShipIntoSecondPosition() throws Exception {
+    @Test
+    void provenMiddleVacancyDoesNotPromoteThirdShipIntoSecondPosition() throws Exception {
         var slots = Arrays.asList(ship("flag"), null, ship("required"));
         assertFalse(observed(rule("{\"name\":[\"required\"],\"order\":2}"), slots, Set.of(2)));
         assertTrue(observed(rule("{\"name\":[\"required\"],\"order\":3}"), slots, Set.of(2)));
     }
 
-    @Test void provenFlagshipVacancyDoesNotPromoteAnEscort() throws Exception {
+    @Test
+    void provenFlagshipVacancyDoesNotPromoteAnEscort() throws Exception {
         var slots = Arrays.asList(null, ship("required"));
         assertFalse(observed(rule("{\"name\":[\"required\"],\"order\":1}"), slots, Set.of(1)));
         assertTrue(observed(rule("{\"name\":[\"required\"],\"order\":2}"), slots, Set.of(1)));
     }
 
-    @Test void survivorCountsExcludeVacantPositions() throws Exception {
+    @Test
+    void survivorCountsExcludeVacantPositions() throws Exception {
         var slots = Arrays.asList(ship("escort"), null, ship("escort"));
         assertTrue(observed(rule("{\"name\":[\"escort\"],\"count\":2,\"operator\":\"EQ\"}"), slots, Set.of(2)));
         assertFalse(observed(rule("{\"name\":[\"escort\"],\"count\":3,\"operator\":\"GE\"}"), slots, Set.of(2)));
     }
 
-    @Test void aProvenVacancyIsNotAnExcludedShip() throws Exception {
+    @Test
+    void aProvenVacancyIsNotAnExcludedShip() throws Exception {
         var slots = Arrays.asList(ship("escort"), null);
         assertFalse(observed(rule("{\"name\":[\"escort\"],\"difference\":true}"), slots, Set.of(2)));
-        assertTrue(observed(rule("{\"name\":[\"escort\"],\"difference\":true,\"count\":0,\"operator\":\"EQ\"}"), slots, Set.of(2)));
+        assertTrue(observed(rule("{\"name\":[\"escort\"],\"difference\":true,\"count\":0,\"operator\":\"EQ\"}"), slots,
+                Set.of(2)));
     }
 
-    @Test void unknownSlotCannotBeHiddenByAProvenVacancyElsewhere() throws Exception {
+    @Test
+    void unknownSlotCannotBeHiddenByAProvenVacancyElsewhere() throws Exception {
         var condition = rule("{\"name\":[\"flag\"],\"order\":1}");
         assertFalse(observed(condition, Arrays.asList(ship("flag"), null, null), Set.of(2)));
         assertFalse(observed(condition, Arrays.asList(ship("flag"), null), Set.of()));
     }
 
-    @Test void occupiedSlotCannotBeDeclaredAbsent() throws Exception {
+    @Test
+    void occupiedSlotCannotBeDeclaredAbsent() throws Exception {
         var condition = rule("{\"name\":[\"flag\"],\"order\":1}");
         assertFalse(observed(condition, List.of(ship("flag"), ship("escort")), Set.of(2)));
     }
 
-    @Test void absencePositionsMustBeOneBasedAndWithinTheRecordedFleet() throws Exception {
+    @Test
+    void absencePositionsMustBeOneBasedAndWithinTheRecordedFleet() throws Exception {
         var condition = rule("{\"name\":[\"flag\"],\"order\":1}");
         var slots = Arrays.asList(ship("flag"), null);
         for (Set<Integer> positions : List.of(Set.of(0, 2), Set.of(-1, 2), Set.of(2, 3), Set.of(2, 8))) {
@@ -83,7 +91,8 @@ class ObservedFleetSlotsTest {
         assertFalse(observed(condition, slots, nullPosition));
     }
 
-    @Test void noSurvivorCannotSatisfyZeroCountOrNegativeConditions() throws Exception {
+    @Test
+    void noSurvivorCannotSatisfyZeroCountOrNegativeConditions() throws Exception {
         var zero = rule("{\"name\":[\"required\"],\"count\":0,\"operator\":\"EQ\"}");
         assertFalse(observed(zero, Arrays.asList(null, null), Set.of(1, 2)));
         assertFalse(observed(zero, List.of(), Set.of()));
@@ -91,26 +100,29 @@ class ObservedFleetSlotsTest {
         assertFalse(observed(negative, Arrays.asList(null, null), Set.of(1, 2)));
     }
 
-    @Test void absentFleetOrAbsentEvidenceFailsClosed() throws Exception {
+    @Test
+    void absentFleetOrAbsentEvidenceFailsClosed() throws Exception {
         var condition = rule("{\"name\":[\"flag\"],\"order\":1}");
         assertFalse(observed(condition, null, Set.of()));
         assertFalse(observed(condition, List.of(ship("flag")), null));
     }
 
-    @Test void observedFleetIsBoundedToSevenPositions() throws Exception {
+    @Test
+    void observedFleetIsBoundedToSevenPositions() throws Exception {
         var condition = rule("{\"name\":[\"escort\"],\"count\":7,\"operator\":\"GE\"}");
         assertTrue(observed(condition, Collections.nCopies(7, ship("escort")), Set.of()));
         assertFalse(observed(condition, Collections.nCopies(8, ship("escort")), Set.of()));
     }
 
-    @Test void nestedPredicatesNeverMutateTheObservedSlotsOrVacancyEvidence() throws Exception {
+    @Test
+    void nestedPredicatesNeverMutateTheObservedSlotsOrVacancyEvidence() throws Exception {
         var condition = rule("""
-            {"operator":"AND","conditions":[
-              {"name":["flag"],"order":1},
-              {"operator":"OR","conditions":[
-                {"name":["escort"],"order":2},
-                {"name":["escort"],"order":3}]}]}
-            """);
+                {"operator":"AND","conditions":[
+                  {"name":["flag"],"order":1},
+                  {"operator":"OR","conditions":[
+                    {"name":["escort"],"order":2},
+                    {"name":["escort"],"order":3}]}]}
+                """);
         var slots = new ArrayList<>(Arrays.asList(ship("flag"), null, ship("escort")));
         var original = new ArrayList<>(slots);
         var absent = new HashSet<>(Set.of(2));
@@ -120,7 +132,8 @@ class ObservedFleetSlotsTest {
         assertEquals(Set.of(2), absent);
     }
 
-    @Test void ordinaryPredicateStillRejectsNullAndAcceptsCompleteEvidence() throws Exception {
+    @Test
+    void ordinaryPredicateStillRejectsNullAndAcceptsCompleteEvidence() throws Exception {
         var condition = rule("{\"name\":[\"flag\"],\"order\":1}");
         assertFalse(condition.test(Arrays.asList(ship("flag"), null)));
         assertTrue(condition.test(List.of(ship("flag"), ship("escort"))));

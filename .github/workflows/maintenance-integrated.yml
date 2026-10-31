@@ -57,7 +57,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          java -cp target/logbook-kai.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
+          java -cp target/logbook-kai2.jar:target/test-classes logbook.internal.logger.PackagedLoggingProbe
           python3 - <<'PY'
           import json, os, xml.etree.ElementTree as ET
           from pathlib import Path
@@ -83,8 +83,8 @@ jobs:
           Path('target/verification/summary.json').write_text(json.dumps(report, indent=2))
           print('INTEGRATED_TEST_SUMMARY', json.dumps(report))
           PY
-          cp target/logbook-kai_25.0.10.zip target/verification/
-          (cd target/verification && sha256sum logbook-kai_25.0.10.zip > SHA256SUMS)
+          cp target/logbook-kai2_25.0.10.zip target/verification/
+          (cd target/verification && sha256sum logbook-kai2_25.0.10.zip > SHA256SUMS)
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: integrated-candidate-java${{ matrix.java }}
@@ -113,9 +113,9 @@ jobs:
           sha256sum -c SHA256SUMS
           python3 - <<'PY'
           import io, zipfile
-          with zipfile.ZipFile('logbook-kai_25.0.10.zip') as archive:
+          with zipfile.ZipFile('logbook-kai2_25.0.10.zip') as archive:
               assert archive.testzip() is None
-              with zipfile.ZipFile(io.BytesIO(archive.read('logbook-kai.jar'))) as jar:
+              with zipfile.ZipFile(io.BytesIO(archive.read('logbook-kai2.jar'))) as jar:
                   assert jar.testzip() is None
                   provider = jar.read('META-INF/services/org.slf4j.spi.SLF4JServiceProvider').decode()
                   assert 'org.apache.logging.slf4j.SLF4JServiceProvider' in provider

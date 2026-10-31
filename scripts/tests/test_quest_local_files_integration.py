@@ -15,12 +15,12 @@ from build_feature_distribution import build
 from run_feature_distribution import FILES
 
 
-@unittest.skipUnless((ROOT / 'target/logbook-kai.jar').is_file()
+@unittest.skipUnless((ROOT / 'target/logbook-kai2.jar').is_file()
                      and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires current built JAR, javac and an isolated display')
 class QuestLocalFilesIntegrationTest(unittest.TestCase):
     def test_actual_renderer_refreshes_same_metadata_custom_and_arsenal_files(self):
-        source = ROOT / 'target/logbook-kai.jar'
+        source = ROOT / 'target/logbook-kai2.jar'
         before = hashlib.sha256(source.read_bytes()).hexdigest()
         fixture = Path(tempfile.mkdtemp(prefix='quest-local-files-fixture-', dir=ROOT / 'target'))
         evidence = ROOT / 'target/r3-verification'

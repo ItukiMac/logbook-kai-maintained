@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from runtime_snapshot import Limits, PATH_FIELDS, digest, encoded, inventory, restore, snapshot
 
 ROOT = Path(__file__).resolve().parents[2]
-JAR = ROOT / 'target/logbook-kai.jar'
+JAR = ROOT / 'target/logbook-kai2.jar'
 CLASS = 'logbook.internal.kancolle.RuntimeMigrationProbe'
 SOURCE = ROOT / 'scripts/java/RuntimeMigrationProbe.java'
 LIMITS = Limits(reserve=0)

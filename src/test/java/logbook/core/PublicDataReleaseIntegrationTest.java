@@ -22,7 +22,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 class PublicDataReleaseIntegrationTest {
     private static final ObjectMapper JSON = logbook.internal.json.JsonMappers.builder().build();
 
-    @TempDir Path temp;
+    @TempDir
+    Path temp;
 
     private String previousOptIn;
     private String previousRoot;
@@ -80,7 +81,7 @@ class PublicDataReleaseIntegrationTest {
         String generation = active.getParent().getFileName().toString();
         assertTrue(generation.matches("[0-9a-f]{64}"));
         assertEquals(generation, JSON.readTree(pointerBefore).path("generation").asText());
-        assertFalse(Files.exists(root.resolve("logbook-kai.jar")));
+        assertFalse(Files.exists(root.resolve("logbook-kai2.jar")));
         assertFalse(Files.exists(root.resolve("auto.sh")));
         assertFalse(Files.exists(root.resolve("plugins")));
         System.out.println("Public GitHub Release verified and activated in an isolated directory: "

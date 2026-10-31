@@ -79,7 +79,7 @@ class RealDefinitionPackIntegrationTest {
             assertEquals("遠征", JSON.readTree(event).path("type").asText());
         }
         assertEquals(generation, DefinitionPackInstaller.install(installation, pack, digest));
-        assertFalse(Files.exists(isolated.resolve("logbook-kai.jar")),
+        assertFalse(Files.exists(isolated.resolve("logbook-kai2.jar")),
                 "Data installation must never create/replace the application JAR");
     }
 

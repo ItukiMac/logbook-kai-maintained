@@ -15,12 +15,12 @@ from run_feature_distribution import FILES
 ROOT = Path(__file__).resolve().parents[2]
 
 
-@unittest.skipUnless((ROOT / 'target/logbook-kai.jar').is_file()
+@unittest.skipUnless((ROOT / 'target/logbook-kai2.jar').is_file()
                      and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires a built current JAR, javac and isolated Xvfb')
 class FeatureSupportIntegrationTest(unittest.TestCase):
     def test_split_base_support_windows_calculate_save_and_reread(self):
-        original = ROOT / 'target/logbook-kai.jar'
+        original = ROOT / 'target/logbook-kai2.jar'
         source_hash = hashlib.sha256(original.read_bytes()).hexdigest()
         logs = []
         try:

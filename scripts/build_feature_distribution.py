@@ -172,13 +172,18 @@ def build(source: Path, output: Path, revision: str) -> dict:
             groups[group][name] = (provider + '\n').encode()
         core[name] = ('\n'.join(line for line in lines if line not in plugin_providers.values()) + '\n').encode()
 
-    # The managed launcher supplies an explicit six-JAR class path. Retain all
+    # The managed launcher supplies an explicit nine-JAR class path. Retain all
     # other legacy attributes but never let Class-Path silently add other JARs.
     core['META-INF/MANIFEST.MF'] = explicit_classpath_manifest(core['META-INF/MANIFEST.MF'])
     core[HOST_METADATA] = (json.dumps({'api': HOST_API, 'version': HOST_VERSION},
                                      sort_keys=True) + '\n').encode()
     license_text = (Path(__file__).resolve().parents[1] / 'LICENSE').read_bytes()
-    core['META-INF/LICENSE-logbook-kai.txt'] = license_text
+    core['META-INF/LICENSE-logbook-kai2.txt'] = license_text
+    repository = Path(__file__).resolve().parents[1]
+    for notice in sorted((repository / 'licenses').rglob('*')):
+        if notice.is_file():
+            core['META-INF/third-party/' + notice.relative_to(repository / 'licenses').as_posix()] = notice.read_bytes()
+    core['META-INF/THIRD_PARTY_NOTICES.md'] = (repository / 'THIRD_PARTY_NOTICES.md').read_bytes()
     new_directory(output)
     (output / 'features').mkdir()
     write_jar(output / 'logbook-kai2-core.jar', core)
@@ -188,7 +193,7 @@ def build(source: Path, output: Path, revision: str) -> dict:
     for group, values in groups.items():
         provider = GROUPS[group][0]
         values.update(styles)
-        values['META-INF/LICENSE-logbook-kai.txt'] = license_text
+        values['META-INF/LICENSE-logbook-kai2.txt'] = license_text
         if group == 'quests':
             values['META-INF/NOTICE-quest-catalog.txt'] = (Path(__file__).resolve().parents[1] / 'modules/quests/CATALOG-ORIGIN.md').read_bytes()
             values['META-INF/LICENSE-quest-catalog.txt'] = (Path(__file__).resolve().parents[1] / 'modules/quests/LICENSE').read_bytes()

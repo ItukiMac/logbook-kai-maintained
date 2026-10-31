@@ -18,3 +18,15 @@
 sharingは公開された情報を出力し、任務状態や記録の正本を所有しません。questsは任務管理、recordsは記録の閲覧を担当します。
 
 変数名変更は意味を読んで行います。ゲームAPIのdeck/item、保存キー、FXML参照、反射利用、クラス名由来の設定ファイルは一括置換しません。再取得可能な旧設定の互換対応は不要です。履歴・手動情報への参照は維持または明示的に取り込みます。
+
+## 整理結果と境界上の名称
+
+内部製品名、モジュールID、パッケージ・サービス登録、配布JAR、起動/更新ファイル、主要な任務管理入力変数を統一しました。主な入力名はquestIdInput / editionInput / periodInput / reasonInput / recordedAtInputです。
+
+以下は意味を変える改名をしない境界です。
+- ゲームAPI由来のbeanプロパティ（deck、slotitem、mst等）: 外部フィールドとの対応を保持。
+- 既存CSV・JSON・任務台帳のキー: 再取得不能なデータの形式を保持。
+- 公開V1 APIおよびFXMLコントローラー参照: JavaコンパイルとFXML起動試験で整合性を検査。
+- ブラウザ通信のKCP1と任務JSONのkqs.quest-snapshot.v2: 利用中の連携形式として保持。画面・製品名として使用しない。
+
+任意の一文字ループ変数や既存外部モデルまで機械的に置換する方針ではありません。新規内部型はUpperCamelCase、ローカル変数は役割が分かるlowerCamelCaseに揃えます。命名・配置の自動検査はscripts/check_product_conventions.py、参照と振る舞いはJava/Python/GUIの試験で検証します。

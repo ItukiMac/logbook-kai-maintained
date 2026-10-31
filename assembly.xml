@@ -8,12 +8,15 @@
     <includeBaseDirectory>false</includeBaseDirectory>
 
     <files>
+        <file><source>LICENSE</source></file>
+        <file><source>THIRD_PARTY_NOTICES.md</source></file>
         <file>
             <source>target/${project.artifactId}.jar</source>
         </file>
     </files>
 
     <fileSets>
+        <fileSet><directory>licenses</directory><outputDirectory>licenses</outputDirectory></fileSet>
         <fileSet>
             <directory>dist-includes</directory>
             <outputDirectory>/</outputDirectory>

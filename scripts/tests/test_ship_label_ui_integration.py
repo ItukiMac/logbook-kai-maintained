@@ -14,11 +14,11 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from build_feature_distribution import build
 from run_feature_distribution import FILES
 
-@unittest.skipUnless((ROOT/'target/logbook-kai.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
+@unittest.skipUnless((ROOT/'target/logbook-kai2.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires current built JAR, javac and an isolated display')
 class ShipLabelUiIntegrationTest(unittest.TestCase):
     def test_real_label_dialogs_cancel_confirm_and_reject_stale_state(self):
-        original=ROOT/'target/logbook-kai.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
+        original=ROOT/'target/logbook-kai2.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
         fixture=Path(tempfile.mkdtemp(prefix='ship-label-fixture-',dir=ROOT/'target'))
         evidence=ROOT/'target/r3-verification';evidence.mkdir(exist_ok=True)
         result={'fixture':str(fixture),'production_accessed':False,'result':'not_completed'};logs=[]

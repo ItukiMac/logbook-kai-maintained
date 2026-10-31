@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate a versioned split bundle before executing Java or touching runtime data.
 
-The three module JARs use a shared application class loader. Host API 1 and an
+The eight feature JARs use a shared application class loader. Host API 1 and an
 exact core digest are both required: existing public model types are not yet an
 independently versioned ABI. Hashes establish identity, not publisher trust.
 """

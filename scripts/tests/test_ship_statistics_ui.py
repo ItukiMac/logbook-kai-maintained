@@ -14,11 +14,11 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from build_feature_distribution import build
 from run_feature_distribution import FILES, SHIP_STATISTICS_PROFILE, ship_statistics_required_entries
 
-@unittest.skipUnless((ROOT/'target/logbook-kai.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
+@unittest.skipUnless((ROOT/'target/logbook-kai2.jar').is_file() and shutil.which('xvfb-run') and shutil.which('javac'),
                      'Requires current built JAR, javac and an isolated display')
 class ShipStatisticsUiTest(unittest.TestCase):
     def test_product_tab_uses_one_immutable_snapshot_and_displays_unknowns(self):
-        original=ROOT/'target/logbook-kai.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
+        original=ROOT/'target/logbook-kai2.jar';before=hashlib.sha256(original.read_bytes()).hexdigest()
         fixture=Path(tempfile.mkdtemp(prefix='ship-statistics-fixture-',dir=ROOT/'target'))
         evidence=ROOT/'target/r3-verification';evidence.mkdir(exist_ok=True)
         report={'fixture':str(fixture),'result':'not_completed','production_accessed':False};logs=[]

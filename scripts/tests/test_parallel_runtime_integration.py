@@ -18,7 +18,7 @@ from build_feature_distribution import build
 import test_feature_version_integration as feature_fixture
 
 ROOT=Path(__file__).resolve().parents[2]
-JAR=ROOT/'target/logbook-kai.jar'
+JAR=ROOT/'target/logbook-kai2.jar'
 PROFILE='arrival-tracking-v1'
 
 
