@@ -981,6 +981,15 @@
         "src/test/java/logbook/internal/gui/PublicAutoCompletionGuiTest.java",
         "src/test/java/logbook/internal/gui/RestoredCheckBoxGroupGuiTest.java"
       ]
+    },
+    {
+      "path": "src/main/java/logbook/internal/gui/WindowPresentation.java",
+      "owner": "host",
+      "category": "presentation",
+      "reason": "Shared empty-state and window presentation across host and feature windows.",
+      "verification": [
+        "src/test/java/logbook/features/quests/QuestManagementGuiTest.java"
+      ]
     }
   ]
 }

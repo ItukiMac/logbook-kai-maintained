@@ -49,7 +49,7 @@ class FeatureDistributionTest(unittest.TestCase):
             with ZipFile(self.out/f'features/logbook-kai2-feature-{g}.jar') as z:
                 self.assertTrue(all(n in z.namelist() for n in r['extracted'][g]))
                 self.assertIn('logbook/gui/application.css',z.namelist())
-                self.assertIn(b'Copyright (c) 2015 sanaehirotaka', z.read('META-INF/LICENSE-logbook-kai.txt'))
+                self.assertIn(b'Copyright (c) 2015 sanaehirotaka', z.read('META-INF/LICENSE-logbook-kai2.txt'))
     def test_repeat_is_deterministic_and_never_replaces_original_output(self):
         r=self.build();other=self.root/'second';r2=build(self.jar,other,'a'*40)
         self.assertEqual(r,r2)

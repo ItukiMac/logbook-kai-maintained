@@ -42,10 +42,10 @@ jobs:
           mkdir -p "$TEMP/original" "$TEMP/app/update" "$TEMP/app/plugins" "$TEMP/app/config"
           curl --fail --location --retry 3 --silent --show-error \
             -o "$TEMP/original.zip" \
-            https://github.com/sakura0689/logbook-kai/releases/download/v25.0.8/logbook-kai2_25.0.8.zip
+            https://github.com/sakura0689/logbook-kai/releases/download/v25.0.8/logbook-kai_25.0.8.zip
           echo 'd24b2aba8658b1acc6f4081604ce4280091cc714519ada957f9eaa6d240943c5  '"$TEMP/original.zip" | sha256sum --check --status
           unzip -q "$TEMP/original.zip" -d "$TEMP/original"
-          OFFICIAL_JAR="$(find "$TEMP/original" -type f -name logbook-kai2.jar -print -quit)"
+          OFFICIAL_JAR="$(find "$TEMP/original" -type f -name logbook-kai.jar -print -quit)"
           test -n "$OFFICIAL_JAR"
           cp "$OFFICIAL_JAR" "$TEMP/app/logbook-kai2.jar"
           cp target/logbook-kai2.jar "$TEMP/app/update/logbook-kai2.jar"
@@ -63,7 +63,7 @@ jobs:
           test "$(sha256sum "$TEMP/app/logbook-kai2.jar" | cut -d ' ' -f1)" = "$AFTER"
           test ! -e "$TEMP/app/update/logbook-kai2.jar"
 
-          BACKUP="$(find "$TEMP/app/launcher-backups/app-versions" -type f -name 'logbook-kai-*.jar' -print -quit)"
+          BACKUP="$(find "$TEMP/app/launcher-backups/app-versions" -type f -name 'logbook-kai2-*.jar' -print -quit)"
           test -n "$BACKUP"
           test "$(sha256sum "$BACKUP" | cut -d ' ' -f1)" = "$BEFORE"
 
